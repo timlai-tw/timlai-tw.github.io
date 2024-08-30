@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Hexo</title>
+  <title>漫步在雲端</title>
   
   
-  <link href="http://example.com/atom.xml" rel="self"/>
+  <link href="https://timlai-tw.github.io/atom.xml" rel="self"/>
   
-  <link href="http://example.com/"/>
+  <link href="https://timlai-tw.github.io/"/>
   <updated>2024-08-30T06:11:58.098Z</updated>
-  <id>http://example.com/</id>
+  <id>https://timlai-tw.github.io/</id>
   
   <author>
-    <name>John Doe</name>
+    <name>Tim Lai</name>
     
   </author>
   
@@ -18,8 +18,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="http://example.com/2024/08/30/hello-world/"/>
-    <id>http://example.com/2024/08/30/hello-world/</id>
+    <link href="https://timlai-tw.github.io/2024/08/30/hello-world/"/>
+    <id>https://timlai-tw.github.io/2024/08/30/hello-world/</id>
     <published>2024-08-30T02:44:25.179Z</published>
     <updated>2024-08-30T06:11:58.098Z</updated>
     
