@@ -18,15 +18,4 @@
 <p>More info: <a class="link"   href="https://hexo.io/docs/one-command-deployment.html" >Deployment<i class="fas fa-external-link-alt"></i></a></p>
 ]]></content>
   </entry>
-  <entry>
-    <title>test</title>
-    <url>/post/2024/09/test/</url>
-    <content><![CDATA[<p><img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/09/test/logoT.png"
-                        alt="測試" title="這是title"
-                 ></p>
-]]></content>
-  </entry>
 </search>
