@@ -6,7 +6,7 @@
   <link href="https://timlai.dev/atom.xml" rel="self"/>
   
   <link href="https://timlai.dev/"/>
-  <updated>2024-08-31T15:55:44.877Z</updated>
+  <updated>2024-08-31T17:36:44.249Z</updated>
   <id>https://timlai.dev/</id>
   
   <author>
@@ -17,37 +17,13 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>abcde</title>
-    <link href="https://timlai.dev/2024/08/31/abcde/"/>
-    <id>https://timlai.dev/2024/08/31/abcde/</id>
-    <published>2024-08-31T15:49:09.000Z</published>
-    <updated>2024-08-31T15:55:44.877Z</updated>
+    <title>test</title>
+    <link href="https://timlai.dev/post/2024/09/test/"/>
+    <id>https://timlai.dev/post/2024/09/test/</id>
+    <published>2024-08-31T16:54:58.000Z</published>
+    <updated>2024-08-31T17:36:44.249Z</updated>
     
-    <content type="html"><![CDATA[<p><img                         lazyload                       alt="image"                       data-src="/abcde/logoT.png"                        alt="測試" title="這是title"                 ></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;&lt;img  
-                       lazyload
-                       alt=&quot;image&quot;
-                       data-src=&quot;/abcde/logoT.png&quot;
-            </summary>
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>新文章</title>
-    <link href="https://timlai.dev/2024/08/31/%E6%96%B0%E6%96%87%E7%AB%A0/"/>
-    <id>https://timlai.dev/2024/08/31/%E6%96%B0%E6%96%87%E7%AB%A0/</id>
-    <published>2024-08-31T14:17:52.000Z</published>
-    <updated>2024-08-31T15:42:56.559Z</updated>
-    
-    <content type="html"><![CDATA[<p><img                         lazyload                       alt="image"                       data-src="/images/logoT.png"                        alt="測試" title="這是title"                 ></p>]]></content>
+    <content type="html"><![CDATA[<p><img                         lazyload                       alt="image"                       data-src="/post/2024/09/test/logoT.png"                        alt="測試" title="這是title"                 ></p>]]></content>
     
     
       
@@ -55,22 +31,9 @@
     <summary type="html">&lt;p&gt;&lt;img  
                        lazyload
                        alt=&quot;image&quot;
-                       data-src=&quot;/images/logoT.png&quot;
-           </summary>
+                       data-src=&quot;/post/2024/09/test/logoT.png&quot;
+</summary>
       
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>abc</title>
-    <link href="https://timlai.dev/2024/08/31/abc/"/>
-    <id>https://timlai.dev/2024/08/31/abc/</id>
-    <published>2024-08-31T14:17:17.000Z</published>
-    <updated>2024-08-31T14:17:17.167Z</updated>
-    
     
     
     
@@ -79,8 +42,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="https://timlai.dev/2024/08/30/hello-world/"/>
-    <id>https://timlai.dev/2024/08/30/hello-world/</id>
+    <link href="https://timlai.dev/post/2024/08/hello-world/"/>
+    <id>https://timlai.dev/post/2024/08/hello-world/</id>
     <published>2024-08-30T02:44:25.179Z</published>
     <updated>2024-08-31T13:53:57.687Z</updated>
     
