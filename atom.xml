@@ -18,8 +18,8 @@
   
   <entry>
     <title>新文章</title>
-    <link href="https://timlai.dev/2024/08/31/%E6%96%B0%E6%96%87%E7%AB%A0/"/>
-    <id>https://timlai.dev/2024/08/31/%E6%96%B0%E6%96%87%E7%AB%A0/</id>
+    <link href="https://timlai.dev/%E6%96%B0%E6%96%87%E7%AB%A0"/>
+    <id>https://timlai.dev/%E6%96%B0%E6%96%87%E7%AB%A0</id>
     <published>2024-08-31T14:17:52.000Z</published>
     <updated>2024-08-31T14:17:52.496Z</updated>
     
@@ -31,8 +31,8 @@
   
   <entry>
     <title>abc</title>
-    <link href="https://timlai.dev/2024/08/31/abc/"/>
-    <id>https://timlai.dev/2024/08/31/abc/</id>
+    <link href="https://timlai.dev/abc"/>
+    <id>https://timlai.dev/abc</id>
     <published>2024-08-31T14:17:17.000Z</published>
     <updated>2024-08-31T14:17:17.167Z</updated>
     
@@ -44,8 +44,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="https://timlai.dev/2024/08/30/hello-world/"/>
-    <id>https://timlai.dev/2024/08/30/hello-world/</id>
+    <link href="https://timlai.dev/hello-world"/>
+    <id>https://timlai.dev/hello-world</id>
     <published>2024-08-30T02:44:25.179Z</published>
     <updated>2024-08-31T13:53:57.687Z</updated>
     
