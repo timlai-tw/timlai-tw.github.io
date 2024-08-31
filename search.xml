@@ -40,7 +40,7 @@
     <content><![CDATA[<p><img  
                        lazyload
                        alt="image"
-                       data-src="/logoT.png"
+                       data-src="/abcde/logoT.png"
                         alt="測試" title="這是title"
                  ></p>
 ]]></content>

@@ -6,7 +6,7 @@
   <link href="https://timlai.dev/atom.xml" rel="self"/>
   
   <link href="https://timlai.dev/"/>
-  <updated>2024-08-31T15:49:53.242Z</updated>
+  <updated>2024-08-31T15:52:10.051Z</updated>
   <id>https://timlai.dev/</id>
   
   <author>
@@ -21,9 +21,9 @@
     <link href="https://timlai.dev/2024/08/31/abcde/"/>
     <id>https://timlai.dev/2024/08/31/abcde/</id>
     <published>2024-08-31T15:49:09.000Z</published>
-    <updated>2024-08-31T15:49:53.242Z</updated>
+    <updated>2024-08-31T15:52:10.051Z</updated>
     
-    <content type="html"><![CDATA[<p><img                         lazyload                       alt="image"                       data-src="/logoT.png"                        alt="測試" title="這是title"                 ></p>]]></content>
+    <content type="html"><![CDATA[<p><img                         lazyload                       alt="image"                       data-src="/abcde/logoT.png"                        alt="測試" title="這是title"                 ></p>]]></content>
     
     
       
@@ -31,8 +31,8 @@
     <summary type="html">&lt;p&gt;&lt;img  
                        lazyload
                        alt=&quot;image&quot;
-                       data-src=&quot;/logoT.png&quot;
-                  </summary>
+                       data-src=&quot;/abcde/logoT.png&quot;
+            </summary>
       
     
     
