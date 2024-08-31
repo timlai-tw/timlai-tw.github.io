@@ -3,17 +3,17 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
-subtitle: ''
+title: 漫步在雲端
+subtitle: 'Strolling Through the Clouds'
 description: ''
 keywords:
-author: John Doe
-language: en
-timezone: ''
+author: Tim Lai
+language: zh-TW
+timezone: 'Asia/Taipei'
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: http://example.com
+url: https://timlai-tw.github.io/
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
@@ -30,14 +30,6 @@ code_dir: downloads/code
 i18n_dir: :lang
 skip_render:
 
-menu:
-  home: /
-  archives: /archives
-  # categories: /categories
-  # tags: /tags
-  # links: /links
-  關於我: /about
-
 # Writing
 new_post_name: :title.md # File name of new posts
 default_layout: post
@@ -53,12 +45,14 @@ relative_link: false
 future: true
 syntax_highlighter: highlight.js
 highlight:
+  enable: true
   line_number: true
   auto_detect: false
   tab_replace: ''
   wrap: true
   hljs: false
 prismjs:
+  enable: false
   preprocess: true
   line_number: true
   tab_replace: ''
@@ -109,4 +103,13 @@ theme: keep
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: ''
+  type: git
+  repo: https://github.com/timlai-tw/timlai-tw.github.io.git
+  branch: master
+
+# Feed Atom
+# npm install hexo-generator-feed
+feed:
+  type: atom
+  path: atom.xml
+  limit: 20  

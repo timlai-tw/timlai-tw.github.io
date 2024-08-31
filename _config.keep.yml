@@ -12,19 +12,19 @@ base_info:
   primary_color: "#0066cc"
 
   # Blog website title
-  title: Keep Theme 
+  title: 漫步在雲端
 
   # Blog website author name
-  author: Keep Team 123
+  author: Tim Lai
 
   # Author avatar, You can use local image path or image link
-  avatar: /images/avatar.svg
+  avatar: /images/angu100.jpg
 
   # Website LOGO, You can use local image path or image link
-  logo: /images/logo.svg
+  logo: /images/logoT.png
 
   # Website favicon, You can use local image path or image link
-  favicon: /images/logo.svg
+  favicon: /images/logoT.png
 
 
 # ---------------------------------------------------------------------------------------
@@ -35,6 +35,7 @@ base_info:
 # Use `||` to set icon for navigation menu, e.g. `home: / || fa-solid fa-home`
 menu:
   home: /                       # || fa-solid fa-home
+  # Azure: /azure                 || fa-brands fa-microsoft
   archives: /archives           # || fa-solid fa-box-archive
   # tags: /tags                 # || fa-solid fa-tags
   # categories: /categories     # || fa-solid fa-layer-group
@@ -49,7 +50,7 @@ menu:
 # Docs: https://keep-docs.xpoet.cn/basis/configuration-guide/first_screen.html
 # ---------------------------------------------------------------------------------------
 first_screen:
-  enable: false  # Option values: true | false
+  enable: true  # Option values: true | false
 
   # First screen background image in light mode, You can use local image path or image link
   background_img: /images/bg.svg
@@ -59,7 +60,8 @@ first_screen:
 
   # First screen description
   # You can use the "||" to begin a newline, maximum is two lines.
-  description: Keep writing and Keep loving.
+  #description: Strolling Through the Clouds.
+  description: If something is difficult or painful, do it more often.
 
   # If enable hitokoto, first screen description is different every time when you enter the website
   hitokoto: false      # Option values: true | false
@@ -69,7 +71,7 @@ first_screen:
 # Docs: https://keep-docs.xpoet.cn/basis/configuration-guide/social_contact.html
 # ---------------------------------------------------------------------------------------
 social_contact:
-  enable: false      # Option values: true | false
+  enable: true      # Option values: true | false
   links:
     # Fill in your social platform links here, e.g. `github: https://github.com/XPoet`
     # If you want to click open the picture, you need to add a prefix `img | `,
@@ -82,8 +84,8 @@ social_contact:
     zhihu:           # ZhiHu
     twitter:         # Twitter
     x:               # X
-    facebook:        # Facebook
-    email:           # Email
+    facebook: https://www.facebook.com/yutai.lai.91         # Facebook
+    email: yutai.lai@gmail.com                              # Email
 
 
 # ---------------------------------------------------------------------------------------
@@ -105,7 +107,7 @@ scroll:
 # ---------------------------------------------------------------------------------------
 home:
   # Website announcement in home page
-  announcement:
+  announcement: 網站建構測試中。
 
   # Show category in home page post block
   category: true           # Option values: true | false
@@ -162,7 +164,7 @@ post:
 code_block:
   # Toolbar include: "code copy", "code block collapse" and "code language"
   tools:
-    enable: false            # Option values: true | false
+    enable: true            # Option values: true | false
     style: default           # Option values: default | mac
   highlight_theme: default   # Option values: default | obsidian
 
@@ -171,19 +173,19 @@ code_block:
 # Docs: https://keep-docs.xpoet.cn/basis/configuration-guide/toc.html
 # ---------------------------------------------------------------------------------------
 toc:
-  enable: false      # Option values: true | false
+  enable: true      # Option values: true | false
 
   # Automatically add list number to toc
   number: false      # Option values: true | false
 
   # If true, all level of TOC in a post will be displayed, rather than the activated part of it.
-  expand_all: false  # Option values: true | false
+  expand_all: true  # Option values: true | false
 
   # If true, auto open TOC every time when you enter post page
   init_open: true    # Option values: true | false
 
   # TOC layout on post page
-  layout: right      # Option values: left | right
+  layout: left      # Option values: left | right
 
 
 # ---------------------------------------------------------------------------------------
@@ -193,10 +195,10 @@ website_count:
   # busuanzi
   # See: http://ibruce.info/2015/04/04/busuanzi/
   busuanzi_count:
-    enable: false     # Option values: true | false
+    enable: true     # Option values: true | false
     site_uv: false    # Option values: true | false
     site_pv: false    # Option values: true | false
-    page_pv: false    # Option values: true | false
+    page_pv: true    # Option values: true | false
 
 
 # ---------------------------------------------------------------------------------------
@@ -213,8 +215,8 @@ local_search:
 # Docs: https://keep-docs.xpoet.cn/basis/configuration-guide/comment.html
 # ---------------------------------------------------------------------------------------
 comment:
-  enable: false   # Option values: true | false
-  use: disqus     # Option values: valine | gitalk | twikoo | waline | giscus | artalk | disqus
+  enable: true   # Option values: true | false
+  use: gitalk     # Option values: valine | gitalk | twikoo | waline | giscus | artalk | disqus
 
   # Valine
   # See: https://github.com/xCss/Valine
@@ -229,12 +231,12 @@ comment:
   # See: https://github.com/gitalk/gitalk
   #      https://gitalk.github.io
   gitalk:
-    github_id:        # GitHub repo owner
-    github_admins:    # GitHub Admins (in Array type), optional
-    repository:       # Repository name to store issues
-    client_id:        # GitHub Application Client ID
-    client_secret:    # GitHub Application Client Secret
-    proxy:            # GitHub oauth request reverse proxy for CORS
+    github_id: timlai-tw                                        # GitHub repo owner
+    github_admins: timlai-tw                                    # GitHub Admins (in Array type), optional
+    repository: hexo-site-comments                              # Repository name to store issues
+    client_id: Ov23liXKo7rRoe2CP8fx                             # GitHub Application Client ID
+    client_secret: 206bafbd0af7bfbc4489392884591ac53c68b63c     # GitHub Application Client Secret
+    #proxy:                                                     # GitHub oauth request reverse proxy for CORS
 
   # Twikoo
   # See: https://github.com/imaegoo/twikoo
@@ -281,14 +283,14 @@ comment:
 # See: https://github.com/hexojs/hexo-generator-feed
 # ---------------------------------------------------------------------------------------
 rss:
-  enable: false  # Option values: true | false
+  enable: true  # Option values: true | false
 
 
 # ---------------------------------------------------------------------------------------
 # Docs: https://keep-docs.xpoet.cn/basis/configuration-guide/lazyload.html
 # ---------------------------------------------------------------------------------------
 lazyload:
-  enable: false  # Option values: true | false
+  enable: true  # Option values: true | false
 
 
 # ---------------------------------------------------------------------------------------
@@ -303,18 +305,18 @@ cdn:
 # Docs: https://keep-docs.xpoet.cn/basis/configuration-guide/pjax.html
 # ---------------------------------------------------------------------------------------
 pjax:
-  enable: false  # Option values: true | false
+  enable: true  # Option values: true | false
 
 
 # ---------------------------------------------------------------------------------------
 # Docs: https://keep-docs.xpoet.cn/basis/configuration-guide/footer.html
 # ---------------------------------------------------------------------------------------
 footer:
-  since: 2020            # The starting year of your website, Can be null
+  since: 2023            # The starting year of your website, Can be null
   word_count: false      # Option values: true | false
 
   site_deploy:
-    enable: false        # Option values: true | false
+    enable: true        # Option values: true | false
     provider: github     # Option values: github | vercel | netlify | cloudflare | gitee | aliyun | tencent_cloud | upyun
     url:                 # Your deployment provider url, Can be null
 
