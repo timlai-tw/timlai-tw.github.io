@@ -24,6 +24,15 @@ Urgent info that needs immediate user attention to avoid problems.</p>
 <p>[!CAUTION]<br>
 Advises about risks or negative outcomes of certain actions.</p>
 </blockquote>
+<p>::: tips<br>
+<strong>測試</strong><br>
+測試<br>
+:::</p>
+<p>Here is a simple footnote[^1].</p>
+<p>A footnote can also have multiple lines[^2].</p>
+<p>[^1]: My reference.<br>
+[^2]: To add line breaks within a footnote, prefix new lines with 2 spaces.<br>
+This is a second line.</p>
 ]]></content>
   </entry>
   <entry>
