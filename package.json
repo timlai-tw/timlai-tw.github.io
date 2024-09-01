@@ -22,10 +22,23 @@
     "hexo-generator-searchdb": "^1.4.1",
     "hexo-generator-tag": "^2.0.0",
     "hexo-renderer-ejs": "^2.0.0",
-    "hexo-renderer-marked": "^6.3.0",
+    "hexo-renderer-markdown-it": "^7.1.1",
     "hexo-renderer-stylus": "^3.0.1",
     "hexo-server": "^3.0.0",
     "hexo-theme-keep": "^4.2.2",
-    "hexo-theme-landscape": "^1.0.0"
+    "hexo-theme-landscape": "^1.0.0",
+    "markdown-it-abbr": "^2.0.0",
+    "markdown-it-checkbox": "^1.1.0",
+    "markdown-it-collapsible": "^2.0.2",
+    "markdown-it-container": "^4.0.0",
+    "markdown-it-deflist": "^3.0.0",
+    "markdown-it-emoji": "^3.0.0",
+    "markdown-it-footnote": "^4.0.0",
+    "markdown-it-imsize": "^2.0.1",
+    "markdown-it-ins": "^4.0.0",
+    "markdown-it-mark": "^4.0.0",
+    "markdown-it-regexp": "^0.4.0",
+    "markdown-it-sub": "^2.0.0",
+    "markdown-it-sup": "^2.0.0"
   }
 }

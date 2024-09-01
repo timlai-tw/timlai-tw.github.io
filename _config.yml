@@ -15,9 +15,9 @@ timezone: 'Asia/Taipei'
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
 url: https://timlai.dev
 permalink: post/:year/:month/:title #:year/:month/:day/:title/
-marked:
-  prependRoot: true
-  postAsset: true
+# marked:
+#   prependRoot: true
+#   postAsset: true
 permalink_defaults:
 pretty_urls:
   trailing_index: true # Set to false to remove trailing 'index.html' from permalinks
@@ -116,3 +116,48 @@ feed:
   type: atom
   path: atom.xml
   limit: 20  
+
+# Markdown-it config
+## Docs: https://github.com/celsomiranda/hexo-renderer-markdown-it/wiki
+markdown:
+  preset: 'default'
+  render:
+    html: true
+    xhtmlOut: false
+    langPrefix: 'language-'
+    breaks: true
+    linkify: true
+    typographer: true
+    quotes: '“”‘’'
+  enable_rules:
+  disable_rules:
+  plugins:
+    - markdown-it-container
+    - markdown-it-abbr 
+    - markdown-it-deflist 
+    - markdown-it-emoji 
+    - markdown-it-footnote 
+    - markdown-it-imsize 
+    - markdown-it-ins 
+    - markdown-it-mark 
+    - markdown-it-regexp 
+    - markdown-it-sub 
+    - markdown-it-sup 
+    - markdown-it-checkbox   
+    - markdown-it-collapsible
+  anchors:
+    level: 2
+    collisionSuffix: ''
+    permalink: false
+    permalinkClass: 'header-anchor'
+    permalinkSide: 'left'
+    permalinkSymbol: '¶'
+    case: 0
+    separator: '-'
+  images:
+    lazyload: true
+    prepend_root: false
+    post_asset: true
+  inline: false  # https://markdown-it.github.io/markdown-it/#MarkdownIt.renderInline
+
+ 
