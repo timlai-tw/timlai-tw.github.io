@@ -6,7 +6,7 @@
   <link href="https://timlai.dev/atom.xml" rel="self"/>
   
   <link href="https://timlai.dev/"/>
-  <updated>2024-09-01T08:33:09.165Z</updated>
+  <updated>2024-08-31T13:53:57.687Z</updated>
   <id>https://timlai.dev/</id>
   
   <author>
@@ -17,12 +17,19 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>1</title>
-    <link href="https://timlai.dev/post/2024/09/1/"/>
-    <id>https://timlai.dev/post/2024/09/1/</id>
-    <published>2024-09-01T08:33:09.000Z</published>
-    <updated>2024-09-01T08:33:09.165Z</updated>
+    <title>Hello World</title>
+    <link href="https://timlai.dev/post/2024/09/hello-world/"/>
+    <id>https://timlai.dev/post/2024/09/hello-world/</id>
+    <published>2024-09-01T12:32:57.608Z</published>
+    <updated>2024-08-31T13:53:57.687Z</updated>
     
+    <content type="html"><![CDATA[<p>Welcome to <a class="link"   href="https://hexo.io/" >Hexo<i class="fas fa-external-link-alt"></i></a>! This is your very first post. Check <a class="link"   href="https://hexo.io/docs/" >documentation<i class="fas fa-external-link-alt"></i></a> for more info. If you get any problems when using Hexo, you can find the answer in <a class="link"   href="https://hexo.io/docs/troubleshooting.html" >troubleshooting<i class="fas fa-external-link-alt"></i></a> or you can ask me on <a class="link"   href="https://github.com/hexojs/hexo/issues" >GitHub<i class="fas fa-external-link-alt"></i></a>.</p><h2 id="Quick-Start">Quick Start</h2><h3 id="Create-a-new-post">Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a class="link"   href="https://hexo.io/docs/writing.html" >Writing<i class="fas fa-external-link-alt"></i></a></p><h3 id="Run-server">Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a class="link"   href="https://hexo.io/docs/server.html" >Server<i class="fas fa-external-link-alt"></i></a></p><h3 id="Generate-static-files">Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a class="link"   href="https://hexo.io/docs/generating.html" >Generating<i class="fas fa-external-link-alt"></i></a></p><h3 id="Deploy-to-remote-sites">Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a class="link"   href="https://hexo.io/docs/one-command-deployment.html" >Deployment<i class="fas fa-external-link-alt"></i></a></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Welcome to &lt;a class=&quot;link&quot;   href=&quot;https://hexo.io/&quot; &gt;Hexo&lt;i class=&quot;fas fa-external-link-alt&quot;&gt;&lt;/i&gt;&lt;/a&gt;! This is your very first post. Che</summary>
+      
     
     
     
