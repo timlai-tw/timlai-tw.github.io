@@ -260,6 +260,98 @@
 
             <!-- comment plugin -->
             
+                
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;留言
+        </div>
+        <div class="comment-plugin-fail border-box">
+    <span class="fail-tip">留言插件載入失敗</span>
+    <button class="reload keep-button">點擊重新載入</button>
+</div>
+<div class="comment-plugin-loading flex-center border-box">
+    <i class="loading-icon fa-solid fa-spinner fa-spin"></i>
+    <span class="load-tip">正在載入留言套件</span>
+</div>
+<script data-pjax>
+  window.KeepCommentPlugin = {}
+  window.KeepCommentPlugin.hideLoading = () => {
+    const cplDom = document.querySelector('.comments-container .comment-plugin-loading')
+    cplDom.style.display = 'none'
+  }
+  window.KeepCommentPlugin.loadFailHandle = () => {
+    window.KeepCommentPlugin.hideLoading()
+    const cpfDom = document.querySelector('.comments-container .comment-plugin-fail')
+    cpfDom.style.display = 'flex'
+    cpfDom.querySelector('.reload').addEventListener('click', () => {
+      window.location.reload()
+    })
+  }
+</script>
+
+        
+            
+
+    <div class="gitalk-comment-container">
+        <div id="gitalk-container"></div>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.css">
+        <script data-pjax
+                src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"
+                async
+                onerror="window.KeepCommentPlugin.loadFailHandle()"
+        ></script>
+        <script data-pjax
+                async
+                onerror="window.KeepCommentPlugin.loadFailHandle()"
+        >
+          window.KeepCommentPlugin.initGitalk = () => {
+            let gitalkPathname = decodeURI(location.pathname)
+            const gitalkPathnameLength = gitalkPathname.length
+            const gitalkPathnameMaxLength = 50
+            if (gitalkPathnameLength > gitalkPathnameMaxLength) {
+              gitalkPathname = gitalkPathname.substring(0, gitalkPathnameMaxLength - 3) + '...'
+            }
+
+            if (window?.Gitalk) {
+              new Gitalk({
+                clientID: 'Ov23liXKo7rRoe2CP8fx',
+                clientSecret: '206bafbd0af7bfbc4489392884591ac53c68b63c',
+                repo: 'hexo-site-comments',
+                owner: 'timlai-tw',
+                admin: 'timlai-tw',
+                id: gitalkPathname,
+                // proxy: '',
+                language: 'zh-TW'
+              }).render('gitalk-container')
+              window.KeepCommentPlugin.hideLoading()
+            } else {
+              setTimeout(() => {
+                window.KeepCommentPlugin.initGitalk()
+              }, 1000)
+            }
+          }
+
+          if ('true' === 'true') {
+            setTimeout(() => {
+              window.KeepCommentPlugin.initGitalk()
+            }, 1200)
+          } else {
+            window.addEventListener('DOMContentLoaded', window.KeepCommentPlugin.initGitalk)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+            
         </div>
     </div>
 </div>
