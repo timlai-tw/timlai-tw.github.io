@@ -12,7 +12,7 @@
 <p>Azure DevOps 是一個可以讓我們有效管理軟體開發流程，同時維持良好團隊協作的強大平台，除了可以直接使用雲端 Azure DevOps Services，也可以在地端自建 Azure DevOps Server 讓企業內部環境也能提供相同的服務，但許多人遇到的第一個問題是如何購買授權才能讓成本效益最大化？這篇文章主要協助大家瞭解 Azure DevOps 在授權與定價上的內容。</p>
 <span id="more"></span>
 <br>
-<h2 id="使用者授權">使用者授權</h2>
+<h2 id="Azure-DevOps-Services">Azure DevOps Services</h2>
 <p>Azure DevOps 有五個主要功能：</p>
 <ol>
 <li><strong>Azure Boards</strong> (專案管理、看板管理、Scrum / Kanban、討論議題)</li>
@@ -88,7 +88,7 @@ Visual Studio Enterprise monthly subscription
 </font>
 </div>
 <h2 id="Azure-DevOps-Server">Azure DevOps Server</h2>
-<p>要在地端環境自建 Azure DevOps Server 則需要先準備好 SQL Server 環境，兩者在版本上有相依性，例如：Azure DevOps Server 2022 需要搭配 SQL Server 2019 以上 (不支援 Linux 上的 SQL Server)。</p>
+<p>要在地端環境自建 Azure DevOps Server 則需要先準備好 SQL Server 環境，兩者在版本上有相依性，例如：Azure DevOps Server 2022 需要搭配 SQL Server 2019 以上 (不支援 Linux 上的 SQL Server)，其他版本與相關需求建議可以參考下列連結。</p>
 <div class="tips" style="height:50px;">
 <font color="black">
 Azure DevOps 內部部署的需求
