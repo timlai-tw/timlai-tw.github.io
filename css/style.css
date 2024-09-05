@@ -852,10 +852,13 @@ img[lazyload]::after {
   padding-bottom: 0.1rem;
   text-decoration: none;
   overflow-wrap: break-word;
-  border-bottom: 0.1rem solid var(--text-color-4);
-  outline: 0;
-  cursor: pointer;
 }
+.keep-markdown-body a #border-bottom 0.1rem solid var(--text-color-4),
+.keep-markdown-body > .post a #border-bottom 0.1rem solid var(--text-color-4),
+.keep-markdown-body a outline 0,
+.keep-markdown-body > .post a outline 0,
+.keep-markdown-body a cursor pointer,
+.keep-markdown-body > .post a cursor pointer,
 .keep-markdown-body a .fas,
 .keep-markdown-body > .post a .fas,
 .keep-markdown-body a .far,
@@ -1312,6 +1315,10 @@ img[lazyload]::after {
   color: #217bb8;
   border-top-left-radius: 0.2rem;
   border-bottom-left-radius: 0.2rem;
+}
+.keep-markdown-body .fas.fa-external-link-alt,
+.keep-markdown-body > .post .fas.fa-external-link-alt {
+  padding-left: 5px;
 }
 .keep-markdown-body .success,
 .keep-markdown-body > .post .success {
