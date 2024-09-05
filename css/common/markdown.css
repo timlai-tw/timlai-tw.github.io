@@ -420,7 +420,7 @@ keep-mobile()
 }
 .keep-markdown-body .tips,
 .keep-markdown-body > .post .tips {
-  padding-left: 10px;
+  padding: 10px;
   background-color: rgba(52,152,219,0.3);
   border-left: 4px solid #3498db;
   color: #217bb8;
@@ -429,7 +429,7 @@ keep-mobile()
 }
 .keep-markdown-body .success,
 .keep-markdown-body > .post .success {
-  padding-left: 10px;
+  padding: 10px;
   background-color: rgba(46,204,113,0.3);
   border-left: 4px solid #2ecc71;
   color: #25a35a;
@@ -438,7 +438,7 @@ keep-mobile()
 }
 .keep-markdown-body .warning,
 .keep-markdown-body > .post .warning {
-  padding-left: 10px;
+  padding: 10px;
   background-color: rgba(241,196,15,0.3);
   border-left: 4px solid #f1c40f;
   color: #c29d0b;
@@ -447,7 +447,7 @@ keep-mobile()
 }
 .keep-markdown-body .danger,
 .keep-markdown-body > .post .danger {
-  padding-left: 10px;
+  padding: 10px;
   background-color: rgba(231,76,60,0.3);
   border-left: 4px solid #e74c3c;
   color: #cf2b1a;
