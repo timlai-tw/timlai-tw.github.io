@@ -271,12 +271,32 @@
                          align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
                  >  -->
 <p>Hello 大家好，我是 Tim。</p>
-<!-- 在軟體開發這條路上一轉眼也過了十幾年，我熟悉應用程式開發與系統整合，近年來也使用 Azure 服務為企業提供了不少解決方案，此外，也熟悉專案管理，具有 PMP/ACP/PBA/KMP 等專業認證，不論是 Waterfall 還是 Agile，我覺得能夠讓專案團隊運作順暢，如期如質的產出交付都是好方法，
+<p>在軟體開發這條路上一轉眼也過了十幾年，我熟悉軟體開發與系統整合，使用 Azure 服務為企業提供了不少解決方案，此外，也熟悉專案管理和敏捷方法，具有 PMP/ ACP / PBA / KMP 等專業認證，在 DevOps 這條路上，最欠缺的應該就是 <code>理論</code>、<code>實務經驗</code>、<code>工具</code> 的結合，之後也會多寫寫文章跟大家分享工作上的實務經驗，若有需要協助的地方，也歡迎與我<a class="link"   href="javascript:void(0);"  onclick="openDialog()">直接聯繫<i class="fas fa-external-link-alt"></i></a>。</p>
+<!-- Dialog HTML -->
+<div id="imageDialog" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); z-index:1000; background:white; padding:20px; box-shadow:0 0 10px rgba(0,0,0,0.5);">
+  <img    
+                       lazyload
+                       alt="image"
+                       data-src="/images/line_yutai.lai.jpg"
+                         alt="图片" style="max-width:100%; height:auto;" 
+                 >
+  <button onclick="closeDialog()" style="margin-top:10px;">關閉</button>
+</div>
+<!-- 背景遮罩 -->
+<div id="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;" onclick="closeDialog()"></div>
+<!-- JavaScript -->
+<script>
+function openDialog() {
+  document.getElementById('imageDialog').style.display = 'block';
+  document.getElementById('overlay').style.display = 'block';
+}
 
+function closeDialog() {
+  document.getElementById('imageDialog').style.display = 'none';
+  document.getElementById('overlay').style.display = 'none';
+}
+</script>
 
-實務開發經驗,目前致力於Azure雲端服務開發與
-推廣,協助企業建立解決方案與自動化流程,促進
-組織創新應用。 --> 
                 
             </div>
 
