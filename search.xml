@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>關於 Azure DevOps Services / Server 授權</title>
+    <title>Azure DevOps Services / Server 使用者授權</title>
     <url>/post/2024/09/azure-devops-licensing-description/</url>
     <content><![CDATA[<img    
                        lazyload
@@ -81,5 +81,10 @@
         <tag>Azure DevOps</tag>
         <tag>授權</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>azure-devops-individual-services</title>
+    <url>/post/2024/09/azure-devops-individual-services/</url>
+    <content><![CDATA[]]></content>
   </entry>
 </search>
