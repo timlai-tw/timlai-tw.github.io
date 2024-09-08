@@ -430,6 +430,11 @@ keep-mobile()
   border-top-left-radius: 0.2rem;
   border-bottom-left-radius: 0.2rem;
 }
+.keep-markdown-body .tips a,
+.keep-markdown-body > .post .tips a {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
 .keep-markdown-body .fas.fa-external-link-alt,
 .keep-markdown-body > .post .fas.fa-external-link-alt {
   padding-left: 5px;
