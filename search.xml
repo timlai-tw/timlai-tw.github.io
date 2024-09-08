@@ -79,7 +79,7 @@
                        data-src="/post/2024/09/azure-devops-individual-services/github_acvanced_security.jpg"
                         class=""
                  >
-<p>這個功能可以由每個 git 的儲存庫 (repositry) 個別設定是否啟用 (不支援 TFVC 版控)，計價的原則是：每一個活躍的提交者 (active committer) 每個月 <strong>USD $49</strong> (大約 <strong>TWD $1567</strong>)，在<mark>同一個 Azure Subscription</mark> 中，儲存庫過去 <code>90天</code> 的紀錄中，同一個提交者(committer)在不同專案提交程式碼只會算 1 個數量，不會被重複計價。當我們在 git 儲存庫開啟 <strong><code>Advanced Security</code></strong> 功能時，Azure DevOps 在畫面上也會先幫我們基於上述原則計算有多少使用者會被計費，確定要使用再點選 <strong><code>Begin billing</code></strong> 即可：</p>
+<p>這個功能可以由每個 git 的儲存庫 (repositry) 個別設定是否啟用 (不支援 TFVC 版控)，計價的原則是：每一個活躍的提交者 (active committer) 每個月 <strong>USD $49</strong> (大約 <strong>TWD $1567</strong>)，在<mark>同一個 Azure Subscription</mark> 中，儲存庫過去 <strong><code>90天</code></strong> 的紀錄中，同一個提交者(committer)在不同專案提交程式碼只會算 1 個數量，不會被重複計價。當我們在 git 儲存庫開啟 <strong><code>Advanced Security</code></strong> 功能時，Azure DevOps 在畫面上也會先幫我們基於上述原則計算有多少使用者會被計費，確定要使用再點選 <strong><code>Begin billing</code></strong> 即可：</p>
 <img  
                        lazyload
                        alt="image"
