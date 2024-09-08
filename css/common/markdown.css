@@ -430,10 +430,10 @@ keep-mobile()
   border-top-left-radius: 0.2rem;
   border-bottom-left-radius: 0.2rem;
 }
-.keep-markdown-body .tips a,
-.keep-markdown-body > .post .tips a {
-  padding-top: 10px;
+.keep-markdown-body .tips i.fas.fa-external-link-alt,
+.keep-markdown-body > .post .tips i.fas.fa-external-link-alt {
   padding-bottom: 10px;
+  display: inline-block; /* 確保 padding 生效 */
 }
 .keep-markdown-body .fas.fa-external-link-alt,
 .keep-markdown-body > .post .fas.fa-external-link-alt {
