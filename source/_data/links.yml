@@ -1,0 +1,33 @@
+- title: 訂閱授權與定價
+
+- name: Visual Studio
+  link: https://visualstudio.microsoft.com/zh-hant/subscriptions/#%e5%b7%a5%e5%85%b7?cat=visual-studio-enterprise-subscription-with-github-enterprise-zh-hant
+  description: Visual Studio 訂閱與權益
+  avatar: /images/icon/microsoft.png
+
+- name: Azure DevOps
+  link: https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/
+  description: Azure DevOps Services 定價
+  avatar: /images/icon/azure-devops.svg
+
+- name: Azure 定價計算機
+  link: https://azure.microsoft.com/zh-tw/pricing/calculator/
+  description: 計算使用 Azure 的預估每小時或每月成本。
+  avatar: /images/icon/calculator.png
+
+- title: 常用下載
+
+- name: Visual Studio
+  link: https://visualstudio.microsoft.com/zh-hant/downloads/
+  description: Visual Studio / VS Code 與其他工具、架構和可轉散發套件
+  avatar: /images/icon/visual-studio-product-icon.svg
+
+- name: Azure DevOps Office® Integration 2019
+  link: https://visualstudio.microsoft.com/zh-hant/downloads/#azure-devops-office-integration-2019
+  description: Azure DevOps 與 Office 整合工具
+  avatar: /images/icon/excel.webp
+
+- name: Visual Studio Marketplace
+  link: https://marketplace.visualstudio.com/
+  description: 尋找、安裝及管理 Visual Studio 的延伸模組
+  avatar: /images/icon/azure-marketplace.png

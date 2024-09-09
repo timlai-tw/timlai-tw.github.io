@@ -34,15 +34,15 @@ base_info:
 # e.g. to enable categories, you need to execute `hexo new page categories`
 # Use `||` to set icon for navigation menu, e.g. `home: / || fa-solid fa-home`
 menu:
-  home: /                       # || fa-solid fa-home
+  home: /                         || fa-solid fa-home
   # Azure: /azure                 || fa-brands fa-microsoft
-  archives: /archives           # || fa-solid fa-box-archive
-  # tags: /tags                 # || fa-solid fa-tags
+  archives: /archives             || fa-solid fa-box-archive
+  tags: /tags                     || fa-solid fa-tags
   # categories: /categories     # || fa-solid fa-layer-group
-  # links: /links               # || fa-solid fa-link
-  # photos: /photos             # || fa-solid fa-image
+  links: /links                   || fa-solid fa-link
+  #photos: /photos              # || fa-solid fa-image
   # tools: /tools               # || fa-solid fa-tools
-  about: /about               # || fa-solid fa-user-graduate
+  about: /about                   || fa-solid fa-address-card
   # ......
 
 
@@ -50,7 +50,7 @@ menu:
 # Docs: https://keep-docs.xpoet.cn/basis/configuration-guide/first_screen.html
 # ---------------------------------------------------------------------------------------
 first_screen:
-  enable: true  # Option values: true | false
+  enable: false  # Option values: true | false
 
   # First screen background image in light mode, You can use local image path or image link
   background_img: /images/bg.svg
@@ -93,7 +93,7 @@ social_contact:
 # ---------------------------------------------------------------------------------------
 scroll:
   # Show progress bar in top when page scroll
-  progress_bar: false  # Option values: true | false
+  progress_bar: true  # Option values: true | false
 
   # Show percent when page scroll
   percent: false       # Option values: true | false
@@ -196,8 +196,8 @@ website_count:
   # See: http://ibruce.info/2015/04/04/busuanzi/
   busuanzi_count:
     enable: true     # Option values: true | false
-    site_uv: false    # Option values: true | false
-    site_pv: false    # Option values: true | false
+    site_uv: true    # Option values: true | false
+    site_pv: true    # Option values: true | false
     page_pv: true    # Option values: true | false
 
 
@@ -216,7 +216,7 @@ local_search:
 # ---------------------------------------------------------------------------------------
 comment:
   enable: true   # Option values: true | false
-  use: gitalk     # Option values: valine | gitalk | twikoo | waline | giscus | artalk | disqus
+  use: disqus     # Option values: valine | gitalk | twikoo | waline | giscus | artalk | disqus
 
   # Valine
   # See: https://github.com/xCss/Valine
@@ -274,7 +274,7 @@ comment:
   # Disqus
   # See: https://disqus.com/
   disqus:
-    shortname:                 # Disqus Shortname
+    shortname: yutailai                # Disqus Shortname
 
 
 # ---------------------------------------------------------------------------------------
@@ -334,9 +334,9 @@ footer:
 # Docs: https://keep-docs.xpoet.cn/basis/configuration-guide/inject.html
 # ---------------------------------------------------------------------------------------
 inject:
-  enable: false  # Option values: true | false
+  enable: true  # Option values: true | false
   css:
-    -
+    - /css/markdown.css
     # e.g.
     # - /css/custom-1.css
     # - /css/custom-2.css

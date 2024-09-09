@@ -5,8 +5,8 @@
 # Site
 title: 漫步在雲端
 subtitle: 'Strolling Through the Clouds'
-description: ''
-keywords:
+description: '分享 Azure 雲端技術應用與開發心得，也包含 Azure DevOps 實戰經驗與其他日常開發筆記。'
+keywords: Azure, DevOps, Azure DevOps, Scrum, Kanban, Azure APIM, 敏捷開發, 雲端技術, 開發心得, 開發筆記
 author: Tim Lai
 language: zh-TW
 timezone: 'Asia/Taipei'
@@ -16,8 +16,8 @@ timezone: 'Asia/Taipei'
 url: https://timlai.dev
 permalink: post/:year/:month/:title #:year/:month/:day/:title/
 # marked:
-#   prependRoot: true
-#   postAsset: true
+  # prependRoot: true
+  # postAsset: true
 permalink_defaults:
 pretty_urls:
   trailing_index: true # Set to false to remove trailing 'index.html' from permalinks
@@ -32,6 +32,8 @@ category_dir: categories
 code_dir: downloads/code
 i18n_dir: :lang
 skip_render:
+  - "_posts/hello-world.md"
+  - "_posts/test.md"
 
 # Writing
 new_post_name: :title.md # File name of new posts
@@ -95,7 +97,7 @@ pagination_dir: page
 # Include / Exclude file(s)
 ## include:/exclude: options only apply to the 'source/' folder
 include:
-exclude:
+exclude: 
 ignore:
 
 # Extensions
@@ -157,7 +159,8 @@ markdown:
   images:
     lazyload: true
     prepend_root: false
-    post_asset: true
+    post_asset: false
+    isSPA: true
   inline: false  # https://markdown-it.github.io/markdown-it/#MarkdownIt.renderInline
 
  
