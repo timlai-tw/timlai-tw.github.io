@@ -12,6 +12,7 @@
 <p>要使用 Azure DevOps 各項功能之前，首先得先建立一個專案，同時必須選擇專案的版本控制是 <strong>TFVC</strong> (Team Fundation Version Control) 還是 <strong>git</strong>，以及專案要使用的流程範本 (Process template)，預設有 <strong>Basic / Agile / Scrum / CMMI</strong> 四種，這次我們就不透過網頁介面建立專案，直接使用 API 小試身手 🎣 。</p>
 <br>
 <span id="more"></span>
+<br>
 <h2 id="前言">前言</h2>
 <p>當我們想要使用 <strong>Azure DevOps REST API</strong> 進行程式串接時，首先要確認使用情境是 <strong><code>雲端</code></strong> 還是 <strong><code>地端</code></strong>，因為兩者對於 API 的支援程度不完全相等，例如：<strong>Audit log</strong> 目前只有在雲端才能查詢、下載，地端還沒有支援，使用哪一版的 API 也要稍微留意(在<a href="/post/2024/09/azure-devops-rest-api">上一篇文章</a>有說明原因)，這些都可以在 API 說明頁面左上角透過下拉選單來快速切換檢視，以便我們確認 API 規格與差異。</p>
 <img  
