@@ -14,7 +14,7 @@
 <span id="more"></span>
 <br>
 <h2 id="前言">前言</h2>
-<p>當我們想要使用 <strong>Azure DevOps REST API</strong> 進行程式串接時，首先要確認使用情境是 <strong><code>雲端</code></strong> 還是 <strong><code>地端</code></strong>，因為兩者對於 API 的支援程度不完全相等，例如：<strong>Audit log</strong> 目前只有在雲端才能查詢、下載，地端還沒有支援，使用哪一版的 API 也要稍微留意(在<a href="/post/2024/09/azure-devops-rest-api">上一篇文章</a>有說明原因)，這些都可以在 API 說明頁面左上角透過下拉選單來快速切換檢視，以便我們確認 API 規格與差異。</p>
+<p>當我們想要使用 <strong>Azure DevOps REST API</strong> 進行程式串接時，首先要確認使用情境是 <strong><code>雲端</code></strong> 還是 <strong><code>地端</code></strong>，因為兩者對於 API 的支援程度不盡相同，例如：<strong>Audit log</strong> 目前只有在雲端才能查詢、下載，地端還沒有支援，使用哪一版的 API 也要稍微留意(在<a href="/post/2024/09/azure-devops-rest-api">上一篇文章</a>有說明原因)，這些都可以在 API 說明頁面左上角透過下拉選單來快速切換檢視，以便我們確認 API 規格與差異。</p>
 <img  
                        lazyload
                        alt="image"
@@ -39,7 +39,7 @@
                         class=""
                  >
 <br>
-<p>在頁面上對於 Request Body 的屬性和型別宣告都會逐一說明，但唯一美中不足的是我們看不出來哪些屬性是必要項目(Required)，比較簡便的方式是可以使用 Postman 直接填入 PAT 進行測試，通常在 Reponse 都會告訴我們缺少什麼必要欄位值，設定步驟如下：</p>
+<p>在頁面上對於 Request Body 的屬性和型別宣告都會逐一說明，但唯一美中不足的是我們看不出來哪些屬性是必要項目(Required)，比較簡便的方式是可以使用 Postman 填入 PAT 驗證後進行測試，通常在 Reponse 都會告訴我們缺少什麼必要欄位值，Postman 設定步驟如下：</p>
 <br>
 <ol>
 <li>Authorization 的 Auth Type 選擇 <strong><code>Basic Auth</code></strong>，並將 PAT 填入 Password 欄位，Username 空白即可。(如何建立 PAT 可以參考：<a href="/post/2024/09/azure-devops-rest-api">上一篇文章</a>)</li>
@@ -78,8 +78,24 @@
 <li><strong>visibility</strong> : 專案可層級 (Public或Private，預設是Private)</li>
 <li><strong>capabilities</strong> : 版控方式、流程範本是必要項目。</li>
 </ul>
-<p>完整的 Request 內容可以參考下列內容：</p>
+<p>完整的 Request Body 內容可以參考下列內容：</p>
 <figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;MyNewProject&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This is a new project created via API&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;capabilities&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;versioncontrol&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;sourceControlType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Git&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;processTemplate&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;templateTypeId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;6b724908-ef14-45cf-84f8-768b5384da45&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<br>
+<p>送出 Request 成功後，可以得到如下訊息：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2024/09/azure-devops-create-project/202_accepted.png"
+                        class=""
+                 >
+<br>
+<p>開啟 Azure DevOps 畫面確認新增的專案是否有正常出現。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2024/09/azure-devops-create-project/my_new_project.png"
+                        class=""
+                 >
 <h2 id="流程範本-Process-template">流程範本 (Process template)</h2>
 <p>在 Azure DevOps 預設有 <strong>Basic / Agile / Scrum / CMMI</strong> 四種流程範本，一般我本幾乎不會去關心它的 templateTypeId (GUID) 是什麼，這邊需要透過另一支查詢 Process template 列表的 API 來取得資訊：</p>
 <figure class="highlight http"><table><tr><td class="code"><pre><span class="line">雲端</span><br><span class="line">GET GET https://dev.azure.com/&#123;organization&#125;/_apis/process/processes?api-version=7.2-preview.1</span><br></pre></td></tr></table></figure>
@@ -94,7 +110,7 @@
                         class=""
                  >
 <br>
-<p>附帶一提，若是以 C# 實作，在 Header 傳遞 PAT 需要先以 BASE64 編碼才行，可以參考下列完整範例呼叫範例(第31行)：</p>
+<p>附帶一提，若是以 C# 實作，在 Header 傳遞 PAT 需要先以 Base64 編碼才行，可以參考下列完整範例呼叫範例(第31行)：</p>
 <figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> System.Net.Http;</span><br><span class="line"><span class="keyword">using</span> System.Net.Http.Headers;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Newtonsoft.Json;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ProcessTemplate</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">public</span> <span class="built_in">string</span> Id &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">		<span class="keyword">public</span> <span class="built_in">string</span> Name &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ProcessTemplatesResponse</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">public</span> List&lt;ProcessTemplate&gt; Value &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">static</span> <span class="keyword">async</span> Task <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">string</span> pat = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">		<span class="built_in">string</span> serverName = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">		<span class="built_in">string</span> collectionName = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">		<span class="built_in">string</span> url = <span class="string">$&quot;http://<span class="subst">&#123;serverName&#125;</span>/<span class="subst">&#123;collectionName&#125;</span>/_apis/process/processes?api-version=7.0&quot;</span>;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">using</span> (HttpClient client = <span class="keyword">new</span> HttpClient())</span><br><span class="line">		&#123;</span><br><span class="line">			client.DefaultRequestHeaders.Authorization = <span class="keyword">new</span> AuthenticationHeaderValue(<span class="string">&quot;Basic&quot;</span>, Convert.ToBase64String(Encoding.ASCII.GetBytes(<span class="string">$&quot;:<span class="subst">&#123;pat&#125;</span>&quot;</span>)));</span><br><span class="line">			HttpResponseMessage response = <span class="keyword">await</span> client.GetAsync(url);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (response.IsSuccessStatusCode)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="built_in">string</span> result = <span class="keyword">await</span> response.Content.ReadAsStringAsync();</span><br><span class="line">				<span class="keyword">var</span> processTemplates = JsonConvert.DeserializeObject&lt;ProcessTemplatesResponse&gt;(result);</span><br><span class="line"></span><br><span class="line">				<span class="keyword">foreach</span> (<span class="keyword">var</span> process <span class="keyword">in</span> processTemplates.Value)</span><br><span class="line">				&#123;</span><br><span class="line">					Console.WriteLine(<span class="string">$&quot;Name: <span class="subst">&#123;process.Name&#125;</span>, ID: <span class="subst">&#123;process.Id&#125;</span>&quot;</span>);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			&#123;</span><br><span class="line">				Console.WriteLine(<span class="string">$&quot;Failed to get process templates: <span class="subst">&#123;response.StatusCode&#125;</span>&quot;</span>);</span><br><span class="line">				<span class="built_in">string</span> error = <span class="keyword">await</span> response.Content.ReadAsStringAsync();</span><br><span class="line">				Console.WriteLine(error);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <br>
 <div class="tips">
