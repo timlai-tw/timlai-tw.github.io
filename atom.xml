@@ -6,7 +6,7 @@
   <link href="https://timlai.dev/atom.xml" rel="self"/>
   
   <link href="https://timlai.dev/"/>
-  <updated>2024-10-02T06:32:30.897Z</updated>
+  <updated>2024-10-25T07:03:18.589Z</updated>
   <id>https://timlai.dev/</id>
   
   <author>
@@ -15,6 +15,40 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>使用 VB5/VB6 連線至 Azure DevOps Server 2022 (TFVC)</title>
+    <link href="https://timlai.dev/post/2024/10/vb-connect-to-azure-devops/"/>
+    <id>https://timlai.dev/post/2024/10/vb-connect-to-azure-devops/</id>
+    <published>2024-10-17T02:45:13.000Z</published>
+    <updated>2024-10-25T07:03:18.589Z</updated>
+    
+    <content type="html"><![CDATA[<img                           lazyload                       alt="image"                       data-src="/post/2024/10/vb-connect-to-azure-devops/VS_TFS.png"                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"                 > <p>Visual Studio 從 97 發展到現在的 2022 號稱地表最強開發工具，能夠與 TFS 或 Git 版控連線自然不是問題，最近剛好遇到客戶還有許多 VB5/VB6 開發的 Winform 程式需要維護，而且版控伺服器也從 TFS 2013 升級至 Azure DevOps Server 2022，藉此機會向大家整理說明 Visual Studio 各版本與 TFS / Azure DevOps 連線的需求與設定。<br><br></p><span id="more"></span><br><h2 id="前言">前言</h2><p>我們使用 Visual Studio 開發工具能夠與 TFS 連線是因為它的功能包含了 <strong><code>Team Explorer</code></strong>，明確來說是從 Visual Studio 2005 首次引入 TFS (Team Foundation Server) 起才開始包含此功能，在這個版本之前則需要額外安裝 <strong>Team Explorer</strong> 和 <strong>MSSCCI Provider</strong> (Microsoft Source Code Control Integration) 才能夠在開發工具中與 TFS 進行整合。</p><h2 id="版本相依性">版本相依性</h2><p>作業系統、開發工具與版控伺服器彼此間有一定的版本相依性，Windows XP 無法安裝 Team Explorer 2013，只能安裝 Team Explorer 2010，搭配 MSSCCI Provider 2010 可以連線的版本有：TFS 2005 ~ 2018 和 Azure DevOps Server 2019/2020 <mark>(不包含2022)</mark>，若舊開發環境 (Visual Studio 2013 以前) 想要與 Azure DevOps Server 2022 連線，必要最低門檻可以參考下列配置：</p><ul><li><strong>Windows 7 以上</strong></li><li><strong>Team Explorer 2013</strong></li><li><strong>MSSCCI Provider 2013</strong></li></ul><p>Visual Studio 97/6/2003~2008 搭配 Team Explorer 2010 + MSSCCI Provider 2010 可以從開發工具連線至 TFS 2010~2017 和 Azure DevOps Server 2019/2020，若要連線至 Azure DevOps Server 2022 則需要搭配 Team Explorer 2013 + MSSCCI Provider 2013 才行，各版本 MSSCCI Provider 可以自 Visual Studio | Marketplace 取得：</p><div class="tips"><font color="black"><a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2010MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2010 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br><a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br><a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br><a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.TeamFoundationServerMSSCCIProvider201064-bit"  target="_blank">⁍ Team Foundation Server MSSCCI Provider 2010 64-bit<i class="fas fa-external-link-alt"></i></a><br><a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC-9956"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br><a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M-11387"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br></font></div><h2 id="VB5-VB6">VB5/VB6</h2><p>在 VB5/VB6 的工具列需要額外安裝上述提到的 MSSCCI Provider 2010/2013 才會出現 <strong>Team Foundation</strong> 選項，讓我們在開發工具中將程式碼與版控伺服器整合。</p><img                         lazyload                       alt="image"                       data-src="/post/2024/10/vb-connect-to-azure-devops/create-project-from-tfs.png"                        class=""                 ><p>若出現下列錯誤訊息，就是 MSSCCI Provider 版本太舊了，無法連線到新的版控伺服器，例如：安裝 MSSCCI Provider 2010 但想要與 Azure DevOps Server 2022 連線，唯一解法就是安裝 Team Explorer 2013 + MSSCCI Provider 2013。</p><blockquote><p>TF14045: The identity 主機名稱\2ffd15ae-91e4-4df8-a346-e5be57e1340e is not a recognized identity.</p></blockquote><img                         lazyload                       alt="image"                       data-src="/post/2024/10/vb-connect-to-azure-devops/not-a-recognized-identity.png"                        class=""                 ><p>在實務情境可能還會遇到其他各種版本組合，經此次嘗試後，確認 VB5/VB6 都還可以與 Azure DevOps Server 2022 的 TFVC 版控進行整合，這邊有篇文章將各種組合條列得很詳盡，也提供大家參考。</p><div class="tips"><font color="black"><a class="link"   href="https://jessehouwing.net/azure-devops-connect-any-visual-studio-version/"  target="_blank">⁍ Connect any version of Visual Studio to Azure DevOps or Azure DevOps Server<i class="fas fa-external-link-alt"></i></a><br></font></div>]]></content>
+    
+    
+    <summary type="html">&lt;img    
+                       lazyload
+                       alt=&quot;image&quot;
+                       data-src=&quot;/post/2024/10/vb-connect-to-azure-devops/VS_TFS.png&quot;
+                         align=&quot;left&quot; style=&quot;margin-right: 10px; width: 125px; border: 1px solid gray;&quot;
+                 &gt; 
+&lt;p&gt;Visual Studio 從 97 發展到現在的 2022 號稱地表最強開發工具，能夠與 TFS 或 Git 版控連線自然不是問題，最近剛好遇到客戶還有許多 VB5/VB6 開發的 Winform 程式需要維護，而且版控伺服器也從 TFS 2013 升級至 Azure DevOps Server 2022，藉此機會向大家整理說明 Visual Studio 各版本與 TFS / Azure DevOps 連線的需求與設定。&lt;br&gt;
+&lt;br&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="VB5" scheme="https://timlai.dev/tags/VB5/"/>
+    
+    <category term="VB6" scheme="https://timlai.dev/tags/VB6/"/>
+    
+    <category term="TFS" scheme="https://timlai.dev/tags/TFS/"/>
+    
+    <category term="Team Explorer" scheme="https://timlai.dev/tags/Team-Explorer/"/>
+    
+    <category term="MSSCCI Provider" scheme="https://timlai.dev/tags/MSSCCI-Provider/"/>
+    
+  </entry>
   
   <entry>
     <title>MSTest 生命週期與常用屬性</title>
