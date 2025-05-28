@@ -325,7 +325,7 @@
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Wed May 28 2025 10:32:56 GMT+0800">2025-05-28 10:32:56</span>
+                <span class="datetime" data-updated="Wed May 28 2025 14:09:20 GMT+0800">2025-05-28 14:09:20</span>
             </span>
         
 
@@ -367,7 +367,7 @@
                          <img    
                        lazyload
                        alt="image"
-                       data-src="/post/2024/11/how-to-use-playwright-1/playwright.png"
+                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
                          align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
                  > 
 <p><a href="/post/2024/11/how-to-use-playwright-1">上一篇文章</a>提到了如何使用 Playwright 的測試產生器(codegen) 錄製腳本，除了可以運用在自動化測試之外，舉凡想要透過程式來自動執行的一連串行為，都可以透過 Playwright 來完成，本篇文章使用 Windows Sandbox 全新環境來執行由 .NET 8 撰寫的 Console 程式，讓大家知道建置產生執行檔後，還需要哪些必要的環境設定才可以正常讓程式運作。<br>
@@ -392,7 +392,7 @@
 <p>如果是全新的環境，安裝完 .NET Runtime 後應該還會出現如下圖的錯誤，主要原因是：</p>
 <ul>
 <li>pwsh 找不到路徑 (或是沒有安裝 PowerShell)</li>
-<li>缺少 Web Driver (Edge/Chrome/Firefox)</li>
+<li>缺少 WebDriver (Edge/Chrome/Firefox)</li>
 </ul>
 <img  
                        lazyload
@@ -410,7 +410,7 @@
 </font>
 </div>
 <h2 id="安裝-WebDriver">安裝 WebDriver</h2>
-<p>在上圖的錯誤訊息中有提到如下指令，路徑中的 netX 要替換為自己使用的版本路徑，而其中的 playwright.ps1 會存在於 .NET 程式建置後的 bin 目錄中，這個 .ps1 的主要用途是在 Windows 環境下執行 Playwright 測試，讓它可以正確找到 Playwright 主程式和相關驅動程式，確認 pwsh 指令可以運作後，就可以接著安裝 WebDriver 了。</p>
+<p>在上圖的錯誤訊息中有提到如下指令，路徑中的 <strong><mark>netX</mark></strong> 要替換為自己使用的版本路徑，而其中的 playwright.ps1 會存在於 .NET 程式建置後的 bin 目錄中，這個 .ps1 的主要用途是在 Windows 環境下執行 Playwright 測試，讓它可以正確找到 Playwright 主程式和相關驅動程式，確認 pwsh 指令可以運作後，就可以接著安裝 WebDriver 了。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pwsh bin/Debug/netX/playwright.ps1 install</span><br></pre></td></tr></table></figure>
 <img  
                        lazyload
