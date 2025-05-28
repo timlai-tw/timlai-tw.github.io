@@ -9,7 +9,7 @@
     
     <title>
         
-            使用 VB5/VB6 連線至 Azure DevOps Server 2022 (TFVC) |
+            使用 Playwright 測試框架 - 執行階段 (.NET) |
         
         漫步在雲端
     </title>
@@ -289,7 +289,7 @@
             <div class="post-content-bottom border-box">
                 
                     <div class="post-title">
-                        使用 VB5/VB6 連線至 Azure DevOps Server 2022 (TFVC)
+                        使用 Playwright 測試框架 - 執行階段 (.NET)
                     </div>
                 
 
@@ -320,12 +320,12 @@
         
             <span class="meta-info-item post-create-date">
                 <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
-                <span class="datetime">2024-10-17 10:45:13</span>
+                <span class="datetime">2025-05-27 19:20:14</span>
             </span>
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Fri Oct 25 2024 15:03:18 GMT+0800">2024-10-25 15:03:18</span>
+                <span class="datetime" data-updated="Wed May 28 2025 10:32:56 GMT+0800">2025-05-28 10:32:56</span>
             </span>
         
 
@@ -335,19 +335,7 @@
             <span class="post-tag meta-info-item border-box">
                 <ul class="post-tag-ul">
                     
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/VB5/">VB5</a></li>
-                        
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/VB6/">VB6</a></li>
-                        
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/TFS/">TFS</a></li>
-                        
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/Team-Explorer/">Team Explorer</a></li>
-                        
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/MSSCCI-Provider/">MSSCCI Provider</a></li>
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/Playwright/">Playwright</a></li>
                         
                     
                 </ul>
@@ -379,57 +367,82 @@
                          <img    
                        lazyload
                        alt="image"
-                       data-src="/post/2024/10/vb-connect-to-azure-devops/VS_TFS.png"
+                       data-src="/post/2024/11/how-to-use-playwright-1/playwright.png"
                          align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
                  > 
-<p>Visual Studio 從 97 發展到現在的 2022 號稱地表最強開發工具，能夠與 TFS 或 Git 版控連線自然不是問題，最近剛好遇到客戶還有許多 VB5/VB6 開發的 Winform 程式需要維護，而且版控伺服器也從 TFS 2013 升級至 Azure DevOps Server 2022，藉此機會向大家整理說明 Visual Studio 各版本與 TFS / Azure DevOps 連線的需求與設定。<br>
+<p><a href="/post/2024/11/how-to-use-playwright-1">上一篇文章</a>提到了如何使用 Playwright 的測試產生器(codegen) 錄製腳本，除了可以運用在自動化測試之外，舉凡想要透過程式來自動執行的一連串行為，都可以透過 Playwright 來完成，本篇文章使用 Windows Sandbox 全新環境來執行由 .NET 8 撰寫的 Console 程式，讓大家知道建置產生執行檔後，還需要哪些必要的環境設定才可以正常讓程式運作。<br>
 <br></p>
 <span id="more"></span>
 <br>
-<h2 id="前言">前言</h2>
-<p>我們使用 Visual Studio 開發工具能夠與 TFS 連線是因為它的功能包含了 <strong><code>Team Explorer</code></strong>，明確來說是從 Visual Studio 2005 首次引入 TFS (Team Foundation Server) 起才開始包含此功能，在這個版本之前則需要額外安裝 <strong>Team Explorer</strong> 和 <strong>MSSCCI Provider</strong> (Microsoft Source Code Control Integration) 才能夠在開發工具中與 TFS 進行整合。</p>
-<h2 id="版本相依性">版本相依性</h2>
-<p>作業系統、開發工具與版控伺服器彼此間有一定的版本相依性，Windows XP 無法安裝 Team Explorer 2013，只能安裝 Team Explorer 2010，搭配 MSSCCI Provider 2010 可以連線的版本有：TFS 2005 ~ 2018 和 Azure DevOps Server 2019/2020 <mark>(不包含2022)</mark>，若舊開發環境 (Visual Studio 2013 以前) 想要與 Azure DevOps Server 2022 連線，必要最低門檻可以參考下列配置：</p>
+<h2 id="安裝-NET-Runtime">安裝 .NET Runtime</h2>
+<p>不論是以前的 .NET Framework 或是現在的 .NET Core，在執行時都需要安裝 .NET Runtime 才能順利運行開發好的程式，以下圖 Console 專案建置後的執行檔為例，畫面還會很貼心的指引我們目前的需求版本和下載路徑，完成安裝後便可順利執行 Console 程式。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/dotnet8.png"
+                        class=""
+                 >
+<br>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://dotnet.microsoft.com/download"  target="_blank">⁍ 下載 .NET<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h2 id="安裝-PowerShell">安裝 PowerShell</h2>
+<p>如果是全新的環境，安裝完 .NET Runtime 後應該還會出現如下圖的錯誤，主要原因是：</p>
 <ul>
-<li><strong>Windows 7 以上</strong></li>
-<li><strong>Team Explorer 2013</strong></li>
-<li><strong>MSSCCI Provider 2013</strong></li>
+<li>pwsh 找不到路徑 (或是沒有安裝 PowerShell)</li>
+<li>缺少 Web Driver (Edge/Chrome/Firefox)</li>
 </ul>
-<p>Visual Studio 97/6/2003~2008 搭配 Team Explorer 2010 + MSSCCI Provider 2010 可以從開發工具連線至 TFS 2010~2017 和 Azure DevOps Server 2019/2020，若要連線至 Azure DevOps Server 2022 則需要搭配 Team Explorer 2013 + MSSCCI Provider 2013 才行，各版本 MSSCCI Provider 可以自 Visual Studio | Marketplace 取得：</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2010MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2010 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.TeamFoundationServerMSSCCIProvider201064-bit"  target="_blank">⁍ Team Foundation Server MSSCCI Provider 2010 64-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC-9956"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M-11387"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
-<h2 id="VB5-VB6">VB5/VB6</h2>
-<p>在 VB5/VB6 的工具列需要額外安裝上述提到的 MSSCCI Provider 2010/2013 才會出現 <strong>Team Foundation</strong> 選項，讓我們在開發工具中將程式碼與版控伺服器整合。</p>
 <img  
                        lazyload
                        alt="image"
-                       data-src="/post/2024/10/vb-connect-to-azure-devops/create-project-from-tfs.png"
+                       data-src="/post/2025/05/how-to-use-playwright-2/pwsh.png"
                         class=""
                  >
-<p>若出現下列錯誤訊息，就是 MSSCCI Provider 版本太舊了，無法連線到新的版控伺服器，例如：安裝 MSSCCI Provider 2010 但想要與 Azure DevOps Server 2022 連線，唯一解法就是安裝 Team Explorer 2013 + MSSCCI Provider 2013。</p>
-<blockquote>
-<p>TF14045: The identity 主機名稱\2ffd15ae-91e4-4df8-a346-e5be57e1340e is not a recognized identity.</p>
-</blockquote>
+<br>
+若要安裝 PowerShell 可以依據自己的作業系統參考下列連結：
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5"  target="_blank">⁍ 在 Windows 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-linux?view=powershell-7.5"  target="_blank">⁍ 在 Linux 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-macos?view=powershell-7.5"  target="_blank">⁍ 在 macOS 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h2 id="安裝-WebDriver">安裝 WebDriver</h2>
+<p>在上圖的錯誤訊息中有提到如下指令，路徑中的 netX 要替換為自己使用的版本路徑，而其中的 playwright.ps1 會存在於 .NET 程式建置後的 bin 目錄中，這個 .ps1 的主要用途是在 Windows 環境下執行 Playwright 測試，讓它可以正確找到 Playwright 主程式和相關驅動程式，確認 pwsh 指令可以運作後，就可以接著安裝 WebDriver 了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pwsh bin/Debug/netX/playwright.ps1 install</span><br></pre></td></tr></table></figure>
 <img  
                        lazyload
                        alt="image"
-                       data-src="/post/2024/10/vb-connect-to-azure-devops/not-a-recognized-identity.png"
+                       data-src="/post/2025/05/how-to-use-playwright-2/playwright.png"
                         class=""
                  >
-<p>在實務情境可能還會遇到其他各種版本組合，經此次嘗試後，確認 VB5/VB6 都還可以與 Azure DevOps Server 2022 的 TFVC 版控進行整合，這邊有篇文章將各種組合條列得很詳盡，也提供大家參考。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://jessehouwing.net/azure-devops-connect-any-visual-studio-version/"  target="_blank">⁍ Connect any version of Visual Studio to Azure DevOps or Azure DevOps Server<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
+<br>
+若在 install 之後沒有加上任何參數，則會安裝下列預設項目：
+<ul>
+<li>Chromium</li>
+<li>Chromium Headless Shell</li>
+<li>Firefox</li>
+<li>Webkit</li>
+<li>FFMPEG</li>
+</ul>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/install.png"
+                        class=""
+                 >
+<br>
+也可以依自己的需求安裝指定項目，可使用 install -h 查看相關資訊：
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/custom.png"
+                        class=""
+                 >
+<h2 id="總結">總結</h2>
+<p>本文介紹了在全新環境下，如何讓 .NET 8 撰寫的 Playwright 測試程式順利執行，包含安裝 .NET Runtime、PowerShell 及 WebDriver 等必要步驟。只要依照上述流程完成環境設定，就能避免常見的錯誤訊息，順利執行自動化測試。希望這些說明能幫助你在不同平台上快速部署與運行 Playwright 測試專案。</p>
 
                     
                 </div>
@@ -440,11 +453,11 @@
     <div class="copyright-info-content border-box">
         <div class="copyright-info-top border-box">
             <div class="copyright-post-title border-box text-ellipsis">
-                使用 VB5/VB6 連線至 Azure DevOps Server 2022 (TFVC)
+                使用 Playwright 測試框架 - 執行階段 (.NET)
             </div>
 
             <div class="copyright-post-link border-box text-ellipsis">
-                post/2024/10/vb-connect-to-azure-devops/
+                post/2025/05/how-to-use-playwright-2/
             </div>
         </div>
 
@@ -460,7 +473,7 @@
                 <div class="type">
                     發布於
                 </div>
-                <div class="content">2024-10-17 10:45</div>
+                <div class="content">2025-05-27 19:20</div>
             </div>
 
 
@@ -496,23 +509,7 @@
                             <ul class="post-tags-box border-box">
                                 
                                     <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/VB5/">VB5</a>
-                                    </li>
-                                
-                                    <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/VB6/">VB6</a>
-                                    </li>
-                                
-                                    <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/TFS/">TFS</a>
-                                    </li>
-                                
-                                    <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/Team-Explorer/">Team Explorer</a>
-                                    </li>
-                                
-                                    <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/MSSCCI-Provider/">MSSCCI Provider</a>
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/Playwright/">Playwright</a>
                                     </li>
                                 
                             </ul>
@@ -528,31 +525,15 @@
                 
                     <div class="post-nav border-box">
                         
-                            <div class="prev-post">
-                                <a class="prev"
-                                   rel="prev"
-                                   href="/post/2024/11/how-to-use-playwright-1/"
-                                   title="使用 Playwright 測試框架 - 環境準備 (.NET)"
-                                >
-                                    <span class="left arrow-icon flex-center">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </span>
-                                    <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">使用 Playwright 測試框架 - 環境準備 (.NET)</span>
-                                        <span class="post-nav-item">上一篇</span>
-                                    </span>
-                                </a>
-                            </div>
-                        
                         
                             <div class="next-post">
                                 <a class="next"
                                    rel="next"
-                                   href="/post/2024/09/mstest-attribute-lifecycle/"
-                                   title="MSTest 生命週期與常用屬性"
+                                   href="/post/2025/05/how-to-use-playwright-1/"
+                                   title="使用 Playwright 測試框架 - 環境準備 (.NET)"
                                 >
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">MSTest 生命週期與常用屬性</span>
+                                        <span class="post-nav-title-item text-ellipsis">使用 Playwright 測試框架 - 環境準備 (.NET)</span>
                                         <span class="post-nav-item">下一篇</span>
                                     </span>
                                     <span class="right arrow-icon flex-center">
@@ -647,7 +628,7 @@
             <div class="pc-post-toc left-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%88%E6%9C%AC%E7%9B%B8%E4%BE%9D%E6%80%A7"><span class="nav-text">版本相依性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VB5-VB6"><span class="nav-text">VB5&#x2F;VB6</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%9D-NET-Runtime"><span class="nav-text">安裝 .NET Runtime</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%9D-PowerShell"><span class="nav-text">安裝 PowerShell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%9D-WebDriver"><span class="nav-text">安裝 WebDriver</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B8%BD%E7%B5%90"><span class="nav-text">總結</span></a></li></ol>
     </div>
 </div>
 
@@ -666,7 +647,7 @@
 
 <footer class="footer border-box">
     <div class="copyright-info info-item">
-        &copy;&nbsp;<span>2023</span>&nbsp;-&nbsp;2024
+        &copy;&nbsp;<span>2023</span>&nbsp;-&nbsp;2025
         
             &nbsp;<i class="fas fa-heart icon-animate" style="color:red"></i>&nbsp;&nbsp;<a href="/">Tim Lai</a>
         
@@ -851,7 +832,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%88%E6%9C%AC%E7%9B%B8%E4%BE%9D%E6%80%A7"><span class="nav-text">版本相依性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VB5-VB6"><span class="nav-text">VB5&#x2F;VB6</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%9D-NET-Runtime"><span class="nav-text">安裝 .NET Runtime</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%9D-PowerShell"><span class="nav-text">安裝 PowerShell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%9D-WebDriver"><span class="nav-text">安裝 WebDriver</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B8%BD%E7%B5%90"><span class="nav-text">總結</span></a></li></ol>
     </div>
 </div>
 

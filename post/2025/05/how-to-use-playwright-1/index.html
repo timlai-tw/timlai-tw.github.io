@@ -9,7 +9,7 @@
     
     <title>
         
-            Azure DevOps REST API 說明 |
+            使用 Playwright 測試框架 - 環境準備 (.NET) |
         
         漫步在雲端
     </title>
@@ -289,7 +289,7 @@
             <div class="post-content-bottom border-box">
                 
                     <div class="post-title">
-                        Azure DevOps REST API 說明
+                        使用 Playwright 測試框架 - 環境準備 (.NET)
                     </div>
                 
 
@@ -320,12 +320,12 @@
         
             <span class="meta-info-item post-create-date">
                 <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
-                <span class="datetime">2024-09-10 10:38:44</span>
+                <span class="datetime">2025-05-19 17:40:54</span>
             </span>
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Thu Sep 19 2024 09:51:21 GMT+0800">2024-09-19 09:51:21</span>
+                <span class="datetime" data-updated="Wed May 28 2025 10:32:56 GMT+0800">2025-05-28 10:32:56</span>
             </span>
         
 
@@ -335,16 +335,10 @@
             <span class="post-tag meta-info-item border-box">
                 <ul class="post-tag-ul">
                     
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/Azure-DevOps/">Azure DevOps</a></li>
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/Unit-Test/">Unit Test</a></li>
                         
                     
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/Azure-DevOps-REST-API/">Azure DevOps REST API</a></li>
-                        
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/PAT/">PAT</a></li>
-                        
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/NET-Client-Library/">.NET Client Library</a></li>
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/Playwright/">Playwright</a></li>
                         
                     
                 </ul>
@@ -376,230 +370,99 @@
                          <img    
                        lazyload
                        alt="image"
-                       data-src="/post/2024/09/azure-devops-rest-api/rest_api.jpg"
+                       data-src="/post/2024/11/how-to-use-playwright-1/playwright.png"
                          align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
                  > 
-<p>當我們要自行擴充或串接 Azure DevOps Services / Server 功能時，可以透過 Azure DevOps REST API 來進行客制開發，例如：想要寫一支程式每天發送各專案在版控儲存庫的差異紀錄，或是想要在公司內部表單系統審核後，觸發執行指定的 pipeline … 族繁不及備載，使用 REST API 透過 HTTP 呼叫的好處是可以不用侷限於特定的程式語言，也方便用 Postman 之類的工具測試，這篇整理了呼叫 Azure DevOps REST API 的前置作業與相關說明，方便大家上手😁。</p>
+<p>在現代軟體開發中，自動化測試已成為確保程式碼品質的重要一環，Playwright 是一個強大的自動化測試框架，支援 Chromium / Firefox / WebKit 瀏覽器，搭配測試產生器(codegen)讓開發者能夠輕鬆撰寫可靠且高效的測試腳本。本篇文章將介紹如何在 .NET 開發環境中設置和使用 Playwright，從安裝必要的套件到撰寫基本的測試案例，幫助大家快速上手這個工具。<br>
+<br></p>
 <span id="more"></span>
 <br>
-<h2 id="REST-API">REST API</h2>
-<p>使用 Azure DevOps REST API 時，其 URI 規格如下：</p>
-<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VERB https://&#123;instance&#125;/&#123;organization&#125;/&#123;project&#125;/_apis/&#123;area&#125;/&#123;resource&#125;?api-version=&#123;version&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="使用-Visual-Studio">使用 Visual Studio</h2>
+<p>如果是慣用地表最強開發工具，打開 Visual Studio 建立一個新的 <strong><code>MSTest 測試專案</code></strong>，讓我們有一個基本測試環境可以開始撰寫 Playwright 測試。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/vs-01.png"
+                        class=""
+                 >
+<br>
+<p>要在 MSTest 使用 Playwright 必需要安裝 <strong><code>Microsoft.Playwright.MSTest</code></strong> 套件，這個套件會將 Playwright 與 MSTest 整合，使我們能夠在 MSTest 測試過程中使用 Playwright 功能。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/vs-02.png"
+                        class=""
+                 >
+<h2 id="使用-NET-CLI">使用 .NET CLI</h2>
+<p>若是使用 VSCode 開發工具，我們可以用 <strong>dotnet new</strong> 指令新增一個 PlaywrightTests 專案，預設內容會包含一個 UnitTest1.cs 檔案。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dotnet new mstest -n PlaywrightTests</span><br><span class="line">cd PlaywrightTests</span><br></pre></td></tr></table></figure>
+<p>安裝必要的 Playwright 相依套件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet add package Microsoft.Playwright.MSTest</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-01.png"
+                        class=""
+                 >
+<br>
+<p>建置程式碼，確認環境準備是否有異常。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet build</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-02.png"
+                        class=""
+                 >
+<br>
+<h2 id="安裝-Playwright-CLI">安裝 Playwright CLI</h2>
+<p>在 .NET 開發環境中，雖然 <strong>playwright.exe</strong> 指令沒有像 <strong>npx playwright</strong> 那麼多參數與功能，但我們在錄製網頁操作過程來產生測試程式碼 (codegen)，或是開啟追蹤檔 (show-trace) 時仍會使用到，可以透過下列指令來安裝 <strong><code>Microsoft.Playwright.CLI</code></strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet tool install --global Microsoft.Playwright.CLI</span><br></pre></td></tr></table></figure>
+<p>上述套件預設會被安裝到目前的使用者範圍內的 .NET 全局工具路徑中，具體安裝位置會因作業系統而異：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Windows</span><br><span class="line">C:\Users\&lt;你的用戶名&gt;\.dotnet\tools\</span><br><span class="line"></span><br><span class="line">Linux / macOS</span><br><span class="line">/home/&lt;你的用戶名&gt;/.dotnet/tools/</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-03.png"
+                        class=""
+                 >
+<p>我們可以直接開啟目錄確認工具是否安裝成功，或是使用以下指令來列出所有安裝的 .NET 工具：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet tool list --global</span><br></pre></td></tr></table></figure>
+<p>例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Package Id                    Version      Commands</span><br><span class="line">-----------------------------------------------------</span><br><span class="line">dotnet-ef                     8.0.8        dotnet-ef</span><br><span class="line">microsoft.playwright.cli      1.2.3        playwright</span><br></pre></td></tr></table></figure>
+<h2 id="移除-Playwright-CLI">移除 Playwright CLI</h2>
+<p>若需要移除已安裝的套件，可以使用下列指令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet tool uninstall microsoft.playwright.cli</span><br></pre></td></tr></table></figure>
+<h2 id="安裝-Playwright-支援的瀏覽器">安裝 Playwright 支援的瀏覽器</h2>
+<p>Playwright 支援 Chromium、WebKit 和 Firefox 瀏覽器，我們可以使用 <strong>playwright install</strong> 指令來安裝預設瀏覽器，這個動作會將瀏覽器安裝到 <strong><mark>%LOCALAPPDATA%\ms-playwright</mark></strong> 目錄下，若想要自訂安裝的項目，可以透過 <strong>playwright help install</strong> 來瞭解所有的選項。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">playwright install</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-04.png"
+                        class=""
+                 >
+<br>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">playwright help install</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-05.png"
+                        class=""
+                 >
+<h2 id="小試身手">小試身手</h2>
+<p>以上 Playwright 環境設定都完成後，我們就可以直接用官網的第一個範例來小試身手：</p>
 <ul>
-<li><strong>VERB</strong><br>
-與一般 RESTful API 相同，在串接 Azure DevOps 各種情境時， <strong><font color='green'>GET</font></strong> / <strong><font color='brown'>POST</font></strong> / <strong><font color='red'>DELETE</font></strong> / <strong><font color='purple'>PATCH</font></strong> 都有機會用到。</li>
-<li><strong>instance</strong><br>
-如果是使用雲端的 Azure DevOps Services 指的就是 <span>dev.azure.com</span>，地端則是 Azure DevOps Server 所在的位址。</li>
-<li><strong>organization/project</strong><br>
-取決於 API 作用的範圍，在 URI 裡會有 organization 或 organization/project，例如：使用 API 建立個人權杖 (PAT)，則會是：<br>
-<strong><font color='brown'>POST</font></strong> https://vssps.dev.azure.com/<mark>{organization}</mark>/_apis/tokens/pats?api-version=7.2<br>
-或者像是用 API 建立一個工作項目，則是：<br>
-<strong><font color='brown'>POST</font></strong> https://dev.azure.com/<mark>{organization}/{project}</mark>/_apis/wit/workitems/${type}?api-version=7.2</li>
-<li><strong>{area}/{resource}</strong><br>
-從這邊大概可以看出呼叫的 API 是做哪方面的操作，以上面兩個例子 (建立 PAT、建立 Work item) 來說：<br>
-<strong><font color='brown'>POST</font></strong> https://vssps.dev.azure.com/{organization}/_apis/<mark>tokens/pats</mark>?api-version=7.2<br>
-<strong><font color='brown'>POST</font></strong> https://dev.azure.com/{organization}/{project}/_apis/<mark>wit/workitems/${type}</mark>?api-version=7.2</li>
-<li><strong>version</strong><br>
-通常我們在串接 API 時會明確指定 version，因為每個 TFS / Azure DevOps 版本對於 API 支援的 api-version 也有所不同 (如下表)，如果不指定 api-version 則會自動選用目前產品最新的穩定版本，例如：在 Azure DevOps Server 2019 它會自動取用 5.0 來執行，在不加 api-version 的情況下，若日後升級到 Azure DevOps Server 2022，則會自動取用 7.0 來執行，為維持串接程式正常運作，不會因為 API 版本差異而造成異常，一般我們都會加上指定的 api-version 版號。</li>
+<li>
+<p><code>HasTitle()</code><br>
+打開 Playwright 官方網站，檢查網站的標題是否包含特定的字串，確認網頁標題中是否包含 “Playwright” 這個字。</p>
+</li>
+<li>
+<p><code>GetStartedLink()</code><br>
+一樣是打開 Playwright 官方網站，點擊一個名為 “Get started” 的連結，然後檢查點擊後的頁面是否有一個名為 “Installation” 的標題，以確保連結正確導向到預期的頁面。</p>
+</li>
 </ul>
-<blockquote>
-<p>提醒大家：<br>
-如果是使用 preview 版本 (例如：<strong><code>7.2-preview.3</code></strong>)，該 preview 版本會在 <strong>12 週</strong> 後停用，被穩定的正式版本取代。</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>Products</th>
-<th style="text-align:center">1.0</th>
-<th style="text-align:center">2.0</th>
-<th style="text-align:center">3.0</th>
-<th style="text-align:center">4.0</th>
-<th style="text-align:center">5.0</th>
-<th style="text-align:center">6.0</th>
-<th style="text-align:center">7.0</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Azure DevOps Services</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-</tr>
-<tr>
-<td>Azure DevOps Server 2022</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-</tr>
-<tr>
-<td>Azure DevOps Server 2020</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Azure DevOps Server 2019</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Team Foundation Server 2018</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Team Foundation Server 2017</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Team Foundation Server 2015</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-</tr>
-</tbody>
-</table>
-<h2 id="PAT-Personal-Access-Token">PAT (Personal Access Token)</h2>
-<p>要使用 Azure DevOps REST API 存取資源前都必需先經過驗證成功才行，建立 <strong><code>個人存取權杖 (PAT)</code></strong> 可以算是安全又簡便的方式，若想要實作 OAuth 2.0 或其他頁面驗證方式，可以參考下列連結：</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/get-started/authentication/authentication-guidance?toc=%2Fazure%2Fdevops%2Fmarketplace-extensibility%2Ftoc.json&view=azure-devops"  target="_blank">⁍ 選擇正確的驗證機制<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<p>要建立一個 PAT 可以從 Azure DevOps 畫面右上角 <strong><code>User settings</code></strong> → <strong><code>Personal access tokens</code></strong> 進入。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/09/azure-devops-rest-api/pat.png"
-                        class=""
-                 >
-<br>
-<p>點選 <strong><code>+ New Token</code></strong> 按鈕。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/09/azure-devops-rest-api/pat_1.png"
-                        class=""
-                 >
-<br>
-<p>接著就是 PAT 存取期限、授權範圍等相關設定：</p>
-<ul>
-<li><strong>Organization</strong><br>
-選擇 <strong>特定的 Organization</strong> 或 <strong>All accessible organizations</strong> (允許存取全部組織)。</li>
-<li><strong>Expiration (UTC)</strong><br>
-有效期限可以選擇 <strong>30 / 60 / 90 天</strong>，或是 <strong>Custom defined</strong> (<mark>最長只能一年</mark>)</li>
-<li><strong>Scopes</strong><br>
-可以選擇 <strong>Full access</strong> (允許存取全部範圍) 或 <strong>Custom defined</strong> 針對各個功能進一步設定，基於最低權限原則，建議大家可以有意義的命名 token 名稱，並且只勾選必要的 <strong>Scopes</strong> 授權範圍。</li>
-</ul>
-<p>建立 PAT 後，僅能 <strong><code>Revoke</code></strong> (撤銷) 或是 <strong><code>Regenerate</code></strong> (重新產生)，沒有辦法再用任何方式檢視原本產生的 token 內容，大家記得要妥善保存。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/09/azure-devops-rest-api/pat_2.png"
-                        class=""
-                 >
-<h2 id="NET-Client-Library">.NET Client Library</h2>
-<p>如果是使用 .NET 進行程式開發，還有一個選擇是從 NuGet.org 下載 Client library 使用，套件相依關係如下圖。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/09/azure-devops-rest-api/dotnet-client-libraries-dependancy-diagram.jpg"
-                        class=""
-                 >
-<br>
-<p>最新版本可以由 NuGet.org 查詢結果找到： https://www.nuget.org/packages?q=azure+devops+.net ，套件和 Azure DevOps 版本一樣有相依性， 使用前要留意一下目前環境的 TFS / Azure DevOps Server 版本，例如：Azure DevOps Server 2019 只能使用到套件 16.143.x 版。</p>
-<table>
-<thead>
-<tr>
-<th>套件版本</th>
-<th>Azure DevOps 版本</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>16.205.x</td>
-<td>versions &gt;= Azure DevOps Server 2022</td>
-</tr>
-<tr>
-<td>16.170.x</td>
-<td>versions &gt;= Azure DevOps Server 2020</td>
-</tr>
-<tr>
-<td>16.153.x</td>
-<td>versions &gt;= Azure DevOps Server 2019 Update 1</td>
-</tr>
-<tr>
-<td>16.143.x</td>
-<td>versions &gt;= Azure DevOps Server 2019</td>
-</tr>
-<tr>
-<td>15.131.x</td>
-<td>versions &gt;= TFS 2018 Update 1</td>
-</tr>
-<tr>
-<td>15.112.x</td>
-<td>versions &gt;= TFS 2017 Update 1</td>
-</tr>
-<tr>
-<td>14.102.x</td>
-<td>versions &gt;= TFS 2015 Update 3</td>
-</tr>
-<tr>
-<td>14.95.x</td>
-<td>versions &gt;= TFS 2015 Update 2</td>
-</tr>
-<tr>
-<td>14.89.x</td>
-<td>versions &gt;= TFS 2015 Update 1</td>
-</tr>
-<tr>
-<td>14.83.x</td>
-<td>versions &gt;= TFS 2015</td>
-</tr>
-</tbody>
-</table>
-<p>在實務開發上還是得花些時間先瞭解套件定義了哪些 class、提供了什麼 function，這部份可以參考官方說明和 github sample code，如果有特殊需求或環境考量需要使用的話，可以參考下列連結：</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/concepts/dotnet-client-libraries?view=azure-devops&viewFallbackFrom=vsts"  target="_blank">⁍ .NET 用戶端程式庫<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/get-started/client-libraries/samples?view=azure-devops"  target="_blank">⁍ C# 用戶端連結庫範例<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://github.com/microsoft/azure-devops-dotnet-samples"  target="_blank">⁍ .NET samples for Azure DevOps<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<p>(💁 看完上面連結內容有沒有覺得還是使用 REST API 比較方便 💖)</p>
+<p>大家應該不難發現 Playwright 的程式碼很直覺易讀，通常也不太需要夾雜 CSS class 或 style 來尋找定位網頁上的元素，除此之外還提供了豐富的 API 來進行各種操作，如：點擊、輸入文字、截圖等，之後再陸續向大家介紹各項重點特色，希望大家也都能快速上手 Playwright，並在日常開發中提升測試效率與程式碼品質。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Text.RegularExpressions;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright.MSTest;</span><br><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">PlaywrightTests</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ExampleTest</span> : <span class="title">PageTest</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">HasTitle</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expect a title &quot;to contain&quot; a substring.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page).ToHaveTitleAsync(<span class="keyword">new</span> Regex(<span class="string">&quot;Playwright&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">GetStartedLink</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Click the get started link.</span></span><br><span class="line">        <span class="keyword">await</span> Page.GetByRole(AriaRole.Link, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Get started&quot;</span> &#125;).ClickAsync();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expects page to have a heading with the name of Installation.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page.GetByRole(AriaRole.Heading, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Installation&quot;</span> &#125;)).ToBeVisibleAsync();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
                     
                 </div>
@@ -610,11 +473,11 @@
     <div class="copyright-info-content border-box">
         <div class="copyright-info-top border-box">
             <div class="copyright-post-title border-box text-ellipsis">
-                Azure DevOps REST API 說明
+                使用 Playwright 測試框架 - 環境準備 (.NET)
             </div>
 
             <div class="copyright-post-link border-box text-ellipsis">
-                post/2024/09/azure-devops-rest-api/
+                post/2025/05/how-to-use-playwright-1/
             </div>
         </div>
 
@@ -630,7 +493,7 @@
                 <div class="type">
                     發布於
                 </div>
-                <div class="content">2024-09-10 10:38</div>
+                <div class="content">2025-05-19 17:40</div>
             </div>
 
 
@@ -666,19 +529,11 @@
                             <ul class="post-tags-box border-box">
                                 
                                     <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/Azure-DevOps/">Azure DevOps</a>
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/Unit-Test/">Unit Test</a>
                                     </li>
                                 
                                     <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/Azure-DevOps-REST-API/">Azure DevOps REST API</a>
-                                    </li>
-                                
-                                    <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/PAT/">PAT</a>
-                                    </li>
-                                
-                                    <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/NET-Client-Library/">.NET Client Library</a>
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/Playwright/">Playwright</a>
                                     </li>
                                 
                             </ul>
@@ -697,14 +552,14 @@
                             <div class="prev-post">
                                 <a class="prev"
                                    rel="prev"
-                                   href="/post/2024/09/azure-devops-create-project/"
-                                   title="使用 Azure DevOps REST API 建立專案"
+                                   href="/post/2025/05/how-to-use-playwright-2/"
+                                   title="使用 Playwright 測試框架 - 執行階段 (.NET)"
                                 >
                                     <span class="left arrow-icon flex-center">
                                         <i class="fas fa-chevron-left"></i>
                                     </span>
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">使用 Azure DevOps REST API 建立專案</span>
+                                        <span class="post-nav-title-item text-ellipsis">使用 Playwright 測試框架 - 執行階段 (.NET)</span>
                                         <span class="post-nav-item">上一篇</span>
                                     </span>
                                 </a>
@@ -714,11 +569,11 @@
                             <div class="next-post">
                                 <a class="next"
                                    rel="next"
-                                   href="/post/2024/09/azure-devops-individual-services/"
-                                   title="Azure DevOps Services 個別服務"
+                                   href="/post/2025/04/mstest-attribute-lifecycle/"
+                                   title="MSTest 生命週期與常用屬性"
                                 >
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">Azure DevOps Services 個別服務</span>
+                                        <span class="post-nav-title-item text-ellipsis">MSTest 生命週期與常用屬性</span>
                                         <span class="post-nav-item">下一篇</span>
                                     </span>
                                     <span class="right arrow-icon flex-center">
@@ -813,7 +668,7 @@
             <div class="pc-post-toc left-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#REST-API"><span class="nav-text">REST API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PAT-Personal-Access-Token"><span class="nav-text">PAT (Personal Access Token)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NET-Client-Library"><span class="nav-text">.NET Client Library</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Visual-Studio"><span class="nav-text">使用 Visual Studio</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-NET-CLI"><span class="nav-text">使用 .NET CLI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%9D-Playwright-CLI"><span class="nav-text">安裝 Playwright CLI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%BB%E9%99%A4-Playwright-CLI"><span class="nav-text">移除 Playwright CLI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%9D-Playwright-%E6%94%AF%E6%8F%B4%E7%9A%84%E7%80%8F%E8%A6%BD%E5%99%A8"><span class="nav-text">安裝 Playwright 支援的瀏覽器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E8%A9%A6%E8%BA%AB%E6%89%8B"><span class="nav-text">小試身手</span></a></li></ol>
     </div>
 </div>
 
@@ -832,7 +687,7 @@
 
 <footer class="footer border-box">
     <div class="copyright-info info-item">
-        &copy;&nbsp;<span>2023</span>&nbsp;-&nbsp;2024
+        &copy;&nbsp;<span>2023</span>&nbsp;-&nbsp;2025
         
             &nbsp;<i class="fas fa-heart icon-animate" style="color:red"></i>&nbsp;&nbsp;<a href="/">Tim Lai</a>
         
@@ -1017,7 +872,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#REST-API"><span class="nav-text">REST API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PAT-Personal-Access-Token"><span class="nav-text">PAT (Personal Access Token)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NET-Client-Library"><span class="nav-text">.NET Client Library</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Visual-Studio"><span class="nav-text">使用 Visual Studio</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-NET-CLI"><span class="nav-text">使用 .NET CLI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%9D-Playwright-CLI"><span class="nav-text">安裝 Playwright CLI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%BB%E9%99%A4-Playwright-CLI"><span class="nav-text">移除 Playwright CLI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%9D-Playwright-%E6%94%AF%E6%8F%B4%E7%9A%84%E7%80%8F%E8%A6%BD%E5%99%A8"><span class="nav-text">安裝 Playwright 支援的瀏覽器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E8%A9%A6%E8%BA%AB%E6%89%8B"><span class="nav-text">小試身手</span></a></li></ol>
     </div>
 </div>
 

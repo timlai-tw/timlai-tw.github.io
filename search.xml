@@ -1,132 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>使用 Azure DevOps REST API 建立專案</title>
-    <url>/post/2024/09/azure-devops-create-project/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/09/azure-devops-create-project/create-project.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>要使用 Azure DevOps 各項功能之前，首先得先建立一個專案，同時必須選擇專案的版本控制是 <strong>TFVC</strong> (Team Fundation Version Control) 還是 <strong>git</strong>，以及專案要使用的流程範本 (Process template)，預設有 <strong>Basic / Agile / Scrum / CMMI</strong> 四種，這次我們就不透過網頁介面建立專案，直接使用 API 小試身手 🎣 。</p>
-<br>
-<span id="more"></span>
-<br>
-<h2 id="前言">前言</h2>
-<p>當我們想要使用 <strong>Azure DevOps REST API</strong> 進行程式串接時，首先要確認使用情境是 <strong><code>雲端</code></strong> 還是 <strong><code>地端</code></strong>，因為兩者對於 API 的支援程度不盡相同，例如：<strong>Audit log</strong> 目前只有在雲端才能查詢、下載，地端還沒有支援，使用哪一版的 API 也要稍微留意(在<a href="/post/2024/09/azure-devops-rest-api">上一篇文章</a>有說明原因)，這些都可以在 API 說明頁面左上角透過下拉選單來快速切換檢視，以便我們確認 API 規格與差異。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/09/azure-devops-create-project/version_dropdown.png"
-                        class=""
-                 >
-<br>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/en-us/rest/api/azure/devops/?view=azure-devops-rest-7.2"  target="_blank">⁍ Azure DevOps Services REST API Reference<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<br>
-<h2 id="API-規格確認">API 規格確認</h2>
-<p>經由上面的參考連結，我們可以在 <strong>Core &gt; Projects &gt; Create</strong> 找到建立專案的 API 規格：</p>
-<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">雲端</span><br><span class="line">POST https://dev.azure.com/&#123;organization&#125;/_apis/projects?api-version=7.2-preview.4</span><br></pre></td></tr></table></figure>
-<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">地端</span><br><span class="line">POST https://&#123;instance&#125;/&#123;collection&#125;/_apis/projects?api-version=7.0</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/09/azure-devops-create-project/core_projects_create.png"
-                        class=""
-                 >
-<br>
-<p>在頁面上對於 Request Body 的屬性和型別宣告都會逐一說明，但唯一美中不足的是我們看不出來哪些屬性是必要項目(Required)，比較簡便的方式是可以使用 Postman 填入 PAT 驗證後進行測試，通常在 Reponse 都會告訴我們缺少什麼必要欄位值，Postman 設定步驟如下：</p>
-<br>
-<ol>
-<li>Authorization 的 Auth Type 選擇 <strong><code>Basic Auth</code></strong>，並將 PAT 填入 Password 欄位，Username 空白即可。(如何建立 PAT 可以參考：<a href="/post/2024/09/azure-devops-rest-api">上一篇文章</a>)</li>
-</ol>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/09/azure-devops-create-project/basic_auth.png"
-                        class=""
-                 >
-<br>
-<ol start="2">
-<li>Headers 的 Content-Type 設定 <strong><code>application/json</code></strong>。</li>
-</ol>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/09/azure-devops-create-project/content_type.png"
-                        class=""
-                 >
-<br>
-<ol start="3">
-<li>Body 格式選擇 <strong><code>raw</code></strong> 和 <strong><code>JSON</code></strong>，內容先輸入 <strong><code>&#123;&#125;</code></strong> 然後按下 <strong><code>Send</code></strong> 按鈕。</li>
-</ol>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/09/azure-devops-create-project/400_bad.png"
-                        class=""
-                 >
-<br>
-<p>由 message 回傳的資訊我們就可以得知，必要的屬性有：</p>
-<ul>
-<li><strong>name</strong> : 專案名稱</li>
-<li><strong>description</strong>: 專案描述說明</li>
-<li><strong>visibility</strong> : 專案可層級 (Public或Private，預設是Private)</li>
-<li><strong>capabilities</strong> : 版控方式、流程範本是必要項目。</li>
-</ul>
-<p>完整的 Request Body 內容可以參考下列內容：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;MyNewProject&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This is a new project created via API&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;capabilities&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;versioncontrol&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;sourceControlType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Git&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;processTemplate&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;templateTypeId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;6b724908-ef14-45cf-84f8-768b5384da45&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-<br>
-<p>送出 Request 成功後，可以得到如下訊息：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/09/azure-devops-create-project/202_accepted.png"
-                        class=""
-                 >
-<br>
-<p>開啟 Azure DevOps 畫面確認新增的專案是否有正常出現。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/09/azure-devops-create-project/my_new_project.png"
-                        class=""
-                 >
-<h2 id="流程範本-Process-template">流程範本 (Process template)</h2>
-<p>在 Azure DevOps 預設有 <strong>Basic / Agile / Scrum / CMMI</strong> 四種流程範本，一般我本幾乎不會去關心它的 templateTypeId (GUID) 是什麼，這邊需要透過另一支查詢 Process template 列表的 API 來取得資訊：</p>
-<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">雲端</span><br><span class="line">GET GET https://dev.azure.com/&#123;organization&#125;/_apis/process/processes?api-version=7.2-preview.1</span><br></pre></td></tr></table></figure>
-<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">地端</span><br><span class="line">GET https://&#123;instance&#125;/&#123;collection&#125;/_apis/process/processes?api-version=7.0</span><br></pre></td></tr></table></figure>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;count&quot;</span><span class="punctuation">:</span> <span class="number">4</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;adcc42ab-9882-485e-a3ed-7678f01f66bc&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is flexible and will work great for most teams using Agile planning methods, including those practicing Scrum.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/adcc42ab-9882-485e-a3ed-7678f01f66bc&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Agile&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;27450541-8e31-4150-9947-dc59f998fc01&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is for more formal projects requiring a framework for process improvement and an auditable record of decisions.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/27450541-8e31-4150-9947-dc59f998fc01&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;CMMI&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;b8a3a935-7e91-48b8-a94c-606d37c3e9f2&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is flexible for any process and great for teams getting started with Azure DevOps.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/b8a3a935-7e91-48b8-a94c-606d37c3e9f2&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Basic&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;6b724908-ef14-45cf-84f8-768b5384da45&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is for teams who follow the Scrum framework.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/6b724908-ef14-45cf-84f8-768b5384da45&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Scrum&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-<h2 id="後記">後記</h2>
-<p>再回過頭來看，其實我們上面做的這些動作就是以 API 的方式送出畫面上建立專案的必要欄位而已：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/09/azure-devops-create-project/new_project.png"
-                        class=""
-                 >
-<br>
-<p>附帶一提，若是以 C# 實作，在 Header 傳遞 PAT 需要先以 <strong>Base64</strong> 編碼才行，可以參考下列完整範例呼叫範例(第31行)：</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> System.Net.Http;</span><br><span class="line"><span class="keyword">using</span> System.Net.Http.Headers;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Newtonsoft.Json;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ProcessTemplate</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">public</span> <span class="built_in">string</span> Id &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">		<span class="keyword">public</span> <span class="built_in">string</span> Name &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ProcessTemplatesResponse</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">public</span> List&lt;ProcessTemplate&gt; Value &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">static</span> <span class="keyword">async</span> Task <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">string</span> pat = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">		<span class="built_in">string</span> serverName = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">		<span class="built_in">string</span> collectionName = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">		<span class="built_in">string</span> url = <span class="string">$&quot;http://<span class="subst">&#123;serverName&#125;</span>/<span class="subst">&#123;collectionName&#125;</span>/_apis/process/processes?api-version=7.0&quot;</span>;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">using</span> (HttpClient client = <span class="keyword">new</span> HttpClient())</span><br><span class="line">		&#123;</span><br><span class="line">			client.DefaultRequestHeaders.Authorization = <span class="keyword">new</span> AuthenticationHeaderValue(<span class="string">&quot;Basic&quot;</span>, Convert.ToBase64String(Encoding.ASCII.GetBytes(<span class="string">$&quot;:<span class="subst">&#123;pat&#125;</span>&quot;</span>)));</span><br><span class="line">			HttpResponseMessage response = <span class="keyword">await</span> client.GetAsync(url);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (response.IsSuccessStatusCode)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="built_in">string</span> result = <span class="keyword">await</span> response.Content.ReadAsStringAsync();</span><br><span class="line">				<span class="keyword">var</span> processTemplates = JsonConvert.DeserializeObject&lt;ProcessTemplatesResponse&gt;(result);</span><br><span class="line"></span><br><span class="line">				<span class="keyword">foreach</span> (<span class="keyword">var</span> process <span class="keyword">in</span> processTemplates.Value)</span><br><span class="line">				&#123;</span><br><span class="line">					Console.WriteLine(<span class="string">$&quot;Name: <span class="subst">&#123;process.Name&#125;</span>, ID: <span class="subst">&#123;process.Id&#125;</span>&quot;</span>);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			&#123;</span><br><span class="line">				Console.WriteLine(<span class="string">$&quot;Failed to get process templates: <span class="subst">&#123;response.StatusCode&#125;</span>&quot;</span>);</span><br><span class="line">				<span class="built_in">string</span> error = <span class="keyword">await</span> response.Content.ReadAsStringAsync();</span><br><span class="line">				Console.WriteLine(error);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<br>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/how-to/call-rest-api?view=azure-devops"  target="_blank">⁍ 開始使用 REST API
-<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>]]></content>
-      <tags>
-        <tag>Azure DevOps</tag>
-        <tag>Azure DevOps REST API</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Azure DevOps Services 個別服務</title>
-    <url>/post/2024/09/azure-devops-individual-services/</url>
+    <url>/post/2025/04/azure-devops-individual-services/</url>
     <content><![CDATA[<img    
                        lazyload
                        alt="image"
@@ -141,7 +17,7 @@
 <img  
                        lazyload
                        alt="image"
-                       data-src="/post/2024/09/azure-devops-individual-services/azpipelines-parallelism-request.jpg"
+                       data-src="/post/2025/04/azure-devops-individual-services/azpipelines-parallelism-request.jpg"
                         class=""
                  >
 <p>當然我們也可以自己準備機器，在上面安裝 Azure Pipelines agents 程式 (支援 Windows / Linux / macOS)，這就屬於 Self-hosted agent。由於是自己準備的執行個體，所以使用時數不受限制，但每個工作 (job) 都是經由佇列 (queue) 的方式排隊一個一個執行，若需要同時間處理一個以上的工作 (job)，則需要再增加執行個體才行 (不論是 Microsoft-hosted 或是 Self-hosted)，基於這樣的概念，以下就是我們所關心的計價標準：</p>
@@ -200,14 +76,14 @@
 <img  
                        lazyload
                        alt="image"
-                       data-src="/post/2024/09/azure-devops-individual-services/github_acvanced_security.jpg"
+                       data-src="/post/2025/04/azure-devops-individual-services/github_acvanced_security.jpg"
                         class=""
                  >
 <p>這個功能可以由每個 git 的儲存庫 (repositry) 個別設定是否啟用 (不支援 TFVC 版控)，計價的原則是：每一個活躍的提交者 (active committer) 每個月 <strong>USD $49</strong> (大約 <strong>TWD $1567</strong>)，在<mark>同一個 Azure Subscription</mark> 中，儲存庫過去 <strong><code>90天</code></strong> 的紀錄中，同一個提交者(committer)在不同專案提交程式碼只會算 1 個數量，不會被重複計價。當我們在 git 儲存庫開啟 <strong><code>Advanced Security</code></strong> 功能時，Azure DevOps 在畫面上也會先幫我們基於上述原則計算有多少使用者會被計費，確定要使用再點選 <strong><code>Begin billing</code></strong> 即可：</p>
 <img  
                        lazyload
                        alt="image"
-                       data-src="/post/2024/09/azure-devops-individual-services/unique_committers.jpg"
+                       data-src="/post/2025/04/azure-devops-individual-services/unique_committers.jpg"
                         class=""
                  >
 <p>如同 Azure 各種服務的計價方式，都是<strong>隨付即用 (pay-as-you-go)</strong>，啟用 <strong>GitHub Advanced Security for Azure DevOps</strong> 搭配 CI 流程可以讓我們在開發階段及早發現問題與漏洞，有效減少技術債和後期投入修改的人力成本，跟測試左移 (Shift-Left Testing) 的概念有點雷同，也可以省下大筆購入源碼檢測軟體的費用，大家可以參考看看。</p>
@@ -225,7 +101,7 @@
   </entry>
   <entry>
     <title>Azure DevOps Services / Server 使用者授權</title>
-    <url>/post/2024/09/azure-devops-licensing-description/</url>
+    <url>/post/2025/04/azure-devops-licensing-description/</url>
     <content><![CDATA[<img    
                        lazyload
                        alt="image"
@@ -249,7 +125,7 @@
 <img  
                        lazyload
                        alt="image"
-                       data-src="/post/2024/09/azure-devops-licensing-description/Basic_TestPlans.jpg"
+                       data-src="/post/2025/04/azure-devops-licensing-description/Basic_TestPlans.jpg"
                         class=""
                  >
 <p>在 Azure DevOps 定價頁面中的 <strong><code>Basic Plan</code></strong> 包含了前面四項功能，費用是 <strong>USD $6</strong> (每個人/月)，折合台幣就要看當月的匯率計算 (例如目前是 TWD <strong>$191</strong>)；一般來說，在專案團隊裡並不是每個成員都需要建立與管理測試計劃，所以 <strong>Azure Test Plans</strong> 這項功能額外被拆出來計價，若選擇 <strong><code>Basic + Test Plans</code></strong> 費用則是 <strong>USD $52</strong> (大約 TWD <strong>$1663</strong>)。</p>
@@ -308,7 +184,7 @@
   </entry>
   <entry>
     <title>Azure DevOps REST API 說明</title>
-    <url>/post/2024/09/azure-devops-rest-api/</url>
+    <url>/post/2025/04/azure-devops-rest-api/</url>
     <content><![CDATA[<img    
                        lazyload
                        alt="image"
@@ -439,7 +315,7 @@
 <img  
                        lazyload
                        alt="image"
-                       data-src="/post/2024/09/azure-devops-rest-api/pat.png"
+                       data-src="/post/2025/04/azure-devops-rest-api/pat.png"
                         class=""
                  >
 <br>
@@ -447,7 +323,7 @@
 <img  
                        lazyload
                        alt="image"
-                       data-src="/post/2024/09/azure-devops-rest-api/pat_1.png"
+                       data-src="/post/2025/04/azure-devops-rest-api/pat_1.png"
                         class=""
                  >
 <br>
@@ -464,7 +340,7 @@
 <img  
                        lazyload
                        alt="image"
-                       data-src="/post/2024/09/azure-devops-rest-api/pat_2.png"
+                       data-src="/post/2025/04/azure-devops-rest-api/pat_2.png"
                         class=""
                  >
 <h2 id="NET-Client-Library">.NET Client Library</h2>
@@ -472,7 +348,7 @@
 <img  
                        lazyload
                        alt="image"
-                       data-src="/post/2024/09/azure-devops-rest-api/dotnet-client-libraries-dependancy-diagram.jpg"
+                       data-src="/post/2025/04/azure-devops-rest-api/dotnet-client-libraries-dependancy-diagram.jpg"
                         class=""
                  >
 <br>
@@ -545,8 +421,237 @@
       </tags>
   </entry>
   <entry>
+    <title>使用 Azure DevOps REST API 建立專案</title>
+    <url>/post/2025/04/azure-devops-create-project/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2024/09/azure-devops-create-project/create-project.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>要使用 Azure DevOps 各項功能之前，首先得先建立一個專案，同時必須選擇專案的版本控制是 <strong>TFVC</strong> (Team Fundation Version Control) 還是 <strong>git</strong>，以及專案要使用的流程範本 (Process template)，預設有 <strong>Basic / Agile / Scrum / CMMI</strong> 四種，這次我們就不透過網頁介面建立專案，直接使用 API 小試身手 🎣 。</p>
+<br>
+<span id="more"></span>
+<br>
+<h2 id="前言">前言</h2>
+<p>當我們想要使用 <strong>Azure DevOps REST API</strong> 進行程式串接時，首先要確認使用情境是 <strong><code>雲端</code></strong> 還是 <strong><code>地端</code></strong>，因為兩者對於 API 的支援程度不盡相同，例如：<strong>Audit log</strong> 目前只有在雲端才能查詢、下載，地端還沒有支援，使用哪一版的 API 也要稍微留意(在<a href="/post/2024/09/azure-devops-rest-api">上一篇文章</a>有說明原因)，這些都可以在 API 說明頁面左上角透過下拉選單來快速切換檢視，以便我們確認 API 規格與差異。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/version_dropdown.png"
+                        class=""
+                 >
+<br>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/en-us/rest/api/azure/devops/?view=azure-devops-rest-7.2"  target="_blank">⁍ Azure DevOps Services REST API Reference<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<br>
+<h2 id="API-規格確認">API 規格確認</h2>
+<p>經由上面的參考連結，我們可以在 <strong>Core &gt; Projects &gt; Create</strong> 找到建立專案的 API 規格：</p>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">雲端</span><br><span class="line">POST https://dev.azure.com/&#123;organization&#125;/_apis/projects?api-version=7.2-preview.4</span><br></pre></td></tr></table></figure>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">地端</span><br><span class="line">POST https://&#123;instance&#125;/&#123;collection&#125;/_apis/projects?api-version=7.0</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/core_projects_create.png"
+                        class=""
+                 >
+<br>
+<p>在頁面上對於 Request Body 的屬性和型別宣告都會逐一說明，但唯一美中不足的是我們看不出來哪些屬性是必要項目(Required)，比較簡便的方式是可以使用 Postman 填入 PAT 驗證後進行測試，通常在 Reponse 都會告訴我們缺少什麼必要欄位值，Postman 設定步驟如下：</p>
+<br>
+<ol>
+<li>Authorization 的 Auth Type 選擇 <strong><code>Basic Auth</code></strong>，並將 PAT 填入 Password 欄位，Username 空白即可。(如何建立 PAT 可以參考：<a href="/post/2024/09/azure-devops-rest-api">上一篇文章</a>)</li>
+</ol>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/basic_auth.png"
+                        class=""
+                 >
+<br>
+<ol start="2">
+<li>Headers 的 Content-Type 設定 <strong><code>application/json</code></strong>。</li>
+</ol>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/content_type.png"
+                        class=""
+                 >
+<br>
+<ol start="3">
+<li>Body 格式選擇 <strong><code>raw</code></strong> 和 <strong><code>JSON</code></strong>，內容先輸入 <strong><code>&#123;&#125;</code></strong> 然後按下 <strong><code>Send</code></strong> 按鈕。</li>
+</ol>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/400_bad.png"
+                        class=""
+                 >
+<br>
+<p>由 message 回傳的資訊我們就可以得知，必要的屬性有：</p>
+<ul>
+<li><strong>name</strong> : 專案名稱</li>
+<li><strong>description</strong>: 專案描述說明</li>
+<li><strong>visibility</strong> : 專案可層級 (Public或Private，預設是Private)</li>
+<li><strong>capabilities</strong> : 版控方式、流程範本是必要項目。</li>
+</ul>
+<p>完整的 Request Body 內容可以參考下列內容：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;MyNewProject&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This is a new project created via API&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;capabilities&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;versioncontrol&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;sourceControlType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Git&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;processTemplate&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;templateTypeId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;6b724908-ef14-45cf-84f8-768b5384da45&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<br>
+<p>送出 Request 成功後，可以得到如下訊息：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/202_accepted.png"
+                        class=""
+                 >
+<br>
+<p>開啟 Azure DevOps 畫面確認新增的專案是否有正常出現。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/my_new_project.png"
+                        class=""
+                 >
+<h2 id="流程範本-Process-template">流程範本 (Process template)</h2>
+<p>在 Azure DevOps 預設有 <strong>Basic / Agile / Scrum / CMMI</strong> 四種流程範本，一般我本幾乎不會去關心它的 templateTypeId (GUID) 是什麼，這邊需要透過另一支查詢 Process template 列表的 API 來取得資訊：</p>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">雲端</span><br><span class="line">GET GET https://dev.azure.com/&#123;organization&#125;/_apis/process/processes?api-version=7.2-preview.1</span><br></pre></td></tr></table></figure>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">地端</span><br><span class="line">GET https://&#123;instance&#125;/&#123;collection&#125;/_apis/process/processes?api-version=7.0</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;count&quot;</span><span class="punctuation">:</span> <span class="number">4</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;adcc42ab-9882-485e-a3ed-7678f01f66bc&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is flexible and will work great for most teams using Agile planning methods, including those practicing Scrum.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/adcc42ab-9882-485e-a3ed-7678f01f66bc&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Agile&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;27450541-8e31-4150-9947-dc59f998fc01&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is for more formal projects requiring a framework for process improvement and an auditable record of decisions.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/27450541-8e31-4150-9947-dc59f998fc01&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;CMMI&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;b8a3a935-7e91-48b8-a94c-606d37c3e9f2&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is flexible for any process and great for teams getting started with Azure DevOps.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/b8a3a935-7e91-48b8-a94c-606d37c3e9f2&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Basic&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;6b724908-ef14-45cf-84f8-768b5384da45&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is for teams who follow the Scrum framework.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/6b724908-ef14-45cf-84f8-768b5384da45&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Scrum&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<h2 id="後記">後記</h2>
+<p>再回過頭來看，其實我們上面做的這些動作就是以 API 的方式送出畫面上建立專案的必要欄位而已：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/new_project.png"
+                        class=""
+                 >
+<br>
+<p>附帶一提，若是以 C# 實作，在 Header 傳遞 PAT 需要先以 <strong>Base64</strong> 編碼才行，可以參考下列完整範例呼叫範例(第31行)：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> System.Net.Http;</span><br><span class="line"><span class="keyword">using</span> System.Net.Http.Headers;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Newtonsoft.Json;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ProcessTemplate</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">public</span> <span class="built_in">string</span> Id &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">		<span class="keyword">public</span> <span class="built_in">string</span> Name &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ProcessTemplatesResponse</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">public</span> List&lt;ProcessTemplate&gt; Value &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">static</span> <span class="keyword">async</span> Task <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">string</span> pat = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">		<span class="built_in">string</span> serverName = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">		<span class="built_in">string</span> collectionName = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">		<span class="built_in">string</span> url = <span class="string">$&quot;http://<span class="subst">&#123;serverName&#125;</span>/<span class="subst">&#123;collectionName&#125;</span>/_apis/process/processes?api-version=7.0&quot;</span>;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">using</span> (HttpClient client = <span class="keyword">new</span> HttpClient())</span><br><span class="line">		&#123;</span><br><span class="line">			client.DefaultRequestHeaders.Authorization = <span class="keyword">new</span> AuthenticationHeaderValue(<span class="string">&quot;Basic&quot;</span>, Convert.ToBase64String(Encoding.ASCII.GetBytes(<span class="string">$&quot;:<span class="subst">&#123;pat&#125;</span>&quot;</span>)));</span><br><span class="line">			HttpResponseMessage response = <span class="keyword">await</span> client.GetAsync(url);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (response.IsSuccessStatusCode)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="built_in">string</span> result = <span class="keyword">await</span> response.Content.ReadAsStringAsync();</span><br><span class="line">				<span class="keyword">var</span> processTemplates = JsonConvert.DeserializeObject&lt;ProcessTemplatesResponse&gt;(result);</span><br><span class="line"></span><br><span class="line">				<span class="keyword">foreach</span> (<span class="keyword">var</span> process <span class="keyword">in</span> processTemplates.Value)</span><br><span class="line">				&#123;</span><br><span class="line">					Console.WriteLine(<span class="string">$&quot;Name: <span class="subst">&#123;process.Name&#125;</span>, ID: <span class="subst">&#123;process.Id&#125;</span>&quot;</span>);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			&#123;</span><br><span class="line">				Console.WriteLine(<span class="string">$&quot;Failed to get process templates: <span class="subst">&#123;response.StatusCode&#125;</span>&quot;</span>);</span><br><span class="line">				<span class="built_in">string</span> error = <span class="keyword">await</span> response.Content.ReadAsStringAsync();</span><br><span class="line">				Console.WriteLine(error);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<br>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/how-to/call-rest-api?view=azure-devops"  target="_blank">⁍ 開始使用 REST API
+<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>]]></content>
+      <tags>
+        <tag>Azure DevOps</tag>
+        <tag>Azure DevOps REST API</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用 Playwright 測試框架 - 環境準備 (.NET)</title>
+    <url>/post/2025/05/how-to-use-playwright-1/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2024/11/how-to-use-playwright-1/playwright.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>在現代軟體開發中，自動化測試已成為確保程式碼品質的重要一環，Playwright 是一個強大的自動化測試框架，支援 Chromium / Firefox / WebKit 瀏覽器，搭配測試產生器(codegen)讓開發者能夠輕鬆撰寫可靠且高效的測試腳本。本篇文章將介紹如何在 .NET 開發環境中設置和使用 Playwright，從安裝必要的套件到撰寫基本的測試案例，幫助大家快速上手這個工具。<br>
+<br></p>
+<span id="more"></span>
+<br>
+<h2 id="使用-Visual-Studio">使用 Visual Studio</h2>
+<p>如果是慣用地表最強開發工具，打開 Visual Studio 建立一個新的 <strong><code>MSTest 測試專案</code></strong>，讓我們有一個基本測試環境可以開始撰寫 Playwright 測試。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/vs-01.png"
+                        class=""
+                 >
+<br>
+<p>要在 MSTest 使用 Playwright 必需要安裝 <strong><code>Microsoft.Playwright.MSTest</code></strong> 套件，這個套件會將 Playwright 與 MSTest 整合，使我們能夠在 MSTest 測試過程中使用 Playwright 功能。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/vs-02.png"
+                        class=""
+                 >
+<h2 id="使用-NET-CLI">使用 .NET CLI</h2>
+<p>若是使用 VSCode 開發工具，我們可以用 <strong>dotnet new</strong> 指令新增一個 PlaywrightTests 專案，預設內容會包含一個 UnitTest1.cs 檔案。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet new mstest -n PlaywrightTests</span><br><span class="line">cd PlaywrightTests</span><br></pre></td></tr></table></figure>
+<p>安裝必要的 Playwright 相依套件：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet add package Microsoft.Playwright.MSTest</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-01.png"
+                        class=""
+                 >
+<br>
+<p>建置程式碼，確認環境準備是否有異常。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet build</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-02.png"
+                        class=""
+                 >
+<br>
+<h2 id="安裝-Playwright-CLI">安裝 Playwright CLI</h2>
+<p>在 .NET 開發環境中，雖然 <strong>playwright.exe</strong> 指令沒有像 <strong>npx playwright</strong> 那麼多參數與功能，但我們在錄製網頁操作過程來產生測試程式碼 (codegen)，或是開啟追蹤檔 (show-trace) 時仍會使用到，可以透過下列指令來安裝 <strong><code>Microsoft.Playwright.CLI</code></strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool install --global Microsoft.Playwright.CLI</span><br></pre></td></tr></table></figure>
+<p>上述套件預設會被安裝到目前的使用者範圍內的 .NET 全局工具路徑中，具體安裝位置會因作業系統而異：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Windows</span><br><span class="line">C:\Users\&lt;你的用戶名&gt;\.dotnet\tools\</span><br><span class="line"></span><br><span class="line">Linux / macOS</span><br><span class="line">/home/&lt;你的用戶名&gt;/.dotnet/tools/</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-03.png"
+                        class=""
+                 >
+<p>我們可以直接開啟目錄確認工具是否安裝成功，或是使用以下指令來列出所有安裝的 .NET 工具：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool list --global</span><br></pre></td></tr></table></figure>
+<p>例：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Package Id                    Version      Commands</span><br><span class="line">-----------------------------------------------------</span><br><span class="line">dotnet-ef                     8.0.8        dotnet-ef</span><br><span class="line">microsoft.playwright.cli      1.2.3        playwright</span><br></pre></td></tr></table></figure>
+<h2 id="移除-Playwright-CLI">移除 Playwright CLI</h2>
+<p>若需要移除已安裝的套件，可以使用下列指令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool uninstall microsoft.playwright.cli</span><br></pre></td></tr></table></figure>
+<h2 id="安裝-Playwright-支援的瀏覽器">安裝 Playwright 支援的瀏覽器</h2>
+<p>Playwright 支援 Chromium、WebKit 和 Firefox 瀏覽器，我們可以使用 <strong>playwright install</strong> 指令來安裝預設瀏覽器，這個動作會將瀏覽器安裝到 <strong><mark>%LOCALAPPDATA%\ms-playwright</mark></strong> 目錄下，若想要自訂安裝的項目，可以透過 <strong>playwright help install</strong> 來瞭解所有的選項。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright install</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-04.png"
+                        class=""
+                 >
+<br>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright help install</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-05.png"
+                        class=""
+                 >
+<h2 id="小試身手">小試身手</h2>
+<p>以上 Playwright 環境設定都完成後，我們就可以直接用官網的第一個範例來小試身手：</p>
+<ul>
+<li>
+<p><code>HasTitle()</code><br>
+打開 Playwright 官方網站，檢查網站的標題是否包含特定的字串，確認網頁標題中是否包含 “Playwright” 這個字。</p>
+</li>
+<li>
+<p><code>GetStartedLink()</code><br>
+一樣是打開 Playwright 官方網站，點擊一個名為 “Get started” 的連結，然後檢查點擊後的頁面是否有一個名為 “Installation” 的標題，以確保連結正確導向到預期的頁面。</p>
+</li>
+</ul>
+<p>大家應該不難發現 Playwright 的程式碼很直覺易讀，通常也不太需要夾雜 CSS class 或 style 來尋找定位網頁上的元素，除此之外還提供了豐富的 API 來進行各種操作，如：點擊、輸入文字、截圖等，之後再陸續向大家介紹各項重點特色，希望大家也都能快速上手 Playwright，並在日常開發中提升測試效率與程式碼品質。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Text.RegularExpressions;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright.MSTest;</span><br><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">PlaywrightTests</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ExampleTest</span> : <span class="title">PageTest</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">HasTitle</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expect a title &quot;to contain&quot; a substring.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page).ToHaveTitleAsync(<span class="keyword">new</span> Regex(<span class="string">&quot;Playwright&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">GetStartedLink</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Click the get started link.</span></span><br><span class="line">        <span class="keyword">await</span> Page.GetByRole(AriaRole.Link, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Get started&quot;</span> &#125;).ClickAsync();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expects page to have a heading with the name of Installation.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page.GetByRole(AriaRole.Heading, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Installation&quot;</span> &#125;)).ToBeVisibleAsync();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>Unit Test</tag>
+        <tag>Playwright</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MSTest 生命週期與常用屬性</title>
-    <url>/post/2024/09/mstest-attribute-lifecycle/</url>
+    <url>/post/2025/04/mstest-attribute-lifecycle/</url>
     <content><![CDATA[<img    
                        lazyload
                        alt="image"
@@ -583,7 +688,7 @@
 <img  
                        lazyload
                        alt="image"
-                       data-src="/post/2024/09/mstest-attribute-lifecycle/console-run-test.png"
+                       data-src="/post/2025/04/mstest-attribute-lifecycle/console-run-test.png"
                         class=""
                  >
 <h2 id="常用屬性">常用屬性</h2>
@@ -626,113 +731,8 @@
       </tags>
   </entry>
   <entry>
-    <title>使用 Playwright 測試框架 - 環境準備 (.NET)</title>
-    <url>/post/2024/11/how-to-use-playwright-1/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/11/how-to-use-playwright-1/playwright.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>在現代軟體開發中，自動化測試已成為確保程式碼品質的重要一環，Playwright 是一個強大的自動化測試框架，支援 Chromium / Firefox / WebKit 瀏覽器，搭配測試產生器(codegen)讓開發者能夠輕鬆撰寫可靠且高效的測試腳本。本篇文章將介紹如何在 .NET 開發環境中設置和使用 Playwright，從安裝必要的套件到撰寫基本的測試案例，幫助大家快速上手這個工具。<br>
-<br></p>
-<span id="more"></span>
-<br>
-<h2 id="使用-Visual-Studio">使用 Visual Studio</h2>
-<p>如果是慣用地表最強開發工具，打開 Visual Studio 建立一個新的 <strong><code>MSTest 測試專案</code></strong>，讓我們有一個基本測試環境可以開始撰寫 Playwright 測試。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/11/how-to-use-playwright-1/vs-01.png"
-                        class=""
-                 >
-<br>
-<p>要在 MSTest 使用 Playwright 必需要安裝 <strong><code>Microsoft.Playwright.MSTest</code></strong> 套件，這個套件會將 Playwright 與 MSTest 整合，使我們能夠在 MSTest 測試過程中使用 Playwright 功能。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/11/how-to-use-playwright-1/vs-02.png"
-                        class=""
-                 >
-<h2 id="使用-NET-CLI">使用 .NET CLI</h2>
-<p>若是使用 VSCode 開發工具，我們可以用 <strong>dotnet new</strong> 指令新增一個 PlaywrightTests 專案，預設內容會包含一個 UnitTest1.cs 檔案。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet new mstest -n PlaywrightTests</span><br><span class="line">cd PlaywrightTests</span><br></pre></td></tr></table></figure>
-<p>安裝必要的 Playwright 相依套件：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet add package Microsoft.Playwright.MSTest</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/11/how-to-use-playwright-1/cli-01.png"
-                        class=""
-                 >
-<br>
-<p>建置程式碼，確認環境準備是否有異常。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet build</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/11/how-to-use-playwright-1/cli-02.png"
-                        class=""
-                 >
-<br>
-<h2 id="安裝-Playwright-CLI">安裝 Playwright CLI</h2>
-<p>在 .NET 開發環境中，雖然 <strong>playwright.exe</strong> 指令沒有像 <strong>npx playwright</strong> 那麼多參數與功能，但我們在錄製網頁操作過程來產生測試程式碼 (codegen)，或是開啟追蹤檔 (show-trace) 時仍會使用到，可以透過下列指令來安裝 <strong><code>Microsoft.Playwright.CLI</code></strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool install --global Microsoft.Playwright.CLI</span><br></pre></td></tr></table></figure>
-<p>上述套件預設會被安裝到目前的使用者範圍內的 .NET 全局工具路徑中，具體安裝位置會因作業系統而異：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Windows</span><br><span class="line">C:\Users\&lt;你的用戶名&gt;\.dotnet\tools\</span><br><span class="line"></span><br><span class="line">Linux / macOS</span><br><span class="line">/home/&lt;你的用戶名&gt;/.dotnet/tools/</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/11/how-to-use-playwright-1/cli-03.png"
-                        class=""
-                 >
-<p>我們可以直接開啟目錄確認工具是否安裝成功，或是使用以下指令來列出所有安裝的 .NET 工具：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool list --global</span><br></pre></td></tr></table></figure>
-<p>例：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Package Id                    Version      Commands</span><br><span class="line">-----------------------------------------------------</span><br><span class="line">dotnet-ef                     8.0.8        dotnet-ef</span><br><span class="line">microsoft.playwright.cli      1.2.3        playwright</span><br></pre></td></tr></table></figure>
-<h2 id="移除-Playwright-CLI">移除 Playwright CLI</h2>
-<p>若需要移除已安裝的套件，可以使用下列指令：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool uninstall microsoft.playwright.cli</span><br></pre></td></tr></table></figure>
-<h2 id="安裝-Playwright-支援的瀏覽器">安裝 Playwright 支援的瀏覽器</h2>
-<p>Playwright 支援 Chromium、WebKit 和 Firefox 瀏覽器，我們可以使用 <strong>playwright install</strong> 指令來安裝預設瀏覽器，這個動作會將瀏覽器安裝到 <strong><mark>%LOCALAPPDATA%\ms-playwright</mark></strong> 目錄下，若想要自訂安裝的項目，可以透過 <strong>playwright help install</strong> 來瞭解所有的選項。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright install</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/11/how-to-use-playwright-1/cli-04.png"
-                        class=""
-                 >
-<br>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright help install</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2024/11/how-to-use-playwright-1/cli-05.png"
-                        class=""
-                 >
-<h2 id="小試身手">小試身手</h2>
-<p>以上 Playwright 環境設定都完成後，我們就可以直接用官網的第一個範例來小試身手：</p>
-<ul>
-<li>
-<p><code>HasTitle()</code><br>
-打開 Playwright 官方網站，檢查網站的標題是否包含特定的字串，確認網頁標題中是否包含 “Playwright” 這個字。</p>
-</li>
-<li>
-<p><code>GetStartedLink()</code><br>
-一樣是打開 Playwright 官方網站，點擊一個名為 “Get started” 的連結，然後檢查點擊後的頁面是否有一個名為 “Installation” 的標題，以確保連結正確導向到預期的頁面。</p>
-</li>
-</ul>
-<p>大家應該不難發現 Playwright 的程式碼很直覺易讀，通常也不太需要夾雜 CSS class 或 style 來尋找定位網頁上的元素，除此之外還提供了豐富的 API 來進行各種操作，如：點擊、輸入文字、截圖等，之後再陸續向大家介紹各項重點特色，希望大家也都能快速上手 Playwright，並在日常開發中提升測試效率與程式碼品質。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Text.RegularExpressions;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright.MSTest;</span><br><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">PlaywrightTests</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ExampleTest</span> : <span class="title">PageTest</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">HasTitle</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expect a title &quot;to contain&quot; a substring.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page).ToHaveTitleAsync(<span class="keyword">new</span> Regex(<span class="string">&quot;Playwright&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">GetStartedLink</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Click the get started link.</span></span><br><span class="line">        <span class="keyword">await</span> Page.GetByRole(AriaRole.Link, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Get started&quot;</span> &#125;).ClickAsync();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expects page to have a heading with the name of Installation.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page.GetByRole(AriaRole.Heading, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Installation&quot;</span> &#125;)).ToBeVisibleAsync();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>Unit Test</tag>
-        <tag>Playwright</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>使用 VB5/VB6 連線至 Azure DevOps Server 2022 (TFVC)</title>
-    <url>/post/2024/10/vb-connect-to-azure-devops/</url>
+    <url>/post/2025/04/vb-connect-to-azure-devops/</url>
     <content><![CDATA[<img    
                        lazyload
                        alt="image"
@@ -768,7 +768,7 @@
 <img  
                        lazyload
                        alt="image"
-                       data-src="/post/2024/10/vb-connect-to-azure-devops/create-project-from-tfs.png"
+                       data-src="/post/2025/04/vb-connect-to-azure-devops/create-project-from-tfs.png"
                         class=""
                  >
 <p>若出現下列錯誤訊息，就是 MSSCCI Provider 版本太舊了，無法連線到新的版控伺服器，例如：安裝 MSSCCI Provider 2010 但想要與 Azure DevOps Server 2022 連線，唯一解法就是安裝 Team Explorer 2013 + MSSCCI Provider 2013。</p>
@@ -778,7 +778,7 @@
 <img  
                        lazyload
                        alt="image"
-                       data-src="/post/2024/10/vb-connect-to-azure-devops/not-a-recognized-identity.png"
+                       data-src="/post/2025/04/vb-connect-to-azure-devops/not-a-recognized-identity.png"
                         class=""
                  >
 <p>在實務情境可能還會遇到其他各種版本組合，經此次嘗試後，確認 VB5/VB6 都還可以與 Azure DevOps Server 2022 的 TFVC 版控進行整合，這邊有篇文章將各種組合條列得很詳盡，也提供大家參考。</p>
@@ -794,6 +794,93 @@
         <tag>TFS</tag>
         <tag>Team Explorer</tag>
         <tag>MSSCCI Provider</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用 Playwright 測試框架 - 執行階段 (.NET)</title>
+    <url>/post/2025/05/how-to-use-playwright-2/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2024/11/how-to-use-playwright-1/playwright.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p><a href="/post/2024/11/how-to-use-playwright-1">上一篇文章</a>提到了如何使用 Playwright 的測試產生器(codegen) 錄製腳本，除了可以運用在自動化測試之外，舉凡想要透過程式來自動執行的一連串行為，都可以透過 Playwright 來完成，本篇文章使用 Windows Sandbox 全新環境來執行由 .NET 8 撰寫的 Console 程式，讓大家知道建置產生執行檔後，還需要哪些必要的環境設定才可以正常讓程式運作。<br>
+<br></p>
+<span id="more"></span>
+<br>
+<h2 id="安裝-NET-Runtime">安裝 .NET Runtime</h2>
+<p>不論是以前的 .NET Framework 或是現在的 .NET Core，在執行時都需要安裝 .NET Runtime 才能順利運行開發好的程式，以下圖 Console 專案建置後的執行檔為例，畫面還會很貼心的指引我們目前的需求版本和下載路徑，完成安裝後便可順利執行 Console 程式。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/dotnet8.png"
+                        class=""
+                 >
+<br>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://dotnet.microsoft.com/download"  target="_blank">⁍ 下載 .NET<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h2 id="安裝-PowerShell">安裝 PowerShell</h2>
+<p>如果是全新的環境，安裝完 .NET Runtime 後應該還會出現如下圖的錯誤，主要原因是：</p>
+<ul>
+<li>pwsh 找不到路徑 (或是沒有安裝 PowerShell)</li>
+<li>缺少 Web Driver (Edge/Chrome/Firefox)</li>
+</ul>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/pwsh.png"
+                        class=""
+                 >
+<br>
+若要安裝 PowerShell 可以依據自己的作業系統參考下列連結：
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5"  target="_blank">⁍ 在 Windows 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-linux?view=powershell-7.5"  target="_blank">⁍ 在 Linux 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-macos?view=powershell-7.5"  target="_blank">⁍ 在 macOS 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h2 id="安裝-WebDriver">安裝 WebDriver</h2>
+<p>在上圖的錯誤訊息中有提到如下指令，路徑中的 netX 要替換為自己使用的版本路徑，而其中的 playwright.ps1 會存在於 .NET 程式建置後的 bin 目錄中，這個 .ps1 的主要用途是在 Windows 環境下執行 Playwright 測試，讓它可以正確找到 Playwright 主程式和相關驅動程式，確認 pwsh 指令可以運作後，就可以接著安裝 WebDriver 了。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pwsh bin/Debug/netX/playwright.ps1 install</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/playwright.png"
+                        class=""
+                 >
+<br>
+若在 install 之後沒有加上任何參數，則會安裝下列預設項目：
+<ul>
+<li>Chromium</li>
+<li>Chromium Headless Shell</li>
+<li>Firefox</li>
+<li>Webkit</li>
+<li>FFMPEG</li>
+</ul>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/install.png"
+                        class=""
+                 >
+<br>
+也可以依自己的需求安裝指定項目，可使用 install -h 查看相關資訊：
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/custom.png"
+                        class=""
+                 >
+<h2 id="總結">總結</h2>
+<p>本文介紹了在全新環境下，如何讓 .NET 8 撰寫的 Playwright 測試程式順利執行，包含安裝 .NET Runtime、PowerShell 及 WebDriver 等必要步驟。只要依照上述流程完成環境設定，就能避免常見的錯誤訊息，順利執行自動化測試。希望這些說明能幫助你在不同平台上快速部署與運行 Playwright 測試專案。</p>
+]]></content>
+      <tags>
+        <tag>Playwright</tag>
       </tags>
   </entry>
 </search>
