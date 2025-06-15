@@ -1,105 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Azure DevOps Services 個別服務</title>
-    <url>/post/2025/04/azure-devops-individual-services/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-individual-services/individual_services.jpg"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p><a href="/post/2024/09/azure-devops-licensing-description">上一篇文章</a>提到了 Azure DevOps 雲端和地端的使用者授權，當我們建立私有專案 (Private project) 且成員數量在 5 個人以下時，甚至可以直接免費使用，從第 6 個人起才需要計價，並具有 1 Free Microsoft-hosted CI/CD 和 1 Free Self-hosted CI/CD 以及 Azure Artifacts 2GB 可用儲存容量。在實務使用情境較複雜時，很有可能就需要再增加個別服務的用量 (例如：Azure Pipelines 平行作業數量)，這次就帶大家瞭解這些個別服務計價的方式。</p>
-<span id="more"></span>
-<br>
-<h2 id="Azure-Pipelines">Azure Pipelines</h2>
-<p>不論我們在 Azure Pipelines 使用文字介面或是圖形介面 (classic editor) 建立 pipeline 腳本內容，其中有個 <strong><code>Agent pools</code></strong> 選項是必要設定，它是用來決定執行階段要把工作 (job) 傳遞到哪個 pool 裡，尋找閒置且符合條件的 <strong>Azure Pipelines agents</strong> 執行個體來執行腳本內容，在 Azure DevOps Services 預設有一個 Microsoft-hosted agent 每個月可以免費使用 1800 分鐘，<mark>但預設無法直接使用</mark>，需要填寫 <strong><a class="link"   href="https://aka.ms/azpipelines-parallelism-request" >Azure DevOps Parallelism Request<i class="fas fa-external-link-alt"></i></a></strong> 表單申請審核通過才行，否則在執行的時候會出現如下錯誤：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-individual-services/azpipelines-parallelism-request.jpg"
-                        class=""
-                 >
-<p>當然我們也可以自己準備機器，在上面安裝 Azure Pipelines agents 程式 (支援 Windows / Linux / macOS)，這就屬於 Self-hosted agent。由於是自己準備的執行個體，所以使用時數不受限制，但每個工作 (job) 都是經由佇列 (queue) 的方式排隊一個一個執行，若需要同時間處理一個以上的工作 (job)，則需要再增加執行個體才行 (不論是 Microsoft-hosted 或是 Self-hosted)，基於這樣的概念，以下就是我們所關心的計價標準：</p>
-<ul>
-<li>每一個 Microsoft-hosted 每個月有 1800 分鐘可以使用。</li>
-<li>每增加一個額外的 Microsoft-hosted CI/CD 每個月是 USD $40 (大約 <strong>TWD $1279</strong>)。</li>
-<li>每增加一個額外的 Self-hosted CI/CD 每個月是 USD $15 (大約 <strong>TWD $479</strong>)。</li>
-<li><mark>如果在地端自建 Azure DevOps Server 則僅能使用 Self-hosted agent，需要更多的平行作業就自己多準備幾個執行個體，不用再額外採購什麼授權。</mark></li>
-</ul>
-<h2 id="Azure-Artifacts">Azure Artifacts</h2>
-<p>在軟體專案開發過程中，多少都會用到一些公司內部自行開發，或是外部來源提供的套件，一般常見的套件來源像是：NuGet、npm、Maven、Python…等，Azure Artifacts 可以將這些外部提供來源設為上游來源 (Upstream sources)，或是自己建立一個套件提供來源 (Feeds)，讓專案團隊成員在內部環境取用，儲存容量在 2GB 以內是免費，若超過則依下列區間以量計價：</p>
-<table>
-<thead>
-<tr>
-<th>儲存容量</th>
-<th>每GB (USD)</th>
-<th>每GB (TWD)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0 - 2 GB</td>
-<td>免費</td>
-<td>免費</td>
-</tr>
-<tr>
-<td>2 - 10 GB</td>
-<td>$2</td>
-<td>大約 $63.98</td>
-</tr>
-<tr>
-<td>10 - 100 GB</td>
-<td>$1</td>
-<td>大約 $31.99</td>
-</tr>
-<tr>
-<td>100 - 1000 GB</td>
-<td>$0.50</td>
-<td>大約 $16.00</td>
-</tr>
-<tr>
-<td>1000 GB 以上</td>
-<td>$0.25</td>
-<td>大約 NT$8.00</td>
-</tr>
-</tbody>
-</table>
-<h2 id="GitHub-Advanced-Security-for-Azure-DevOps">GitHub Advanced Security for Azure DevOps</h2>
-<p>以往我們想要對專案程式碼執行原碼檢測、套件掃描等作業，首先要考量的可能是產品的價錢，或是委外檢測的費用，比較克難一點還可以尋找免費的掃描檢測工具(例如只是想要出個報告 🙈 🙊)，若想要整合到 CI 流程裡，還要得額外花一番功夫，但基本上只要可以透過 command line 來執行，都是可以用 Azure Pipelines 整合起來的。而自從 <strong>GitHub Advanced Security for Azure DevOps</strong> 正式啟用後，省掉了這部份不少麻煩，除了原生的與 Azure DevOps Services 整合 <mark>(不包含地端 Azure DevOps Server)</mark>，也可以與 <strong>Microsoft Defender for Cloud</strong> 串接，它可以做到：</p>
-<ul>
-<li><strong>Code Scanning</strong>：找出原始程式碼中的漏洞並提供修復指導。</li>
-<li><strong>Secret Scanning</strong>：識別 secret 並阻止開發人員將 secret 推送到程式碼儲存庫。</li>
-<li><strong>Dependency Scanning</strong>：發現 open-source 依賴項目的漏洞，並為開發人員自動發出更新警報。</li>
-</ul>
-<p>在 Azure Pipelines 也提供了下列對應的 task 以便我們完善整個 <strong><code>DevSecOps</code></strong> 流程：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-individual-services/github_acvanced_security.jpg"
-                        class=""
-                 >
-<p>這個功能可以由每個 git 的儲存庫 (repositry) 個別設定是否啟用 (不支援 TFVC 版控)，計價的原則是：每一個活躍的提交者 (active committer) 每個月 <strong>USD $49</strong> (大約 <strong>TWD $1567</strong>)，在<mark>同一個 Azure Subscription</mark> 中，儲存庫過去 <strong><code>90天</code></strong> 的紀錄中，同一個提交者(committer)在不同專案提交程式碼只會算 1 個數量，不會被重複計價。當我們在 git 儲存庫開啟 <strong><code>Advanced Security</code></strong> 功能時，Azure DevOps 在畫面上也會先幫我們基於上述原則計算有多少使用者會被計費，確定要使用再點選 <strong><code>Begin billing</code></strong> 即可：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-individual-services/unique_committers.jpg"
-                        class=""
-                 >
-<p>如同 Azure 各種服務的計價方式，都是<strong>隨付即用 (pay-as-you-go)</strong>，啟用 <strong>GitHub Advanced Security for Azure DevOps</strong> 搭配 CI 流程可以讓我們在開發階段及早發現問題與漏洞，有效減少技術債和後期投入修改的人力成本，跟測試左移 (Shift-Left Testing) 的概念有點雷同，也可以省下大筆購入源碼檢測軟體的費用，大家可以參考看看。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/"  target="_blank">⁍ Azure DevOps 定價<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://azure.microsoft.com/zh-tw/products/devops/github-advanced-security"  target="_blank">⁍ 適用於 Azure DevOps 的 GitHub Advanced Security<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml"  target="_blank">⁍ 設定適用於 Azure DevOps 的 GitHub Advanced Security<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>]]></content>
-      <tags>
-        <tag>Azure DevOps</tag>
-        <tag>授權</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>使用 Azure DevOps REST API 建立專案</title>
     <url>/post/2025/04/azure-devops-create-project/</url>
     <content><![CDATA[<img    
@@ -221,6 +122,188 @@
       <tags>
         <tag>Azure DevOps</tag>
         <tag>Azure DevOps REST API</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Azure DevOps Services / Server 使用者授權</title>
+    <url>/post/2025/04/azure-devops-licensing-description/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-licensing-description/affliction512.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>Azure DevOps 是一個可以讓我們有效管理軟體開發流程，同時維持良好團隊協作的強大平台，除了可以直接使用雲端 Azure DevOps Services，也可以在地端自建 Azure DevOps Server 讓企業內部環境也能提供相同的服務，但許多人遇到的第一個問題是如何購買授權才能讓成本效益最大化？這篇文章主要協助大家瞭解 Azure DevOps 在授權與定價上的內容。</p>
+<br>
+<span id="more"></span>
+<br>
+<h2 id="Azure-DevOps-Services">Azure DevOps Services</h2>
+<p>Azure DevOps 有五個主要功能：</p>
+<ol>
+<li><strong>Azure Boards</strong> (專案管理、看板管理、Scrum / Kanban、討論議題)</li>
+<li><strong>Azure Repos</strong> (程式碼版控 TFVC/git)</li>
+<li><strong>Azure Pipelines</strong> (自動化建置部署)</li>
+<li><strong>Azure Artifacts</strong> (套件管理、自建套件來源)</li>
+<li><strong>Azure Test Plans</strong> (建立與執行測試計劃)</li>
+</ol>
+<h3 id="Basic-Plan-與-Basic-Test-Plans">Basic Plan 與 Basic + Test Plans</h3>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-licensing-description/Basic_TestPlans.jpg"
+                        class=""
+                 >
+<p>在 Azure DevOps 定價頁面中的 <strong><code>Basic Plan</code></strong> 包含了前面四項功能，費用是 <strong>USD $6</strong> (每個人/月)，折合台幣就要看當月的匯率計算 (例如目前是 TWD <strong>$191</strong>)；一般來說，在專案團隊裡並不是每個成員都需要建立與管理測試計劃，所以 <strong>Azure Test Plans</strong> 這項功能額外被拆出來計價，若選擇 <strong><code>Basic + Test Plans</code></strong> 費用則是 <strong>USD $52</strong> (大約 TWD <strong>$1663</strong>)。</p>
+<h3 id="Stakeholder">Stakeholder</h3>
+<p>除了上述兩種存取層級(Access level)之外，還有一種是免費、可使用<mark>有限功能</mark>的 <strong><code>Stakeholder</code></strong>，比較簡單的來說，這個存取層級可以：</p>
+<ul>
+<li>建立 / 編輯 / 查詢工作項目</li>
+<li>檢視 / 核准 pipeline</li>
+<li>檢視測試計劃</li>
+</ul>
+<p>如同它的名稱一樣：想要瞭解專案資訊，但又不需要實際參與開發實作細節(例如：單位主管、使用單位…等)，就不用再額外採購授權，使用 <strong><code>Stakeholder</code></strong> 這個存取層級就行。若需要 <strong>程式碼版控</strong>、<strong>建立/編輯 pipeline</strong>、<strong>執行測試計劃</strong> 那就不用猶豫了，至少一定需要 <strong><code>Basic</code></strong> 存取層級才能使用，這些資訊可以參閱下列連結，利用頁面裡的幣別下拉選單、拖曳數量捲軸來即時檢視費用估算，頁面最後還有一個針對不同存取層級的功能比較表，方便大家查閱。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/"  target="_blank">⁍ Azure DevOps 定價<i class="fas fa-external-link-alt"></i></a>
+<br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/organizations/security/stakeholder-access?view=azure-devops"  target="_blank">⁍ 項目關係人存取快速參考<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h3 id="Visual-Studio-Subscription">Visual Studio Subscription</h3>
+<p>若目前已經具備 <strong>Visual Studio monthly subscription</strong> (注意：<mark>訂閱制</mark>才行)，它也包含了 Azure DevOps 的使用授權，基本上可以理解為：<strong>Visual Studio Professional monthly subscription</strong> 包含了 <strong><code>Basic Plan</code></strong>，而 <strong>Visual Studio Enterprise monthly subscription</strong> 包含了 <strong><code>Basic + Test Plans</code></strong>，詳細功能支援列表可以參考下列連結。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/organizations/security/access-levels?view=azure-devops"  target="_blank">⁍ 關於存取層級<i class="fas fa-external-link-alt"></i></a>
+<br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=ms.vs-professional-monthly"  target="_blank">⁍ Visual Studio Professional monthly subscription<i class="fas fa-external-link-alt"></i></a>
+<br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=ms.vs-enterprise-monthly"  target="_blank">⁍ Visual Studio Enterprise monthly subscription<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h2 id="Azure-DevOps-Server">Azure DevOps Server</h2>
+<p>要在地端環境自建 Azure DevOps Server 則需要先準備好 SQL Server 環境，兩者在版本上有相依性，例如：Azure DevOps Server 2022 需要搭配 SQL Server 2019 以上 (不支援 Linux 上的 SQL Server)，其他版本與相關需求建議可以參考下列連結。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/server/requirements?view=azure-devops-2022"  target="_blank">⁍ Azure DevOps 內部部署的需求<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<p>以授權的概念來說，安裝幾台 Azure DevOps Server 就需要幾個 Server CAL，可以透過下列幾種方式取得合法授權：</p>
+<ul>
+<li>傳統購買 (<mark>3年SA</mark>) Azure DevOps <mark>Server</mark> CAL</li>
+<li>Visual Studio Professional / Enterprise monthly subscription (包含 Azure DevOps Server CAL)</li>
+</ul>
+<br>
+<p>地端的使用者授權可以由下列幾種方式取得合法授權：</p>
+<ul>
+<li>傳統購買 (<mark>3年SA</mark>) Azure DevOps User CAL (包含 <strong><code>Basic + Test Plans</code></strong> 所有功能)</li>
+<li>Visual Studio Professional / Enterprise monthly subscription (包含 Azure DevOps <mark>User</mark> CAL)</li>
+<li>Azure DevOps <strong><code>Basic</code></strong> 或 <strong><code>Basic + Test Plans</code></strong> (雲端的每人每月購買方式，也包含了地端的使用者授權)</li>
+</ul>
+<br>
+<p>以上是對於 Azure DevOps Services / Server 授權的整理說明，若大家還有其他不瞭解的地方，歡迎透過下方留言討論。 😃</p>
+]]></content>
+      <tags>
+        <tag>Azure DevOps</tag>
+        <tag>授權</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Azure DevOps Services 個別服務</title>
+    <url>/post/2025/04/azure-devops-individual-services/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-individual-services/individual_services.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p><a href="/post/2024/09/azure-devops-licensing-description">上一篇文章</a>提到了 Azure DevOps 雲端和地端的使用者授權，當我們建立私有專案 (Private project) 且成員數量在 5 個人以下時，甚至可以直接免費使用，從第 6 個人起才需要計價，並具有 1 Free Microsoft-hosted CI/CD 和 1 Free Self-hosted CI/CD 以及 Azure Artifacts 2GB 可用儲存容量。在實務使用情境較複雜時，很有可能就需要再增加個別服務的用量 (例如：Azure Pipelines 平行作業數量)，這次就帶大家瞭解這些個別服務計價的方式。</p>
+<span id="more"></span>
+<br>
+<h2 id="Azure-Pipelines">Azure Pipelines</h2>
+<p>不論我們在 Azure Pipelines 使用文字介面或是圖形介面 (classic editor) 建立 pipeline 腳本內容，其中有個 <strong><code>Agent pools</code></strong> 選項是必要設定，它是用來決定執行階段要把工作 (job) 傳遞到哪個 pool 裡，尋找閒置且符合條件的 <strong>Azure Pipelines agents</strong> 執行個體來執行腳本內容，在 Azure DevOps Services 預設有一個 Microsoft-hosted agent 每個月可以免費使用 1800 分鐘，<mark>但預設無法直接使用</mark>，需要填寫 <strong><a class="link"   href="https://aka.ms/azpipelines-parallelism-request" >Azure DevOps Parallelism Request<i class="fas fa-external-link-alt"></i></a></strong> 表單申請審核通過才行，否則在執行的時候會出現如下錯誤：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-individual-services/azpipelines-parallelism-request.jpg"
+                        class=""
+                 >
+<p>當然我們也可以自己準備機器，在上面安裝 Azure Pipelines agents 程式 (支援 Windows / Linux / macOS)，這就屬於 Self-hosted agent。由於是自己準備的執行個體，所以使用時數不受限制，但每個工作 (job) 都是經由佇列 (queue) 的方式排隊一個一個執行，若需要同時間處理一個以上的工作 (job)，則需要再增加執行個體才行 (不論是 Microsoft-hosted 或是 Self-hosted)，基於這樣的概念，以下就是我們所關心的計價標準：</p>
+<ul>
+<li>每一個 Microsoft-hosted 每個月有 1800 分鐘可以使用。</li>
+<li>每增加一個額外的 Microsoft-hosted CI/CD 每個月是 USD $40 (大約 <strong>TWD $1279</strong>)。</li>
+<li>每增加一個額外的 Self-hosted CI/CD 每個月是 USD $15 (大約 <strong>TWD $479</strong>)。</li>
+<li><mark>如果在地端自建 Azure DevOps Server 則僅能使用 Self-hosted agent，需要更多的平行作業就自己多準備幾個執行個體，不用再額外採購什麼授權。</mark></li>
+</ul>
+<h2 id="Azure-Artifacts">Azure Artifacts</h2>
+<p>在軟體專案開發過程中，多少都會用到一些公司內部自行開發，或是外部來源提供的套件，一般常見的套件來源像是：NuGet、npm、Maven、Python…等，Azure Artifacts 可以將這些外部提供來源設為上游來源 (Upstream sources)，或是自己建立一個套件提供來源 (Feeds)，讓專案團隊成員在內部環境取用，儲存容量在 2GB 以內是免費，若超過則依下列區間以量計價：</p>
+<table>
+<thead>
+<tr>
+<th>儲存容量</th>
+<th>每GB (USD)</th>
+<th>每GB (TWD)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 - 2 GB</td>
+<td>免費</td>
+<td>免費</td>
+</tr>
+<tr>
+<td>2 - 10 GB</td>
+<td>$2</td>
+<td>大約 $63.98</td>
+</tr>
+<tr>
+<td>10 - 100 GB</td>
+<td>$1</td>
+<td>大約 $31.99</td>
+</tr>
+<tr>
+<td>100 - 1000 GB</td>
+<td>$0.50</td>
+<td>大約 $16.00</td>
+</tr>
+<tr>
+<td>1000 GB 以上</td>
+<td>$0.25</td>
+<td>大約 NT$8.00</td>
+</tr>
+</tbody>
+</table>
+<h2 id="GitHub-Advanced-Security-for-Azure-DevOps">GitHub Advanced Security for Azure DevOps</h2>
+<p>以往我們想要對專案程式碼執行原碼檢測、套件掃描等作業，首先要考量的可能是產品的價錢，或是委外檢測的費用，比較克難一點還可以尋找免費的掃描檢測工具(例如只是想要出個報告 🙈 🙊)，若想要整合到 CI 流程裡，還要得額外花一番功夫，但基本上只要可以透過 command line 來執行，都是可以用 Azure Pipelines 整合起來的。而自從 <strong>GitHub Advanced Security for Azure DevOps</strong> 正式啟用後，省掉了這部份不少麻煩，除了原生的與 Azure DevOps Services 整合 <mark>(不包含地端 Azure DevOps Server)</mark>，也可以與 <strong>Microsoft Defender for Cloud</strong> 串接，它可以做到：</p>
+<ul>
+<li><strong>Code Scanning</strong>：找出原始程式碼中的漏洞並提供修復指導。</li>
+<li><strong>Secret Scanning</strong>：識別 secret 並阻止開發人員將 secret 推送到程式碼儲存庫。</li>
+<li><strong>Dependency Scanning</strong>：發現 open-source 依賴項目的漏洞，並為開發人員自動發出更新警報。</li>
+</ul>
+<p>在 Azure Pipelines 也提供了下列對應的 task 以便我們完善整個 <strong><code>DevSecOps</code></strong> 流程：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-individual-services/github_acvanced_security.jpg"
+                        class=""
+                 >
+<p>這個功能可以由每個 git 的儲存庫 (repositry) 個別設定是否啟用 (不支援 TFVC 版控)，計價的原則是：每一個活躍的提交者 (active committer) 每個月 <strong>USD $49</strong> (大約 <strong>TWD $1567</strong>)，在<mark>同一個 Azure Subscription</mark> 中，儲存庫過去 <strong><code>90天</code></strong> 的紀錄中，同一個提交者(committer)在不同專案提交程式碼只會算 1 個數量，不會被重複計價。當我們在 git 儲存庫開啟 <strong><code>Advanced Security</code></strong> 功能時，Azure DevOps 在畫面上也會先幫我們基於上述原則計算有多少使用者會被計費，確定要使用再點選 <strong><code>Begin billing</code></strong> 即可：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-individual-services/unique_committers.jpg"
+                        class=""
+                 >
+<p>如同 Azure 各種服務的計價方式，都是<strong>隨付即用 (pay-as-you-go)</strong>，啟用 <strong>GitHub Advanced Security for Azure DevOps</strong> 搭配 CI 流程可以讓我們在開發階段及早發現問題與漏洞，有效減少技術債和後期投入修改的人力成本，跟測試左移 (Shift-Left Testing) 的概念有點雷同，也可以省下大筆購入源碼檢測軟體的費用，大家可以參考看看。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/"  target="_blank">⁍ Azure DevOps 定價<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://azure.microsoft.com/zh-tw/products/devops/github-advanced-security"  target="_blank">⁍ 適用於 Azure DevOps 的 GitHub Advanced Security<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml"  target="_blank">⁍ 設定適用於 Azure DevOps 的 GitHub Advanced Security<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>]]></content>
+      <tags>
+        <tag>Azure DevOps</tag>
+        <tag>授權</tag>
       </tags>
   </entry>
   <entry>
@@ -567,173 +650,84 @@
       </tags>
   </entry>
   <entry>
-    <title>Azure DevOps Services / Server 使用者授權</title>
-    <url>/post/2025/04/azure-devops-licensing-description/</url>
+    <title>MSTest 生命週期與常用屬性</title>
+    <url>/post/2025/04/mstest-attribute-lifecycle/</url>
     <content><![CDATA[<img    
                        lazyload
                        alt="image"
-                       data-src="/post/2025/04/azure-devops-licensing-description/affliction512.jpg"
+                       data-src="/post/2025/04/mstest-attribute-lifecycle/MSTest.png"
                          align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
                  > 
-<p>Azure DevOps 是一個可以讓我們有效管理軟體開發流程，同時維持良好團隊協作的強大平台，除了可以直接使用雲端 Azure DevOps Services，也可以在地端自建 Azure DevOps Server 讓企業內部環境也能提供相同的服務，但許多人遇到的第一個問題是如何購買授權才能讓成本效益最大化？這篇文章主要協助大家瞭解 Azure DevOps 在授權與定價上的內容。</p>
-<br>
+<p>在軟體開發過程中，妥善進行測試可以協助我們確保程式碼的功能性與可靠性，不論是最小範圍的<strong>單元測試 (Unit Tests)</strong> 或是模擬實際用戶的<strong>端對端測試(E2E Tests)</strong>，都是品質把關的重要防線，而 MSTest 除了被整合在 Visual Studio 中，簡化了 .NET 應用程式建立和執行單元測試的過程，也可以透過 Azure Pipelines 將既有的測試專案整合到 CI 流程裡，這篇主要帶大家瞭解 MSTest 生命週期以及常用屬性，以便大家更能掌握自己的測試流程。</p>
 <span id="more"></span>
 <br>
-<h2 id="Azure-DevOps-Services">Azure DevOps Services</h2>
-<p>Azure DevOps 有五個主要功能：</p>
-<ol>
-<li><strong>Azure Boards</strong> (專案管理、看板管理、Scrum / Kanban、討論議題)</li>
-<li><strong>Azure Repos</strong> (程式碼版控 TFVC/git)</li>
-<li><strong>Azure Pipelines</strong> (自動化建置部署)</li>
-<li><strong>Azure Artifacts</strong> (套件管理、自建套件來源)</li>
-<li><strong>Azure Test Plans</strong> (建立與執行測試計劃)</li>
-</ol>
-<h3 id="Basic-Plan-與-Basic-Test-Plans">Basic Plan 與 Basic + Test Plans</h3>
+<h2 id="前言">前言</h2>
+<p><strong>測試類別(TestClass)</strong> 和 <strong>測試方法(TestMethod)</strong> 是 MSTest 核心要素，一個 TestClass 可以包含一個或多個 TestMethod，而我們實際要執行測試的內容就是寫在每個 TestMethod 裡，一般大家比較熟知的 3A Principle (<strong>A</strong>rrange-<strong>A</strong>ct-<strong>A</strong>ssert) 可以幫助我們快速聚焦測試方法裡面該撰寫的內容，簡單範例如下：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyTestClass</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod1</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Arrange: 初始化測試過程中所需要的變數、物件或其他設定。</span></span><br><span class="line">        <span class="built_in">int</span> a = <span class="number">1</span>;</span><br><span class="line">        <span class="built_in">int</span> b = <span class="number">2</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// Act: 實際測試操作、內容。</span></span><br><span class="line">        <span class="built_in">int</span> ans = a + b;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Assert: 驗證操作是否產生預期結果。</span></span><br><span class="line">        <span class="built_in">int</span> excepted = <span class="number">3</span>;</span><br><span class="line">        Assert.AreEqual(expected, actual);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="測試組件">測試組件</h2>
+<p>一個 MSTest 專案建置完成後會產生一個組件(Assembly)，白話來說就是 bin 目錄的 dll 檔案，其中可以包含多個 TestClass，而一個 TestClass 裡可以有各自的 TestMethod (層級如下圖)，此外，我們會使用 <strong><code>[TestClass]</code></strong> 和 <strong><code>[TestMethod]</code></strong> 屬性項目在 MSTest 專案標記程式碼中哪些是測試類別與測試方法，下列四種寫法都代表相同的意思：</p>
+<ul>
+<li>[TestClass()]</li>
+<li>[TestClassAttribute()]</li>
+<li>[TestClass]</li>
+<li>[TestClassAttribute]</li>
+</ul>
+<div style="max-width: 800px; text-align:center;">
+<pre class="mermaid">flowchart LR
+  subgraph 測試組件 Assembly 
+    subgraph 測試類別 TestClass 
+        subgraph 測試方法 TestMethod 
+            Test1 --> Test2 --> TestN
+        end
+    end    
+  end</pre>
+</div>
+<h2 id="生命週期">生命週期</h2>
+<p>當我們實際在撰寫或執行多個測試時，經常需要在不同情境時初始化或清除測試資料，而上述提到的 <strong>組件層級</strong> / <strong>類別層級</strong> / <strong>測試層級</strong> 都提供了 <mark>Initialize</mark> 和 <mark>Cleanup</mark> 屬性讓我們可以在適當的時機會處理對應的邏輯。在下列範例程式中：TestProject1 組件中包含了兩個類別：Calculator(加法、減法運算)，CaculatorTests(測試類別)，在測試類別中撰寫了兩個 TestMethod (Test_AddMethod 和 Test_SubtractMethod)，同時也加上了 Constructor / Dispose、AssemblyInit / AssemblyCleanup、ClassInit / Cleanup、TestInit / TestCleanup，大家應該不難發現，這些函式都是成對的，可以直接參考下列範例程式碼與執行結果，瞭解一個測試組件從開始執行到結束歷經了哪些階段。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Diagnostics;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Calculator</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Add</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> a + b;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Subtract</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> a - b;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">CalculatorTests</span> : <span class="title">IDisposable</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> Calculator calculator;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">CalculatorTests</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;CalculatorTests - Constructor&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在整個測試程序集開始時執行一次</span></span><br><span class="line">        [<span class="meta">AssemblyInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">AssemblyInit</span>(<span class="params">TestContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;AssemblyInitialize: 測試程序集初始化。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在所有測試執行前初始化，只執行一次</span></span><br><span class="line">        [<span class="meta">ClassInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ClassInit</span>(<span class="params">TestContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;ClassInitialize: 初始化 Calculator 類別實例。&quot;</span>);</span><br><span class="line">            calculator = <span class="keyword">new</span> Calculator();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在每個測試方法執行前調用</span></span><br><span class="line">        [<span class="meta">TestInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestInit</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;TestInitialize: 開始執行新的測試。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 測試加法功能</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">TestCategory(<span class="string">&quot;CalculatorTests&quot;</span>)</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Test_AddMethod</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;Test_AddMethod: 測試加法運算。&quot;</span>);</span><br><span class="line">            <span class="built_in">int</span> result = calculator.Add(<span class="number">5</span>, <span class="number">3</span>);</span><br><span class="line">            Assert.AreEqual(<span class="number">8</span>, result, <span class="string">&quot;加法結果不正確&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 測試減法功能</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">TestCategory(<span class="string">&quot;CalculatorTests&quot;</span>)</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Test_SubtractMethod</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;Test_SubtractMethod: 測試減法運算。&quot;</span>);</span><br><span class="line">            <span class="built_in">int</span> result = calculator.Subtract(<span class="number">10</span>, <span class="number">5</span>);</span><br><span class="line">            Assert.AreEqual(<span class="number">5</span>, result, <span class="string">&quot;減法結果不正確&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在每個測試方法執行後調用</span></span><br><span class="line">        [<span class="meta">TestCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;TestCleanup: 測試完成，清理測試上下文。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在所有測試執行完畢後清理，只執行一次</span></span><br><span class="line">        [<span class="meta">ClassCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ClassCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;ClassCleanup: 清理 Calculator 類別實例。&quot;</span>);</span><br><span class="line">            <span class="comment">//calculator = null;</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在整個測試程序集結束時執行一次</span></span><br><span class="line">        [<span class="meta">AssemblyCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">AssemblyCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;AssemblyCleanup: 測試程序集清理。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Dispose</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;CalculatorTests - Dispose&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <img  
                        lazyload
                        alt="image"
-                       data-src="/post/2025/04/azure-devops-licensing-description/Basic_TestPlans.jpg"
+                       data-src="/post/2025/04/mstest-attribute-lifecycle/console-run-test.png"
                         class=""
                  >
-<p>在 Azure DevOps 定價頁面中的 <strong><code>Basic Plan</code></strong> 包含了前面四項功能，費用是 <strong>USD $6</strong> (每個人/月)，折合台幣就要看當月的匯率計算 (例如目前是 TWD <strong>$191</strong>)；一般來說，在專案團隊裡並不是每個成員都需要建立與管理測試計劃，所以 <strong>Azure Test Plans</strong> 這項功能額外被拆出來計價，若選擇 <strong><code>Basic + Test Plans</code></strong> 費用則是 <strong>USD $52</strong> (大約 TWD <strong>$1663</strong>)。</p>
-<h3 id="Stakeholder">Stakeholder</h3>
-<p>除了上述兩種存取層級(Access level)之外，還有一種是免費、可使用<mark>有限功能</mark>的 <strong><code>Stakeholder</code></strong>，比較簡單的來說，這個存取層級可以：</p>
+<h2 id="常用屬性">常用屬性</h2>
+<h3 id="逾時設定-TimeoutAttribute">逾時設定 TimeoutAttribute</h3>
+<p><strong><code>TimeoutAttribute</code></strong> 用於設定測試方法的最大執行時間（以<strong>毫秒</strong>為單位）。如果執行測試超過指定的時間限制，測試則會失敗，這個屬性可以讓我們避免測試執行時間過長，或是為某些測試情境設定一個逾時期限，如下範例：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"><span class="keyword">using</span> System.Threading;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">TimeoutExampleTests</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 這個測試會在 500 毫秒內完成，所以它會通過</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">Timeout(1000)</span>]  <span class="comment">// 設置 1 秒的超時</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod_WithSufficientTime</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">500</span>);  <span class="comment">// 模擬較短的處理時間</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);  <span class="comment">// 假設這是測試邏輯</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 這個測試會因為超時而失敗</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">Timeout(1000)</span>]  <span class="comment">// 設置 1 秒的超時</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod_WithTimeout</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1500</span>);  <span class="comment">// 模擬超過1秒的處理時間</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);  <span class="comment">// 假設這是測試邏輯</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="平行測試-ParallelizeAttribute">平行測試 ParallelizeAttribute</h3>
+<p>自 MSTest v2 起，提供了兩個關於平行測試的屬性：</p>
 <ul>
-<li>建立 / 編輯 / 查詢工作項目</li>
-<li>檢視 / 核准 pipeline</li>
-<li>檢視測試計劃</li>
+<li><strong><code>ParallelizeAttribute</code></strong>：可以應用於類別或測試集來啟用平行測試。</li>
+<li><strong><code>DoNotParallelizeAttribute</code></strong>：可以應用於個別測試方法來<mark>禁止</mark>它與其他測試並行執行。</li>
 </ul>
-<p>如同它的名稱一樣：想要瞭解專案資訊，但又不需要實際參與開發實作細節(例如：單位主管、使用單位…等)，就不用再額外採購授權，使用 <strong><code>Stakeholder</code></strong> 這個存取層級就行。若需要 <strong>程式碼版控</strong>、<strong>建立/編輯 pipeline</strong>、<strong>執行測試計劃</strong> 那就不用猶豫了，至少一定需要 <strong><code>Basic</code></strong> 存取層級才能使用，這些資訊可以參閱下列連結，利用頁面裡的幣別下拉選單、拖曳數量捲軸來即時檢視費用估算，頁面最後還有一個針對不同存取層級的功能比較表，方便大家查閱。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"><span class="keyword">using</span> System.Threading;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    [<span class="meta">Parallelize(Workers = 2, Scope = ExecutionScope.MethodLevel)</span>]  <span class="comment">// 啟用並行，指定最多兩個工作線程</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ParallelTests</span></span><br><span class="line">    &#123;</span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod1</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod2</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">9</span>, <span class="number">3</span> * <span class="number">3</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 禁止這個方法與其他測試並行執行</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">DoNotParallelize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod3_DoNotParallelize</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">15</span>, <span class="number">5</span> * <span class="number">3</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong><code>[Parallelize(Workers = 2, Scope = ExecutionScope.MethodLevel)]</code></strong>：
+<ul>
+<li>Workers = 2 表示最多使用 2 個執行緒來執行平行測試。</li>
+<li>Scope = ExecutionScope.MethodLevel 表示在方法層級平行測試，代表每個測試方法可以平行執行；如果想要在類別層級，可以設定為 ExecutionScope.ClassLevel。</li>
+</ul>
+</li>
+<li>TestMethod1 和 TestMethod2：<br>
+因為類別層級已經使用 Parallelize 屬性，並且設定 Workers = 2 表示這兩個測試方法會在執行緒池裡平行執行。</li>
+<li>TestMethod3_DoNotParallelize：<br>
+這個方法加了 <strong><code>[DoNotParallelize]</code></strong>，所以它<mark>不會</mark>與其他方法同時執行，當 TestMethod3_DoNotParallelize 執行時，其他平行測試會暫停，直到這個測試完成。</li>
+</ul>
+<h2 id="後記">後記</h2>
+<p>MSTest 從推出至今已經來到了 v3，從一開始只能在 Windows 平台上運作，隨著 .NET Framework 的演進，也逐步支援跨平台運行，特別是在 .NET Core 和 .NET 5 之後，MSTest 成為了 .NET 生態系中一個可靠且簡單易用的測試框架。它不僅適合快速撰寫單元測試，還能與多種持續整合和部署工具無縫結合，例如：Azure DevOps 和 GitHub Actions。</p>
+<p>由於應用程式複雜度日益提高，MSTest 從 v2 開始也提供了平行測試，允許多個測試同時執行，這不僅加快了測試速度，也提高了 CI/CD 的效能。平行測試使開發人員能夠在不影響測試完整性的前提下，顯著縮短測試週期，對大型專案尤為重要。此外，MSTest 也包含：數據驅動測試、生命週期管理、異常處理測試等，這讓我們能夠更全面地驗證應用程式的功能和效能。</p>
+<p>MSTest 的易用性使得它適合不同規模的專案，加上 Visual Studio 開發工具與 Azure DevOps Services 的支援，不論是小型開發團隊或是大型企業應用，都能輕鬆採用，為軟體開發專案品質把關，也讓整個 DevOps 流程更加完善。</p>
 <div class="tips">
 <font color="black">
-<a class="link"   href="https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/"  target="_blank">⁍ Azure DevOps 定價<i class="fas fa-external-link-alt"></i></a>
-<br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/organizations/security/stakeholder-access?view=azure-devops"  target="_blank">⁍ 項目關係人存取快速參考<i class="fas fa-external-link-alt"></i></a>
+<a class="link"   href="https://github.com/microsoft/testfx"  target="_blank">⁍ Microsoft Test Framework<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/core/testing/unit-testing-with-mstest?source=recommendations"  target="_blank">⁍ 使用 MSTest 和 .NET 進行 C# 單元測試<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/core/testing/unit-testing-mstest-writing-tests-attributes"  target="_blank">⁍ MSTest 屬性<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://www.meziantou.net/mstest-v2-setup-a-test-project-and-run-tests.htm"  target="_blank">⁍ MSTest v2: Setup a test project and run tests<i class="fas fa-external-link-alt"></i></a>
 </font>
-</div>
-<h3 id="Visual-Studio-Subscription">Visual Studio Subscription</h3>
-<p>若目前已經具備 <strong>Visual Studio monthly subscription</strong> (注意：<mark>訂閱制</mark>才行)，它也包含了 Azure DevOps 的使用授權，基本上可以理解為：<strong>Visual Studio Professional monthly subscription</strong> 包含了 <strong><code>Basic Plan</code></strong>，而 <strong>Visual Studio Enterprise monthly subscription</strong> 包含了 <strong><code>Basic + Test Plans</code></strong>，詳細功能支援列表可以參考下列連結。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/organizations/security/access-levels?view=azure-devops"  target="_blank">⁍ 關於存取層級<i class="fas fa-external-link-alt"></i></a>
-<br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=ms.vs-professional-monthly"  target="_blank">⁍ Visual Studio Professional monthly subscription<i class="fas fa-external-link-alt"></i></a>
-<br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=ms.vs-enterprise-monthly"  target="_blank">⁍ Visual Studio Enterprise monthly subscription<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<h2 id="Azure-DevOps-Server">Azure DevOps Server</h2>
-<p>要在地端環境自建 Azure DevOps Server 則需要先準備好 SQL Server 環境，兩者在版本上有相依性，例如：Azure DevOps Server 2022 需要搭配 SQL Server 2019 以上 (不支援 Linux 上的 SQL Server)，其他版本與相關需求建議可以參考下列連結。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/server/requirements?view=azure-devops-2022"  target="_blank">⁍ Azure DevOps 內部部署的需求<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<p>以授權的概念來說，安裝幾台 Azure DevOps Server 就需要幾個 Server CAL，可以透過下列幾種方式取得合法授權：</p>
-<ul>
-<li>傳統購買 (<mark>3年SA</mark>) Azure DevOps <mark>Server</mark> CAL</li>
-<li>Visual Studio Professional / Enterprise monthly subscription (包含 Azure DevOps Server CAL)</li>
-</ul>
-<br>
-<p>地端的使用者授權可以由下列幾種方式取得合法授權：</p>
-<ul>
-<li>傳統購買 (<mark>3年SA</mark>) Azure DevOps User CAL (包含 <strong><code>Basic + Test Plans</code></strong> 所有功能)</li>
-<li>Visual Studio Professional / Enterprise monthly subscription (包含 Azure DevOps <mark>User</mark> CAL)</li>
-<li>Azure DevOps <strong><code>Basic</code></strong> 或 <strong><code>Basic + Test Plans</code></strong> (雲端的每人每月購買方式，也包含了地端的使用者授權)</li>
-</ul>
-<br>
-<p>以上是對於 Azure DevOps Services / Server 授權的整理說明，若大家還有其他不瞭解的地方，歡迎透過下方留言討論。 😃</p>
-]]></content>
+</div>]]></content>
       <tags>
-        <tag>Azure DevOps</tag>
-        <tag>授權</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用 Playwright 測試框架 - 執行階段 (.NET)</title>
-    <url>/post/2025/05/how-to-use-playwright-2/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p><a href="/post/2024/11/how-to-use-playwright-1">上一篇文章</a>提到了如何使用 Playwright 的測試產生器(codegen) 錄製腳本，除了可以運用在自動化測試之外，舉凡想要透過程式來自動執行的一連串行為，都可以透過 Playwright 來完成，本篇文章使用 Windows Sandbox 全新環境來執行由 .NET 8 撰寫的 Console 程式，讓大家知道建置產生執行檔後，還需要哪些必要的環境設定才可以正常讓程式運作。<br>
-<br></p>
-<span id="more"></span>
-<br>
-<h2 id="安裝-NET-Runtime">安裝 .NET Runtime</h2>
-<p>不論是以前的 .NET Framework 或是現在的 .NET Core，在執行時都需要安裝 .NET Runtime 才能順利運行開發好的程式，以下圖 Console 專案建置後的執行檔為例，畫面還會很貼心的指引我們目前的需求版本和下載路徑，完成安裝後便可順利執行 Console 程式。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/dotnet8.png"
-                        class=""
-                 >
-<br>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://dotnet.microsoft.com/download"  target="_blank">⁍ 下載 .NET<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<h2 id="安裝-PowerShell">安裝 PowerShell</h2>
-<p>如果是全新的環境，安裝完 .NET Runtime 後應該還會出現如下圖的錯誤，主要原因是：</p>
-<ul>
-<li>pwsh 找不到路徑 (或是沒有安裝 PowerShell)</li>
-<li>缺少 WebDriver (Edge/Chrome/Firefox)</li>
-</ul>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/pwsh.png"
-                        class=""
-                 >
-<br>
-若要安裝 PowerShell 可以依據自己的作業系統參考下列連結：
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5"  target="_blank">⁍ 在 Windows 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-linux?view=powershell-7.5"  target="_blank">⁍ 在 Linux 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-macos?view=powershell-7.5"  target="_blank">⁍ 在 macOS 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<h2 id="安裝-WebDriver">安裝 WebDriver</h2>
-<p>在上圖的錯誤訊息中有提到如下指令，路徑中的 <strong><mark>netX</mark></strong> 要替換為自己使用的版本路徑，而其中的 playwright.ps1 會存在於 .NET 程式建置後的 bin 目錄中，這個 .ps1 的主要用途是在 Windows 環境下執行 Playwright 測試，讓它可以正確找到 Playwright 主程式和相關驅動程式，確認 pwsh 指令可以運作後，就可以接著安裝 WebDriver 了。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pwsh bin/Debug/netX/playwright.ps1 install</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/playwright.png"
-                        class=""
-                 >
-<br>
-若在 install 之後沒有加上任何參數，則會安裝下列預設項目：
-<ul>
-<li>Chromium</li>
-<li>Chromium Headless Shell</li>
-<li>Firefox</li>
-<li>Webkit</li>
-<li>FFMPEG</li>
-</ul>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/install.png"
-                        class=""
-                 >
-<br>
-也可以依自己的需求安裝指定項目，可使用 install -h 查看相關資訊：
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/custom.png"
-                        class=""
-                 >
-<h2 id="總結">總結</h2>
-<p>本文介紹了在全新環境下，如何讓 .NET 8 撰寫的 Playwright 測試程式順利執行，包含安裝 .NET Runtime、PowerShell 及 WebDriver 等必要步驟。只要依照上述流程完成環境設定，就能避免常見的錯誤訊息，順利執行自動化測試。希望這些說明能幫助你在不同平台上快速部署與運行 Playwright 測試專案。</p>
-]]></content>
-      <tags>
-        <tag>Playwright</tag>
+        <tag>MSTest</tag>
       </tags>
   </entry>
   <entry>
@@ -836,26 +830,6 @@
 </tr>
 </tbody>
 </table>
-<h3 id="2-x-代理程式">2.x 代理程式</h3>
-<ul>
-<li>以 .NET Core 3.1 為基礎，支援較舊的作業系統（如 Windows 7 SP1、8.1、舊版 Linux 等）。</li>
-<li>2023 年後不再積極維護，僅針對重大安全問題進行個案處理。</li>
-<li>若作業系統不支援 .NET 6，無法升級到 3.x 版本。</li>
-</ul>
-<h3 id="3-x-代理程式">3.x 代理程式</h3>
-<ul>
-<li>以 .NET 6 為基礎，支援較新作業系統（如 Windows 10/11、Ubuntu 18.04+、macOS 10.15 以上等）。</li>
-<li>增加對 Apple ARM 晶片、Ubuntu 22.04、ARM64 Windows 等新平台支援。</li>
-<li>.NET 6 相依性已內建於代理程式安裝包，無需額外安裝。</li>
-<li>只針對 3.x 版本進行安全性與功能修補。</li>
-</ul>
-<h3 id="4-x-代理程式">4.x 代理程式</h3>
-<ul>
-<li>以 .NET 8 為基礎，僅支援最新作業系統（如 Windows 10/11、Ubuntu 20.04/22.04/24.04、macOS 13~15 等）。</li>
-<li>淘汰更多舊版作業系統（如 Windows 7/8.1、Ubuntu 18.04、macOS 10.15/11.0 等）。</li>
-<li>.NET 8 相依性已內建於代理程式安裝包，無需額外安裝。</li>
-<li>只針對 4.x 版本進行安全性與功能修補。</li>
-</ul>
 <h3 id="升級與相容性注意事項">升級與相容性注意事項</h3>
 <p>2.x、3.x、4.x 代理程式的主要差異在於底層 .NET 平台、支援的作業系統範圍、相容性與維護策略，若代理程式執行於不支援的作業系統，將無法升級至新版，且執行管線時會出現錯誤提示，需先升級作業系統才能繼續。每一代代理程式僅針對自身版本進行安全性修補，建議維運團隊定期檢查代理程式與作業系統版本，確保 DevOps 流程穩定且安全。</p>
 <div class="tips">
@@ -969,84 +943,90 @@
       </tags>
   </entry>
   <entry>
-    <title>MSTest 生命週期與常用屬性</title>
-    <url>/post/2025/04/mstest-attribute-lifecycle/</url>
+    <title>使用 Playwright 測試框架 - 執行階段 (.NET)</title>
+    <url>/post/2025/05/how-to-use-playwright-2/</url>
     <content><![CDATA[<img    
                        lazyload
                        alt="image"
-                       data-src="/post/2025/04/mstest-attribute-lifecycle/MSTest.png"
+                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
                          align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
                  > 
-<p>在軟體開發過程中，妥善進行測試可以協助我們確保程式碼的功能性與可靠性，不論是最小範圍的<strong>單元測試 (Unit Tests)</strong> 或是模擬實際用戶的<strong>端對端測試(E2E Tests)</strong>，都是品質把關的重要防線，而 MSTest 除了被整合在 Visual Studio 中，簡化了 .NET 應用程式建立和執行單元測試的過程，也可以透過 Azure Pipelines 將既有的測試專案整合到 CI 流程裡，這篇主要帶大家瞭解 MSTest 生命週期以及常用屬性，以便大家更能掌握自己的測試流程。</p>
+<p><a href="/post/2024/11/how-to-use-playwright-1">上一篇文章</a>提到了如何使用 Playwright 的測試產生器(codegen) 錄製腳本，除了可以運用在自動化測試之外，舉凡想要透過程式來自動執行的一連串行為，都可以透過 Playwright 來完成，本篇文章使用 Windows Sandbox 全新環境來執行由 .NET 8 撰寫的 Console 程式，讓大家知道建置產生執行檔後，還需要哪些必要的環境設定才可以正常讓程式運作。<br>
+<br></p>
 <span id="more"></span>
 <br>
-<h2 id="前言">前言</h2>
-<p><strong>測試類別(TestClass)</strong> 和 <strong>測試方法(TestMethod)</strong> 是 MSTest 核心要素，一個 TestClass 可以包含一個或多個 TestMethod，而我們實際要執行測試的內容就是寫在每個 TestMethod 裡，一般大家比較熟知的 3A Principle (<strong>A</strong>rrange-<strong>A</strong>ct-<strong>A</strong>ssert) 可以幫助我們快速聚焦測試方法裡面該撰寫的內容，簡單範例如下：</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyTestClass</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod1</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Arrange: 初始化測試過程中所需要的變數、物件或其他設定。</span></span><br><span class="line">        <span class="built_in">int</span> a = <span class="number">1</span>;</span><br><span class="line">        <span class="built_in">int</span> b = <span class="number">2</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// Act: 實際測試操作、內容。</span></span><br><span class="line">        <span class="built_in">int</span> ans = a + b;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Assert: 驗證操作是否產生預期結果。</span></span><br><span class="line">        <span class="built_in">int</span> excepted = <span class="number">3</span>;</span><br><span class="line">        Assert.AreEqual(expected, actual);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="測試組件">測試組件</h2>
-<p>一個 MSTest 專案建置完成後會產生一個組件(Assembly)，白話來說就是 bin 目錄的 dll 檔案，其中可以包含多個 TestClass，而一個 TestClass 裡可以有各自的 TestMethod (層級如下圖)，此外，我們會使用 <strong><code>[TestClass]</code></strong> 和 <strong><code>[TestMethod]</code></strong> 屬性項目在 MSTest 專案標記程式碼中哪些是測試類別與測試方法，下列四種寫法都代表相同的意思：</p>
-<ul>
-<li>[TestClass()]</li>
-<li>[TestClassAttribute()]</li>
-<li>[TestClass]</li>
-<li>[TestClassAttribute]</li>
-</ul>
-<div style="max-width: 800px; text-align:center;">
-<pre class="mermaid">flowchart LR
-  subgraph 測試組件 Assembly 
-    subgraph 測試類別 TestClass 
-        subgraph 測試方法 TestMethod 
-            Test1 --> Test2 --> TestN
-        end
-    end    
-  end</pre>
-</div>
-<h2 id="生命週期">生命週期</h2>
-<p>當我們實際在撰寫或執行多個測試時，經常需要在不同情境時初始化或清除測試資料，而上述提到的 <strong>組件層級</strong> / <strong>類別層級</strong> / <strong>測試層級</strong> 都提供了 <mark>Initialize</mark> 和 <mark>Cleanup</mark> 屬性讓我們可以在適當的時機會處理對應的邏輯。在下列範例程式中：TestProject1 組件中包含了兩個類別：Calculator(加法、減法運算)，CaculatorTests(測試類別)，在測試類別中撰寫了兩個 TestMethod (Test_AddMethod 和 Test_SubtractMethod)，同時也加上了 Constructor / Dispose、AssemblyInit / AssemblyCleanup、ClassInit / Cleanup、TestInit / TestCleanup，大家應該不難發現，這些函式都是成對的，可以直接參考下列範例程式碼與執行結果，瞭解一個測試組件從開始執行到結束歷經了哪些階段。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Diagnostics;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Calculator</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Add</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> a + b;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Subtract</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> a - b;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">CalculatorTests</span> : <span class="title">IDisposable</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> Calculator calculator;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">CalculatorTests</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;CalculatorTests - Constructor&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在整個測試程序集開始時執行一次</span></span><br><span class="line">        [<span class="meta">AssemblyInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">AssemblyInit</span>(<span class="params">TestContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;AssemblyInitialize: 測試程序集初始化。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在所有測試執行前初始化，只執行一次</span></span><br><span class="line">        [<span class="meta">ClassInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ClassInit</span>(<span class="params">TestContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;ClassInitialize: 初始化 Calculator 類別實例。&quot;</span>);</span><br><span class="line">            calculator = <span class="keyword">new</span> Calculator();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在每個測試方法執行前調用</span></span><br><span class="line">        [<span class="meta">TestInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestInit</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;TestInitialize: 開始執行新的測試。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 測試加法功能</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">TestCategory(<span class="string">&quot;CalculatorTests&quot;</span>)</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Test_AddMethod</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;Test_AddMethod: 測試加法運算。&quot;</span>);</span><br><span class="line">            <span class="built_in">int</span> result = calculator.Add(<span class="number">5</span>, <span class="number">3</span>);</span><br><span class="line">            Assert.AreEqual(<span class="number">8</span>, result, <span class="string">&quot;加法結果不正確&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 測試減法功能</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">TestCategory(<span class="string">&quot;CalculatorTests&quot;</span>)</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Test_SubtractMethod</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;Test_SubtractMethod: 測試減法運算。&quot;</span>);</span><br><span class="line">            <span class="built_in">int</span> result = calculator.Subtract(<span class="number">10</span>, <span class="number">5</span>);</span><br><span class="line">            Assert.AreEqual(<span class="number">5</span>, result, <span class="string">&quot;減法結果不正確&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在每個測試方法執行後調用</span></span><br><span class="line">        [<span class="meta">TestCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;TestCleanup: 測試完成，清理測試上下文。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在所有測試執行完畢後清理，只執行一次</span></span><br><span class="line">        [<span class="meta">ClassCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ClassCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;ClassCleanup: 清理 Calculator 類別實例。&quot;</span>);</span><br><span class="line">            <span class="comment">//calculator = null;</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在整個測試程序集結束時執行一次</span></span><br><span class="line">        [<span class="meta">AssemblyCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">AssemblyCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;AssemblyCleanup: 測試程序集清理。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Dispose</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;CalculatorTests - Dispose&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="安裝-NET-Runtime">安裝 .NET Runtime</h2>
+<p>不論是以前的 .NET Framework 或是現在的 .NET Core，在執行時都需要安裝 .NET Runtime 才能順利運行開發好的程式，以下圖 Console 專案建置後的執行檔為例，畫面還會很貼心的指引我們目前的需求版本和下載路徑，完成安裝後便可順利執行 Console 程式。</p>
 <img  
                        lazyload
                        alt="image"
-                       data-src="/post/2025/04/mstest-attribute-lifecycle/console-run-test.png"
+                       data-src="/post/2025/05/how-to-use-playwright-2/dotnet8.png"
                         class=""
                  >
-<h2 id="常用屬性">常用屬性</h2>
-<h3 id="逾時設定-TimeoutAttribute">逾時設定 TimeoutAttribute</h3>
-<p><strong><code>TimeoutAttribute</code></strong> 用於設定測試方法的最大執行時間（以<strong>毫秒</strong>為單位）。如果執行測試超過指定的時間限制，測試則會失敗，這個屬性可以讓我們避免測試執行時間過長，或是為某些測試情境設定一個逾時期限，如下範例：</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"><span class="keyword">using</span> System.Threading;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">TimeoutExampleTests</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 這個測試會在 500 毫秒內完成，所以它會通過</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">Timeout(1000)</span>]  <span class="comment">// 設置 1 秒的超時</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod_WithSufficientTime</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">500</span>);  <span class="comment">// 模擬較短的處理時間</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);  <span class="comment">// 假設這是測試邏輯</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 這個測試會因為超時而失敗</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">Timeout(1000)</span>]  <span class="comment">// 設置 1 秒的超時</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod_WithTimeout</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1500</span>);  <span class="comment">// 模擬超過1秒的處理時間</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);  <span class="comment">// 假設這是測試邏輯</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="平行測試-ParallelizeAttribute">平行測試 ParallelizeAttribute</h3>
-<p>自 MSTest v2 起，提供了兩個關於平行測試的屬性：</p>
-<ul>
-<li><strong><code>ParallelizeAttribute</code></strong>：可以應用於類別或測試集來啟用平行測試。</li>
-<li><strong><code>DoNotParallelizeAttribute</code></strong>：可以應用於個別測試方法來<mark>禁止</mark>它與其他測試並行執行。</li>
-</ul>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"><span class="keyword">using</span> System.Threading;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    [<span class="meta">Parallelize(Workers = 2, Scope = ExecutionScope.MethodLevel)</span>]  <span class="comment">// 啟用並行，指定最多兩個工作線程</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ParallelTests</span></span><br><span class="line">    &#123;</span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod1</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod2</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">9</span>, <span class="number">3</span> * <span class="number">3</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 禁止這個方法與其他測試並行執行</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">DoNotParallelize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod3_DoNotParallelize</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">15</span>, <span class="number">5</span> * <span class="number">3</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><strong><code>[Parallelize(Workers = 2, Scope = ExecutionScope.MethodLevel)]</code></strong>：
-<ul>
-<li>Workers = 2 表示最多使用 2 個執行緒來執行平行測試。</li>
-<li>Scope = ExecutionScope.MethodLevel 表示在方法層級平行測試，代表每個測試方法可以平行執行；如果想要在類別層級，可以設定為 ExecutionScope.ClassLevel。</li>
-</ul>
-</li>
-<li>TestMethod1 和 TestMethod2：<br>
-因為類別層級已經使用 Parallelize 屬性，並且設定 Workers = 2 表示這兩個測試方法會在執行緒池裡平行執行。</li>
-<li>TestMethod3_DoNotParallelize：<br>
-這個方法加了 <strong><code>[DoNotParallelize]</code></strong>，所以它<mark>不會</mark>與其他方法同時執行，當 TestMethod3_DoNotParallelize 執行時，其他平行測試會暫停，直到這個測試完成。</li>
-</ul>
-<h2 id="後記">後記</h2>
-<p>MSTest 從推出至今已經來到了 v3，從一開始只能在 Windows 平台上運作，隨著 .NET Framework 的演進，也逐步支援跨平台運行，特別是在 .NET Core 和 .NET 5 之後，MSTest 成為了 .NET 生態系中一個可靠且簡單易用的測試框架。它不僅適合快速撰寫單元測試，還能與多種持續整合和部署工具無縫結合，例如：Azure DevOps 和 GitHub Actions。</p>
-<p>由於應用程式複雜度日益提高，MSTest 從 v2 開始也提供了平行測試，允許多個測試同時執行，這不僅加快了測試速度，也提高了 CI/CD 的效能。平行測試使開發人員能夠在不影響測試完整性的前提下，顯著縮短測試週期，對大型專案尤為重要。此外，MSTest 也包含：數據驅動測試、生命週期管理、異常處理測試等，這讓我們能夠更全面地驗證應用程式的功能和效能。</p>
-<p>MSTest 的易用性使得它適合不同規模的專案，加上 Visual Studio 開發工具與 Azure DevOps Services 的支援，不論是小型開發團隊或是大型企業應用，都能輕鬆採用，為軟體開發專案品質把關，也讓整個 DevOps 流程更加完善。</p>
+<br>
 <div class="tips">
 <font color="black">
-<a class="link"   href="https://github.com/microsoft/testfx"  target="_blank">⁍ Microsoft Test Framework<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/core/testing/unit-testing-with-mstest?source=recommendations"  target="_blank">⁍ 使用 MSTest 和 .NET 進行 C# 單元測試<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/core/testing/unit-testing-mstest-writing-tests-attributes"  target="_blank">⁍ MSTest 屬性<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://www.meziantou.net/mstest-v2-setup-a-test-project-and-run-tests.htm"  target="_blank">⁍ MSTest v2: Setup a test project and run tests<i class="fas fa-external-link-alt"></i></a>
+<a class="link"   href="https://dotnet.microsoft.com/download"  target="_blank">⁍ 下載 .NET<i class="fas fa-external-link-alt"></i></a>
 </font>
-</div>]]></content>
+</div>
+<h2 id="安裝-PowerShell">安裝 PowerShell</h2>
+<p>如果是全新的環境，安裝完 .NET Runtime 後應該還會出現如下圖的錯誤，主要原因是：</p>
+<ul>
+<li>pwsh 找不到路徑 (或是沒有安裝 PowerShell)</li>
+<li>缺少 WebDriver (Edge/Chrome/Firefox)</li>
+</ul>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/pwsh.png"
+                        class=""
+                 >
+<br>
+若要安裝 PowerShell 可以依據自己的作業系統參考下列連結：
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5"  target="_blank">⁍ 在 Windows 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-linux?view=powershell-7.5"  target="_blank">⁍ 在 Linux 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-macos?view=powershell-7.5"  target="_blank">⁍ 在 macOS 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h2 id="安裝-WebDriver">安裝 WebDriver</h2>
+<p>在上圖的錯誤訊息中有提到如下指令，路徑中的 <strong><mark>netX</mark></strong> 要替換為自己使用的版本路徑，而其中的 playwright.ps1 會存在於 .NET 程式建置後的 bin 目錄中，這個 .ps1 的主要用途是在 Windows 環境下執行 Playwright 測試，讓它可以正確找到 Playwright 主程式和相關驅動程式，確認 pwsh 指令可以運作後，就可以接著安裝 WebDriver 了。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pwsh bin/Debug/netX/playwright.ps1 install</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/playwright.png"
+                        class=""
+                 >
+<br>
+若在 install 之後沒有加上任何參數，則會安裝下列預設項目：
+<ul>
+<li>Chromium</li>
+<li>Chromium Headless Shell</li>
+<li>Firefox</li>
+<li>Webkit</li>
+<li>FFMPEG</li>
+</ul>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/install.png"
+                        class=""
+                 >
+<br>
+也可以依自己的需求安裝指定項目，可使用 install -h 查看相關資訊：
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/custom.png"
+                        class=""
+                 >
+<h2 id="總結">總結</h2>
+<p>本文介紹了在全新環境下，如何讓 .NET 8 撰寫的 Playwright 測試程式順利執行，包含安裝 .NET Runtime、PowerShell 及 WebDriver 等必要步驟。只要依照上述流程完成環境設定，就能避免常見的錯誤訊息，順利執行自動化測試。希望這些說明能幫助你在不同平台上快速部署與運行 Playwright 測試專案。</p>
+]]></content>
       <tags>
-        <tag>MSTest</tag>
+        <tag>Playwright</tag>
       </tags>
   </entry>
   <entry>

@@ -325,7 +325,7 @@
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Sun Jun 15 2025 16:23:13 GMT+0800">2025-06-15 16:23:13</span>
+                <span class="datetime" data-updated="Sun Jun 15 2025 16:28:34 GMT+0800">2025-06-15 16:28:34</span>
             </span>
         
 
@@ -464,26 +464,6 @@
 </tr>
 </tbody>
 </table>
-<h3 id="2-x-代理程式">2.x 代理程式</h3>
-<ul>
-<li>以 .NET Core 3.1 為基礎，支援較舊的作業系統（如 Windows 7 SP1、8.1、舊版 Linux 等）。</li>
-<li>2023 年後不再積極維護，僅針對重大安全問題進行個案處理。</li>
-<li>若作業系統不支援 .NET 6，無法升級到 3.x 版本。</li>
-</ul>
-<h3 id="3-x-代理程式">3.x 代理程式</h3>
-<ul>
-<li>以 .NET 6 為基礎，支援較新作業系統（如 Windows 10/11、Ubuntu 18.04+、macOS 10.15 以上等）。</li>
-<li>增加對 Apple ARM 晶片、Ubuntu 22.04、ARM64 Windows 等新平台支援。</li>
-<li>.NET 6 相依性已內建於代理程式安裝包，無需額外安裝。</li>
-<li>只針對 3.x 版本進行安全性與功能修補。</li>
-</ul>
-<h3 id="4-x-代理程式">4.x 代理程式</h3>
-<ul>
-<li>以 .NET 8 為基礎，僅支援最新作業系統（如 Windows 10/11、Ubuntu 20.04/22.04/24.04、macOS 13~15 等）。</li>
-<li>淘汰更多舊版作業系統（如 Windows 7/8.1、Ubuntu 18.04、macOS 10.15/11.0 等）。</li>
-<li>.NET 8 相依性已內建於代理程式安裝包，無需額外安裝。</li>
-<li>只針對 4.x 版本進行安全性與功能修補。</li>
-</ul>
 <h3 id="升級與相容性注意事項">升級與相容性注意事項</h3>
 <p>2.x、3.x、4.x 代理程式的主要差異在於底層 .NET 平台、支援的作業系統範圍、相容性與維護策略，若代理程式執行於不支援的作業系統，將無法升級至新版，且執行管線時會出現錯誤提示，需先升級作業系統才能繼續。每一代代理程式僅針對自身版本進行安全性修補，建議維運團隊定期檢查代理程式與作業系統版本，確保 DevOps 流程穩定且安全。</p>
 <div class="tips">
@@ -779,7 +759,7 @@
             <div class="pc-post-toc left-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-Azure-Pipelines-Agents"><span class="nav-text">什麼是 Azure Pipelines Agents</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Azure-Pipelines-2-x%E3%80%813-x%E3%80%814-x-%E7%89%88%E6%9C%AC%E5%B7%AE%E7%95%B0%E6%AF%94%E8%BC%83"><span class="nav-text">Azure Pipelines 2.x、3.x、4.x 版本差異比較</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-x-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F"><span class="nav-text">2.x 代理程式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-x-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F"><span class="nav-text">3.x 代理程式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-x-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F"><span class="nav-text">4.x 代理程式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%87%E7%B4%9A%E8%88%87%E7%9B%B8%E5%AE%B9%E6%80%A7%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A0%85"><span class="nav-text">升級與相容性注意事項</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Azure-DevOps-Server-%E6%9B%B4%E6%96%B0%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E4%BE%86%E6%BA%90%E6%96%B9%E5%BC%8F"><span class="nav-text">Azure DevOps Server 更新代理程式來源方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Azure-Pipelines-Agents-%E5%B7%A5%E4%BD%9C%E7%9B%AE%E9%8C%84%E7%B5%90%E6%A7%8B"><span class="nav-text">Azure Pipelines Agents 工作目錄結構</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-text">結語</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-Azure-Pipelines-Agents"><span class="nav-text">什麼是 Azure Pipelines Agents</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Azure-Pipelines-2-x%E3%80%813-x%E3%80%814-x-%E7%89%88%E6%9C%AC%E5%B7%AE%E7%95%B0%E6%AF%94%E8%BC%83"><span class="nav-text">Azure Pipelines 2.x、3.x、4.x 版本差異比較</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%87%E7%B4%9A%E8%88%87%E7%9B%B8%E5%AE%B9%E6%80%A7%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A0%85"><span class="nav-text">升級與相容性注意事項</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Azure-DevOps-Server-%E6%9B%B4%E6%96%B0%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E4%BE%86%E6%BA%90%E6%96%B9%E5%BC%8F"><span class="nav-text">Azure DevOps Server 更新代理程式來源方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Azure-Pipelines-Agents-%E5%B7%A5%E4%BD%9C%E7%9B%AE%E9%8C%84%E7%B5%90%E6%A7%8B"><span class="nav-text">Azure Pipelines Agents 工作目錄結構</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-text">結語</span></a></li></ol>
     </div>
 </div>
 
@@ -983,7 +963,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-Azure-Pipelines-Agents"><span class="nav-text">什麼是 Azure Pipelines Agents</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Azure-Pipelines-2-x%E3%80%813-x%E3%80%814-x-%E7%89%88%E6%9C%AC%E5%B7%AE%E7%95%B0%E6%AF%94%E8%BC%83"><span class="nav-text">Azure Pipelines 2.x、3.x、4.x 版本差異比較</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-x-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F"><span class="nav-text">2.x 代理程式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-x-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F"><span class="nav-text">3.x 代理程式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-x-%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F"><span class="nav-text">4.x 代理程式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%87%E7%B4%9A%E8%88%87%E7%9B%B8%E5%AE%B9%E6%80%A7%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A0%85"><span class="nav-text">升級與相容性注意事項</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Azure-DevOps-Server-%E6%9B%B4%E6%96%B0%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E4%BE%86%E6%BA%90%E6%96%B9%E5%BC%8F"><span class="nav-text">Azure DevOps Server 更新代理程式來源方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Azure-Pipelines-Agents-%E5%B7%A5%E4%BD%9C%E7%9B%AE%E9%8C%84%E7%B5%90%E6%A7%8B"><span class="nav-text">Azure Pipelines Agents 工作目錄結構</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-text">結語</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-Azure-Pipelines-Agents"><span class="nav-text">什麼是 Azure Pipelines Agents</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Azure-Pipelines-2-x%E3%80%813-x%E3%80%814-x-%E7%89%88%E6%9C%AC%E5%B7%AE%E7%95%B0%E6%AF%94%E8%BC%83"><span class="nav-text">Azure Pipelines 2.x、3.x、4.x 版本差異比較</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%87%E7%B4%9A%E8%88%87%E7%9B%B8%E5%AE%B9%E6%80%A7%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A0%85"><span class="nav-text">升級與相容性注意事項</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Azure-DevOps-Server-%E6%9B%B4%E6%96%B0%E4%BB%A3%E7%90%86%E7%A8%8B%E5%BC%8F%E4%BE%86%E6%BA%90%E6%96%B9%E5%BC%8F"><span class="nav-text">Azure DevOps Server 更新代理程式來源方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Azure-Pipelines-Agents-%E5%B7%A5%E4%BD%9C%E7%9B%AE%E9%8C%84%E7%B5%90%E6%A7%8B"><span class="nav-text">Azure Pipelines Agents 工作目錄結構</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-text">結語</span></a></li></ol>
     </div>
 </div>
 
