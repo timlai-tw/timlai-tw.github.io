@@ -325,7 +325,7 @@
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Sun Jun 15 2025 14:17:27 GMT+0800">2025-06-15 14:17:27</span>
+                <span class="datetime" data-updated="Sun Jun 15 2025 16:18:17 GMT+0800">2025-06-15 16:18:17</span>
             </span>
         
 
@@ -485,16 +485,24 @@
 <li>只針對 4.x 版本進行安全性與功能修補。</li>
 </ul>
 <h3 id="升級與相容性注意事項">升級與相容性注意事項</h3>
-<p>2.x、3.x、4.x 代理程式的主要差異在於底層 .NET 平台、支援的作業系統範圍、相容性與維護策略，若代理程式執行於不支援的作業系統，將無法升級至新版，且執行管線時會出現錯誤提示，需先升級作業系統才能繼續。每一代代理程式僅針對自身版本進行安全性修補，建議開發團隊定期檢查代理程式與作業系統版本，確保 DevOps 流程穩定且安全。</p>
+<p>2.x、3.x、4.x 代理程式的主要差異在於底層 .NET 平台、支援的作業系統範圍、相容性與維護策略，若代理程式執行於不支援的作業系統，將無法升級至新版，且執行管線時會出現錯誤提示，需先升級作業系統才能繼續。每一代代理程式僅針對自身版本進行安全性修補，建議維運團隊定期檢查代理程式與作業系統版本，確保 DevOps 流程穩定且安全。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/pipelines/agents/agents?view=azure-devops-2022&tabs=yaml%2Cbrowser#can-i-update-my-agents-that-are-part-of-an-azure-devops-server-pool"  target="_blank">⁍ Azure Pipelines 代理程式<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/pipelines/agents/v3-agent?view=azure-devops"  target="_blank">⁍ 代理程式軟體第 3 版<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/pipelines/agents/v4-agent?view=azure-devops#upgrade-to-4x-agent-on-supported-operating-systems"  target="_blank">⁍ 代理程式軟體第 4 版<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
 <br>
 <h2 id="Azure-DevOps-Server-更新代理程式來源方式">Azure DevOps Server 更新代理程式來源方式</h2>
-<p>若您在地端環境 Azure DevOps Server 中管理 Self-Hosted Agent，除了透過網路自動更新外，也可以手動指定代理程式的安裝來源。只需將新版代理程式的壓縮檔（.zip）放置於伺服器的 <code>%ProgramData%\Microsoft\Azure DevOps\Agents</code> 目錄內，代理程式便會自動從該路徑取得更新檔案（如下圖 4.258.1）；若將目錄中的檔案清空，則會顯示目前 Azure DevOps Server 預設的下載版本，例如：Azure DevOps Server 2022.2 預設版本是 3.240.0。</p>
+<p>若您在地端環境 Azure DevOps Server 中管理 Self-Hosted Agent，除了透過網路自動更新外，也可以手動指定代理程式的安裝來源。只需將新版代理程式的壓縮檔（.zip）放置於伺服器的 <strong><code>%ProgramData%\Microsoft\Azure DevOps\Agents</code></strong> 目錄內，代理程式便會自動從該路徑取得更新檔案（如下圖 4.258.1）；若將目錄中的檔案清空，則會顯示目前 Azure DevOps Server 預設的下載版本，例如：Azure DevOps Server 2022.2 預設版本是 3.240.0。</p>
 <img  
                        lazyload
                        alt="image"
                        data-src="/post/2025/06/update-azure-pipelines-agents/agents_folder.png"
                         class=""
                  >
+<br>
 <img  
                        lazyload
                        alt="image"
@@ -502,11 +510,17 @@
                         class=""
                  >
 <blockquote>
-<p>若要更新 Azure DevOps Server 的代理程式，請將新版本壓縮檔放到 <code>%ProgramData%\Microsoft\Azure DevOps\Agents</code> 資料夾，代理程式會自動偵測並完成更新。</p>
+<p>若要更新 Azure DevOps Server 的代理程式，請將新版本壓縮檔放到 <mark><strong>%ProgramData%\Microsoft\Azure DevOps\Agents</strong></mark> 資料夾，代理程式會自動偵測並完成更新</p>
 </blockquote>
+<p>關於 Azure Pipelines Agent 發行過的所有版本都可以在 GitHub 的 Release 紀錄中找到，可以參考下列連結。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://github.com/microsoft/azure-pipelines-agent/releases"  target="_blank">⁍ GitHub | Azure Pipelines Agent 🚀<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
 <br>
 <h2 id="Azure-Pipelines-Agents-工作目錄結構">Azure Pipelines Agents 工作目錄結構</h2>
-<p>代理程式在執行管線作業時，會建立一套標準化的目錄結構，用於儲存原始碼、建置產物、測試結果等資料。以下為主要目錄說明[^4]：</p>
+<p>代理程式在執行 pipeline 作業時，會建立一套標準化的目錄結構，用於儲存原始碼、建置產物、測試結果等資料。以下為主要目錄說明：</p>
 <table>
 <thead>
 <tr>
@@ -567,10 +581,15 @@
 <li><strong>建置/工作區目錄</strong>：每次 pipeline 執行時的專屬目錄。</li>
 <li><strong>s/b/a/TestResults</strong>：分別對應原始碼、建置產物、工件暫存與測試結果。</li>
 </ul>
-<p>在自我託管代理上，這些目錄會在每次執行間保留，僅暫存與測試結果目錄會自動清理。託管代理則每次皆為全新環境[^4]。</p>
+<p>在 Self-Hosted 執行環境，這些目錄會在每次執行間保留，僅暫存與測試結果目錄會自動清理；若為 Microsoft-Hosted 則每次皆為全新環境，瞭解各目錄的用途與預設變數名稱對於後續的 pipeline 撰寫有很大的助益，在 Azure Pipelines 中預先定義的變數可以參考下列連結。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml"  target="_blank">⁍ 使用預先定義的變數<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
 <br>
 <h2 id="結語">結語</h2>
-<p>Azure Pipelines Agents 是實現現代 DevOps 流程的關鍵，無論是雲端或地端部署，選擇合適的代理程式版本與管理方式，能大幅提升自動化流程的安全性與效率。建議企業持續關注代理程式版本更新，並善用官方提供的目錄結構與更新機制，打造穩健且高效的 CI/CD 環境。</p>
+<p>Azure Pipelines Agents 是實現現代 DevOps 流程的關鍵，無論是雲端或地端部署，選擇合適的代理程式版本與管理方式，能大幅提升自動化流程的安全性與效率，維運團隊可以持續關注代理程式版本更新，並善用官方提供的更新機制，打造穩健且高效的 CI/CD 環境。</p>
 
                     
                 </div>
