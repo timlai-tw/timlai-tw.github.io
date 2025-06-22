@@ -307,6 +307,279 @@
       </tags>
   </entry>
   <entry>
+    <title>使用 Playwright 測試框架 - 環境準備 (.NET)</title>
+    <url>/post/2025/05/how-to-use-playwright-1/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>在現代軟體開發中，自動化測試已成為確保程式碼品質的重要一環，Playwright 是一個強大的自動化測試框架，支援 Chromium / Firefox / WebKit 瀏覽器，搭配測試產生器(codegen)讓開發者能夠輕鬆撰寫可靠且高效的測試腳本。本篇文章將介紹如何在 .NET 開發環境中設置和使用 Playwright，從安裝必要的套件到撰寫基本的測試案例，幫助大家快速上手這個工具。<br>
+<br></p>
+<span id="more"></span>
+<br>
+<h2 id="使用-Visual-Studio">使用 Visual Studio</h2>
+<p>如果是慣用地表最強開發工具，打開 Visual Studio 建立一個新的 <strong><code>MSTest 測試專案</code></strong>，讓我們有一個基本測試環境可以開始撰寫 Playwright 測試。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/vs-01.png"
+                        class=""
+                 >
+<br>
+<p>要在 MSTest 使用 Playwright 必需要安裝 <strong><code>Microsoft.Playwright.MSTest</code></strong> 套件，這個套件會將 Playwright 與 MSTest 整合，使我們能夠在 MSTest 測試過程中使用 Playwright 功能。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/vs-02.png"
+                        class=""
+                 >
+<h2 id="使用-NET-CLI">使用 .NET CLI</h2>
+<p>若是使用 VSCode 開發工具，我們可以用 <strong>dotnet new</strong> 指令新增一個 PlaywrightTests 專案，預設內容會包含一個 UnitTest1.cs 檔案。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet new mstest -n PlaywrightTests</span><br><span class="line">cd PlaywrightTests</span><br></pre></td></tr></table></figure>
+<p>安裝必要的 Playwright 相依套件：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet add package Microsoft.Playwright.MSTest</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-01.png"
+                        class=""
+                 >
+<br>
+<p>建置程式碼，確認環境準備是否有異常。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet build</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-02.png"
+                        class=""
+                 >
+<br>
+<h2 id="安裝-Playwright-CLI">安裝 Playwright CLI</h2>
+<p>在 .NET 開發環境中，雖然 <strong>playwright.exe</strong> 指令沒有像 <strong>npx playwright</strong> 那麼多參數與功能，但我們在錄製網頁操作過程來產生測試程式碼 (codegen)，或是開啟追蹤檔 (show-trace) 時仍會使用到，可以透過下列指令來安裝 <strong><code>Microsoft.Playwright.CLI</code></strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool install --global Microsoft.Playwright.CLI</span><br></pre></td></tr></table></figure>
+<p>上述套件預設會被安裝到目前的使用者範圍內的 .NET 全局工具路徑中，具體安裝位置會因作業系統而異：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Windows</span><br><span class="line">C:\Users\&lt;你的用戶名&gt;\.dotnet\tools\</span><br><span class="line"></span><br><span class="line">Linux / macOS</span><br><span class="line">/home/&lt;你的用戶名&gt;/.dotnet/tools/</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-03.png"
+                        class=""
+                 >
+<p>我們可以直接開啟目錄確認工具是否安裝成功，或是使用以下指令來列出所有安裝的 .NET 工具：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool list --global</span><br></pre></td></tr></table></figure>
+<p>例：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Package Id                    Version      Commands</span><br><span class="line">-----------------------------------------------------</span><br><span class="line">dotnet-ef                     8.0.8        dotnet-ef</span><br><span class="line">microsoft.playwright.cli      1.2.3        playwright</span><br></pre></td></tr></table></figure>
+<h2 id="移除-Playwright-CLI">移除 Playwright CLI</h2>
+<p>若需要移除已安裝的套件，可以使用下列指令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool uninstall microsoft.playwright.cli</span><br></pre></td></tr></table></figure>
+<h2 id="安裝-Playwright-支援的瀏覽器">安裝 Playwright 支援的瀏覽器</h2>
+<p>Playwright 支援 Chromium、WebKit 和 Firefox 瀏覽器，我們可以使用 <strong>playwright install</strong> 指令來安裝預設瀏覽器，這個動作會將瀏覽器安裝到 <strong><mark>%LOCALAPPDATA%\ms-playwright</mark></strong> 目錄下，若想要自訂安裝的項目，可以透過 <strong>playwright help install</strong> 來瞭解所有的選項。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright install</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-04.png"
+                        class=""
+                 >
+<br>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright help install</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-05.png"
+                        class=""
+                 >
+<h2 id="小試身手">小試身手</h2>
+<p>以上 Playwright 環境設定都完成後，我們就可以直接用官網的第一個範例來小試身手：</p>
+<ul>
+<li>
+<p><code>HasTitle()</code><br>
+打開 Playwright 官方網站，檢查網站的標題是否包含特定的字串，確認網頁標題中是否包含 “Playwright” 這個字。</p>
+</li>
+<li>
+<p><code>GetStartedLink()</code><br>
+一樣是打開 Playwright 官方網站，點擊一個名為 “Get started” 的連結，然後檢查點擊後的頁面是否有一個名為 “Installation” 的標題，以確保連結正確導向到預期的頁面。</p>
+</li>
+</ul>
+<p>大家應該不難發現 Playwright 的程式碼很直覺易讀，通常也不太需要夾雜 CSS class 或 style 來尋找定位網頁上的元素，除此之外還提供了豐富的 API 來進行各種操作，如：點擊、輸入文字、截圖等，之後再陸續向大家介紹各項重點特色，希望大家也都能快速上手 Playwright，並在日常開發中提升測試效率與程式碼品質。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Text.RegularExpressions;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright.MSTest;</span><br><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">PlaywrightTests</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ExampleTest</span> : <span class="title">PageTest</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">HasTitle</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expect a title &quot;to contain&quot; a substring.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page).ToHaveTitleAsync(<span class="keyword">new</span> Regex(<span class="string">&quot;Playwright&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">GetStartedLink</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Click the get started link.</span></span><br><span class="line">        <span class="keyword">await</span> Page.GetByRole(AriaRole.Link, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Get started&quot;</span> &#125;).ClickAsync();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expects page to have a heading with the name of Installation.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page.GetByRole(AriaRole.Heading, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Installation&quot;</span> &#125;)).ToBeVisibleAsync();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>Unit Test</tag>
+        <tag>Playwright</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用 Playwright 測試框架 - 執行階段 (.NET)</title>
+    <url>/post/2025/05/how-to-use-playwright-2/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p><a href="/post/2024/11/how-to-use-playwright-1">上一篇文章</a>提到了如何使用 Playwright 的測試產生器(codegen) 錄製腳本，除了可以運用在自動化測試之外，舉凡想要透過程式來自動執行的一連串行為，都可以透過 Playwright 來完成，本篇文章使用 Windows Sandbox 全新環境來執行由 .NET 8 撰寫的 Console 程式，讓大家知道建置產生執行檔後，還需要哪些必要的環境設定才可以正常讓程式運作。<br>
+<br></p>
+<span id="more"></span>
+<br>
+<h2 id="安裝-NET-Runtime">安裝 .NET Runtime</h2>
+<p>不論是以前的 .NET Framework 或是現在的 .NET Core，在執行時都需要安裝 .NET Runtime 才能順利運行開發好的程式，以下圖 Console 專案建置後的執行檔為例，畫面還會很貼心的指引我們目前的需求版本和下載路徑，完成安裝後便可順利執行 Console 程式。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/dotnet8.png"
+                        class=""
+                 >
+<br>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://dotnet.microsoft.com/download"  target="_blank">⁍ 下載 .NET<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h2 id="安裝-PowerShell">安裝 PowerShell</h2>
+<p>如果是全新的環境，安裝完 .NET Runtime 後應該還會出現如下圖的錯誤，主要原因是：</p>
+<ul>
+<li>pwsh 找不到路徑 (或是沒有安裝 PowerShell)</li>
+<li>缺少 WebDriver (Edge/Chrome/Firefox)</li>
+</ul>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/pwsh.png"
+                        class=""
+                 >
+<br>
+若要安裝 PowerShell 可以依據自己的作業系統參考下列連結：
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5"  target="_blank">⁍ 在 Windows 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-linux?view=powershell-7.5"  target="_blank">⁍ 在 Linux 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-macos?view=powershell-7.5"  target="_blank">⁍ 在 macOS 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h2 id="安裝-WebDriver">安裝 WebDriver</h2>
+<p>在上圖的錯誤訊息中有提到如下指令，路徑中的 <strong><mark>netX</mark></strong> 要替換為自己使用的版本路徑，而其中的 playwright.ps1 會存在於 .NET 程式建置後的 bin 目錄中，這個 .ps1 的主要用途是在 Windows 環境下執行 Playwright 測試，讓它可以正確找到 Playwright 主程式和相關驅動程式，確認 pwsh 指令可以運作後，就可以接著安裝 WebDriver 了。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pwsh bin/Debug/netX/playwright.ps1 install</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/playwright.png"
+                        class=""
+                 >
+<br>
+若在 install 之後沒有加上任何參數，則會安裝下列預設項目：
+<ul>
+<li>Chromium</li>
+<li>Chromium Headless Shell</li>
+<li>Firefox</li>
+<li>Webkit</li>
+<li>FFMPEG</li>
+</ul>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/install.png"
+                        class=""
+                 >
+<br>
+也可以依自己的需求安裝指定項目，可使用 install -h 查看相關資訊：
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/custom.png"
+                        class=""
+                 >
+<h2 id="總結">總結</h2>
+<p>本文介紹了在全新環境下，如何讓 .NET 8 撰寫的 Playwright 測試程式順利執行，包含安裝 .NET Runtime、PowerShell 及 WebDriver 等必要步驟。只要依照上述流程完成環境設定，就能避免常見的錯誤訊息，順利執行自動化測試。希望這些說明能幫助你在不同平台上快速部署與運行 Playwright 測試專案。</p>
+]]></content>
+      <tags>
+        <tag>Playwright</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MSTest 生命週期與常用屬性</title>
+    <url>/post/2025/04/mstest-attribute-lifecycle/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/mstest-attribute-lifecycle/MSTest.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>在軟體開發過程中，妥善進行測試可以協助我們確保程式碼的功能性與可靠性，不論是最小範圍的<strong>單元測試 (Unit Tests)</strong> 或是模擬實際用戶的<strong>端對端測試(E2E Tests)</strong>，都是品質把關的重要防線，而 MSTest 除了被整合在 Visual Studio 中，簡化了 .NET 應用程式建立和執行單元測試的過程，也可以透過 Azure Pipelines 將既有的測試專案整合到 CI 流程裡，這篇主要帶大家瞭解 MSTest 生命週期以及常用屬性，以便大家更能掌握自己的測試流程。</p>
+<span id="more"></span>
+<br>
+<h2 id="前言">前言</h2>
+<p><strong>測試類別(TestClass)</strong> 和 <strong>測試方法(TestMethod)</strong> 是 MSTest 核心要素，一個 TestClass 可以包含一個或多個 TestMethod，而我們實際要執行測試的內容就是寫在每個 TestMethod 裡，一般大家比較熟知的 3A Principle (<strong>A</strong>rrange-<strong>A</strong>ct-<strong>A</strong>ssert) 可以幫助我們快速聚焦測試方法裡面該撰寫的內容，簡單範例如下：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyTestClass</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod1</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Arrange: 初始化測試過程中所需要的變數、物件或其他設定。</span></span><br><span class="line">        <span class="built_in">int</span> a = <span class="number">1</span>;</span><br><span class="line">        <span class="built_in">int</span> b = <span class="number">2</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// Act: 實際測試操作、內容。</span></span><br><span class="line">        <span class="built_in">int</span> ans = a + b;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Assert: 驗證操作是否產生預期結果。</span></span><br><span class="line">        <span class="built_in">int</span> excepted = <span class="number">3</span>;</span><br><span class="line">        Assert.AreEqual(expected, actual);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="測試組件">測試組件</h2>
+<p>一個 MSTest 專案建置完成後會產生一個組件(Assembly)，白話來說就是 bin 目錄的 dll 檔案，其中可以包含多個 TestClass，而一個 TestClass 裡可以有各自的 TestMethod (層級如下圖)，此外，我們會使用 <strong><code>[TestClass]</code></strong> 和 <strong><code>[TestMethod]</code></strong> 屬性項目在 MSTest 專案標記程式碼中哪些是測試類別與測試方法，下列四種寫法都代表相同的意思：</p>
+<ul>
+<li>[TestClass()]</li>
+<li>[TestClassAttribute()]</li>
+<li>[TestClass]</li>
+<li>[TestClassAttribute]</li>
+</ul>
+<div style="max-width: 800px; text-align:center;">
+<pre class="mermaid">flowchart LR
+  subgraph 測試組件 Assembly 
+    subgraph 測試類別 TestClass 
+        subgraph 測試方法 TestMethod 
+            Test1 --> Test2 --> TestN
+        end
+    end    
+  end</pre>
+</div>
+<h2 id="生命週期">生命週期</h2>
+<p>當我們實際在撰寫或執行多個測試時，經常需要在不同情境時初始化或清除測試資料，而上述提到的 <strong>組件層級</strong> / <strong>類別層級</strong> / <strong>測試層級</strong> 都提供了 <mark>Initialize</mark> 和 <mark>Cleanup</mark> 屬性讓我們可以在適當的時機會處理對應的邏輯。在下列範例程式中：TestProject1 組件中包含了兩個類別：Calculator(加法、減法運算)，CaculatorTests(測試類別)，在測試類別中撰寫了兩個 TestMethod (Test_AddMethod 和 Test_SubtractMethod)，同時也加上了 Constructor / Dispose、AssemblyInit / AssemblyCleanup、ClassInit / Cleanup、TestInit / TestCleanup，大家應該不難發現，這些函式都是成對的，可以直接參考下列範例程式碼與執行結果，瞭解一個測試組件從開始執行到結束歷經了哪些階段。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Diagnostics;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Calculator</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Add</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> a + b;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Subtract</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> a - b;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">CalculatorTests</span> : <span class="title">IDisposable</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> Calculator calculator;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">CalculatorTests</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;CalculatorTests - Constructor&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在整個測試程序集開始時執行一次</span></span><br><span class="line">        [<span class="meta">AssemblyInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">AssemblyInit</span>(<span class="params">TestContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;AssemblyInitialize: 測試程序集初始化。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在所有測試執行前初始化，只執行一次</span></span><br><span class="line">        [<span class="meta">ClassInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ClassInit</span>(<span class="params">TestContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;ClassInitialize: 初始化 Calculator 類別實例。&quot;</span>);</span><br><span class="line">            calculator = <span class="keyword">new</span> Calculator();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在每個測試方法執行前調用</span></span><br><span class="line">        [<span class="meta">TestInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestInit</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;TestInitialize: 開始執行新的測試。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 測試加法功能</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">TestCategory(<span class="string">&quot;CalculatorTests&quot;</span>)</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Test_AddMethod</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;Test_AddMethod: 測試加法運算。&quot;</span>);</span><br><span class="line">            <span class="built_in">int</span> result = calculator.Add(<span class="number">5</span>, <span class="number">3</span>);</span><br><span class="line">            Assert.AreEqual(<span class="number">8</span>, result, <span class="string">&quot;加法結果不正確&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 測試減法功能</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">TestCategory(<span class="string">&quot;CalculatorTests&quot;</span>)</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Test_SubtractMethod</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;Test_SubtractMethod: 測試減法運算。&quot;</span>);</span><br><span class="line">            <span class="built_in">int</span> result = calculator.Subtract(<span class="number">10</span>, <span class="number">5</span>);</span><br><span class="line">            Assert.AreEqual(<span class="number">5</span>, result, <span class="string">&quot;減法結果不正確&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在每個測試方法執行後調用</span></span><br><span class="line">        [<span class="meta">TestCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;TestCleanup: 測試完成，清理測試上下文。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在所有測試執行完畢後清理，只執行一次</span></span><br><span class="line">        [<span class="meta">ClassCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ClassCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;ClassCleanup: 清理 Calculator 類別實例。&quot;</span>);</span><br><span class="line">            <span class="comment">//calculator = null;</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在整個測試程序集結束時執行一次</span></span><br><span class="line">        [<span class="meta">AssemblyCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">AssemblyCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;AssemblyCleanup: 測試程序集清理。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Dispose</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;CalculatorTests - Dispose&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/mstest-attribute-lifecycle/console-run-test.png"
+                        class=""
+                 >
+<h2 id="常用屬性">常用屬性</h2>
+<h3 id="逾時設定-TimeoutAttribute">逾時設定 TimeoutAttribute</h3>
+<p><strong><code>TimeoutAttribute</code></strong> 用於設定測試方法的最大執行時間（以<strong>毫秒</strong>為單位）。如果執行測試超過指定的時間限制，測試則會失敗，這個屬性可以讓我們避免測試執行時間過長，或是為某些測試情境設定一個逾時期限，如下範例：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"><span class="keyword">using</span> System.Threading;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">TimeoutExampleTests</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 這個測試會在 500 毫秒內完成，所以它會通過</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">Timeout(1000)</span>]  <span class="comment">// 設置 1 秒的超時</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod_WithSufficientTime</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">500</span>);  <span class="comment">// 模擬較短的處理時間</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);  <span class="comment">// 假設這是測試邏輯</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 這個測試會因為超時而失敗</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">Timeout(1000)</span>]  <span class="comment">// 設置 1 秒的超時</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod_WithTimeout</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1500</span>);  <span class="comment">// 模擬超過1秒的處理時間</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);  <span class="comment">// 假設這是測試邏輯</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="平行測試-ParallelizeAttribute">平行測試 ParallelizeAttribute</h3>
+<p>自 MSTest v2 起，提供了兩個關於平行測試的屬性：</p>
+<ul>
+<li><strong><code>ParallelizeAttribute</code></strong>：可以應用於類別或測試集來啟用平行測試。</li>
+<li><strong><code>DoNotParallelizeAttribute</code></strong>：可以應用於個別測試方法來<mark>禁止</mark>它與其他測試並行執行。</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"><span class="keyword">using</span> System.Threading;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    [<span class="meta">Parallelize(Workers = 2, Scope = ExecutionScope.MethodLevel)</span>]  <span class="comment">// 啟用並行，指定最多兩個工作線程</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ParallelTests</span></span><br><span class="line">    &#123;</span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod1</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod2</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">9</span>, <span class="number">3</span> * <span class="number">3</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 禁止這個方法與其他測試並行執行</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">DoNotParallelize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod3_DoNotParallelize</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">15</span>, <span class="number">5</span> * <span class="number">3</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong><code>[Parallelize(Workers = 2, Scope = ExecutionScope.MethodLevel)]</code></strong>：
+<ul>
+<li>Workers = 2 表示最多使用 2 個執行緒來執行平行測試。</li>
+<li>Scope = ExecutionScope.MethodLevel 表示在方法層級平行測試，代表每個測試方法可以平行執行；如果想要在類別層級，可以設定為 ExecutionScope.ClassLevel。</li>
+</ul>
+</li>
+<li>TestMethod1 和 TestMethod2：<br>
+因為類別層級已經使用 Parallelize 屬性，並且設定 Workers = 2 表示這兩個測試方法會在執行緒池裡平行執行。</li>
+<li>TestMethod3_DoNotParallelize：<br>
+這個方法加了 <strong><code>[DoNotParallelize]</code></strong>，所以它<mark>不會</mark>與其他方法同時執行，當 TestMethod3_DoNotParallelize 執行時，其他平行測試會暫停，直到這個測試完成。</li>
+</ul>
+<h2 id="後記">後記</h2>
+<p>MSTest 從推出至今已經來到了 v3，從一開始只能在 Windows 平台上運作，隨著 .NET Framework 的演進，也逐步支援跨平台運行，特別是在 .NET Core 和 .NET 5 之後，MSTest 成為了 .NET 生態系中一個可靠且簡單易用的測試框架。它不僅適合快速撰寫單元測試，還能與多種持續整合和部署工具無縫結合，例如：Azure DevOps 和 GitHub Actions。</p>
+<p>由於應用程式複雜度日益提高，MSTest 從 v2 開始也提供了平行測試，允許多個測試同時執行，這不僅加快了測試速度，也提高了 CI/CD 的效能。平行測試使開發人員能夠在不影響測試完整性的前提下，顯著縮短測試週期，對大型專案尤為重要。此外，MSTest 也包含：數據驅動測試、生命週期管理、異常處理測試等，這讓我們能夠更全面地驗證應用程式的功能和效能。</p>
+<p>MSTest 的易用性使得它適合不同規模的專案，加上 Visual Studio 開發工具與 Azure DevOps Services 的支援，不論是小型開發團隊或是大型企業應用，都能輕鬆採用，為軟體開發專案品質把關，也讓整個 DevOps 流程更加完善。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://github.com/microsoft/testfx"  target="_blank">⁍ Microsoft Test Framework<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/core/testing/unit-testing-with-mstest?source=recommendations"  target="_blank">⁍ 使用 MSTest 和 .NET 進行 C# 單元測試<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/core/testing/unit-testing-mstest-writing-tests-attributes"  target="_blank">⁍ MSTest 屬性<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://www.meziantou.net/mstest-v2-setup-a-test-project-and-run-tests.htm"  target="_blank">⁍ MSTest v2: Setup a test project and run tests<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>]]></content>
+      <tags>
+        <tag>MSTest</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Azure DevOps REST API 說明</title>
     <url>/post/2025/04/azure-devops-rest-api/</url>
     <content><![CDATA[<img    
@@ -545,189 +818,69 @@
       </tags>
   </entry>
   <entry>
-    <title>使用 Playwright 測試框架 - 環境準備 (.NET)</title>
-    <url>/post/2025/05/how-to-use-playwright-1/</url>
+    <title>使用 VB5/VB6 連線至 Azure DevOps Server 2022 (TFVC)</title>
+    <url>/post/2025/04/vb-connect-to-azure-devops/</url>
     <content><![CDATA[<img    
                        lazyload
                        alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
+                       data-src="/post/2025/04/vb-connect-to-azure-devops/VS_TFS.png"
                          align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
                  > 
-<p>在現代軟體開發中，自動化測試已成為確保程式碼品質的重要一環，Playwright 是一個強大的自動化測試框架，支援 Chromium / Firefox / WebKit 瀏覽器，搭配測試產生器(codegen)讓開發者能夠輕鬆撰寫可靠且高效的測試腳本。本篇文章將介紹如何在 .NET 開發環境中設置和使用 Playwright，從安裝必要的套件到撰寫基本的測試案例，幫助大家快速上手這個工具。<br>
+<p>Visual Studio 從 97 發展到現在的 2022 號稱地表最強開發工具，能夠與 TFS 或 Git 版控連線自然不是問題，最近剛好遇到客戶還有許多 VB5/VB6 開發的 Winform 程式需要維護，而且版控伺服器也從 TFS 2013 升級至 Azure DevOps Server 2022，藉此機會向大家整理說明 Visual Studio 各版本與 TFS / Azure DevOps 連線的需求與設定。<br>
 <br></p>
 <span id="more"></span>
 <br>
-<h2 id="使用-Visual-Studio">使用 Visual Studio</h2>
-<p>如果是慣用地表最強開發工具，打開 Visual Studio 建立一個新的 <strong><code>MSTest 測試專案</code></strong>，讓我們有一個基本測試環境可以開始撰寫 Playwright 測試。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/vs-01.png"
-                        class=""
-                 >
-<br>
-<p>要在 MSTest 使用 Playwright 必需要安裝 <strong><code>Microsoft.Playwright.MSTest</code></strong> 套件，這個套件會將 Playwright 與 MSTest 整合，使我們能夠在 MSTest 測試過程中使用 Playwright 功能。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/vs-02.png"
-                        class=""
-                 >
-<h2 id="使用-NET-CLI">使用 .NET CLI</h2>
-<p>若是使用 VSCode 開發工具，我們可以用 <strong>dotnet new</strong> 指令新增一個 PlaywrightTests 專案，預設內容會包含一個 UnitTest1.cs 檔案。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet new mstest -n PlaywrightTests</span><br><span class="line">cd PlaywrightTests</span><br></pre></td></tr></table></figure>
-<p>安裝必要的 Playwright 相依套件：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet add package Microsoft.Playwright.MSTest</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-01.png"
-                        class=""
-                 >
-<br>
-<p>建置程式碼，確認環境準備是否有異常。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet build</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-02.png"
-                        class=""
-                 >
-<br>
-<h2 id="安裝-Playwright-CLI">安裝 Playwright CLI</h2>
-<p>在 .NET 開發環境中，雖然 <strong>playwright.exe</strong> 指令沒有像 <strong>npx playwright</strong> 那麼多參數與功能，但我們在錄製網頁操作過程來產生測試程式碼 (codegen)，或是開啟追蹤檔 (show-trace) 時仍會使用到，可以透過下列指令來安裝 <strong><code>Microsoft.Playwright.CLI</code></strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool install --global Microsoft.Playwright.CLI</span><br></pre></td></tr></table></figure>
-<p>上述套件預設會被安裝到目前的使用者範圍內的 .NET 全局工具路徑中，具體安裝位置會因作業系統而異：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Windows</span><br><span class="line">C:\Users\&lt;你的用戶名&gt;\.dotnet\tools\</span><br><span class="line"></span><br><span class="line">Linux / macOS</span><br><span class="line">/home/&lt;你的用戶名&gt;/.dotnet/tools/</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-03.png"
-                        class=""
-                 >
-<p>我們可以直接開啟目錄確認工具是否安裝成功，或是使用以下指令來列出所有安裝的 .NET 工具：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool list --global</span><br></pre></td></tr></table></figure>
-<p>例：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Package Id                    Version      Commands</span><br><span class="line">-----------------------------------------------------</span><br><span class="line">dotnet-ef                     8.0.8        dotnet-ef</span><br><span class="line">microsoft.playwright.cli      1.2.3        playwright</span><br></pre></td></tr></table></figure>
-<h2 id="移除-Playwright-CLI">移除 Playwright CLI</h2>
-<p>若需要移除已安裝的套件，可以使用下列指令：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool uninstall microsoft.playwright.cli</span><br></pre></td></tr></table></figure>
-<h2 id="安裝-Playwright-支援的瀏覽器">安裝 Playwright 支援的瀏覽器</h2>
-<p>Playwright 支援 Chromium、WebKit 和 Firefox 瀏覽器，我們可以使用 <strong>playwright install</strong> 指令來安裝預設瀏覽器，這個動作會將瀏覽器安裝到 <strong><mark>%LOCALAPPDATA%\ms-playwright</mark></strong> 目錄下，若想要自訂安裝的項目，可以透過 <strong>playwright help install</strong> 來瞭解所有的選項。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright install</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-04.png"
-                        class=""
-                 >
-<br>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright help install</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-05.png"
-                        class=""
-                 >
-<h2 id="小試身手">小試身手</h2>
-<p>以上 Playwright 環境設定都完成後，我們就可以直接用官網的第一個範例來小試身手：</p>
-<ul>
-<li>
-<p><code>HasTitle()</code><br>
-打開 Playwright 官方網站，檢查網站的標題是否包含特定的字串，確認網頁標題中是否包含 “Playwright” 這個字。</p>
-</li>
-<li>
-<p><code>GetStartedLink()</code><br>
-一樣是打開 Playwright 官方網站，點擊一個名為 “Get started” 的連結，然後檢查點擊後的頁面是否有一個名為 “Installation” 的標題，以確保連結正確導向到預期的頁面。</p>
-</li>
-</ul>
-<p>大家應該不難發現 Playwright 的程式碼很直覺易讀，通常也不太需要夾雜 CSS class 或 style 來尋找定位網頁上的元素，除此之外還提供了豐富的 API 來進行各種操作，如：點擊、輸入文字、截圖等，之後再陸續向大家介紹各項重點特色，希望大家也都能快速上手 Playwright，並在日常開發中提升測試效率與程式碼品質。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Text.RegularExpressions;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright.MSTest;</span><br><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">PlaywrightTests</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ExampleTest</span> : <span class="title">PageTest</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">HasTitle</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expect a title &quot;to contain&quot; a substring.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page).ToHaveTitleAsync(<span class="keyword">new</span> Regex(<span class="string">&quot;Playwright&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">GetStartedLink</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Click the get started link.</span></span><br><span class="line">        <span class="keyword">await</span> Page.GetByRole(AriaRole.Link, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Get started&quot;</span> &#125;).ClickAsync();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expects page to have a heading with the name of Installation.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page.GetByRole(AriaRole.Heading, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Installation&quot;</span> &#125;)).ToBeVisibleAsync();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>Unit Test</tag>
-        <tag>Playwright</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MSTest 生命週期與常用屬性</title>
-    <url>/post/2025/04/mstest-attribute-lifecycle/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/mstest-attribute-lifecycle/MSTest.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>在軟體開發過程中，妥善進行測試可以協助我們確保程式碼的功能性與可靠性，不論是最小範圍的<strong>單元測試 (Unit Tests)</strong> 或是模擬實際用戶的<strong>端對端測試(E2E Tests)</strong>，都是品質把關的重要防線，而 MSTest 除了被整合在 Visual Studio 中，簡化了 .NET 應用程式建立和執行單元測試的過程，也可以透過 Azure Pipelines 將既有的測試專案整合到 CI 流程裡，這篇主要帶大家瞭解 MSTest 生命週期以及常用屬性，以便大家更能掌握自己的測試流程。</p>
-<span id="more"></span>
-<br>
 <h2 id="前言">前言</h2>
-<p><strong>測試類別(TestClass)</strong> 和 <strong>測試方法(TestMethod)</strong> 是 MSTest 核心要素，一個 TestClass 可以包含一個或多個 TestMethod，而我們實際要執行測試的內容就是寫在每個 TestMethod 裡，一般大家比較熟知的 3A Principle (<strong>A</strong>rrange-<strong>A</strong>ct-<strong>A</strong>ssert) 可以幫助我們快速聚焦測試方法裡面該撰寫的內容，簡單範例如下：</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyTestClass</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod1</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Arrange: 初始化測試過程中所需要的變數、物件或其他設定。</span></span><br><span class="line">        <span class="built_in">int</span> a = <span class="number">1</span>;</span><br><span class="line">        <span class="built_in">int</span> b = <span class="number">2</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// Act: 實際測試操作、內容。</span></span><br><span class="line">        <span class="built_in">int</span> ans = a + b;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Assert: 驗證操作是否產生預期結果。</span></span><br><span class="line">        <span class="built_in">int</span> excepted = <span class="number">3</span>;</span><br><span class="line">        Assert.AreEqual(expected, actual);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="測試組件">測試組件</h2>
-<p>一個 MSTest 專案建置完成後會產生一個組件(Assembly)，白話來說就是 bin 目錄的 dll 檔案，其中可以包含多個 TestClass，而一個 TestClass 裡可以有各自的 TestMethod (層級如下圖)，此外，我們會使用 <strong><code>[TestClass]</code></strong> 和 <strong><code>[TestMethod]</code></strong> 屬性項目在 MSTest 專案標記程式碼中哪些是測試類別與測試方法，下列四種寫法都代表相同的意思：</p>
+<p>我們使用 Visual Studio 開發工具能夠與 TFS 連線是因為它的功能包含了 <strong><code>Team Explorer</code></strong>，明確來說是從 Visual Studio 2005 首次引入 TFS (Team Foundation Server) 起才開始包含此功能，在這個版本之前則需要額外安裝 <strong>Team Explorer</strong> 和 <strong>MSSCCI Provider</strong> (Microsoft Source Code Control Integration) 才能夠在開發工具中與 TFS 進行整合。</p>
+<h2 id="版本相依性">版本相依性</h2>
+<p>作業系統、開發工具與版控伺服器彼此間有一定的版本相依性，Windows XP 無法安裝 Team Explorer 2013，只能安裝 Team Explorer 2010，搭配 MSSCCI Provider 2010 可以連線的版本有：TFS 2005 ~ 2018 和 Azure DevOps Server 2019/2020 <mark>(不包含2022)</mark>，若舊開發環境 (Visual Studio 2013 以前) 想要與 Azure DevOps Server 2022 連線，必要最低門檻可以參考下列配置：</p>
 <ul>
-<li>[TestClass()]</li>
-<li>[TestClassAttribute()]</li>
-<li>[TestClass]</li>
-<li>[TestClassAttribute]</li>
+<li><strong>Windows 7 以上</strong></li>
+<li><strong>Team Explorer 2013</strong></li>
+<li><strong>MSSCCI Provider 2013</strong></li>
 </ul>
-<div style="max-width: 800px; text-align:center;">
-<pre class="mermaid">flowchart LR
-  subgraph 測試組件 Assembly 
-    subgraph 測試類別 TestClass 
-        subgraph 測試方法 TestMethod 
-            Test1 --> Test2 --> TestN
-        end
-    end    
-  end</pre>
-</div>
-<h2 id="生命週期">生命週期</h2>
-<p>當我們實際在撰寫或執行多個測試時，經常需要在不同情境時初始化或清除測試資料，而上述提到的 <strong>組件層級</strong> / <strong>類別層級</strong> / <strong>測試層級</strong> 都提供了 <mark>Initialize</mark> 和 <mark>Cleanup</mark> 屬性讓我們可以在適當的時機會處理對應的邏輯。在下列範例程式中：TestProject1 組件中包含了兩個類別：Calculator(加法、減法運算)，CaculatorTests(測試類別)，在測試類別中撰寫了兩個 TestMethod (Test_AddMethod 和 Test_SubtractMethod)，同時也加上了 Constructor / Dispose、AssemblyInit / AssemblyCleanup、ClassInit / Cleanup、TestInit / TestCleanup，大家應該不難發現，這些函式都是成對的，可以直接參考下列範例程式碼與執行結果，瞭解一個測試組件從開始執行到結束歷經了哪些階段。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Diagnostics;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Calculator</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Add</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> a + b;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Subtract</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> a - b;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">CalculatorTests</span> : <span class="title">IDisposable</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> Calculator calculator;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">CalculatorTests</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;CalculatorTests - Constructor&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在整個測試程序集開始時執行一次</span></span><br><span class="line">        [<span class="meta">AssemblyInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">AssemblyInit</span>(<span class="params">TestContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;AssemblyInitialize: 測試程序集初始化。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在所有測試執行前初始化，只執行一次</span></span><br><span class="line">        [<span class="meta">ClassInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ClassInit</span>(<span class="params">TestContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;ClassInitialize: 初始化 Calculator 類別實例。&quot;</span>);</span><br><span class="line">            calculator = <span class="keyword">new</span> Calculator();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在每個測試方法執行前調用</span></span><br><span class="line">        [<span class="meta">TestInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestInit</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;TestInitialize: 開始執行新的測試。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 測試加法功能</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">TestCategory(<span class="string">&quot;CalculatorTests&quot;</span>)</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Test_AddMethod</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;Test_AddMethod: 測試加法運算。&quot;</span>);</span><br><span class="line">            <span class="built_in">int</span> result = calculator.Add(<span class="number">5</span>, <span class="number">3</span>);</span><br><span class="line">            Assert.AreEqual(<span class="number">8</span>, result, <span class="string">&quot;加法結果不正確&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 測試減法功能</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">TestCategory(<span class="string">&quot;CalculatorTests&quot;</span>)</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Test_SubtractMethod</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;Test_SubtractMethod: 測試減法運算。&quot;</span>);</span><br><span class="line">            <span class="built_in">int</span> result = calculator.Subtract(<span class="number">10</span>, <span class="number">5</span>);</span><br><span class="line">            Assert.AreEqual(<span class="number">5</span>, result, <span class="string">&quot;減法結果不正確&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在每個測試方法執行後調用</span></span><br><span class="line">        [<span class="meta">TestCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;TestCleanup: 測試完成，清理測試上下文。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在所有測試執行完畢後清理，只執行一次</span></span><br><span class="line">        [<span class="meta">ClassCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ClassCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;ClassCleanup: 清理 Calculator 類別實例。&quot;</span>);</span><br><span class="line">            <span class="comment">//calculator = null;</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在整個測試程序集結束時執行一次</span></span><br><span class="line">        [<span class="meta">AssemblyCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">AssemblyCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;AssemblyCleanup: 測試程序集清理。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Dispose</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;CalculatorTests - Dispose&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/mstest-attribute-lifecycle/console-run-test.png"
-                        class=""
-                 >
-<h2 id="常用屬性">常用屬性</h2>
-<h3 id="逾時設定-TimeoutAttribute">逾時設定 TimeoutAttribute</h3>
-<p><strong><code>TimeoutAttribute</code></strong> 用於設定測試方法的最大執行時間（以<strong>毫秒</strong>為單位）。如果執行測試超過指定的時間限制，測試則會失敗，這個屬性可以讓我們避免測試執行時間過長，或是為某些測試情境設定一個逾時期限，如下範例：</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"><span class="keyword">using</span> System.Threading;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">TimeoutExampleTests</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 這個測試會在 500 毫秒內完成，所以它會通過</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">Timeout(1000)</span>]  <span class="comment">// 設置 1 秒的超時</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod_WithSufficientTime</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">500</span>);  <span class="comment">// 模擬較短的處理時間</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);  <span class="comment">// 假設這是測試邏輯</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 這個測試會因為超時而失敗</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">Timeout(1000)</span>]  <span class="comment">// 設置 1 秒的超時</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod_WithTimeout</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1500</span>);  <span class="comment">// 模擬超過1秒的處理時間</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);  <span class="comment">// 假設這是測試邏輯</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="平行測試-ParallelizeAttribute">平行測試 ParallelizeAttribute</h3>
-<p>自 MSTest v2 起，提供了兩個關於平行測試的屬性：</p>
-<ul>
-<li><strong><code>ParallelizeAttribute</code></strong>：可以應用於類別或測試集來啟用平行測試。</li>
-<li><strong><code>DoNotParallelizeAttribute</code></strong>：可以應用於個別測試方法來<mark>禁止</mark>它與其他測試並行執行。</li>
-</ul>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"><span class="keyword">using</span> System.Threading;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    [<span class="meta">Parallelize(Workers = 2, Scope = ExecutionScope.MethodLevel)</span>]  <span class="comment">// 啟用並行，指定最多兩個工作線程</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ParallelTests</span></span><br><span class="line">    &#123;</span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod1</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod2</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">9</span>, <span class="number">3</span> * <span class="number">3</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 禁止這個方法與其他測試並行執行</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">DoNotParallelize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod3_DoNotParallelize</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">15</span>, <span class="number">5</span> * <span class="number">3</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><strong><code>[Parallelize(Workers = 2, Scope = ExecutionScope.MethodLevel)]</code></strong>：
-<ul>
-<li>Workers = 2 表示最多使用 2 個執行緒來執行平行測試。</li>
-<li>Scope = ExecutionScope.MethodLevel 表示在方法層級平行測試，代表每個測試方法可以平行執行；如果想要在類別層級，可以設定為 ExecutionScope.ClassLevel。</li>
-</ul>
-</li>
-<li>TestMethod1 和 TestMethod2：<br>
-因為類別層級已經使用 Parallelize 屬性，並且設定 Workers = 2 表示這兩個測試方法會在執行緒池裡平行執行。</li>
-<li>TestMethod3_DoNotParallelize：<br>
-這個方法加了 <strong><code>[DoNotParallelize]</code></strong>，所以它<mark>不會</mark>與其他方法同時執行，當 TestMethod3_DoNotParallelize 執行時，其他平行測試會暫停，直到這個測試完成。</li>
-</ul>
-<h2 id="後記">後記</h2>
-<p>MSTest 從推出至今已經來到了 v3，從一開始只能在 Windows 平台上運作，隨著 .NET Framework 的演進，也逐步支援跨平台運行，特別是在 .NET Core 和 .NET 5 之後，MSTest 成為了 .NET 生態系中一個可靠且簡單易用的測試框架。它不僅適合快速撰寫單元測試，還能與多種持續整合和部署工具無縫結合，例如：Azure DevOps 和 GitHub Actions。</p>
-<p>由於應用程式複雜度日益提高，MSTest 從 v2 開始也提供了平行測試，允許多個測試同時執行，這不僅加快了測試速度，也提高了 CI/CD 的效能。平行測試使開發人員能夠在不影響測試完整性的前提下，顯著縮短測試週期，對大型專案尤為重要。此外，MSTest 也包含：數據驅動測試、生命週期管理、異常處理測試等，這讓我們能夠更全面地驗證應用程式的功能和效能。</p>
-<p>MSTest 的易用性使得它適合不同規模的專案，加上 Visual Studio 開發工具與 Azure DevOps Services 的支援，不論是小型開發團隊或是大型企業應用，都能輕鬆採用，為軟體開發專案品質把關，也讓整個 DevOps 流程更加完善。</p>
+<p>Visual Studio 97/6/2003~2008 搭配 Team Explorer 2010 + MSSCCI Provider 2010 可以從開發工具連線至 TFS 2010~2017 和 Azure DevOps Server 2019/2020，若要連線至 Azure DevOps Server 2022 則需要搭配 Team Explorer 2013 + MSSCCI Provider 2013 才行，各版本 MSSCCI Provider 可以自 Visual Studio | Marketplace 取得：</p>
 <div class="tips">
 <font color="black">
-<a class="link"   href="https://github.com/microsoft/testfx"  target="_blank">⁍ Microsoft Test Framework<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/core/testing/unit-testing-with-mstest?source=recommendations"  target="_blank">⁍ 使用 MSTest 和 .NET 進行 C# 單元測試<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/core/testing/unit-testing-mstest-writing-tests-attributes"  target="_blank">⁍ MSTest 屬性<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://www.meziantou.net/mstest-v2-setup-a-test-project-and-run-tests.htm"  target="_blank">⁍ MSTest v2: Setup a test project and run tests<i class="fas fa-external-link-alt"></i></a>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2010MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2010 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.TeamFoundationServerMSSCCIProvider201064-bit"  target="_blank">⁍ Team Foundation Server MSSCCI Provider 2010 64-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC-9956"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M-11387"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
 </font>
-</div>]]></content>
+</div>
+<h2 id="VB5-VB6">VB5/VB6</h2>
+<p>在 VB5/VB6 的工具列需要額外安裝上述提到的 MSSCCI Provider 2010/2013 才會出現 <strong>Team Foundation</strong> 選項，讓我們在開發工具中將程式碼與版控伺服器整合。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/vb-connect-to-azure-devops/create-project-from-tfs.png"
+                        class=""
+                 >
+<p>若出現下列錯誤訊息，就是 MSSCCI Provider 版本太舊了，無法連線到新的版控伺服器，例如：安裝 MSSCCI Provider 2010 但想要與 Azure DevOps Server 2022 連線，唯一解法就是安裝 Team Explorer 2013 + MSSCCI Provider 2013。</p>
+<blockquote>
+<p>TF14045: The identity 主機名稱\2ffd15ae-91e4-4df8-a346-e5be57e1340e is not a recognized identity.</p>
+</blockquote>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/vb-connect-to-azure-devops/not-a-recognized-identity.png"
+                        class=""
+                 >
+<p>在實務情境可能還會遇到其他各種版本組合，經此次嘗試後，確認 VB5/VB6 都還可以與 Azure DevOps Server 2022 的 TFVC 版控進行整合，這邊有篇文章將各種組合條列得很詳盡，也提供大家參考。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://jessehouwing.net/azure-devops-connect-any-visual-studio-version/"  target="_blank">⁍ Connect any version of Visual Studio to Azure DevOps or Azure DevOps Server<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+]]></content>
       <tags>
-        <tag>MSTest</tag>
+        <tag>VB5</tag>
+        <tag>VB6</tag>
+        <tag>TFS</tag>
+        <tag>Team Explorer</tag>
+        <tag>MSSCCI Provider</tag>
       </tags>
   </entry>
   <entry>
@@ -943,156 +1096,441 @@
       </tags>
   </entry>
   <entry>
-    <title>使用 Playwright 測試框架 - 執行階段 (.NET)</title>
-    <url>/post/2025/05/how-to-use-playwright-2/</url>
+    <title>Azure DevOps MCP Server</title>
+    <url>/post/2025/06/azure-devops-mcp-server/</url>
     <content><![CDATA[<img    
                        lazyload
                        alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
+                       data-src="/post/2025/06/azure-devops-mcp-server/mcp.png"
                          align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
                  > 
-<p><a href="/post/2024/11/how-to-use-playwright-1">上一篇文章</a>提到了如何使用 Playwright 的測試產生器(codegen) 錄製腳本，除了可以運用在自動化測試之外，舉凡想要透過程式來自動執行的一連串行為，都可以透過 Playwright 來完成，本篇文章使用 Windows Sandbox 全新環境來執行由 .NET 8 撰寫的 Console 程式，讓大家知道建置產生執行檔後，還需要哪些必要的環境設定才可以正常讓程式運作。<br>
-<br></p>
+<p>隨著 AI 技術的蓬勃發展，軟體開發與運維 (DevOps) 流程正迎來一場革命性的轉變。傳統的 DevOps 強調自動化、持續整合與持續交付，但在面對日益複雜的專案協作與工具整合時，團隊仍需投入大量人力進行手動操作與跨系統協調。這時，AI 驅動的自動化與智慧化流程成為新一代 DevOps 的核心訴求。Model Context Protocol（MCP，模型上下文協議）正是在這樣的背景下誕生，為大型語言模型（LLM）與外部工具之間建立一套安全、模組化且可擴充的溝通標準。自微軟在上個月 Microsoft Build 2025 開發者大會宣佈會加入對 MCP 的支援，這個月 Azure DevOps MCP Server 也已公開預覽 (Public Preview)，本文將介紹 Azure DevOps MCP Server 提供了哪些工具。</p>
+<!-- 結合 MCP 的 Azure DevOps MCP Server，讓 AI 助理（如 GitHub Copilot）能直接理解專案脈絡、查詢與操作 DevOps 資源，甚至根據自然語言指令自動執行工作，徹底改變開發者與工具的互動模式。本文將介紹 MCP 的由來、Azure DevOps MCP 的分類與工具，並詳細說明各工具的實際用途，協助你掌握這項前瞻技術如何為團隊帶來更高的生產力與協作效率。 -->
+<br>
 <span id="more"></span>
 <br>
-<h2 id="安裝-NET-Runtime">安裝 .NET Runtime</h2>
-<p>不論是以前的 .NET Framework 或是現在的 .NET Core，在執行時都需要安裝 .NET Runtime 才能順利運行開發好的程式，以下圖 Console 專案建置後的執行檔為例，畫面還會很貼心的指引我們目前的需求版本和下載路徑，完成安裝後便可順利執行 Console 程式。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/dotnet8.png"
-                        class=""
-                 >
-<br>
+<h2 id="MCP-的由來">MCP 的由來</h2>
+<p>MCP（Model Context Protocol）最初由 Anthropic 在 2024 年 11 月提出，是一套專為大型語言模型設計的開放式標準協議。其核心目標在於讓 LLM 能夠安全、模組化且可擴充地存取外部工具與資料來源。MCP 的設計理念類似於 API，但傳統 API 是給開發者使用，強調結構化資料與嚴謹格式；而 MCP 則是為 AI 模型量身打造，讓模型能用自然語言理解上下文，並以「對話」方式與外部系統互動。對使用者而言，整個過程更貼近人類溝通習慣，MCP 讓 LLM 不只是資訊生成者，更能成為任務執行者，推動開發流程從「使用工具」進化為「與工具對話」。</p>
+<h2 id="MCP-和-Function-Calling-的不同">MCP 和 Function Calling 的不同</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">功能</th>
+<th style="text-align:left">Function Calling</th>
+<th style="text-align:left">MCP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">主要目的</td>
+<td style="text-align:left">把自然語言請求轉成結構化函數呼叫，由應用程式執行</td>
+<td style="text-align:left">標準化 LLM 與外部工具/資料源的連接與執行流程</td>
+</tr>
+<tr>
+<td style="text-align:left">控制權</td>
+<td style="text-align:left">LLM 供應商（如：OpenAI、Anthropic）</td>
+<td style="text-align:left">外部系統（MCP Server/Client）</td>
+</tr>
+<tr>
+<td style="text-align:left">輸出格式</td>
+<td style="text-align:left">不同 LLM 廠商格式各異（通常為 JSON）</td>
+<td style="text-align:left">統一採用標準協議（如：JSON-RPC）</td>
+</tr>
+<tr>
+<td style="text-align:left">擴展性/互通性</td>
+<td style="text-align:left">需為每個工具自訂整合，跨平台困難</td>
+<td style="text-align:left">一次整合，多方兼容，工具可被多個 LLM 共用</td>
+</tr>
+<tr>
+<td style="text-align:left">標準化</td>
+<td style="text-align:left">無統一標準，各家 LLM 格式不同</td>
+<td style="text-align:left">統一協議，保證跨工具、跨平台一致性</td>
+</tr>
+<tr>
+<td style="text-align:left">適用場景</td>
+<td style="text-align:left">單一應用、簡單任務、需嚴格控制副作用</td>
+<td style="text-align:left">多工具、多平台、大規模協作與自動化</td>
+</tr>
+</tbody>
+</table>
+<p>MCP 並非為了取代 Function Calling 而推出，兩者是互補關係：</p>
+<ul>
+<li><strong>Function Calling</strong>：讓 LLM 能夠「決定」要做什麼（下訂單）。</li>
+<li><strong>MCP</strong>：讓這些決策能夠在不同工具、平台間「被執行」且流程標準化（執行訂單）。</li>
+</ul>
+<p>實際應用中，LLM 會先用 Function Calling 決定要呼叫哪個工具、什麼參數，然後 MCP 負責將這個請求標準化、分發到對應的 MCP Server 執行，並將結果回傳。其他關於 MCP 更多的詳細資訊，可以參考下列 Anthropic 官網內容：</p>
 <div class="tips">
 <font color="black">
-<a class="link"   href="https://dotnet.microsoft.com/download"  target="_blank">⁍ 下載 .NET<i class="fas fa-external-link-alt"></i></a>
+<a class="link"   href="https://docs.anthropic.com/zh-TW/docs/agents-and-tools/mcp"  target="_blank">⁍ 模型上下文協議 (MCP)<i class="fas fa-external-link-alt"></i></a>
+<a class="link"   href="https://github.com/modelcontextprotocol"  target="_blank">⁍ GitHub | Model Context Protocol<i class="fas fa-external-link-alt"></i></a>
 </font>
 </div>
-<h2 id="安裝-PowerShell">安裝 PowerShell</h2>
-<p>如果是全新的環境，安裝完 .NET Runtime 後應該還會出現如下圖的錯誤，主要原因是：</p>
-<ul>
-<li>pwsh 找不到路徑 (或是沒有安裝 PowerShell)</li>
-<li>缺少 WebDriver (Edge/Chrome/Firefox)</li>
-</ul>
+<h2 id="Azure-DevOps-MCP-Server">Azure DevOps MCP Server</h2>
+<p>Azure DevOps MCP Server 以 MCP 為基礎，提供一套可由 AI 助手（如：GitHub Copilot）透過自然語言存取與操作 Azure DevOps 相關服務的工具集合。這些工具依功能可分類如下幾種：</p>
+<h2 id="🧿-核心-Core">🧿 核心 (Core)</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">工具名稱</th>
+<th style="text-align:left">功能描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">core_list_project_teams</td>
+<td style="text-align:left">取得指定專案的團隊清單</td>
+</tr>
+<tr>
+<td style="text-align:left">core_list_projects</td>
+<td style="text-align:left">取得組織下所有專案清單</td>
+</tr>
+</tbody>
+</table>
+<h2 id="⚒️-工作-Work">⚒️ 工作 (Work)</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">工具名稱</th>
+<th style="text-align:left">功能描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">work_list_team_iterations</td>
+<td style="text-align:left">取得專案中某團隊的所有迭代清單</td>
+</tr>
+<tr>
+<td style="text-align:left">work_create_iterations</td>
+<td style="text-align:left">在指定專案中建立新迭代</td>
+</tr>
+<tr>
+<td style="text-align:left">work_assign_iterations</td>
+<td style="text-align:left">將既有迭代指派給專案中的團隊</td>
+</tr>
+</tbody>
+</table>
+<h2 id="📅-工作項目-Work-Items">📅 工作項目 (Work Items)</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">工具名稱</th>
+<th style="text-align:left">功能描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">wit_my_work_items</td>
+<td style="text-align:left">取得目前使用者相關的工作項目</td>
+</tr>
+<tr>
+<td style="text-align:left">wit_list_backlogs</td>
+<td style="text-align:left">取得專案與團隊的待辦清單</td>
+</tr>
+<tr>
+<td style="text-align:left">wit_list_backlog_work_items</td>
+<td style="text-align:left">取得指定專案、團隊及類別的待辦工作項目</td>
+</tr>
+<tr>
+<td style="text-align:left">wit_get_work_item</td>
+<td style="text-align:left">依 ID 取得單一工作項目</td>
+</tr>
+<tr>
+<td style="text-align:left">wit_get_work_items_batch_by_ids</td>
+<td style="text-align:left">批次取得多個工作項目</td>
+</tr>
+<tr>
+<td style="text-align:left">wit_update_work_item</td>
+<td style="text-align:left">依 ID 更新工作項目欄位</td>
+</tr>
+<tr>
+<td style="text-align:left">wit_create_work_item</td>
+<td style="text-align:left">在指定專案建立新工作項目</td>
+</tr>
+<tr>
+<td style="text-align:left">wit_list_work_item_comments</td>
+<td style="text-align:left">取得指定工作項目的留言</td>
+</tr>
+<tr>
+<td style="text-align:left">wit_get_work_items_for_iteration</td>
+<td style="text-align:left">取得指定迭代的所有工作項目</td>
+</tr>
+<tr>
+<td style="text-align:left">wit_add_work_item_comment</td>
+<td style="text-align:left">為指定工作項目新增留言</td>
+</tr>
+<tr>
+<td style="text-align:left">wit_add_child_work_item</td>
+<td style="text-align:left">由父項目建立子工作項目</td>
+</tr>
+<tr>
+<td style="text-align:left">wit_link_work_item_to_pull_request</td>
+<td style="text-align:left">將工作項目連結至現有 Pull Request</td>
+</tr>
+<tr>
+<td style="text-align:left">wit_get_work_item_type</td>
+<td style="text-align:left">取得指定工作項目類型</td>
+</tr>
+<tr>
+<td style="text-align:left">wit_get_query</td>
+<td style="text-align:left">依 ID 或路徑取得查詢</td>
+</tr>
+<tr>
+<td style="text-align:left">wit_get_query_results_by_id</td>
+<td style="text-align:left">依查詢 ID 取得查詢結果</td>
+</tr>
+<tr>
+<td style="text-align:left">wit_update_work_items_batch</td>
+<td style="text-align:left">批次更新多個工作項目</td>
+</tr>
+<tr>
+<td style="text-align:left">wit_close_and_link_workitem_duplicates</td>
+<td style="text-align:left">關閉重複的工作項目</td>
+</tr>
+<tr>
+<td style="text-align:left">wit_work_items_link</td>
+<td style="text-align:left">批次連結多個工作項目</td>
+</tr>
+</tbody>
+</table>
+<h2 id="📁-原始碼儲存庫-Repositories">📁 原始碼儲存庫 (Repositories)</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">工具名稱</th>
+<th style="text-align:left">功能描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">repo_list_repos_by_project</td>
+<td style="text-align:left">取得專案下所有儲存庫</td>
+</tr>
+<tr>
+<td style="text-align:left">repo_list_pull_requests_by_repo</td>
+<td style="text-align:left">取得指定儲存庫的 Pull Requests</td>
+</tr>
+<tr>
+<td style="text-align:left">repo_list_pull_requests_by_project</td>
+<td style="text-align:left">取得專案下所有 Pull Requests</td>
+</tr>
+<tr>
+<td style="text-align:left">repo_list_branches_by_repo</td>
+<td style="text-align:left">取得指定儲存庫的分支</td>
+</tr>
+<tr>
+<td style="text-align:left">repo_list_my_branches_by_repo</td>
+<td style="text-align:left">取得指定儲存庫中屬於自己的分支</td>
+</tr>
+<tr>
+<td style="text-align:left">repo_list_pull_request_threads</td>
+<td style="text-align:left">取得 Pull Request 的討論串</td>
+</tr>
+<tr>
+<td style="text-align:left">repo_list_pull_request_thread_comments</td>
+<td style="text-align:left">取得討論串中的留言</td>
+</tr>
+<tr>
+<td style="text-align:left">repo_get_repo_by_name_or_id</td>
+<td style="text-align:left">依名稱或 ID 取得儲存庫</td>
+</tr>
+<tr>
+<td style="text-align:left">repo_get_branch_by_name</td>
+<td style="text-align:left">依名稱取得分支</td>
+</tr>
+<tr>
+<td style="text-align:left">repo_get_pull_request_by_id</td>
+<td style="text-align:left">依 ID 取得 Pull Request</td>
+</tr>
+<tr>
+<td style="text-align:left">repo_create_pull_request</td>
+<td style="text-align:left">建立新的 Pull Request</td>
+</tr>
+<tr>
+<td style="text-align:left">repo_update_pull_request_status</td>
+<td style="text-align:left">更新 Pull Request 狀態（啟用或放棄）</td>
+</tr>
+<tr>
+<td style="text-align:left">repo_reply_to_comment</td>
+<td style="text-align:left">回覆 Pull Request 的指定留言</td>
+</tr>
+<tr>
+<td style="text-align:left">repo_resolve_comment</td>
+<td style="text-align:left">解決 Pull Request 討論串中的留言</td>
+</tr>
+</tbody>
+</table>
+<h2 id="🛰️-建置-Builds">🛰️ 建置 (Builds)</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">工具名稱</th>
+<th style="text-align:left">功能描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">build_get_definitions</td>
+<td style="text-align:left">取得專案的建置定義清單</td>
+</tr>
+<tr>
+<td style="text-align:left">build_get_definition_revisions</td>
+<td style="text-align:left">取得指定建置定義的歷史版本</td>
+</tr>
+<tr>
+<td style="text-align:left">build_get_builds</td>
+<td style="text-align:left">取得專案的建置清單</td>
+</tr>
+<tr>
+<td style="text-align:left">build_get_log</td>
+<td style="text-align:left">取得指定建置的日誌</td>
+</tr>
+<tr>
+<td style="text-align:left">build_get_log_by_id</td>
+<td style="text-align:left">依日誌 ID 取得建置日誌</td>
+</tr>
+<tr>
+<td style="text-align:left">build_get_changes</td>
+<td style="text-align:left">取得指定建置的異動</td>
+</tr>
+<tr>
+<td style="text-align:left">build_run_build</td>
+<td style="text-align:left">觸發指定定義的新建置</td>
+</tr>
+<tr>
+<td style="text-align:left">build_get_status</td>
+<td style="text-align:left">取得指定建置的狀態</td>
+</tr>
+</tbody>
+</table>
+<h2 id="🚀-發行-Releases">🚀 發行 (Releases)</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">工具名稱</th>
+<th style="text-align:left">功能描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">release_get_definitions</td>
+<td style="text-align:left">取得專案的發行定義清單</td>
+</tr>
+<tr>
+<td style="text-align:left">release_get_releases</td>
+<td style="text-align:left">取得專案的發行清單</td>
+</tr>
+</tbody>
+</table>
+<h2 id="🧪-測試計畫-Test-Plans">🧪 測試計畫 (Test Plans)</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">工具名稱</th>
+<th style="text-align:left">功能描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">testplan_create_test_plan</td>
+<td style="text-align:left">建立新的測試計畫</td>
+</tr>
+<tr>
+<td style="text-align:left">testplan_create_test_case</td>
+<td style="text-align:left">建立新的測試案例</td>
+</tr>
+<tr>
+<td style="text-align:left">testplan_add_test_cases_to_suite</td>
+<td style="text-align:left">將既有測試案例加入測試套件</td>
+</tr>
+<tr>
+<td style="text-align:left">testplan_list_test_plans</td>
+<td style="text-align:left">分頁取得專案的測試計畫清單，可過濾啟用狀態及細節</td>
+</tr>
+<tr>
+<td style="text-align:left">testplan_list_test_cases</td>
+<td style="text-align:left">取得測試計畫中的測試案例</td>
+</tr>
+<tr>
+<td style="text-align:left">testplan_show_test_results_from_build_id</td>
+<td style="text-align:left">依建置 ID 取得測試結果</td>
+</tr>
+</tbody>
+</table>
+<h2 id="🔎-搜尋-Search">🔎 搜尋 (Search)</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">工具名稱</th>
+<th style="text-align:left">功能描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">search_code</td>
+<td style="text-align:left">依關鍵字搜尋原始碼</td>
+</tr>
+<tr>
+<td style="text-align:left">search_wiki</td>
+<td style="text-align:left">依關鍵字搜尋 Wiki</td>
+</tr>
+<tr>
+<td style="text-align:left">search_workitem</td>
+<td style="text-align:left">依關鍵字搜尋工作項目</td>
+</tr>
+</tbody>
+</table>
+<h2 id="VSCode-的-MCP-設定">VSCode 的 MCP 設定</h2>
+<p>在 VSCode 中要設定 MCP Server 可以按 <strong><code>Ctrl + ,</code></strong> 打開 Settings 畫面，然後點選右上角 Open Settings 圖示，加入下列設定區塊即可，其中 ado_org 代表 Azure DevOps Services 的 Orgnization 名稱，運行 MCP Server 時會提示在 VSCode 上方讓使用者輸入設定。</p>
 <img  
                        lazyload
                        alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/pwsh.png"
+                       data-src="/post/2025/06/azure-devops-mcp-server/open_settings.png"
                         class=""
                  >
 <br>
-若要安裝 PowerShell 可以依據自己的作業系統參考下列連結：
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/06/azure-devops-mcp-server/mcp_setting.png"
+                        class=""
+                 >
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">   <span class="attr">&quot;inputs&quot;:</span> [</span><br><span class="line">     &#123;</span><br><span class="line">         <span class="attr">&quot;id&quot;:</span> <span class="string">&quot;ado_org&quot;</span>,</span><br><span class="line">         <span class="attr">&quot;type&quot;:</span> <span class="string">&quot;promptString&quot;</span>,</span><br><span class="line">         <span class="attr">&quot;description&quot;:</span> <span class="string">&quot;Azure DevOps organization name  (e.g. &#x27;contoso&#x27;)&quot;</span></span><br><span class="line">     &#125;</span><br><span class="line">   ],</span><br><span class="line">   <span class="attr">&quot;servers&quot;:</span> &#123;</span><br><span class="line">     <span class="attr">&quot;ado&quot;:</span> &#123;</span><br><span class="line">         <span class="attr">&quot;type&quot;:</span> <span class="string">&quot;stdio&quot;</span>,</span><br><span class="line">         <span class="attr">&quot;command&quot;:</span> <span class="string">&quot;npx&quot;</span>,</span><br><span class="line">         <span class="attr">&quot;args&quot;:</span> [</span><br><span class="line">             <span class="string">&quot;-y&quot;</span>,</span><br><span class="line">             <span class="string">&quot;@azure-devops/mcp&quot;</span>,</span><br><span class="line">             <span class="string">&quot;$&#123;input:ado_org&#125;&quot;</span></span><br><span class="line">         ]</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<br>
+<p>而在使用前也必需先以 <strong><code>az login</code></strong> 登入帳號取得使用權限，才能讓 Azure DevOps MCP Server 正常存取資源，要運行或停止設定檔的 MCP Server 僅需要在存檔後，每個 MCP Server 名稱上方就會出現 Start/Stop 的字樣可以點選。</p>
+<br>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/06/azure-devops-mcp-server/az_login.png"
+                        class=""
+                 >
+<br>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/06/azure-devops-mcp-server/start_mcp.png"
+                        class=""
+                 >
+<br>
+完成 settings.json 的設定並啟動 ado 這個 MCP Server 後，我們就可以在 GitHub Copilot 的 Agent mode 中調用前述整理的各項工具。在對話過程中，GitHub Copilot 會同時列出目前可用的工具清單，讓所選用的模型 (如：GPT-4o) 能根據指令調用相關工具，並將執行結果回傳給使用者，協助回覆各類查詢。
+<br>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/06/azure-devops-mcp-server/agent_mode.png"
+                        class=""
+                 >
+<h2 id="結語">結語</h2>
+<p>有了 Azure DevOps MCP Server 提供的工具後，我們就可以透過對話的方式來互動取得 Azure DevOps Services 相關資訊，並自動執行各種開發、協作與運維任務，讓 AI 助理真正成為團隊的智慧夥伴。MCP 標準的導入不僅大幅降低了跨系統整合的門檻，也讓開發流程更具彈性與擴展性，目前 Azure DevOps MCP Server 僅支援雲端的 Azure DevOps Services，尚不支援地端 Azure DevOps Server 的存取方式 (依目前得知的消息，未來幾個月內也不會提供)，但其實要實作 MCP Server 來自己串接這一段也不是太困難的問題，後續有機會再開一篇文章向大家說明。</p>
 <div class="tips">
 <font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5"  target="_blank">⁍ 在 Windows 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-linux?view=powershell-7.5"  target="_blank">⁍ 在 Linux 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-macos?view=powershell-7.5"  target="_blank">⁍ 在 macOS 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a>
+<a class="link"   href="https://github.com/microsoft/azure-devops-mcp"  target="_blank">⁍ GitHub | azure-devops-mcp
+<i class="fas fa-external-link-alt"></i></a>
 </font>
-</div>
-<h2 id="安裝-WebDriver">安裝 WebDriver</h2>
-<p>在上圖的錯誤訊息中有提到如下指令，路徑中的 <strong><mark>netX</mark></strong> 要替換為自己使用的版本路徑，而其中的 playwright.ps1 會存在於 .NET 程式建置後的 bin 目錄中，這個 .ps1 的主要用途是在 Windows 環境下執行 Playwright 測試，讓它可以正確找到 Playwright 主程式和相關驅動程式，確認 pwsh 指令可以運作後，就可以接著安裝 WebDriver 了。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pwsh bin/Debug/netX/playwright.ps1 install</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/playwright.png"
-                        class=""
-                 >
-<br>
-若在 install 之後沒有加上任何參數，則會安裝下列預設項目：
-<ul>
-<li>Chromium</li>
-<li>Chromium Headless Shell</li>
-<li>Firefox</li>
-<li>Webkit</li>
-<li>FFMPEG</li>
-</ul>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/install.png"
-                        class=""
-                 >
-<br>
-也可以依自己的需求安裝指定項目，可使用 install -h 查看相關資訊：
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/custom.png"
-                        class=""
-                 >
-<h2 id="總結">總結</h2>
-<p>本文介紹了在全新環境下，如何讓 .NET 8 撰寫的 Playwright 測試程式順利執行，包含安裝 .NET Runtime、PowerShell 及 WebDriver 等必要步驟。只要依照上述流程完成環境設定，就能避免常見的錯誤訊息，順利執行自動化測試。希望這些說明能幫助你在不同平台上快速部署與運行 Playwright 測試專案。</p>
-]]></content>
+</div>]]></content>
       <tags>
-        <tag>Playwright</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用 VB5/VB6 連線至 Azure DevOps Server 2022 (TFVC)</title>
-    <url>/post/2025/04/vb-connect-to-azure-devops/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/vb-connect-to-azure-devops/VS_TFS.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>Visual Studio 從 97 發展到現在的 2022 號稱地表最強開發工具，能夠與 TFS 或 Git 版控連線自然不是問題，最近剛好遇到客戶還有許多 VB5/VB6 開發的 Winform 程式需要維護，而且版控伺服器也從 TFS 2013 升級至 Azure DevOps Server 2022，藉此機會向大家整理說明 Visual Studio 各版本與 TFS / Azure DevOps 連線的需求與設定。<br>
-<br></p>
-<span id="more"></span>
-<br>
-<h2 id="前言">前言</h2>
-<p>我們使用 Visual Studio 開發工具能夠與 TFS 連線是因為它的功能包含了 <strong><code>Team Explorer</code></strong>，明確來說是從 Visual Studio 2005 首次引入 TFS (Team Foundation Server) 起才開始包含此功能，在這個版本之前則需要額外安裝 <strong>Team Explorer</strong> 和 <strong>MSSCCI Provider</strong> (Microsoft Source Code Control Integration) 才能夠在開發工具中與 TFS 進行整合。</p>
-<h2 id="版本相依性">版本相依性</h2>
-<p>作業系統、開發工具與版控伺服器彼此間有一定的版本相依性，Windows XP 無法安裝 Team Explorer 2013，只能安裝 Team Explorer 2010，搭配 MSSCCI Provider 2010 可以連線的版本有：TFS 2005 ~ 2018 和 Azure DevOps Server 2019/2020 <mark>(不包含2022)</mark>，若舊開發環境 (Visual Studio 2013 以前) 想要與 Azure DevOps Server 2022 連線，必要最低門檻可以參考下列配置：</p>
-<ul>
-<li><strong>Windows 7 以上</strong></li>
-<li><strong>Team Explorer 2013</strong></li>
-<li><strong>MSSCCI Provider 2013</strong></li>
-</ul>
-<p>Visual Studio 97/6/2003~2008 搭配 Team Explorer 2010 + MSSCCI Provider 2010 可以從開發工具連線至 TFS 2010~2017 和 Azure DevOps Server 2019/2020，若要連線至 Azure DevOps Server 2022 則需要搭配 Team Explorer 2013 + MSSCCI Provider 2013 才行，各版本 MSSCCI Provider 可以自 Visual Studio | Marketplace 取得：</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2010MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2010 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.TeamFoundationServerMSSCCIProvider201064-bit"  target="_blank">⁍ Team Foundation Server MSSCCI Provider 2010 64-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC-9956"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M-11387"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
-<h2 id="VB5-VB6">VB5/VB6</h2>
-<p>在 VB5/VB6 的工具列需要額外安裝上述提到的 MSSCCI Provider 2010/2013 才會出現 <strong>Team Foundation</strong> 選項，讓我們在開發工具中將程式碼與版控伺服器整合。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/vb-connect-to-azure-devops/create-project-from-tfs.png"
-                        class=""
-                 >
-<p>若出現下列錯誤訊息，就是 MSSCCI Provider 版本太舊了，無法連線到新的版控伺服器，例如：安裝 MSSCCI Provider 2010 但想要與 Azure DevOps Server 2022 連線，唯一解法就是安裝 Team Explorer 2013 + MSSCCI Provider 2013。</p>
-<blockquote>
-<p>TF14045: The identity 主機名稱\2ffd15ae-91e4-4df8-a346-e5be57e1340e is not a recognized identity.</p>
-</blockquote>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/vb-connect-to-azure-devops/not-a-recognized-identity.png"
-                        class=""
-                 >
-<p>在實務情境可能還會遇到其他各種版本組合，經此次嘗試後，確認 VB5/VB6 都還可以與 Azure DevOps Server 2022 的 TFVC 版控進行整合，這邊有篇文章將各種組合條列得很詳盡，也提供大家參考。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://jessehouwing.net/azure-devops-connect-any-visual-studio-version/"  target="_blank">⁍ Connect any version of Visual Studio to Azure DevOps or Azure DevOps Server<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
-]]></content>
-      <tags>
-        <tag>VB5</tag>
-        <tag>VB6</tag>
-        <tag>TFS</tag>
-        <tag>Team Explorer</tag>
-        <tag>MSSCCI Provider</tag>
+        <tag>Azure DevOps</tag>
+        <tag>MCP</tag>
       </tags>
   </entry>
 </search>
