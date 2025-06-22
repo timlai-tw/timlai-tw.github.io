@@ -125,188 +125,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Azure DevOps Services 個別服務</title>
-    <url>/post/2025/04/azure-devops-individual-services/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-individual-services/individual_services.jpg"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p><a href="/post/2024/09/azure-devops-licensing-description">上一篇文章</a>提到了 Azure DevOps 雲端和地端的使用者授權，當我們建立私有專案 (Private project) 且成員數量在 5 個人以下時，甚至可以直接免費使用，從第 6 個人起才需要計價，並具有 1 Free Microsoft-hosted CI/CD 和 1 Free Self-hosted CI/CD 以及 Azure Artifacts 2GB 可用儲存容量。在實務使用情境較複雜時，很有可能就需要再增加個別服務的用量 (例如：Azure Pipelines 平行作業數量)，這次就帶大家瞭解這些個別服務計價的方式。</p>
-<span id="more"></span>
-<br>
-<h2 id="Azure-Pipelines">Azure Pipelines</h2>
-<p>不論我們在 Azure Pipelines 使用文字介面或是圖形介面 (classic editor) 建立 pipeline 腳本內容，其中有個 <strong><code>Agent pools</code></strong> 選項是必要設定，它是用來決定執行階段要把工作 (job) 傳遞到哪個 pool 裡，尋找閒置且符合條件的 <strong>Azure Pipelines agents</strong> 執行個體來執行腳本內容，在 Azure DevOps Services 預設有一個 Microsoft-hosted agent 每個月可以免費使用 1800 分鐘，<mark>但預設無法直接使用</mark>，需要填寫 <strong><a class="link"   href="https://aka.ms/azpipelines-parallelism-request" >Azure DevOps Parallelism Request<i class="fas fa-external-link-alt"></i></a></strong> 表單申請審核通過才行，否則在執行的時候會出現如下錯誤：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-individual-services/azpipelines-parallelism-request.jpg"
-                        class=""
-                 >
-<p>當然我們也可以自己準備機器，在上面安裝 Azure Pipelines agents 程式 (支援 Windows / Linux / macOS)，這就屬於 Self-hosted agent。由於是自己準備的執行個體，所以使用時數不受限制，但每個工作 (job) 都是經由佇列 (queue) 的方式排隊一個一個執行，若需要同時間處理一個以上的工作 (job)，則需要再增加執行個體才行 (不論是 Microsoft-hosted 或是 Self-hosted)，基於這樣的概念，以下就是我們所關心的計價標準：</p>
-<ul>
-<li>每一個 Microsoft-hosted 每個月有 1800 分鐘可以使用。</li>
-<li>每增加一個額外的 Microsoft-hosted CI/CD 每個月是 USD $40 (大約 <strong>TWD $1279</strong>)。</li>
-<li>每增加一個額外的 Self-hosted CI/CD 每個月是 USD $15 (大約 <strong>TWD $479</strong>)。</li>
-<li><mark>如果在地端自建 Azure DevOps Server 則僅能使用 Self-hosted agent，需要更多的平行作業就自己多準備幾個執行個體，不用再額外採購什麼授權。</mark></li>
-</ul>
-<h2 id="Azure-Artifacts">Azure Artifacts</h2>
-<p>在軟體專案開發過程中，多少都會用到一些公司內部自行開發，或是外部來源提供的套件，一般常見的套件來源像是：NuGet、npm、Maven、Python…等，Azure Artifacts 可以將這些外部提供來源設為上游來源 (Upstream sources)，或是自己建立一個套件提供來源 (Feeds)，讓專案團隊成員在內部環境取用，儲存容量在 2GB 以內是免費，若超過則依下列區間以量計價：</p>
-<table>
-<thead>
-<tr>
-<th>儲存容量</th>
-<th>每GB (USD)</th>
-<th>每GB (TWD)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0 - 2 GB</td>
-<td>免費</td>
-<td>免費</td>
-</tr>
-<tr>
-<td>2 - 10 GB</td>
-<td>$2</td>
-<td>大約 $63.98</td>
-</tr>
-<tr>
-<td>10 - 100 GB</td>
-<td>$1</td>
-<td>大約 $31.99</td>
-</tr>
-<tr>
-<td>100 - 1000 GB</td>
-<td>$0.50</td>
-<td>大約 $16.00</td>
-</tr>
-<tr>
-<td>1000 GB 以上</td>
-<td>$0.25</td>
-<td>大約 NT$8.00</td>
-</tr>
-</tbody>
-</table>
-<h2 id="GitHub-Advanced-Security-for-Azure-DevOps">GitHub Advanced Security for Azure DevOps</h2>
-<p>以往我們想要對專案程式碼執行原碼檢測、套件掃描等作業，首先要考量的可能是產品的價錢，或是委外檢測的費用，比較克難一點還可以尋找免費的掃描檢測工具(例如只是想要出個報告 🙈 🙊)，若想要整合到 CI 流程裡，還要得額外花一番功夫，但基本上只要可以透過 command line 來執行，都是可以用 Azure Pipelines 整合起來的。而自從 <strong>GitHub Advanced Security for Azure DevOps</strong> 正式啟用後，省掉了這部份不少麻煩，除了原生的與 Azure DevOps Services 整合 <mark>(不包含地端 Azure DevOps Server)</mark>，也可以與 <strong>Microsoft Defender for Cloud</strong> 串接，它可以做到：</p>
-<ul>
-<li><strong>Code Scanning</strong>：找出原始程式碼中的漏洞並提供修復指導。</li>
-<li><strong>Secret Scanning</strong>：識別 secret 並阻止開發人員將 secret 推送到程式碼儲存庫。</li>
-<li><strong>Dependency Scanning</strong>：發現 open-source 依賴項目的漏洞，並為開發人員自動發出更新警報。</li>
-</ul>
-<p>在 Azure Pipelines 也提供了下列對應的 task 以便我們完善整個 <strong><code>DevSecOps</code></strong> 流程：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-individual-services/github_acvanced_security.jpg"
-                        class=""
-                 >
-<p>這個功能可以由每個 git 的儲存庫 (repositry) 個別設定是否啟用 (不支援 TFVC 版控)，計價的原則是：每一個活躍的提交者 (active committer) 每個月 <strong>USD $49</strong> (大約 <strong>TWD $1567</strong>)，在<mark>同一個 Azure Subscription</mark> 中，儲存庫過去 <strong><code>90天</code></strong> 的紀錄中，同一個提交者(committer)在不同專案提交程式碼只會算 1 個數量，不會被重複計價。當我們在 git 儲存庫開啟 <strong><code>Advanced Security</code></strong> 功能時，Azure DevOps 在畫面上也會先幫我們基於上述原則計算有多少使用者會被計費，確定要使用再點選 <strong><code>Begin billing</code></strong> 即可：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-individual-services/unique_committers.jpg"
-                        class=""
-                 >
-<p>如同 Azure 各種服務的計價方式，都是<strong>隨付即用 (pay-as-you-go)</strong>，啟用 <strong>GitHub Advanced Security for Azure DevOps</strong> 搭配 CI 流程可以讓我們在開發階段及早發現問題與漏洞，有效減少技術債和後期投入修改的人力成本，跟測試左移 (Shift-Left Testing) 的概念有點雷同，也可以省下大筆購入源碼檢測軟體的費用，大家可以參考看看。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/"  target="_blank">⁍ Azure DevOps 定價<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://azure.microsoft.com/zh-tw/products/devops/github-advanced-security"  target="_blank">⁍ 適用於 Azure DevOps 的 GitHub Advanced Security<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml"  target="_blank">⁍ 設定適用於 Azure DevOps 的 GitHub Advanced Security<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>]]></content>
-      <tags>
-        <tag>Azure DevOps</tag>
-        <tag>授權</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Azure DevOps Services / Server 使用者授權</title>
-    <url>/post/2025/04/azure-devops-licensing-description/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-licensing-description/affliction512.jpg"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>Azure DevOps 是一個可以讓我們有效管理軟體開發流程，同時維持良好團隊協作的強大平台，除了可以直接使用雲端 Azure DevOps Services，也可以在地端自建 Azure DevOps Server 讓企業內部環境也能提供相同的服務，但許多人遇到的第一個問題是如何購買授權才能讓成本效益最大化？這篇文章主要協助大家瞭解 Azure DevOps 在授權與定價上的內容。</p>
-<br>
-<span id="more"></span>
-<br>
-<h2 id="Azure-DevOps-Services">Azure DevOps Services</h2>
-<p>Azure DevOps 有五個主要功能：</p>
-<ol>
-<li><strong>Azure Boards</strong> (專案管理、看板管理、Scrum / Kanban、討論議題)</li>
-<li><strong>Azure Repos</strong> (程式碼版控 TFVC/git)</li>
-<li><strong>Azure Pipelines</strong> (自動化建置部署)</li>
-<li><strong>Azure Artifacts</strong> (套件管理、自建套件來源)</li>
-<li><strong>Azure Test Plans</strong> (建立與執行測試計劃)</li>
-</ol>
-<h3 id="Basic-Plan-與-Basic-Test-Plans">Basic Plan 與 Basic + Test Plans</h3>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-licensing-description/Basic_TestPlans.jpg"
-                        class=""
-                 >
-<p>在 Azure DevOps 定價頁面中的 <strong><code>Basic Plan</code></strong> 包含了前面四項功能，費用是 <strong>USD $6</strong> (每個人/月)，折合台幣就要看當月的匯率計算 (例如目前是 TWD <strong>$191</strong>)；一般來說，在專案團隊裡並不是每個成員都需要建立與管理測試計劃，所以 <strong>Azure Test Plans</strong> 這項功能額外被拆出來計價，若選擇 <strong><code>Basic + Test Plans</code></strong> 費用則是 <strong>USD $52</strong> (大約 TWD <strong>$1663</strong>)。</p>
-<h3 id="Stakeholder">Stakeholder</h3>
-<p>除了上述兩種存取層級(Access level)之外，還有一種是免費、可使用<mark>有限功能</mark>的 <strong><code>Stakeholder</code></strong>，比較簡單的來說，這個存取層級可以：</p>
-<ul>
-<li>建立 / 編輯 / 查詢工作項目</li>
-<li>檢視 / 核准 pipeline</li>
-<li>檢視測試計劃</li>
-</ul>
-<p>如同它的名稱一樣：想要瞭解專案資訊，但又不需要實際參與開發實作細節(例如：單位主管、使用單位…等)，就不用再額外採購授權，使用 <strong><code>Stakeholder</code></strong> 這個存取層級就行。若需要 <strong>程式碼版控</strong>、<strong>建立/編輯 pipeline</strong>、<strong>執行測試計劃</strong> 那就不用猶豫了，至少一定需要 <strong><code>Basic</code></strong> 存取層級才能使用，這些資訊可以參閱下列連結，利用頁面裡的幣別下拉選單、拖曳數量捲軸來即時檢視費用估算，頁面最後還有一個針對不同存取層級的功能比較表，方便大家查閱。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/"  target="_blank">⁍ Azure DevOps 定價<i class="fas fa-external-link-alt"></i></a>
-<br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/organizations/security/stakeholder-access?view=azure-devops"  target="_blank">⁍ 項目關係人存取快速參考<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<h3 id="Visual-Studio-Subscription">Visual Studio Subscription</h3>
-<p>若目前已經具備 <strong>Visual Studio monthly subscription</strong> (注意：<mark>訂閱制</mark>才行)，它也包含了 Azure DevOps 的使用授權，基本上可以理解為：<strong>Visual Studio Professional monthly subscription</strong> 包含了 <strong><code>Basic Plan</code></strong>，而 <strong>Visual Studio Enterprise monthly subscription</strong> 包含了 <strong><code>Basic + Test Plans</code></strong>，詳細功能支援列表可以參考下列連結。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/organizations/security/access-levels?view=azure-devops"  target="_blank">⁍ 關於存取層級<i class="fas fa-external-link-alt"></i></a>
-<br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=ms.vs-professional-monthly"  target="_blank">⁍ Visual Studio Professional monthly subscription<i class="fas fa-external-link-alt"></i></a>
-<br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=ms.vs-enterprise-monthly"  target="_blank">⁍ Visual Studio Enterprise monthly subscription<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<h2 id="Azure-DevOps-Server">Azure DevOps Server</h2>
-<p>要在地端環境自建 Azure DevOps Server 則需要先準備好 SQL Server 環境，兩者在版本上有相依性，例如：Azure DevOps Server 2022 需要搭配 SQL Server 2019 以上 (不支援 Linux 上的 SQL Server)，其他版本與相關需求建議可以參考下列連結。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/server/requirements?view=azure-devops-2022"  target="_blank">⁍ Azure DevOps 內部部署的需求<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<p>以授權的概念來說，安裝幾台 Azure DevOps Server 就需要幾個 Server CAL，可以透過下列幾種方式取得合法授權：</p>
-<ul>
-<li>傳統購買 (<mark>3年SA</mark>) Azure DevOps <mark>Server</mark> CAL</li>
-<li>Visual Studio Professional / Enterprise monthly subscription (包含 Azure DevOps Server CAL)</li>
-</ul>
-<br>
-<p>地端的使用者授權可以由下列幾種方式取得合法授權：</p>
-<ul>
-<li>傳統購買 (<mark>3年SA</mark>) Azure DevOps User CAL (包含 <strong><code>Basic + Test Plans</code></strong> 所有功能)</li>
-<li>Visual Studio Professional / Enterprise monthly subscription (包含 Azure DevOps <mark>User</mark> CAL)</li>
-<li>Azure DevOps <strong><code>Basic</code></strong> 或 <strong><code>Basic + Test Plans</code></strong> (雲端的每人每月購買方式，也包含了地端的使用者授權)</li>
-</ul>
-<br>
-<p>以上是對於 Azure DevOps Services / Server 授權的整理說明，若大家還有其他不瞭解的地方，歡迎透過下方留言討論。 😃</p>
-]]></content>
-      <tags>
-        <tag>Azure DevOps</tag>
-        <tag>授權</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Azure DevOps MCP Server</title>
     <url>/post/2025/06/azure-devops-mcp-server/</url>
     <content><![CDATA[<img    
@@ -372,7 +190,7 @@
 <p>實際應用中，LLM 會先用 Function Calling 決定要呼叫哪個工具、什麼參數，然後 MCP 負責將這個請求標準化、分發到對應的 MCP Server 執行，並將結果回傳。其他關於 MCP 更多的詳細資訊，可以參考下列 Anthropic 官網內容：</p>
 <div class="tips">
 <font color="black">
-<a class="link"   href="https://docs.anthropic.com/zh-TW/docs/agents-and-tools/mcp"  target="_blank">⁍ 模型上下文協議 (MCP)<i class="fas fa-external-link-alt"></i></a>
+<a class="link"   href="https://docs.anthropic.com/zh-TW/docs/agents-and-tools/mcp"  target="_blank">⁍ 模型上下文協議 (MCP)<i class="fas fa-external-link-alt"></i></a><br>
 <a class="link"   href="https://github.com/modelcontextprotocol"  target="_blank">⁍ GitHub | Model Context Protocol<i class="fas fa-external-link-alt"></i></a>
 </font>
 </div>
@@ -735,14 +553,388 @@
 <p>有了 Azure DevOps MCP Server 提供的工具後，我們就可以透過對話的方式來互動取得 Azure DevOps Services 相關資訊，並自動執行各種開發、協作與運維任務，讓 AI 助理真正成為團隊的智慧夥伴。MCP 標準的導入不僅大幅降低了跨系統整合的門檻，也讓開發流程更具彈性與擴展性，目前 Azure DevOps MCP Server 僅支援雲端的 Azure DevOps Services，尚不支援地端 Azure DevOps Server 的存取方式 (依目前得知的消息，未來幾個月內也不會提供)，但其實要實作 MCP Server 來自己串接這一段也不是太困難的問題，後續有機會再開一篇文章向大家說明。</p>
 <div class="tips">
 <font color="black">
-<a class="link"   href="https://github.com/microsoft/mcp"  target="_blank">⁍ GitHub | mcp<i class="fas fa-external-link-alt"></i></a>
-<a class="link"   href="https://github.com/microsoft/azure-devops-mcp"  target="_blank">⁍ GitHub | azure-devops-mcp<i class="fas fa-external-link-alt"></i></a>
+<a class="link"   href="https://github.com/microsoft/mcp"  target="_blank">⁍ GitHub | mcp<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://github.com/microsoft/azure-devops-mcp"  target="_blank">⁍ GitHub | azure-devops-mcp<i class="fas fa-external-link-alt"></i></a><br>
 <a class="link"   href="https://learn.microsoft.com/en-us/azure/developer/azure-mcp-server/tools/"  target="_blank">⁍ What are the Azure MCP Server tools?<i class="fas fa-external-link-alt"></i></a>
 </font>
 </div>]]></content>
       <tags>
         <tag>Azure DevOps</tag>
         <tag>MCP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Azure DevOps Services / Server 使用者授權</title>
+    <url>/post/2025/04/azure-devops-licensing-description/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-licensing-description/affliction512.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>Azure DevOps 是一個可以讓我們有效管理軟體開發流程，同時維持良好團隊協作的強大平台，除了可以直接使用雲端 Azure DevOps Services，也可以在地端自建 Azure DevOps Server 讓企業內部環境也能提供相同的服務，但許多人遇到的第一個問題是如何購買授權才能讓成本效益最大化？這篇文章主要協助大家瞭解 Azure DevOps 在授權與定價上的內容。</p>
+<br>
+<span id="more"></span>
+<br>
+<h2 id="Azure-DevOps-Services">Azure DevOps Services</h2>
+<p>Azure DevOps 有五個主要功能：</p>
+<ol>
+<li><strong>Azure Boards</strong> (專案管理、看板管理、Scrum / Kanban、討論議題)</li>
+<li><strong>Azure Repos</strong> (程式碼版控 TFVC/git)</li>
+<li><strong>Azure Pipelines</strong> (自動化建置部署)</li>
+<li><strong>Azure Artifacts</strong> (套件管理、自建套件來源)</li>
+<li><strong>Azure Test Plans</strong> (建立與執行測試計劃)</li>
+</ol>
+<h3 id="Basic-Plan-與-Basic-Test-Plans">Basic Plan 與 Basic + Test Plans</h3>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-licensing-description/Basic_TestPlans.jpg"
+                        class=""
+                 >
+<p>在 Azure DevOps 定價頁面中的 <strong><code>Basic Plan</code></strong> 包含了前面四項功能，費用是 <strong>USD $6</strong> (每個人/月)，折合台幣就要看當月的匯率計算 (例如目前是 TWD <strong>$191</strong>)；一般來說，在專案團隊裡並不是每個成員都需要建立與管理測試計劃，所以 <strong>Azure Test Plans</strong> 這項功能額外被拆出來計價，若選擇 <strong><code>Basic + Test Plans</code></strong> 費用則是 <strong>USD $52</strong> (大約 TWD <strong>$1663</strong>)。</p>
+<h3 id="Stakeholder">Stakeholder</h3>
+<p>除了上述兩種存取層級(Access level)之外，還有一種是免費、可使用<mark>有限功能</mark>的 <strong><code>Stakeholder</code></strong>，比較簡單的來說，這個存取層級可以：</p>
+<ul>
+<li>建立 / 編輯 / 查詢工作項目</li>
+<li>檢視 / 核准 pipeline</li>
+<li>檢視測試計劃</li>
+</ul>
+<p>如同它的名稱一樣：想要瞭解專案資訊，但又不需要實際參與開發實作細節(例如：單位主管、使用單位…等)，就不用再額外採購授權，使用 <strong><code>Stakeholder</code></strong> 這個存取層級就行。若需要 <strong>程式碼版控</strong>、<strong>建立/編輯 pipeline</strong>、<strong>執行測試計劃</strong> 那就不用猶豫了，至少一定需要 <strong><code>Basic</code></strong> 存取層級才能使用，這些資訊可以參閱下列連結，利用頁面裡的幣別下拉選單、拖曳數量捲軸來即時檢視費用估算，頁面最後還有一個針對不同存取層級的功能比較表，方便大家查閱。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/"  target="_blank">⁍ Azure DevOps 定價<i class="fas fa-external-link-alt"></i></a>
+<br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/organizations/security/stakeholder-access?view=azure-devops"  target="_blank">⁍ 項目關係人存取快速參考<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h3 id="Visual-Studio-Subscription">Visual Studio Subscription</h3>
+<p>若目前已經具備 <strong>Visual Studio monthly subscription</strong> (注意：<mark>訂閱制</mark>才行)，它也包含了 Azure DevOps 的使用授權，基本上可以理解為：<strong>Visual Studio Professional monthly subscription</strong> 包含了 <strong><code>Basic Plan</code></strong>，而 <strong>Visual Studio Enterprise monthly subscription</strong> 包含了 <strong><code>Basic + Test Plans</code></strong>，詳細功能支援列表可以參考下列連結。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/organizations/security/access-levels?view=azure-devops"  target="_blank">⁍ 關於存取層級<i class="fas fa-external-link-alt"></i></a>
+<br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=ms.vs-professional-monthly"  target="_blank">⁍ Visual Studio Professional monthly subscription<i class="fas fa-external-link-alt"></i></a>
+<br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=ms.vs-enterprise-monthly"  target="_blank">⁍ Visual Studio Enterprise monthly subscription<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h2 id="Azure-DevOps-Server">Azure DevOps Server</h2>
+<p>要在地端環境自建 Azure DevOps Server 則需要先準備好 SQL Server 環境，兩者在版本上有相依性，例如：Azure DevOps Server 2022 需要搭配 SQL Server 2019 以上 (不支援 Linux 上的 SQL Server)，其他版本與相關需求建議可以參考下列連結。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/server/requirements?view=azure-devops-2022"  target="_blank">⁍ Azure DevOps 內部部署的需求<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<p>以授權的概念來說，安裝幾台 Azure DevOps Server 就需要幾個 Server CAL，可以透過下列幾種方式取得合法授權：</p>
+<ul>
+<li>傳統購買 (<mark>3年SA</mark>) Azure DevOps <mark>Server</mark> CAL</li>
+<li>Visual Studio Professional / Enterprise monthly subscription (包含 Azure DevOps Server CAL)</li>
+</ul>
+<br>
+<p>地端的使用者授權可以由下列幾種方式取得合法授權：</p>
+<ul>
+<li>傳統購買 (<mark>3年SA</mark>) Azure DevOps User CAL (包含 <strong><code>Basic + Test Plans</code></strong> 所有功能)</li>
+<li>Visual Studio Professional / Enterprise monthly subscription (包含 Azure DevOps <mark>User</mark> CAL)</li>
+<li>Azure DevOps <strong><code>Basic</code></strong> 或 <strong><code>Basic + Test Plans</code></strong> (雲端的每人每月購買方式，也包含了地端的使用者授權)</li>
+</ul>
+<br>
+<p>以上是對於 Azure DevOps Services / Server 授權的整理說明，若大家還有其他不瞭解的地方，歡迎透過下方留言討論。 😃</p>
+]]></content>
+      <tags>
+        <tag>Azure DevOps</tag>
+        <tag>授權</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Azure DevOps Services 個別服務</title>
+    <url>/post/2025/04/azure-devops-individual-services/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-individual-services/individual_services.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p><a href="/post/2024/09/azure-devops-licensing-description">上一篇文章</a>提到了 Azure DevOps 雲端和地端的使用者授權，當我們建立私有專案 (Private project) 且成員數量在 5 個人以下時，甚至可以直接免費使用，從第 6 個人起才需要計價，並具有 1 Free Microsoft-hosted CI/CD 和 1 Free Self-hosted CI/CD 以及 Azure Artifacts 2GB 可用儲存容量。在實務使用情境較複雜時，很有可能就需要再增加個別服務的用量 (例如：Azure Pipelines 平行作業數量)，這次就帶大家瞭解這些個別服務計價的方式。</p>
+<span id="more"></span>
+<br>
+<h2 id="Azure-Pipelines">Azure Pipelines</h2>
+<p>不論我們在 Azure Pipelines 使用文字介面或是圖形介面 (classic editor) 建立 pipeline 腳本內容，其中有個 <strong><code>Agent pools</code></strong> 選項是必要設定，它是用來決定執行階段要把工作 (job) 傳遞到哪個 pool 裡，尋找閒置且符合條件的 <strong>Azure Pipelines agents</strong> 執行個體來執行腳本內容，在 Azure DevOps Services 預設有一個 Microsoft-hosted agent 每個月可以免費使用 1800 分鐘，<mark>但預設無法直接使用</mark>，需要填寫 <strong><a class="link"   href="https://aka.ms/azpipelines-parallelism-request" >Azure DevOps Parallelism Request<i class="fas fa-external-link-alt"></i></a></strong> 表單申請審核通過才行，否則在執行的時候會出現如下錯誤：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-individual-services/azpipelines-parallelism-request.jpg"
+                        class=""
+                 >
+<p>當然我們也可以自己準備機器，在上面安裝 Azure Pipelines agents 程式 (支援 Windows / Linux / macOS)，這就屬於 Self-hosted agent。由於是自己準備的執行個體，所以使用時數不受限制，但每個工作 (job) 都是經由佇列 (queue) 的方式排隊一個一個執行，若需要同時間處理一個以上的工作 (job)，則需要再增加執行個體才行 (不論是 Microsoft-hosted 或是 Self-hosted)，基於這樣的概念，以下就是我們所關心的計價標準：</p>
+<ul>
+<li>每一個 Microsoft-hosted 每個月有 1800 分鐘可以使用。</li>
+<li>每增加一個額外的 Microsoft-hosted CI/CD 每個月是 USD $40 (大約 <strong>TWD $1279</strong>)。</li>
+<li>每增加一個額外的 Self-hosted CI/CD 每個月是 USD $15 (大約 <strong>TWD $479</strong>)。</li>
+<li><mark>如果在地端自建 Azure DevOps Server 則僅能使用 Self-hosted agent，需要更多的平行作業就自己多準備幾個執行個體，不用再額外採購什麼授權。</mark></li>
+</ul>
+<h2 id="Azure-Artifacts">Azure Artifacts</h2>
+<p>在軟體專案開發過程中，多少都會用到一些公司內部自行開發，或是外部來源提供的套件，一般常見的套件來源像是：NuGet、npm、Maven、Python…等，Azure Artifacts 可以將這些外部提供來源設為上游來源 (Upstream sources)，或是自己建立一個套件提供來源 (Feeds)，讓專案團隊成員在內部環境取用，儲存容量在 2GB 以內是免費，若超過則依下列區間以量計價：</p>
+<table>
+<thead>
+<tr>
+<th>儲存容量</th>
+<th>每GB (USD)</th>
+<th>每GB (TWD)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 - 2 GB</td>
+<td>免費</td>
+<td>免費</td>
+</tr>
+<tr>
+<td>2 - 10 GB</td>
+<td>$2</td>
+<td>大約 $63.98</td>
+</tr>
+<tr>
+<td>10 - 100 GB</td>
+<td>$1</td>
+<td>大約 $31.99</td>
+</tr>
+<tr>
+<td>100 - 1000 GB</td>
+<td>$0.50</td>
+<td>大約 $16.00</td>
+</tr>
+<tr>
+<td>1000 GB 以上</td>
+<td>$0.25</td>
+<td>大約 NT$8.00</td>
+</tr>
+</tbody>
+</table>
+<h2 id="GitHub-Advanced-Security-for-Azure-DevOps">GitHub Advanced Security for Azure DevOps</h2>
+<p>以往我們想要對專案程式碼執行原碼檢測、套件掃描等作業，首先要考量的可能是產品的價錢，或是委外檢測的費用，比較克難一點還可以尋找免費的掃描檢測工具(例如只是想要出個報告 🙈 🙊)，若想要整合到 CI 流程裡，還要得額外花一番功夫，但基本上只要可以透過 command line 來執行，都是可以用 Azure Pipelines 整合起來的。而自從 <strong>GitHub Advanced Security for Azure DevOps</strong> 正式啟用後，省掉了這部份不少麻煩，除了原生的與 Azure DevOps Services 整合 <mark>(不包含地端 Azure DevOps Server)</mark>，也可以與 <strong>Microsoft Defender for Cloud</strong> 串接，它可以做到：</p>
+<ul>
+<li><strong>Code Scanning</strong>：找出原始程式碼中的漏洞並提供修復指導。</li>
+<li><strong>Secret Scanning</strong>：識別 secret 並阻止開發人員將 secret 推送到程式碼儲存庫。</li>
+<li><strong>Dependency Scanning</strong>：發現 open-source 依賴項目的漏洞，並為開發人員自動發出更新警報。</li>
+</ul>
+<p>在 Azure Pipelines 也提供了下列對應的 task 以便我們完善整個 <strong><code>DevSecOps</code></strong> 流程：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-individual-services/github_acvanced_security.jpg"
+                        class=""
+                 >
+<p>這個功能可以由每個 git 的儲存庫 (repositry) 個別設定是否啟用 (不支援 TFVC 版控)，計價的原則是：每一個活躍的提交者 (active committer) 每個月 <strong>USD $49</strong> (大約 <strong>TWD $1567</strong>)，在<mark>同一個 Azure Subscription</mark> 中，儲存庫過去 <strong><code>90天</code></strong> 的紀錄中，同一個提交者(committer)在不同專案提交程式碼只會算 1 個數量，不會被重複計價。當我們在 git 儲存庫開啟 <strong><code>Advanced Security</code></strong> 功能時，Azure DevOps 在畫面上也會先幫我們基於上述原則計算有多少使用者會被計費，確定要使用再點選 <strong><code>Begin billing</code></strong> 即可：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-individual-services/unique_committers.jpg"
+                        class=""
+                 >
+<p>如同 Azure 各種服務的計價方式，都是<strong>隨付即用 (pay-as-you-go)</strong>，啟用 <strong>GitHub Advanced Security for Azure DevOps</strong> 搭配 CI 流程可以讓我們在開發階段及早發現問題與漏洞，有效減少技術債和後期投入修改的人力成本，跟測試左移 (Shift-Left Testing) 的概念有點雷同，也可以省下大筆購入源碼檢測軟體的費用，大家可以參考看看。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/"  target="_blank">⁍ Azure DevOps 定價<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://azure.microsoft.com/zh-tw/products/devops/github-advanced-security"  target="_blank">⁍ 適用於 Azure DevOps 的 GitHub Advanced Security<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml"  target="_blank">⁍ 設定適用於 Azure DevOps 的 GitHub Advanced Security<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>]]></content>
+      <tags>
+        <tag>Azure DevOps</tag>
+        <tag>授權</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用 Playwright 測試框架 - 環境準備 (.NET)</title>
+    <url>/post/2025/05/how-to-use-playwright-1/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>在現代軟體開發中，自動化測試已成為確保程式碼品質的重要一環，Playwright 是一個強大的自動化測試框架，支援 Chromium / Firefox / WebKit 瀏覽器，搭配測試產生器(codegen)讓開發者能夠輕鬆撰寫可靠且高效的測試腳本。本篇文章將介紹如何在 .NET 開發環境中設置和使用 Playwright，從安裝必要的套件到撰寫基本的測試案例，幫助大家快速上手這個工具。<br>
+<br></p>
+<span id="more"></span>
+<br>
+<h2 id="使用-Visual-Studio">使用 Visual Studio</h2>
+<p>如果是慣用地表最強開發工具，打開 Visual Studio 建立一個新的 <strong><code>MSTest 測試專案</code></strong>，讓我們有一個基本測試環境可以開始撰寫 Playwright 測試。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/vs-01.png"
+                        class=""
+                 >
+<br>
+<p>要在 MSTest 使用 Playwright 必需要安裝 <strong><code>Microsoft.Playwright.MSTest</code></strong> 套件，這個套件會將 Playwright 與 MSTest 整合，使我們能夠在 MSTest 測試過程中使用 Playwright 功能。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/vs-02.png"
+                        class=""
+                 >
+<h2 id="使用-NET-CLI">使用 .NET CLI</h2>
+<p>若是使用 VSCode 開發工具，我們可以用 <strong>dotnet new</strong> 指令新增一個 PlaywrightTests 專案，預設內容會包含一個 UnitTest1.cs 檔案。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet new mstest -n PlaywrightTests</span><br><span class="line">cd PlaywrightTests</span><br></pre></td></tr></table></figure>
+<p>安裝必要的 Playwright 相依套件：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet add package Microsoft.Playwright.MSTest</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-01.png"
+                        class=""
+                 >
+<br>
+<p>建置程式碼，確認環境準備是否有異常。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet build</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-02.png"
+                        class=""
+                 >
+<br>
+<h2 id="安裝-Playwright-CLI">安裝 Playwright CLI</h2>
+<p>在 .NET 開發環境中，雖然 <strong>playwright.exe</strong> 指令沒有像 <strong>npx playwright</strong> 那麼多參數與功能，但我們在錄製網頁操作過程來產生測試程式碼 (codegen)，或是開啟追蹤檔 (show-trace) 時仍會使用到，可以透過下列指令來安裝 <strong><code>Microsoft.Playwright.CLI</code></strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool install --global Microsoft.Playwright.CLI</span><br></pre></td></tr></table></figure>
+<p>上述套件預設會被安裝到目前的使用者範圍內的 .NET 全局工具路徑中，具體安裝位置會因作業系統而異：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Windows</span><br><span class="line">C:\Users\&lt;你的用戶名&gt;\.dotnet\tools\</span><br><span class="line"></span><br><span class="line">Linux / macOS</span><br><span class="line">/home/&lt;你的用戶名&gt;/.dotnet/tools/</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-03.png"
+                        class=""
+                 >
+<p>我們可以直接開啟目錄確認工具是否安裝成功，或是使用以下指令來列出所有安裝的 .NET 工具：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool list --global</span><br></pre></td></tr></table></figure>
+<p>例：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Package Id                    Version      Commands</span><br><span class="line">-----------------------------------------------------</span><br><span class="line">dotnet-ef                     8.0.8        dotnet-ef</span><br><span class="line">microsoft.playwright.cli      1.2.3        playwright</span><br></pre></td></tr></table></figure>
+<h2 id="移除-Playwright-CLI">移除 Playwright CLI</h2>
+<p>若需要移除已安裝的套件，可以使用下列指令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool uninstall microsoft.playwright.cli</span><br></pre></td></tr></table></figure>
+<h2 id="安裝-Playwright-支援的瀏覽器">安裝 Playwright 支援的瀏覽器</h2>
+<p>Playwright 支援 Chromium、WebKit 和 Firefox 瀏覽器，我們可以使用 <strong>playwright install</strong> 指令來安裝預設瀏覽器，這個動作會將瀏覽器安裝到 <strong><mark>%LOCALAPPDATA%\ms-playwright</mark></strong> 目錄下，若想要自訂安裝的項目，可以透過 <strong>playwright help install</strong> 來瞭解所有的選項。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright install</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-04.png"
+                        class=""
+                 >
+<br>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright help install</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-05.png"
+                        class=""
+                 >
+<h2 id="小試身手">小試身手</h2>
+<p>以上 Playwright 環境設定都完成後，我們就可以直接用官網的第一個範例來小試身手：</p>
+<ul>
+<li>
+<p><code>HasTitle()</code><br>
+打開 Playwright 官方網站，檢查網站的標題是否包含特定的字串，確認網頁標題中是否包含 “Playwright” 這個字。</p>
+</li>
+<li>
+<p><code>GetStartedLink()</code><br>
+一樣是打開 Playwright 官方網站，點擊一個名為 “Get started” 的連結，然後檢查點擊後的頁面是否有一個名為 “Installation” 的標題，以確保連結正確導向到預期的頁面。</p>
+</li>
+</ul>
+<p>大家應該不難發現 Playwright 的程式碼很直覺易讀，通常也不太需要夾雜 CSS class 或 style 來尋找定位網頁上的元素，除此之外還提供了豐富的 API 來進行各種操作，如：點擊、輸入文字、截圖等，之後再陸續向大家介紹各項重點特色，希望大家也都能快速上手 Playwright，並在日常開發中提升測試效率與程式碼品質。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Text.RegularExpressions;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright.MSTest;</span><br><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">PlaywrightTests</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ExampleTest</span> : <span class="title">PageTest</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">HasTitle</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expect a title &quot;to contain&quot; a substring.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page).ToHaveTitleAsync(<span class="keyword">new</span> Regex(<span class="string">&quot;Playwright&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">GetStartedLink</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Click the get started link.</span></span><br><span class="line">        <span class="keyword">await</span> Page.GetByRole(AriaRole.Link, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Get started&quot;</span> &#125;).ClickAsync();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expects page to have a heading with the name of Installation.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page.GetByRole(AriaRole.Heading, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Installation&quot;</span> &#125;)).ToBeVisibleAsync();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>Unit Test</tag>
+        <tag>Playwright</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用 Playwright 測試框架 - 執行階段 (.NET)</title>
+    <url>/post/2025/05/how-to-use-playwright-2/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p><a href="/post/2024/11/how-to-use-playwright-1">上一篇文章</a>提到了如何使用 Playwright 的測試產生器(codegen) 錄製腳本，除了可以運用在自動化測試之外，舉凡想要透過程式來自動執行的一連串行為，都可以透過 Playwright 來完成，本篇文章使用 Windows Sandbox 全新環境來執行由 .NET 8 撰寫的 Console 程式，讓大家知道建置產生執行檔後，還需要哪些必要的環境設定才可以正常讓程式運作。<br>
+<br></p>
+<span id="more"></span>
+<br>
+<h2 id="安裝-NET-Runtime">安裝 .NET Runtime</h2>
+<p>不論是以前的 .NET Framework 或是現在的 .NET Core，在執行時都需要安裝 .NET Runtime 才能順利運行開發好的程式，以下圖 Console 專案建置後的執行檔為例，畫面還會很貼心的指引我們目前的需求版本和下載路徑，完成安裝後便可順利執行 Console 程式。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/dotnet8.png"
+                        class=""
+                 >
+<br>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://dotnet.microsoft.com/download"  target="_blank">⁍ 下載 .NET<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h2 id="安裝-PowerShell">安裝 PowerShell</h2>
+<p>如果是全新的環境，安裝完 .NET Runtime 後應該還會出現如下圖的錯誤，主要原因是：</p>
+<ul>
+<li>pwsh 找不到路徑 (或是沒有安裝 PowerShell)</li>
+<li>缺少 WebDriver (Edge/Chrome/Firefox)</li>
+</ul>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/pwsh.png"
+                        class=""
+                 >
+<br>
+若要安裝 PowerShell 可以依據自己的作業系統參考下列連結：
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5"  target="_blank">⁍ 在 Windows 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-linux?view=powershell-7.5"  target="_blank">⁍ 在 Linux 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-macos?view=powershell-7.5"  target="_blank">⁍ 在 macOS 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h2 id="安裝-WebDriver">安裝 WebDriver</h2>
+<p>在上圖的錯誤訊息中有提到如下指令，路徑中的 <strong><mark>netX</mark></strong> 要替換為自己使用的版本路徑，而其中的 playwright.ps1 會存在於 .NET 程式建置後的 bin 目錄中，這個 .ps1 的主要用途是在 Windows 環境下執行 Playwright 測試，讓它可以正確找到 Playwright 主程式和相關驅動程式，確認 pwsh 指令可以運作後，就可以接著安裝 WebDriver 了。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pwsh bin/Debug/netX/playwright.ps1 install</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/playwright.png"
+                        class=""
+                 >
+<br>
+若在 install 之後沒有加上任何參數，則會安裝下列預設項目：
+<ul>
+<li>Chromium</li>
+<li>Chromium Headless Shell</li>
+<li>Firefox</li>
+<li>Webkit</li>
+<li>FFMPEG</li>
+</ul>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/install.png"
+                        class=""
+                 >
+<br>
+也可以依自己的需求安裝指定項目，可使用 install -h 查看相關資訊：
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/custom.png"
+                        class=""
+                 >
+<h2 id="總結">總結</h2>
+<p>本文介紹了在全新環境下，如何讓 .NET 8 撰寫的 Playwright 測試程式順利執行，包含安裝 .NET Runtime、PowerShell 及 WebDriver 等必要步驟。只要依照上述流程完成環境設定，就能避免常見的錯誤訊息，順利執行自動化測試。希望這些說明能幫助你在不同平台上快速部署與運行 Playwright 測試專案。</p>
+]]></content>
+      <tags>
+        <tag>Playwright</tag>
       </tags>
   </entry>
   <entry>
@@ -981,93 +1173,6 @@
         <tag>Azure DevOps REST API</tag>
         <tag>PAT</tag>
         <tag>.NET Client Library</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用 Playwright 測試框架 - 執行階段 (.NET)</title>
-    <url>/post/2025/05/how-to-use-playwright-2/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p><a href="/post/2024/11/how-to-use-playwright-1">上一篇文章</a>提到了如何使用 Playwright 的測試產生器(codegen) 錄製腳本，除了可以運用在自動化測試之外，舉凡想要透過程式來自動執行的一連串行為，都可以透過 Playwright 來完成，本篇文章使用 Windows Sandbox 全新環境來執行由 .NET 8 撰寫的 Console 程式，讓大家知道建置產生執行檔後，還需要哪些必要的環境設定才可以正常讓程式運作。<br>
-<br></p>
-<span id="more"></span>
-<br>
-<h2 id="安裝-NET-Runtime">安裝 .NET Runtime</h2>
-<p>不論是以前的 .NET Framework 或是現在的 .NET Core，在執行時都需要安裝 .NET Runtime 才能順利運行開發好的程式，以下圖 Console 專案建置後的執行檔為例，畫面還會很貼心的指引我們目前的需求版本和下載路徑，完成安裝後便可順利執行 Console 程式。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/dotnet8.png"
-                        class=""
-                 >
-<br>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://dotnet.microsoft.com/download"  target="_blank">⁍ 下載 .NET<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<h2 id="安裝-PowerShell">安裝 PowerShell</h2>
-<p>如果是全新的環境，安裝完 .NET Runtime 後應該還會出現如下圖的錯誤，主要原因是：</p>
-<ul>
-<li>pwsh 找不到路徑 (或是沒有安裝 PowerShell)</li>
-<li>缺少 WebDriver (Edge/Chrome/Firefox)</li>
-</ul>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/pwsh.png"
-                        class=""
-                 >
-<br>
-若要安裝 PowerShell 可以依據自己的作業系統參考下列連結：
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5"  target="_blank">⁍ 在 Windows 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-linux?view=powershell-7.5"  target="_blank">⁍ 在 Linux 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-macos?view=powershell-7.5"  target="_blank">⁍ 在 macOS 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<h2 id="安裝-WebDriver">安裝 WebDriver</h2>
-<p>在上圖的錯誤訊息中有提到如下指令，路徑中的 <strong><mark>netX</mark></strong> 要替換為自己使用的版本路徑，而其中的 playwright.ps1 會存在於 .NET 程式建置後的 bin 目錄中，這個 .ps1 的主要用途是在 Windows 環境下執行 Playwright 測試，讓它可以正確找到 Playwright 主程式和相關驅動程式，確認 pwsh 指令可以運作後，就可以接著安裝 WebDriver 了。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pwsh bin/Debug/netX/playwright.ps1 install</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/playwright.png"
-                        class=""
-                 >
-<br>
-若在 install 之後沒有加上任何參數，則會安裝下列預設項目：
-<ul>
-<li>Chromium</li>
-<li>Chromium Headless Shell</li>
-<li>Firefox</li>
-<li>Webkit</li>
-<li>FFMPEG</li>
-</ul>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/install.png"
-                        class=""
-                 >
-<br>
-也可以依自己的需求安裝指定項目，可使用 install -h 查看相關資訊：
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/custom.png"
-                        class=""
-                 >
-<h2 id="總結">總結</h2>
-<p>本文介紹了在全新環境下，如何讓 .NET 8 撰寫的 Playwright 測試程式順利執行，包含安裝 .NET Runtime、PowerShell 及 WebDriver 等必要步驟。只要依照上述流程完成環境設定，就能避免常見的錯誤訊息，順利執行自動化測試。希望這些說明能幫助你在不同平台上快速部署與運行 Playwright 測試專案。</p>
-]]></content>
-      <tags>
-        <tag>Playwright</tag>
       </tags>
   </entry>
   <entry>
@@ -1427,111 +1532,6 @@
         <tag>TFS</tag>
         <tag>Team Explorer</tag>
         <tag>MSSCCI Provider</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用 Playwright 測試框架 - 環境準備 (.NET)</title>
-    <url>/post/2025/05/how-to-use-playwright-1/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>在現代軟體開發中，自動化測試已成為確保程式碼品質的重要一環，Playwright 是一個強大的自動化測試框架，支援 Chromium / Firefox / WebKit 瀏覽器，搭配測試產生器(codegen)讓開發者能夠輕鬆撰寫可靠且高效的測試腳本。本篇文章將介紹如何在 .NET 開發環境中設置和使用 Playwright，從安裝必要的套件到撰寫基本的測試案例，幫助大家快速上手這個工具。<br>
-<br></p>
-<span id="more"></span>
-<br>
-<h2 id="使用-Visual-Studio">使用 Visual Studio</h2>
-<p>如果是慣用地表最強開發工具，打開 Visual Studio 建立一個新的 <strong><code>MSTest 測試專案</code></strong>，讓我們有一個基本測試環境可以開始撰寫 Playwright 測試。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/vs-01.png"
-                        class=""
-                 >
-<br>
-<p>要在 MSTest 使用 Playwright 必需要安裝 <strong><code>Microsoft.Playwright.MSTest</code></strong> 套件，這個套件會將 Playwright 與 MSTest 整合，使我們能夠在 MSTest 測試過程中使用 Playwright 功能。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/vs-02.png"
-                        class=""
-                 >
-<h2 id="使用-NET-CLI">使用 .NET CLI</h2>
-<p>若是使用 VSCode 開發工具，我們可以用 <strong>dotnet new</strong> 指令新增一個 PlaywrightTests 專案，預設內容會包含一個 UnitTest1.cs 檔案。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet new mstest -n PlaywrightTests</span><br><span class="line">cd PlaywrightTests</span><br></pre></td></tr></table></figure>
-<p>安裝必要的 Playwright 相依套件：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet add package Microsoft.Playwright.MSTest</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-01.png"
-                        class=""
-                 >
-<br>
-<p>建置程式碼，確認環境準備是否有異常。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet build</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-02.png"
-                        class=""
-                 >
-<br>
-<h2 id="安裝-Playwright-CLI">安裝 Playwright CLI</h2>
-<p>在 .NET 開發環境中，雖然 <strong>playwright.exe</strong> 指令沒有像 <strong>npx playwright</strong> 那麼多參數與功能，但我們在錄製網頁操作過程來產生測試程式碼 (codegen)，或是開啟追蹤檔 (show-trace) 時仍會使用到，可以透過下列指令來安裝 <strong><code>Microsoft.Playwright.CLI</code></strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool install --global Microsoft.Playwright.CLI</span><br></pre></td></tr></table></figure>
-<p>上述套件預設會被安裝到目前的使用者範圍內的 .NET 全局工具路徑中，具體安裝位置會因作業系統而異：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Windows</span><br><span class="line">C:\Users\&lt;你的用戶名&gt;\.dotnet\tools\</span><br><span class="line"></span><br><span class="line">Linux / macOS</span><br><span class="line">/home/&lt;你的用戶名&gt;/.dotnet/tools/</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-03.png"
-                        class=""
-                 >
-<p>我們可以直接開啟目錄確認工具是否安裝成功，或是使用以下指令來列出所有安裝的 .NET 工具：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool list --global</span><br></pre></td></tr></table></figure>
-<p>例：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Package Id                    Version      Commands</span><br><span class="line">-----------------------------------------------------</span><br><span class="line">dotnet-ef                     8.0.8        dotnet-ef</span><br><span class="line">microsoft.playwright.cli      1.2.3        playwright</span><br></pre></td></tr></table></figure>
-<h2 id="移除-Playwright-CLI">移除 Playwright CLI</h2>
-<p>若需要移除已安裝的套件，可以使用下列指令：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool uninstall microsoft.playwright.cli</span><br></pre></td></tr></table></figure>
-<h2 id="安裝-Playwright-支援的瀏覽器">安裝 Playwright 支援的瀏覽器</h2>
-<p>Playwright 支援 Chromium、WebKit 和 Firefox 瀏覽器，我們可以使用 <strong>playwright install</strong> 指令來安裝預設瀏覽器，這個動作會將瀏覽器安裝到 <strong><mark>%LOCALAPPDATA%\ms-playwright</mark></strong> 目錄下，若想要自訂安裝的項目，可以透過 <strong>playwright help install</strong> 來瞭解所有的選項。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright install</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-04.png"
-                        class=""
-                 >
-<br>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright help install</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-05.png"
-                        class=""
-                 >
-<h2 id="小試身手">小試身手</h2>
-<p>以上 Playwright 環境設定都完成後，我們就可以直接用官網的第一個範例來小試身手：</p>
-<ul>
-<li>
-<p><code>HasTitle()</code><br>
-打開 Playwright 官方網站，檢查網站的標題是否包含特定的字串，確認網頁標題中是否包含 “Playwright” 這個字。</p>
-</li>
-<li>
-<p><code>GetStartedLink()</code><br>
-一樣是打開 Playwright 官方網站，點擊一個名為 “Get started” 的連結，然後檢查點擊後的頁面是否有一個名為 “Installation” 的標題，以確保連結正確導向到預期的頁面。</p>
-</li>
-</ul>
-<p>大家應該不難發現 Playwright 的程式碼很直覺易讀，通常也不太需要夾雜 CSS class 或 style 來尋找定位網頁上的元素，除此之外還提供了豐富的 API 來進行各種操作，如：點擊、輸入文字、截圖等，之後再陸續向大家介紹各項重點特色，希望大家也都能快速上手 Playwright，並在日常開發中提升測試效率與程式碼品質。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Text.RegularExpressions;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright.MSTest;</span><br><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">PlaywrightTests</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ExampleTest</span> : <span class="title">PageTest</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">HasTitle</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expect a title &quot;to contain&quot; a substring.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page).ToHaveTitleAsync(<span class="keyword">new</span> Regex(<span class="string">&quot;Playwright&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">GetStartedLink</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Click the get started link.</span></span><br><span class="line">        <span class="keyword">await</span> Page.GetByRole(AriaRole.Link, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Get started&quot;</span> &#125;).ClickAsync();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expects page to have a heading with the name of Installation.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page.GetByRole(AriaRole.Heading, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Installation&quot;</span> &#125;)).ToBeVisibleAsync();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>Playwright</tag>
-        <tag>Unit Test</tag>
       </tags>
   </entry>
 </search>
