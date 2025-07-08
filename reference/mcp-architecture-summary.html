@@ -9,7 +9,7 @@
     
     <title>
         
-            檔案室 |
+            MCP 架構與能力協商重點整理 |
         
         漫步在雲端
     </title>
@@ -108,7 +108,7 @@
                         </li>
                     
                         
-                        <li class="menu-item flex-start border-box active">
+                        <li class="menu-item flex-start border-box">
                             <a class="menu-text-color border-box" href="/archives">
                                 
                                     <i class="menu-text-color menu-icon fa-solid fa-box-archive"></i>
@@ -198,7 +198,7 @@
                 </li>
             
                 
-                <li class="drawer-menu-item border-box not-sub-menu active">
+                <li class="drawer-menu-item border-box not-sub-menu">
                     <label class="drawer-menu-label border-box">
                         <a class="drawer-menu-text-color left-side flex-start border-box" href="/archives">
                             
@@ -280,142 +280,90 @@
             <div class="main-content border-box">
                 
 
-                    <div class="fade-in-down-animation">
-    <div class="archives-container">
-        <div class="archives-timeline border-box">
+                    
+
+<div class="fade-in-down-animation">
+    <div class="page-template-container border-box keep-container ">
+        <!-- page top -->
+        
+
+        <!-- page bottom -->
+        <div class="page-template-bottom border-box">
+            <!-- use page template -->
             
-<div class="archive-list-container border-box">
-    
-        <section class="archive-item border-box">
-            <div class="archive-item-header border-box">
-                <span class="archive-year">2025</span>
+
+            <!-- page content -->
+            <div class="page-content border-box keep-markdown-body ">
+                
+                    <h1>MCP 架構與能力協商重點整理</h1>
+<h2 id="架構核心元件">架構核心元件</h2>
+<ul>
+<li>
+<p><strong>Host（主機）</strong></p>
+<ul>
+<li>作為容器與協調者，建立並管理多個 Client 實例</li>
+<li>控制 Client 連線權限與生命週期，執行安全政策與授權</li>
+<li>負責 AI/LLM 整合、取樣協調與多 Client 的上下文聚合</li>
+</ul>
+</li>
+<li>
+<p><strong>Client（用戶端）</strong></p>
+<ul>
+<li>由 Host 建立，與特定 Server 維持 1:1 連線</li>
+<li>負責協議協商、能力交換、雙向訊息路由</li>
+<li>管理訂閱、通知，並維持安全隔離</li>
+</ul>
+</li>
+<li>
+<p><strong>Server（伺服器）</strong></p>
+<ul>
+<li>提供專屬資源與能力，透過 MCP 原語暴露工具、資源、提示</li>
+<li>可為本地或遠端服務，需遵守安全限制</li>
+<li>透過 Client 介面請求取樣，專注單一職責</li>
+</ul>
+</li>
+</ul>
+<h2 id="設計原則">設計原則</h2>
+<ol>
+<li><strong>Server 易於建構</strong>：Host 處理複雜協調，Server 專注單一能力，介面簡單、易於維護</li>
+<li><strong>高度組合性</strong>：Server 功能聚焦、可獨立組合，協議共享、模組化設計</li>
+<li><strong>嚴格隔離</strong>：Server 僅取得必要上下文，完整對話歷史僅由 Host 持有，跨 Server 互動受控</li>
+<li><strong>功能可漸進擴充</strong>：協議核心功能最小化，能力可協商擴展，Server/Client 可獨立演進</li>
+<li><strong>協議可擴展且向下相容</strong></li>
+</ol>
+<h2 id="能力協商（Capability-Negotiation）">能力協商（Capability Negotiation）</h2>
+<ul>
+<li>Client 與 Server 在初始化時明確宣告支援的能力（capabilities）</li>
+<li>能力決定會話期間可用的協議功能與原語</li>
+<li>Server 宣告如資源訂閱、工具支援、提示模板等能力</li>
+<li>Client 宣告如取樣支援、通知處理等能力</li>
+<li>雙方必須遵守已宣告的能力，額外能力可透過協議擴展協商</li>
+<li>每項能力會解鎖特定協議功能，例如：
+<ul>
+<li>Server 宣告訂閱支援才能發送資源訂閱通知</li>
+<li>Server 宣告工具能力才能接受工具調用</li>
+<li>Client 宣告取樣支援才能進行 AI 取樣</li>
+</ul>
+</li>
+</ul>
+<h2 id="架構示意圖（文字版）">架構示意圖（文字版）</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Internet</span><br><span class="line">   |</span><br><span class="line">Local machine</span><br><span class="line">   |</span><br><span class="line">Application Host Process</span><br><span class="line">   |</span><br><span class="line"> ┌─────Host─────┐</span><br><span class="line"> |   |   |      |</span><br><span class="line">C1  C2  C3    ...</span><br><span class="line"> |   |   |</span><br><span class="line">S1  S2  S3    ...</span><br></pre></td></tr></table></figure>
+<ul>
+<li>C1~C3：多個 Client 實例</li>
+<li>S1~S3：多個 Server（如檔案、資料庫、API 等）</li>
+</ul>
+<hr>
+<blockquote>
+<p>以上內容根據 <a class="link"   target="_blank" rel="noopener" href="https://modelcontextprotocol.io/specification/2025-06-18/architecture" >MCP 官方架構文件<i class="fas fa-external-link-alt"></i></a> 摘要整理，適合用於技術文件或部落格說明。</p>
+</blockquote>
+
+                
             </div>
-            <ul class="archive-item-body border-box">
-                
-                    <li class="post-item border-box">
-                        <span class="starting-point border-box flex-center"></span>
-                        <span class="post-date border-box">07-05</span>
-                        <a class="post-title border-box text-ellipsis"
-                           href="/post/2025/07/mcp-capability-negotiation/"
-                        >關於 MCP 的 Capability Negotiation</a>
-                    </li>
-                
-                    <li class="post-item border-box">
-                        <span class="starting-point border-box flex-center"></span>
-                        <span class="post-date border-box">06-18</span>
-                        <a class="post-title border-box text-ellipsis"
-                           href="/post/2025/06/azure-devops-mcp-server/"
-                        >Azure DevOps MCP Server</a>
-                    </li>
-                
-                    <li class="post-item border-box">
-                        <span class="starting-point border-box flex-center"></span>
-                        <span class="post-date border-box">06-08</span>
-                        <a class="post-title border-box text-ellipsis"
-                           href="/post/2025/06/update-azure-pipelines-agents/"
-                        >Azure Pipelines Agents 代理程式</a>
-                    </li>
-                
-                    <li class="post-item border-box">
-                        <span class="starting-point border-box flex-center"></span>
-                        <span class="post-date border-box">05-27</span>
-                        <a class="post-title border-box text-ellipsis"
-                           href="/post/2025/05/how-to-use-playwright-2/"
-                        >使用 Playwright 測試框架 - 執行階段 (.NET)</a>
-                    </li>
-                
-                    <li class="post-item border-box">
-                        <span class="starting-point border-box flex-center"></span>
-                        <span class="post-date border-box">05-19</span>
-                        <a class="post-title border-box text-ellipsis"
-                           href="/post/2025/05/how-to-use-playwright-1/"
-                        >使用 Playwright 測試框架 - 環境準備 (.NET)</a>
-                    </li>
-                
-                    <li class="post-item border-box">
-                        <span class="starting-point border-box flex-center"></span>
-                        <span class="post-date border-box">04-28</span>
-                        <a class="post-title border-box text-ellipsis"
-                           href="/post/2025/04/mstest-attribute-lifecycle/"
-                        >MSTest 生命週期與常用屬性</a>
-                    </li>
-                
-                    <li class="post-item border-box">
-                        <span class="starting-point border-box flex-center"></span>
-                        <span class="post-date border-box">04-17</span>
-                        <a class="post-title border-box text-ellipsis"
-                           href="/post/2025/04/vb-connect-to-azure-devops/"
-                        >使用 VB5/VB6 連線至 Azure DevOps Server 2022 (TFVC)</a>
-                    </li>
-                
-                    <li class="post-item border-box">
-                        <span class="starting-point border-box flex-center"></span>
-                        <span class="post-date border-box">04-13</span>
-                        <a class="post-title border-box text-ellipsis"
-                           href="/post/2025/04/azure-devops-create-project/"
-                        >使用 Azure DevOps REST API 建立專案</a>
-                    </li>
-                
-                    <li class="post-item border-box">
-                        <span class="starting-point border-box flex-center"></span>
-                        <span class="post-date border-box">04-10</span>
-                        <a class="post-title border-box text-ellipsis"
-                           href="/post/2025/04/azure-devops-rest-api/"
-                        >Azure DevOps REST API 說明</a>
-                    </li>
-                
-                    <li class="post-item border-box">
-                        <span class="starting-point border-box flex-center"></span>
-                        <span class="post-date border-box">04-06</span>
-                        <a class="post-title border-box text-ellipsis"
-                           href="/post/2025/04/azure-devops-individual-services/"
-                        >Azure DevOps Services 個別服務</a>
-                    </li>
-                
-            </ul>
-        </section>
-    
-</div>
 
+            <!-- comment plugin -->
+            
         </div>
     </div>
-    
-    <div class="paginator border-box flex-center">
-        <div class="border-box first-page paginator-btn not-allow">
-            <a class="border-box"><i class="fa-solid fa-angle-double-left"></i></a>
-        </div>
-
-        <div class="border-box paginator-btn">
-            <a class="border-box"
-               href="/"
-            ><i class="fa-solid fa-chevron-left"></i></a>
-        </div>
-
-
-        <div class="page-number-box border-box flex-center">
-            <input class="page-number-input border-box base-style"
-                   type="number"
-                   value="1"
-                   min="1"
-                   max="2"
-            /><span class="delimiter base-style">/</span><span class="base-style">2</span>
-        </div>
-
-
-        <div class="border-box paginator-btn allowed">
-            <a class="border-box"
-               href="/archives/page/2/"
-            ><i class="fa-solid fa-chevron-right"></i></a>
-        </div>
-
-        <div class="border-box last-page paginator-btn allowed">
-            <a class="border-box"><i class="fa-solid fa-angle-double-right"></i></a>
-        </div>
-    </div>
-
-
-
-
 </div>
 
 
@@ -572,7 +520,6 @@
     <!-- tablet toc -->
     
 </main>
-
 
 
 

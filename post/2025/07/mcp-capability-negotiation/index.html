@@ -9,7 +9,7 @@
     
     <title>
         
-            Azure DevOps MCP Server |
+            關於 MCP 的 Capability Negotiation |
         
         漫步在雲端
     </title>
@@ -289,7 +289,7 @@
             <div class="post-content-bottom border-box">
                 
                     <div class="post-title">
-                        Azure DevOps MCP Server
+                        關於 MCP 的 Capability Negotiation
                     </div>
                 
 
@@ -320,12 +320,12 @@
         
             <span class="meta-info-item post-create-date">
                 <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
-                <span class="datetime">2025-06-18 08:39:23</span>
+                <span class="datetime">2025-07-05 11:40:09</span>
             </span>
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Sun Jun 22 2025 17:04:18 GMT+0800">2025-06-22 17:04:18</span>
+                <span class="datetime" data-updated="Tue Jul 08 2025 22:19:52 GMT+0800">2025-07-08 22:19:52</span>
             </span>
         
 
@@ -334,9 +334,6 @@
         
             <span class="post-tag meta-info-item border-box">
                 <ul class="post-tag-ul">
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/Azure-DevOps/">Azure DevOps</a></li>
-                        
                     
                             <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/MCP/">MCP</a></li>
                         
@@ -370,434 +367,98 @@
                          <img    
                        lazyload
                        alt="image"
-                       data-src="/post/2025/06/azure-devops-mcp-server/mcp.png"
+                       data-src="/post/2025/07/mcp-capability-negotiation/robot.jpg"
                          align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
                  > 
-<p>隨著 AI 技術的蓬勃發展，軟體開發與運維 (DevOps) 流程正迎來一場革命性的轉變。傳統的 DevOps 強調自動化、持續整合與持續交付，但在面對日益複雜的專案協作與工具整合時，團隊仍需投入大量人力進行手動操作與跨系統協調。這時，AI 驅動的自動化與智慧化流程成為新一代 DevOps 的核心訴求。Model Context Protocol（MCP，模型上下文協議）正是在這樣的背景下誕生，為大型語言模型（LLM）與外部工具之間建立一套安全、模組化且可擴充的溝通標準。自微軟在上個月 Microsoft Build 2025 開發者大會宣佈會加入對 MCP 的支援，這個月 Azure DevOps MCP Server 也已公開預覽 (Public Preview)，本文將介紹 Azure DevOps MCP Server 提供了哪些工具。</p>
-<!-- 結合 MCP 的 Azure DevOps MCP Server，讓 AI 助理（如 GitHub Copilot）能直接理解專案脈絡、查詢與操作 DevOps 資源，甚至根據自然語言指令自動執行工作，徹底改變開發者與工具的互動模式。本文將介紹 MCP 的由來、Azure DevOps MCP 的分類與工具，並詳細說明各工具的實際用途，協助你掌握這項前瞻技術如何為團隊帶來更高的生產力與協作效率。 -->
-<br>
+<p>在當前 AI 技術快速發展的時代，MCP (Model Context Protocol) 為大型語言模型帶來更多元且強大的擴展能力。透過 MCP 讓開發者能使 IDE 工具與語言模型自然結合，實現語意驅動的互動體驗。MCP 架構中包含 MCP Server、MCP Host 與 MCP Client 三大核心角色，彼此協同合作並透過能力協商（Capability Negotiation）機制，確保雙方能根據自身能力與需求，協調出最佳的功能組合與協作方式。本文將以<a href="/post/2025/06/azure-devops-mcp-server/">上一篇文章</a>為例，說明其背景運作流程。</p>
 <span id="more"></span>
 <br>
-<h2 id="MCP-的由來">MCP 的由來</h2>
-<p>MCP（Model Context Protocol）最初由 Anthropic 在 2024 年 11 月提出，是一套專為大型語言模型設計的開放式標準協議。其核心目標在於讓 LLM 能夠安全、模組化且可擴充地存取外部工具與資料來源。MCP 的設計理念類似於 API，但傳統 API 是給開發者使用，強調結構化資料與嚴謹格式；而 MCP 則是為 AI 模型量身打造，讓模型能用自然語言理解上下文，並以「對話」方式與外部系統互動。對使用者而言，整個過程更貼近人類溝通習慣，MCP 讓 LLM 不只是資訊生成者，更能成為任務執行者，推動開發流程從「使用工具」進化為「與工具對話」。</p>
-<h2 id="MCP-和-Function-Calling-的不同">MCP 和 Function Calling 的不同</h2>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">功能</th>
-<th style="text-align:left">Function Calling</th>
-<th style="text-align:left">MCP</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">主要目的</td>
-<td style="text-align:left">把自然語言請求轉成結構化函數呼叫，由應用程式執行</td>
-<td style="text-align:left">標準化 LLM 與外部工具/資料源的連接與執行流程</td>
-</tr>
-<tr>
-<td style="text-align:left">控制權</td>
-<td style="text-align:left">LLM 供應商（如：OpenAI、Anthropic）</td>
-<td style="text-align:left">外部系統（MCP Server/Client）</td>
-</tr>
-<tr>
-<td style="text-align:left">輸出格式</td>
-<td style="text-align:left">不同 LLM 廠商格式各異（通常為 JSON）</td>
-<td style="text-align:left">統一採用標準協議（如：JSON-RPC）</td>
-</tr>
-<tr>
-<td style="text-align:left">擴展性/互通性</td>
-<td style="text-align:left">需為每個工具自訂整合，跨平台困難</td>
-<td style="text-align:left">一次整合，多方兼容，工具可被多個 LLM 共用</td>
-</tr>
-<tr>
-<td style="text-align:left">標準化</td>
-<td style="text-align:left">無統一標準，各家 LLM 格式不同</td>
-<td style="text-align:left">統一協議，保證跨工具、跨平台一致性</td>
-</tr>
-<tr>
-<td style="text-align:left">適用場景</td>
-<td style="text-align:left">單一應用、簡單任務、需嚴格控制副作用</td>
-<td style="text-align:left">多工具、多平台、大規模協作與自動化</td>
-</tr>
-</tbody>
-</table>
-<p>MCP 並非為了取代 Function Calling 而推出，兩者是互補關係：</p>
+<h2 id="Core-Components-核心組件">Core Components 核心組件</h2>
+<p>MCP 採用 client-host-server 的架構設計，其中一個 host 可以同時管理多個 client instance，並與 MCP Server 建立一對一的連線，藉此維持安全邊界並隔離各自的關注點。以 VSCode 安裝 GitHub Copilot Extension 並連接 Azure DevOps MCP Server 為例，VSCode 扮演 host 角色，而 GitHub Copilot 則是 client，而 Azure DevOps MCP Server 則是 server。每個 client 透過 host 啟動並與 server 進行能力協商，確保各自的功能與需求能被正確識別與協調，進而實現安全且高效的協作。</p>
+<p>正如 MCP 官方文件所示意的架構圖，我們可以在 VSCode 中透過 GitHub Copilot 與不同的模型進行互動。只要註冊並設定不同的 MCP Server，就能根據需求取得各式各樣的工具，進一步擴展大型語言模型的應用範圍與處理能力。目前要開發 MCP Server 的門檻已經大幅降低，在 Python / Node.js / Java / Kotlin / C# 都有很豐富的實作範例可以參考，可以參考下列整理連結。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/07/mcp-capability-negotiation/core_components.png"
+                        class=""
+                 >
+<br>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://modelcontextprotocol.io/quickstart/server"  target="_blank">⁍ Quickstart - For MCP Server Developers<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://github.com/modelcontextprotocol/csharp-sdk"  target="_blank">⁍ GitHub | csharp-sdk<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/ai/get-started-mcp"  target="_blank">⁍ 開始使用 .NET AI 和模型內容通訊協定<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/ai/quickstarts/build-mcp-server"  target="_blank">⁍ 使用 .NET 建立並連線到最小的 MCP 伺服器<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+<h2 id="Capability-Negotiation-能力協商">Capability Negotiation 能力協商</h2>
+<p>在 MCP 官方說明文件裡有一張關於 Capability Negotiation 的循序圖畫得很詳細，大家想要瞭解可以參考下方連結，這邊我就以上次的情境舉例：描述使用者透過 VSCode 及 GitHub Copilot 選擇使用 gpt-4o 模型，透過 Azure DevOps MCP Server 與 Azure DevOps Services 溝通，查詢組織專案列表的完整流程。大家可以先看一下循序圖中有哪些角色，再試著由上往下依序閱讀，完整說明在圖片下面。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://modelcontextprotocol.io/specification/2025-06-18/architecture#capability-negotiation"  target="_blank">⁍ MCP - Architecture | Capacity Negotiation<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+<br>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/07/mcp-capability-negotiation/capability_negotiation.png"
+                        class=""
+                 >
+<h3 id="角色說明">角色說明</h3>
 <ul>
-<li><strong>Function Calling</strong>：讓 LLM 能夠「決定」要做什麼（下訂單）。</li>
-<li><strong>MCP</strong>：讓這些決策能夠在不同工具、平台間「被執行」且流程標準化（執行訂單）。</li>
+<li>User（使用者）：在 VSCode 輸入查詢指令的人。</li>
+<li>MCP Host（VSCode）：負責接收使用者指令，與其他元件溝通的 IDE 工具。</li>
+<li>MCP Client（GitHub Copilot）：協助分析指令、整合工具，並與 AI 互動的中介。</li>
+<li>gpt-4o：負責理解指令、產生工具操作建議與自然語言回應的 AI 模型。</li>
+<li>Azure DevOps MCP Server：負責與 Azure DevOps 溝通的 MCP 伺服器。</li>
+<li>Azure DevOps：實際儲存專案資料的雲端平台 (Azure DevOps Services)。</li>
 </ul>
-<p>實際應用中，LLM 會先用 Function Calling 決定要呼叫哪個工具、什麼參數，然後 MCP 負責將這個請求標準化、分發到對應的 MCP Server 執行，並將結果回傳。其他關於 MCP 更多的詳細資訊，可以參考下列 Anthropic 官網內容：</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://docs.anthropic.com/zh-TW/docs/agents-and-tools/mcp"  target="_blank">⁍ 模型上下文協議 (MCP)<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://github.com/modelcontextprotocol"  target="_blank">⁍ GitHub | Model Context Protocol<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<h2 id="Azure-DevOps-MCP-Server">Azure DevOps MCP Server</h2>
-<p>Azure DevOps MCP Server 以 MCP 為基礎，提供一套可由 AI 助手（如：GitHub Copilot）透過自然語言存取與操作 Azure DevOps 相關服務的工具集合。這些工具依功能可分類如下幾種：</p>
-<h2 id="🧿-核心-Core">🧿 核心 (Core)</h2>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">工具名稱</th>
-<th style="text-align:left">功能描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">core_list_project_teams</td>
-<td style="text-align:left">取得指定專案的團隊清單</td>
-</tr>
-<tr>
-<td style="text-align:left">core_list_projects</td>
-<td style="text-align:left">取得組織下所有專案清單</td>
-</tr>
-</tbody>
-</table>
-<h2 id="⚒️-工作-Work">⚒️ 工作 (Work)</h2>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">工具名稱</th>
-<th style="text-align:left">功能描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">work_list_team_iterations</td>
-<td style="text-align:left">取得專案中某團隊的所有迭代清單</td>
-</tr>
-<tr>
-<td style="text-align:left">work_create_iterations</td>
-<td style="text-align:left">在指定專案中建立新迭代</td>
-</tr>
-<tr>
-<td style="text-align:left">work_assign_iterations</td>
-<td style="text-align:left">將既有迭代指派給專案中的團隊</td>
-</tr>
-</tbody>
-</table>
-<h2 id="📅-工作項目-Work-Items">📅 工作項目 (Work Items)</h2>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">工具名稱</th>
-<th style="text-align:left">功能描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">wit_my_work_items</td>
-<td style="text-align:left">取得目前使用者相關的工作項目</td>
-</tr>
-<tr>
-<td style="text-align:left">wit_list_backlogs</td>
-<td style="text-align:left">取得專案與團隊的待辦清單</td>
-</tr>
-<tr>
-<td style="text-align:left">wit_list_backlog_work_items</td>
-<td style="text-align:left">取得指定專案、團隊及類別的待辦工作項目</td>
-</tr>
-<tr>
-<td style="text-align:left">wit_get_work_item</td>
-<td style="text-align:left">依 ID 取得單一工作項目</td>
-</tr>
-<tr>
-<td style="text-align:left">wit_get_work_items_batch_by_ids</td>
-<td style="text-align:left">批次取得多個工作項目</td>
-</tr>
-<tr>
-<td style="text-align:left">wit_update_work_item</td>
-<td style="text-align:left">依 ID 更新工作項目欄位</td>
-</tr>
-<tr>
-<td style="text-align:left">wit_create_work_item</td>
-<td style="text-align:left">在指定專案建立新工作項目</td>
-</tr>
-<tr>
-<td style="text-align:left">wit_list_work_item_comments</td>
-<td style="text-align:left">取得指定工作項目的留言</td>
-</tr>
-<tr>
-<td style="text-align:left">wit_get_work_items_for_iteration</td>
-<td style="text-align:left">取得指定迭代的所有工作項目</td>
-</tr>
-<tr>
-<td style="text-align:left">wit_add_work_item_comment</td>
-<td style="text-align:left">為指定工作項目新增留言</td>
-</tr>
-<tr>
-<td style="text-align:left">wit_add_child_work_item</td>
-<td style="text-align:left">由父項目建立子工作項目</td>
-</tr>
-<tr>
-<td style="text-align:left">wit_link_work_item_to_pull_request</td>
-<td style="text-align:left">將工作項目連結至現有 Pull Request</td>
-</tr>
-<tr>
-<td style="text-align:left">wit_get_work_item_type</td>
-<td style="text-align:left">取得指定工作項目類型</td>
-</tr>
-<tr>
-<td style="text-align:left">wit_get_query</td>
-<td style="text-align:left">依 ID 或路徑取得查詢</td>
-</tr>
-<tr>
-<td style="text-align:left">wit_get_query_results_by_id</td>
-<td style="text-align:left">依查詢 ID 取得查詢結果</td>
-</tr>
-<tr>
-<td style="text-align:left">wit_update_work_items_batch</td>
-<td style="text-align:left">批次更新多個工作項目</td>
-</tr>
-<tr>
-<td style="text-align:left">wit_close_and_link_workitem_duplicates</td>
-<td style="text-align:left">關閉重複的工作項目</td>
-</tr>
-<tr>
-<td style="text-align:left">wit_work_items_link</td>
-<td style="text-align:left">批次連結多個工作項目</td>
-</tr>
-</tbody>
-</table>
-<h2 id="📁-原始碼儲存庫-Repositories">📁 原始碼儲存庫 (Repositories)</h2>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">工具名稱</th>
-<th style="text-align:left">功能描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">repo_list_repos_by_project</td>
-<td style="text-align:left">取得專案下所有儲存庫</td>
-</tr>
-<tr>
-<td style="text-align:left">repo_list_pull_requests_by_repo</td>
-<td style="text-align:left">取得指定儲存庫的 Pull Requests</td>
-</tr>
-<tr>
-<td style="text-align:left">repo_list_pull_requests_by_project</td>
-<td style="text-align:left">取得專案下所有 Pull Requests</td>
-</tr>
-<tr>
-<td style="text-align:left">repo_list_branches_by_repo</td>
-<td style="text-align:left">取得指定儲存庫的分支</td>
-</tr>
-<tr>
-<td style="text-align:left">repo_list_my_branches_by_repo</td>
-<td style="text-align:left">取得指定儲存庫中屬於自己的分支</td>
-</tr>
-<tr>
-<td style="text-align:left">repo_list_pull_request_threads</td>
-<td style="text-align:left">取得 Pull Request 的討論串</td>
-</tr>
-<tr>
-<td style="text-align:left">repo_list_pull_request_thread_comments</td>
-<td style="text-align:left">取得討論串中的留言</td>
-</tr>
-<tr>
-<td style="text-align:left">repo_get_repo_by_name_or_id</td>
-<td style="text-align:left">依名稱或 ID 取得儲存庫</td>
-</tr>
-<tr>
-<td style="text-align:left">repo_get_branch_by_name</td>
-<td style="text-align:left">依名稱取得分支</td>
-</tr>
-<tr>
-<td style="text-align:left">repo_get_pull_request_by_id</td>
-<td style="text-align:left">依 ID 取得 Pull Request</td>
-</tr>
-<tr>
-<td style="text-align:left">repo_create_pull_request</td>
-<td style="text-align:left">建立新的 Pull Request</td>
-</tr>
-<tr>
-<td style="text-align:left">repo_update_pull_request_status</td>
-<td style="text-align:left">更新 Pull Request 狀態（啟用或放棄）</td>
-</tr>
-<tr>
-<td style="text-align:left">repo_reply_to_comment</td>
-<td style="text-align:left">回覆 Pull Request 的指定留言</td>
-</tr>
-<tr>
-<td style="text-align:left">repo_resolve_comment</td>
-<td style="text-align:left">解決 Pull Request 討論串中的留言</td>
-</tr>
-</tbody>
-</table>
-<h2 id="🛰️-建置-Builds">🛰️ 建置 (Builds)</h2>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">工具名稱</th>
-<th style="text-align:left">功能描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">build_get_definitions</td>
-<td style="text-align:left">取得專案的建置定義清單</td>
-</tr>
-<tr>
-<td style="text-align:left">build_get_definition_revisions</td>
-<td style="text-align:left">取得指定建置定義的歷史版本</td>
-</tr>
-<tr>
-<td style="text-align:left">build_get_builds</td>
-<td style="text-align:left">取得專案的建置清單</td>
-</tr>
-<tr>
-<td style="text-align:left">build_get_log</td>
-<td style="text-align:left">取得指定建置的日誌</td>
-</tr>
-<tr>
-<td style="text-align:left">build_get_log_by_id</td>
-<td style="text-align:left">依日誌 ID 取得建置日誌</td>
-</tr>
-<tr>
-<td style="text-align:left">build_get_changes</td>
-<td style="text-align:left">取得指定建置的異動</td>
-</tr>
-<tr>
-<td style="text-align:left">build_run_build</td>
-<td style="text-align:left">觸發指定定義的新建置</td>
-</tr>
-<tr>
-<td style="text-align:left">build_get_status</td>
-<td style="text-align:left">取得指定建置的狀態</td>
-</tr>
-</tbody>
-</table>
-<h2 id="🚀-發行-Releases">🚀 發行 (Releases)</h2>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">工具名稱</th>
-<th style="text-align:left">功能描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">release_get_definitions</td>
-<td style="text-align:left">取得專案的發行定義清單</td>
-</tr>
-<tr>
-<td style="text-align:left">release_get_releases</td>
-<td style="text-align:left">取得專案的發行清單</td>
-</tr>
-</tbody>
-</table>
-<h2 id="🧪-測試計畫-Test-Plans">🧪 測試計畫 (Test Plans)</h2>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">工具名稱</th>
-<th style="text-align:left">功能描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">testplan_create_test_plan</td>
-<td style="text-align:left">建立新的測試計畫</td>
-</tr>
-<tr>
-<td style="text-align:left">testplan_create_test_case</td>
-<td style="text-align:left">建立新的測試案例</td>
-</tr>
-<tr>
-<td style="text-align:left">testplan_add_test_cases_to_suite</td>
-<td style="text-align:left">將既有測試案例加入測試套件</td>
-</tr>
-<tr>
-<td style="text-align:left">testplan_list_test_plans</td>
-<td style="text-align:left">分頁取得專案的測試計畫清單，可過濾啟用狀態及細節</td>
-</tr>
-<tr>
-<td style="text-align:left">testplan_list_test_cases</td>
-<td style="text-align:left">取得測試計畫中的測試案例</td>
-</tr>
-<tr>
-<td style="text-align:left">testplan_show_test_results_from_build_id</td>
-<td style="text-align:left">依建置 ID 取得測試結果</td>
-</tr>
-</tbody>
-</table>
-<h2 id="🔎-搜尋-Search">🔎 搜尋 (Search)</h2>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">工具名稱</th>
-<th style="text-align:left">功能描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">search_code</td>
-<td style="text-align:left">依關鍵字搜尋原始碼</td>
-</tr>
-<tr>
-<td style="text-align:left">search_wiki</td>
-<td style="text-align:left">依關鍵字搜尋 Wiki</td>
-</tr>
-<tr>
-<td style="text-align:left">search_workitem</td>
-<td style="text-align:left">依關鍵字搜尋工作項目</td>
-</tr>
-</tbody>
-</table>
-<h2 id="VSCode-的-MCP-設定">VSCode 的 MCP 設定</h2>
-<p>在 VSCode 中要設定 MCP Server 可以按 <strong><code>Ctrl + ,</code></strong> 打開 Settings 畫面，然後點選右上角 Open Settings 圖示，加入下列設定區塊即可，其中 ado_org 代表 Azure DevOps Services 的 Orgnization 名稱，運行 MCP Server 時會提示在 VSCode 上方讓使用者輸入設定。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/06/azure-devops-mcp-server/open_settings.png"
-                        class=""
-                 >
-<br>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/06/azure-devops-mcp-server/mcp_setting.png"
-                        class=""
-                 >
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">   <span class="attr">&quot;inputs&quot;:</span> [</span><br><span class="line">     &#123;</span><br><span class="line">         <span class="attr">&quot;id&quot;:</span> <span class="string">&quot;ado_org&quot;</span>,</span><br><span class="line">         <span class="attr">&quot;type&quot;:</span> <span class="string">&quot;promptString&quot;</span>,</span><br><span class="line">         <span class="attr">&quot;description&quot;:</span> <span class="string">&quot;Azure DevOps organization name  (e.g. &#x27;contoso&#x27;)&quot;</span></span><br><span class="line">     &#125;</span><br><span class="line">   ],</span><br><span class="line">   <span class="attr">&quot;servers&quot;:</span> &#123;</span><br><span class="line">     <span class="attr">&quot;ado&quot;:</span> &#123;</span><br><span class="line">         <span class="attr">&quot;type&quot;:</span> <span class="string">&quot;stdio&quot;</span>,</span><br><span class="line">         <span class="attr">&quot;command&quot;:</span> <span class="string">&quot;npx&quot;</span>,</span><br><span class="line">         <span class="attr">&quot;args&quot;:</span> [</span><br><span class="line">             <span class="string">&quot;-y&quot;</span>,</span><br><span class="line">             <span class="string">&quot;@azure-devops/mcp&quot;</span>,</span><br><span class="line">             <span class="string">&quot;$&#123;input:ado_org&#125;&quot;</span></span><br><span class="line">         ]</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<br>
-<p>而在使用前也必需先以 <strong><code>az login</code></strong> 登入帳號取得使用權限，才能讓 Azure DevOps MCP Server 正常存取資源，要運行或停止設定檔的 MCP Server 僅需要在存檔後，每個 MCP Server 名稱上方就會出現 Start/Stop 的字樣可以點選。</p>
-<br>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/06/azure-devops-mcp-server/az_login.png"
-                        class=""
-                 >
-<br>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/06/azure-devops-mcp-server/start_mcp.png"
-                        class=""
-                 >
-<br>
-完成 settings.json 的設定並啟動 ado 這個 MCP Server 後，我們就可以在 GitHub Copilot 的 Agent mode 中調用前述整理的各項工具。在對話過程中，GitHub Copilot 會同時列出目前可用的工具清單，讓所選用的模型 (如：GPT-4o) 能根據指令調用相關工具，並將執行結果回傳給使用者，協助回覆各類查詢。
-<br>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/06/azure-devops-mcp-server/agent_mode.png"
-                        class=""
-                 >
-<h2 id="結語">結語</h2>
-<p>有了 Azure DevOps MCP Server 提供的工具後，我們就可以透過對話的方式來互動取得 Azure DevOps Services 相關資訊，並自動執行各種開發、協作與運維任務，讓 AI 助理真正成為團隊的智慧夥伴。MCP 標準的導入不僅大幅降低了跨系統整合的門檻，也讓開發流程更具彈性與擴展性，目前 Azure DevOps MCP Server 僅支援雲端的 Azure DevOps Services，尚不支援地端 Azure DevOps Server 的存取方式 (依目前得知的消息，未來幾個月內也不會提供)，但其實要實作 MCP Server 來自己串接這一段也不是太困難的問題，後續有機會再開一篇文章向大家說明。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://github.com/microsoft/mcp"  target="_blank">⁍ GitHub | mcp<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://github.com/microsoft/azure-devops-mcp"  target="_blank">⁍ GitHub | azure-devops-mcp<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/en-us/azure/developer/azure-mcp-server/tools/"  target="_blank">⁍ What are the Azure MCP Server tools?<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
+<h3 id="步驟流程說明">步驟流程說明</h3>
+<h4 id="1-建立工具清單（首次連線時）">1. 建立工具清單（首次連線時）</h4>
+<ul>
+<li>MCP Client 會先建立一份工具清單（例如：有哪些查詢指令可用），並把這些資訊傳給 gpt-4o。</li>
+<li>gpt-4o 準備好解析工具需求，回傳每個工具的詳細資料（名稱、參數、用途等）給 MCP Client。</li>
+<li>MCP Client 把這些工具相關資料暫存下來，方便後續使用。</li>
+</ul>
+<h4 id="2-使用者輸入查詢">2. 使用者輸入查詢</h4>
+<ul>
+<li>User 在 VSCode 輸入像「組織有哪些專案？」這樣的問題。</li>
+<li>MCP Host 把這個問題傳給 MCP Client。</li>
+</ul>
+<h4 id="3-問題分析與轉換">3. 問題分析與轉換</h4>
+<ul>
+<li>MCP Client 將指令及上下文資訊傳送給 gpt-4o。</li>
+<li>gpt-4o 解析後發現需要查詢 Azure DevOps 的資料，於是產生對應的 MCP 指令（例如 list_projects）。</li>
+</ul>
+<h4 id="4-發送查詢請求">4. 發送查詢請求</h4>
+<ul>
+<li>MCP Client 把 list_projects 的請求發送給 MCP Host。</li>
+<li>MCP Host 再把這個請求傳給 MCP Server。</li>
+</ul>
+<h4 id="5-與-Azure-DevOps-溝通">5. 與 Azure DevOps 溝通</h4>
+<ul>
+<li>MCP Server 收到請求後，轉換成 Azure DevOps 的 REST API 呼叫。</li>
+<li>Azure DevOps 回傳專案列表資料給 MCP Server。</li>
+</ul>
+<h4 id="6-結果回傳與整合">6. 結果回傳與整合</h4>
+<ul>
+<li>MCP Server 將查詢結果回傳給 MCP Host。</li>
+<li>MCP Host 把結果傳給 MCP Client。</li>
+<li>MCP Client 整合資料，並將查詢結果及相關內容傳給 gpt-4o。</li>
+</ul>
+<h4 id="7-生成自然語言回應">7. 生成自然語言回應</h4>
+<ul>
+<li>gpt-4o 把查詢到的專案資料，轉換成自然語言答案。</li>
+<li>MCP Client 將這個答案封裝好，傳回 MCP Host。</li>
+<li>MCP Host 最後把結果顯示在 VSCode 介面上，讓 User 看到。</li>
+</ul>
+<p>整個流程就是：<br>
+使用者發問 → VSCode 接收 → GitHub Copilot 分析 → gpt-4o 理解並產生查詢指令 → Azure DevOps 查詢 → 回傳結果 → gpt-4o 產生易懂的自然語言回應 → 顯示在 VSCode</p>
+<p>在整個流程中，每個角色都扮演特定溝通橋樑，確保使用者的問題能被正確理解並得到回覆，</p>
+<h2 id="總結">總結</h2>
+<p>MCP 的能力協商機制讓各個元件能根據自身特性協調最佳合作方式，確保安全、彈性與高效的互動體驗。透過明確的角色分工與標準化流程，開發者能更容易串接多元工具與服務，擴展 AI 應用場景。未來隨著 MCP 生態系持續發展，將有助於推動語意驅動開發與 AI 協作的普及。</p>
+
                     
                 </div>
 
@@ -807,11 +468,11 @@
     <div class="copyright-info-content border-box">
         <div class="copyright-info-top border-box">
             <div class="copyright-post-title border-box text-ellipsis">
-                Azure DevOps MCP Server
+                關於 MCP 的 Capability Negotiation
             </div>
 
             <div class="copyright-post-link border-box text-ellipsis">
-                post/2025/06/azure-devops-mcp-server/
+                post/2025/07/mcp-capability-negotiation/
             </div>
         </div>
 
@@ -827,7 +488,7 @@
                 <div class="type">
                     發布於
                 </div>
-                <div class="content">2025-06-18 08:39</div>
+                <div class="content">2025-07-05 11:40</div>
             </div>
 
 
@@ -863,10 +524,6 @@
                             <ul class="post-tags-box border-box">
                                 
                                     <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/Azure-DevOps/">Azure DevOps</a>
-                                    </li>
-                                
-                                    <li class="tag-item border-box">
                                         <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/MCP/">MCP</a>
                                     </li>
                                 
@@ -883,31 +540,15 @@
                 
                     <div class="post-nav border-box">
                         
-                            <div class="prev-post">
-                                <a class="prev"
-                                   rel="prev"
-                                   href="/post/2025/07/mcp-capability-negotiation/"
-                                   title="關於 MCP 的 Capability Negotiation"
-                                >
-                                    <span class="left arrow-icon flex-center">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </span>
-                                    <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">關於 MCP 的 Capability Negotiation</span>
-                                        <span class="post-nav-item">上一篇</span>
-                                    </span>
-                                </a>
-                            </div>
-                        
                         
                             <div class="next-post">
                                 <a class="next"
                                    rel="next"
-                                   href="/post/2025/06/update-azure-pipelines-agents/"
-                                   title="Azure Pipelines Agents 代理程式"
+                                   href="/post/2025/06/azure-devops-mcp-server/"
+                                   title="Azure DevOps MCP Server"
                                 >
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">Azure Pipelines Agents 代理程式</span>
+                                        <span class="post-nav-title-item text-ellipsis">Azure DevOps MCP Server</span>
                                         <span class="post-nav-item">下一篇</span>
                                     </span>
                                     <span class="right arrow-icon flex-center">
@@ -1002,7 +643,7 @@
             <div class="pc-post-toc left-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MCP-%E7%9A%84%E7%94%B1%E4%BE%86"><span class="nav-text">MCP 的由來</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MCP-%E5%92%8C-Function-Calling-%E7%9A%84%E4%B8%8D%E5%90%8C"><span class="nav-text">MCP 和 Function Calling 的不同</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Azure-DevOps-MCP-Server"><span class="nav-text">Azure DevOps MCP Server</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%A7%BF-%E6%A0%B8%E5%BF%83-Core"><span class="nav-text">🧿 核心 (Core)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%9A%92%EF%B8%8F-%E5%B7%A5%E4%BD%9C-Work"><span class="nav-text">⚒️ 工作 (Work)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%85-%E5%B7%A5%E4%BD%9C%E9%A0%85%E7%9B%AE-Work-Items"><span class="nav-text">📅 工作項目 (Work Items)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%81-%E5%8E%9F%E5%A7%8B%E7%A2%BC%E5%84%B2%E5%AD%98%E5%BA%AB-Repositories"><span class="nav-text">📁 原始碼儲存庫 (Repositories)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%9B%B0%EF%B8%8F-%E5%BB%BA%E7%BD%AE-Builds"><span class="nav-text">🛰️ 建置 (Builds)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%9A%80-%E7%99%BC%E8%A1%8C-Releases"><span class="nav-text">🚀 發行 (Releases)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%A7%AA-%E6%B8%AC%E8%A9%A6%E8%A8%88%E7%95%AB-Test-Plans"><span class="nav-text">🧪 測試計畫 (Test Plans)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%94%8E-%E6%90%9C%E5%B0%8B-Search"><span class="nav-text">🔎 搜尋 (Search)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VSCode-%E7%9A%84-MCP-%E8%A8%AD%E5%AE%9A"><span class="nav-text">VSCode 的 MCP 設定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-text">結語</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Core-Components-%E6%A0%B8%E5%BF%83%E7%B5%84%E4%BB%B6"><span class="nav-text">Core Components 核心組件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Capability-Negotiation-%E8%83%BD%E5%8A%9B%E5%8D%94%E5%95%86"><span class="nav-text">Capability Negotiation 能力協商</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%92%E8%89%B2%E8%AA%AA%E6%98%8E"><span class="nav-text">角色說明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%A9%9F%E6%B5%81%E7%A8%8B%E8%AA%AA%E6%98%8E"><span class="nav-text">步驟流程說明</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%BB%BA%E7%AB%8B%E5%B7%A5%E5%85%B7%E6%B8%85%E5%96%AE%EF%BC%88%E9%A6%96%E6%AC%A1%E9%80%A3%E7%B7%9A%E6%99%82%EF%BC%89"><span class="nav-text">1. 建立工具清單（首次連線時）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E4%BD%BF%E7%94%A8%E8%80%85%E8%BC%B8%E5%85%A5%E6%9F%A5%E8%A9%A2"><span class="nav-text">2. 使用者輸入查詢</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%95%8F%E9%A1%8C%E5%88%86%E6%9E%90%E8%88%87%E8%BD%89%E6%8F%9B"><span class="nav-text">3. 問題分析與轉換</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E7%99%BC%E9%80%81%E6%9F%A5%E8%A9%A2%E8%AB%8B%E6%B1%82"><span class="nav-text">4. 發送查詢請求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E8%88%87-Azure-DevOps-%E6%BA%9D%E9%80%9A"><span class="nav-text">5. 與 Azure DevOps 溝通</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-%E7%B5%90%E6%9E%9C%E5%9B%9E%E5%82%B3%E8%88%87%E6%95%B4%E5%90%88"><span class="nav-text">6. 結果回傳與整合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-%E7%94%9F%E6%88%90%E8%87%AA%E7%84%B6%E8%AA%9E%E8%A8%80%E5%9B%9E%E6%87%89"><span class="nav-text">7. 生成自然語言回應</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B8%BD%E7%B5%90"><span class="nav-text">總結</span></a></li></ol>
     </div>
 </div>
 
@@ -1206,7 +847,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MCP-%E7%9A%84%E7%94%B1%E4%BE%86"><span class="nav-text">MCP 的由來</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MCP-%E5%92%8C-Function-Calling-%E7%9A%84%E4%B8%8D%E5%90%8C"><span class="nav-text">MCP 和 Function Calling 的不同</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Azure-DevOps-MCP-Server"><span class="nav-text">Azure DevOps MCP Server</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%A7%BF-%E6%A0%B8%E5%BF%83-Core"><span class="nav-text">🧿 核心 (Core)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%9A%92%EF%B8%8F-%E5%B7%A5%E4%BD%9C-Work"><span class="nav-text">⚒️ 工作 (Work)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%85-%E5%B7%A5%E4%BD%9C%E9%A0%85%E7%9B%AE-Work-Items"><span class="nav-text">📅 工作項目 (Work Items)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%81-%E5%8E%9F%E5%A7%8B%E7%A2%BC%E5%84%B2%E5%AD%98%E5%BA%AB-Repositories"><span class="nav-text">📁 原始碼儲存庫 (Repositories)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%9B%B0%EF%B8%8F-%E5%BB%BA%E7%BD%AE-Builds"><span class="nav-text">🛰️ 建置 (Builds)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%9A%80-%E7%99%BC%E8%A1%8C-Releases"><span class="nav-text">🚀 發行 (Releases)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%A7%AA-%E6%B8%AC%E8%A9%A6%E8%A8%88%E7%95%AB-Test-Plans"><span class="nav-text">🧪 測試計畫 (Test Plans)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%94%8E-%E6%90%9C%E5%B0%8B-Search"><span class="nav-text">🔎 搜尋 (Search)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VSCode-%E7%9A%84-MCP-%E8%A8%AD%E5%AE%9A"><span class="nav-text">VSCode 的 MCP 設定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-text">結語</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Core-Components-%E6%A0%B8%E5%BF%83%E7%B5%84%E4%BB%B6"><span class="nav-text">Core Components 核心組件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Capability-Negotiation-%E8%83%BD%E5%8A%9B%E5%8D%94%E5%95%86"><span class="nav-text">Capability Negotiation 能力協商</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%92%E8%89%B2%E8%AA%AA%E6%98%8E"><span class="nav-text">角色說明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%A9%9F%E6%B5%81%E7%A8%8B%E8%AA%AA%E6%98%8E"><span class="nav-text">步驟流程說明</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%BB%BA%E7%AB%8B%E5%B7%A5%E5%85%B7%E6%B8%85%E5%96%AE%EF%BC%88%E9%A6%96%E6%AC%A1%E9%80%A3%E7%B7%9A%E6%99%82%EF%BC%89"><span class="nav-text">1. 建立工具清單（首次連線時）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E4%BD%BF%E7%94%A8%E8%80%85%E8%BC%B8%E5%85%A5%E6%9F%A5%E8%A9%A2"><span class="nav-text">2. 使用者輸入查詢</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%95%8F%E9%A1%8C%E5%88%86%E6%9E%90%E8%88%87%E8%BD%89%E6%8F%9B"><span class="nav-text">3. 問題分析與轉換</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E7%99%BC%E9%80%81%E6%9F%A5%E8%A9%A2%E8%AB%8B%E6%B1%82"><span class="nav-text">4. 發送查詢請求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E8%88%87-Azure-DevOps-%E6%BA%9D%E9%80%9A"><span class="nav-text">5. 與 Azure DevOps 溝通</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-%E7%B5%90%E6%9E%9C%E5%9B%9E%E5%82%B3%E8%88%87%E6%95%B4%E5%90%88"><span class="nav-text">6. 結果回傳與整合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-%E7%94%9F%E6%88%90%E8%87%AA%E7%84%B6%E8%AA%9E%E8%A8%80%E5%9B%9E%E6%87%89"><span class="nav-text">7. 生成自然語言回應</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B8%BD%E7%B5%90"><span class="nav-text">總結</span></a></li></ol>
     </div>
 </div>
 
