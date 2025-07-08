@@ -325,7 +325,7 @@
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Tue Jul 08 2025 22:29:20 GMT+0800">2025-07-08 22:29:20</span>
+                <span class="datetime" data-updated="Tue Jul 08 2025 22:31:20 GMT+0800">2025-07-08 22:31:20</span>
             </span>
         
 
@@ -571,7 +571,7 @@
 <h2 id="結語">結語</h2>
 <p>Azure Pipelines Agents 是實現現代 DevOps 流程的關鍵，無論是雲端或地端部署，選擇合適的代理程式版本與管理方式，能大幅提升自動化流程的安全性與效率，維運團隊可以持續關注代理程式版本更新，並善用官方提供的更新機制，打造穩健且高效的 CI/CD 環境。</p>
 <h2 id="後續更新">後續更新</h2>
-<p>今天剛好有客戶詢問如何更新 Azure Pipelines Agent 版本，實務上如前文所述，只需先從 GitHub 下載所需的代理程式版本，放到 Azure DevOps Server 指定的資料夾，接著在 Web 介面點選 <strong>Update all agents</strong> 按鈕，即可批次更新指定 pool 內所有狀態為 Online 的 Agent。整個更新過程無需停機，Agent 會自動收到更新指令、下載並安裝新版本，完成後會自動重啟服務（大約僅離線 10 秒），即可輕鬆完成批次更新作業。</p>
+<p>今天剛好有客戶詢問如何更新 Azure Pipelines Agent 版本，實務上如前文所述，只需先從 GitHub 下載所需的代理程式版本，放到 Azure DevOps Server 指定的資料夾，接著在 Web 介面點選 <strong><code>Update all agents</code></strong> 按鈕，即可批次更新指定 pool 內所有狀態為 Online 的 Agent。整個更新過程無需停機，Agent 會自動收到更新指令、下載並安裝新版本，完成後會自動重啟服務（大約僅離線 10 秒），即可輕鬆完成批次更新作業。</p>
 <img  
                        lazyload
                        alt="image"
