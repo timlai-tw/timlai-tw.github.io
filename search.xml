@@ -1,6 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Azure DevOps Services 個別服務</title>
+    <url>/post/2025/04/azure-devops-individual-services/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-individual-services/individual_services.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p><a href="/post/2024/09/azure-devops-licensing-description">上一篇文章</a>提到了 Azure DevOps 雲端和地端的使用者授權，當我們建立私有專案 (Private project) 且成員數量在 5 個人以下時，甚至可以直接免費使用，從第 6 個人起才需要計價，並具有 1 Free Microsoft-hosted CI/CD 和 1 Free Self-hosted CI/CD 以及 Azure Artifacts 2GB 可用儲存容量。在實務使用情境較複雜時，很有可能就需要再增加個別服務的用量 (例如：Azure Pipelines 平行作業數量)，這次就帶大家瞭解這些個別服務計價的方式。</p>
+<span id="more"></span>
+<br>
+<h2 id="Azure-Pipelines">Azure Pipelines</h2>
+<p>不論我們在 Azure Pipelines 使用文字介面或是圖形介面 (classic editor) 建立 pipeline 腳本內容，其中有個 <strong><code>Agent pools</code></strong> 選項是必要設定，它是用來決定執行階段要把工作 (job) 傳遞到哪個 pool 裡，尋找閒置且符合條件的 <strong>Azure Pipelines agents</strong> 執行個體來執行腳本內容，在 Azure DevOps Services 預設有一個 Microsoft-hosted agent 每個月可以免費使用 1800 分鐘，<mark>但預設無法直接使用</mark>，需要填寫 <strong><a class="link"   href="https://aka.ms/azpipelines-parallelism-request" >Azure DevOps Parallelism Request<i class="fas fa-external-link-alt"></i></a></strong> 表單申請審核通過才行，否則在執行的時候會出現如下錯誤：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-individual-services/azpipelines-parallelism-request.jpg"
+                        class=""
+                 >
+<p>當然我們也可以自己準備機器，在上面安裝 Azure Pipelines agents 程式 (支援 Windows / Linux / macOS)，這就屬於 Self-hosted agent。由於是自己準備的執行個體，所以使用時數不受限制，但每個工作 (job) 都是經由佇列 (queue) 的方式排隊一個一個執行，若需要同時間處理一個以上的工作 (job)，則需要再增加執行個體才行 (不論是 Microsoft-hosted 或是 Self-hosted)，基於這樣的概念，以下就是我們所關心的計價標準：</p>
+<ul>
+<li>每一個 Microsoft-hosted 每個月有 1800 分鐘可以使用。</li>
+<li>每增加一個額外的 Microsoft-hosted CI/CD 每個月是 USD $40 (大約 <strong>TWD $1279</strong>)。</li>
+<li>每增加一個額外的 Self-hosted CI/CD 每個月是 USD $15 (大約 <strong>TWD $479</strong>)。</li>
+<li><mark>如果在地端自建 Azure DevOps Server 則僅能使用 Self-hosted agent，需要更多的平行作業就自己多準備幾個執行個體，不用再額外採購什麼授權。</mark></li>
+</ul>
+<h2 id="Azure-Artifacts">Azure Artifacts</h2>
+<p>在軟體專案開發過程中，多少都會用到一些公司內部自行開發，或是外部來源提供的套件，一般常見的套件來源像是：NuGet、npm、Maven、Python…等，Azure Artifacts 可以將這些外部提供來源設為上游來源 (Upstream sources)，或是自己建立一個套件提供來源 (Feeds)，讓專案團隊成員在內部環境取用，儲存容量在 2GB 以內是免費，若超過則依下列區間以量計價：</p>
+<table>
+<thead>
+<tr>
+<th>儲存容量</th>
+<th>每GB (USD)</th>
+<th>每GB (TWD)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 - 2 GB</td>
+<td>免費</td>
+<td>免費</td>
+</tr>
+<tr>
+<td>2 - 10 GB</td>
+<td>$2</td>
+<td>大約 $63.98</td>
+</tr>
+<tr>
+<td>10 - 100 GB</td>
+<td>$1</td>
+<td>大約 $31.99</td>
+</tr>
+<tr>
+<td>100 - 1000 GB</td>
+<td>$0.50</td>
+<td>大約 $16.00</td>
+</tr>
+<tr>
+<td>1000 GB 以上</td>
+<td>$0.25</td>
+<td>大約 NT$8.00</td>
+</tr>
+</tbody>
+</table>
+<h2 id="GitHub-Advanced-Security-for-Azure-DevOps">GitHub Advanced Security for Azure DevOps</h2>
+<p>以往我們想要對專案程式碼執行原碼檢測、套件掃描等作業，首先要考量的可能是產品的價錢，或是委外檢測的費用，比較克難一點還可以尋找免費的掃描檢測工具(例如只是想要出個報告 🙈 🙊)，若想要整合到 CI 流程裡，還要得額外花一番功夫，但基本上只要可以透過 command line 來執行，都是可以用 Azure Pipelines 整合起來的。而自從 <strong>GitHub Advanced Security for Azure DevOps</strong> 正式啟用後，省掉了這部份不少麻煩，除了原生的與 Azure DevOps Services 整合 <mark>(不包含地端 Azure DevOps Server)</mark>，也可以與 <strong>Microsoft Defender for Cloud</strong> 串接，它可以做到：</p>
+<ul>
+<li><strong>Code Scanning</strong>：找出原始程式碼中的漏洞並提供修復指導。</li>
+<li><strong>Secret Scanning</strong>：識別 secret 並阻止開發人員將 secret 推送到程式碼儲存庫。</li>
+<li><strong>Dependency Scanning</strong>：發現 open-source 依賴項目的漏洞，並為開發人員自動發出更新警報。</li>
+</ul>
+<p>在 Azure Pipelines 也提供了下列對應的 task 以便我們完善整個 <strong><code>DevSecOps</code></strong> 流程：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-individual-services/github_acvanced_security.jpg"
+                        class=""
+                 >
+<p>這個功能可以由每個 git 的儲存庫 (repositry) 個別設定是否啟用 (不支援 TFVC 版控)，計價的原則是：每一個活躍的提交者 (active committer) 每個月 <strong>USD $49</strong> (大約 <strong>TWD $1567</strong>)，在<mark>同一個 Azure Subscription</mark> 中，儲存庫過去 <strong><code>90天</code></strong> 的紀錄中，同一個提交者(committer)在不同專案提交程式碼只會算 1 個數量，不會被重複計價。當我們在 git 儲存庫開啟 <strong><code>Advanced Security</code></strong> 功能時，Azure DevOps 在畫面上也會先幫我們基於上述原則計算有多少使用者會被計費，確定要使用再點選 <strong><code>Begin billing</code></strong> 即可：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-individual-services/unique_committers.jpg"
+                        class=""
+                 >
+<p>如同 Azure 各種服務的計價方式，都是<strong>隨付即用 (pay-as-you-go)</strong>，啟用 <strong>GitHub Advanced Security for Azure DevOps</strong> 搭配 CI 流程可以讓我們在開發階段及早發現問題與漏洞，有效減少技術債和後期投入修改的人力成本，跟測試左移 (Shift-Left Testing) 的概念有點雷同，也可以省下大筆購入源碼檢測軟體的費用，大家可以參考看看。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/"  target="_blank">⁍ Azure DevOps 定價<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://azure.microsoft.com/zh-tw/products/devops/github-advanced-security"  target="_blank">⁍ 適用於 Azure DevOps 的 GitHub Advanced Security<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml"  target="_blank">⁍ 設定適用於 Azure DevOps 的 GitHub Advanced Security<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>]]></content>
+      <tags>
+        <tag>Azure DevOps</tag>
+        <tag>授權</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>使用 Azure DevOps REST API 建立專案</title>
     <url>/post/2025/04/azure-devops-create-project/</url>
     <content><![CDATA[<img    
@@ -122,380 +221,6 @@
       <tags>
         <tag>Azure DevOps</tag>
         <tag>Azure DevOps REST API</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Azure DevOps Services 個別服務</title>
-    <url>/post/2025/04/azure-devops-individual-services/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-individual-services/individual_services.jpg"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p><a href="/post/2024/09/azure-devops-licensing-description">上一篇文章</a>提到了 Azure DevOps 雲端和地端的使用者授權，當我們建立私有專案 (Private project) 且成員數量在 5 個人以下時，甚至可以直接免費使用，從第 6 個人起才需要計價，並具有 1 Free Microsoft-hosted CI/CD 和 1 Free Self-hosted CI/CD 以及 Azure Artifacts 2GB 可用儲存容量。在實務使用情境較複雜時，很有可能就需要再增加個別服務的用量 (例如：Azure Pipelines 平行作業數量)，這次就帶大家瞭解這些個別服務計價的方式。</p>
-<span id="more"></span>
-<br>
-<h2 id="Azure-Pipelines">Azure Pipelines</h2>
-<p>不論我們在 Azure Pipelines 使用文字介面或是圖形介面 (classic editor) 建立 pipeline 腳本內容，其中有個 <strong><code>Agent pools</code></strong> 選項是必要設定，它是用來決定執行階段要把工作 (job) 傳遞到哪個 pool 裡，尋找閒置且符合條件的 <strong>Azure Pipelines agents</strong> 執行個體來執行腳本內容，在 Azure DevOps Services 預設有一個 Microsoft-hosted agent 每個月可以免費使用 1800 分鐘，<mark>但預設無法直接使用</mark>，需要填寫 <strong><a class="link"   href="https://aka.ms/azpipelines-parallelism-request" >Azure DevOps Parallelism Request<i class="fas fa-external-link-alt"></i></a></strong> 表單申請審核通過才行，否則在執行的時候會出現如下錯誤：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-individual-services/azpipelines-parallelism-request.jpg"
-                        class=""
-                 >
-<p>當然我們也可以自己準備機器，在上面安裝 Azure Pipelines agents 程式 (支援 Windows / Linux / macOS)，這就屬於 Self-hosted agent。由於是自己準備的執行個體，所以使用時數不受限制，但每個工作 (job) 都是經由佇列 (queue) 的方式排隊一個一個執行，若需要同時間處理一個以上的工作 (job)，則需要再增加執行個體才行 (不論是 Microsoft-hosted 或是 Self-hosted)，基於這樣的概念，以下就是我們所關心的計價標準：</p>
-<ul>
-<li>每一個 Microsoft-hosted 每個月有 1800 分鐘可以使用。</li>
-<li>每增加一個額外的 Microsoft-hosted CI/CD 每個月是 USD $40 (大約 <strong>TWD $1279</strong>)。</li>
-<li>每增加一個額外的 Self-hosted CI/CD 每個月是 USD $15 (大約 <strong>TWD $479</strong>)。</li>
-<li><mark>如果在地端自建 Azure DevOps Server 則僅能使用 Self-hosted agent，需要更多的平行作業就自己多準備幾個執行個體，不用再額外採購什麼授權。</mark></li>
-</ul>
-<h2 id="Azure-Artifacts">Azure Artifacts</h2>
-<p>在軟體專案開發過程中，多少都會用到一些公司內部自行開發，或是外部來源提供的套件，一般常見的套件來源像是：NuGet、npm、Maven、Python…等，Azure Artifacts 可以將這些外部提供來源設為上游來源 (Upstream sources)，或是自己建立一個套件提供來源 (Feeds)，讓專案團隊成員在內部環境取用，儲存容量在 2GB 以內是免費，若超過則依下列區間以量計價：</p>
-<table>
-<thead>
-<tr>
-<th>儲存容量</th>
-<th>每GB (USD)</th>
-<th>每GB (TWD)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0 - 2 GB</td>
-<td>免費</td>
-<td>免費</td>
-</tr>
-<tr>
-<td>2 - 10 GB</td>
-<td>$2</td>
-<td>大約 $63.98</td>
-</tr>
-<tr>
-<td>10 - 100 GB</td>
-<td>$1</td>
-<td>大約 $31.99</td>
-</tr>
-<tr>
-<td>100 - 1000 GB</td>
-<td>$0.50</td>
-<td>大約 $16.00</td>
-</tr>
-<tr>
-<td>1000 GB 以上</td>
-<td>$0.25</td>
-<td>大約 NT$8.00</td>
-</tr>
-</tbody>
-</table>
-<h2 id="GitHub-Advanced-Security-for-Azure-DevOps">GitHub Advanced Security for Azure DevOps</h2>
-<p>以往我們想要對專案程式碼執行原碼檢測、套件掃描等作業，首先要考量的可能是產品的價錢，或是委外檢測的費用，比較克難一點還可以尋找免費的掃描檢測工具(例如只是想要出個報告 🙈 🙊)，若想要整合到 CI 流程裡，還要得額外花一番功夫，但基本上只要可以透過 command line 來執行，都是可以用 Azure Pipelines 整合起來的。而自從 <strong>GitHub Advanced Security for Azure DevOps</strong> 正式啟用後，省掉了這部份不少麻煩，除了原生的與 Azure DevOps Services 整合 <mark>(不包含地端 Azure DevOps Server)</mark>，也可以與 <strong>Microsoft Defender for Cloud</strong> 串接，它可以做到：</p>
-<ul>
-<li><strong>Code Scanning</strong>：找出原始程式碼中的漏洞並提供修復指導。</li>
-<li><strong>Secret Scanning</strong>：識別 secret 並阻止開發人員將 secret 推送到程式碼儲存庫。</li>
-<li><strong>Dependency Scanning</strong>：發現 open-source 依賴項目的漏洞，並為開發人員自動發出更新警報。</li>
-</ul>
-<p>在 Azure Pipelines 也提供了下列對應的 task 以便我們完善整個 <strong><code>DevSecOps</code></strong> 流程：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-individual-services/github_acvanced_security.jpg"
-                        class=""
-                 >
-<p>這個功能可以由每個 git 的儲存庫 (repositry) 個別設定是否啟用 (不支援 TFVC 版控)，計價的原則是：每一個活躍的提交者 (active committer) 每個月 <strong>USD $49</strong> (大約 <strong>TWD $1567</strong>)，在<mark>同一個 Azure Subscription</mark> 中，儲存庫過去 <strong><code>90天</code></strong> 的紀錄中，同一個提交者(committer)在不同專案提交程式碼只會算 1 個數量，不會被重複計價。當我們在 git 儲存庫開啟 <strong><code>Advanced Security</code></strong> 功能時，Azure DevOps 在畫面上也會先幫我們基於上述原則計算有多少使用者會被計費，確定要使用再點選 <strong><code>Begin billing</code></strong> 即可：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-individual-services/unique_committers.jpg"
-                        class=""
-                 >
-<p>如同 Azure 各種服務的計價方式，都是<strong>隨付即用 (pay-as-you-go)</strong>，啟用 <strong>GitHub Advanced Security for Azure DevOps</strong> 搭配 CI 流程可以讓我們在開發階段及早發現問題與漏洞，有效減少技術債和後期投入修改的人力成本，跟測試左移 (Shift-Left Testing) 的概念有點雷同，也可以省下大筆購入源碼檢測軟體的費用，大家可以參考看看。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/"  target="_blank">⁍ Azure DevOps 定價<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://azure.microsoft.com/zh-tw/products/devops/github-advanced-security"  target="_blank">⁍ 適用於 Azure DevOps 的 GitHub Advanced Security<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml"  target="_blank">⁍ 設定適用於 Azure DevOps 的 GitHub Advanced Security<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>]]></content>
-      <tags>
-        <tag>Azure DevOps</tag>
-        <tag>授權</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Chrome DevTools MCP</title>
-    <url>/post/2025/10/chrome-devtools-mcp/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/chrome-devtools-mcp/ChromeDevTools.jpg"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>無論是前端或後端開發工程師，相信大家都經常在瀏覽器中按下 <strong><code>F12</code></strong> 使用 Developer Tool。這個開發者工具不僅能檢視與調整頁面上的 HTML 元素，也能協助測試與偵錯前端 JavaScript。此外，還可以模擬各種裝置的瀏覽情境，或限制網路速度以模擬極端的使用狀況。這些功能都包含在 Chrome DevTools MCP 提供的工具清單中，本文將帶大家快速了解這些工具在實際開發場景中的應用方式。</p>
-<span id="more"></span>
-<br>
-<h2 id="主要特色">主要特色</h2>
-<p>透過 MCP 提供的多元服務串接，我們可以以自然語言對話的方式，為 LLMs 帶來更多應用可能。目前 Chrome DevTools MCP 主要涵蓋三大面向：<strong>自動化操作</strong>、<strong>效能洞察</strong>，以及<strong>瀏覽器操作與偵錯</strong>。不論是頁面上的 HTML 元素、操作過程的截圖，或是網路請求的詳細資訊，都能作為上下文 (Context) 的來源，協助我們運用 LLMs 執行各種任務。</p>
-<p>環境需求：</p>
-<ul>
-<li>Node.js v20.19 以上</li>
-<li>Chrome 瀏覽器</li>
-<li>npm</li>
-</ul>
-<p>MCP 設定：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;mcpServers&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;chrome-devtools&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;npx&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;-y&quot;</span><span class="punctuation">,</span> <span class="string">&quot;chrome-devtools-mcp@latest&quot;</span><span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-<p>Chrome DevTools MCP 目前分為 6 個類別，提供如下列 26 個工具：</p>
-<h3 id="Input-automation">Input automation</h3>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">工具名稱</th>
-<th style="text-align:left">功能簡介</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">click</td>
-<td style="text-align:left">點擊指定元素</td>
-</tr>
-<tr>
-<td style="text-align:left">drag</td>
-<td style="text-align:left">拖曳元素到指定位置</td>
-</tr>
-<tr>
-<td style="text-align:left">fill</td>
-<td style="text-align:left">填入欄位或選取項目</td>
-</tr>
-<tr>
-<td style="text-align:left">fill_form</td>
-<td style="text-align:left">批量填寫多個表單元素</td>
-</tr>
-<tr>
-<td style="text-align:left">handle_dialog</td>
-<td style="text-align:left">處理彈出對話框</td>
-</tr>
-<tr>
-<td style="text-align:left">hover</td>
-<td style="text-align:left">滑鼠懸停於元素上</td>
-</tr>
-<tr>
-<td style="text-align:left">upload_file</td>
-<td style="text-align:left">於檔案欄位上傳檔案</td>
-</tr>
-</tbody>
-</table>
-<p>使用 Input automation 可以讓我們操作鍵盤 (<strong><code>fill</code></strong> , <strong><code>fill_form</code></strong>)、滑鼠 (<strong><code>click</code></strong> , <strong><code>drag</code></strong> , <strong><code>hover</code></strong>) 在頁面上的各種行為，例如：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">開啟 https://www.tenlong.com.tw/ 在 keyword 欄位輸入 &quot;ai agent&quot; 並送出 search 查詢動作。</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/chrome-devtools-mcp/example01.jpg"
-                        class=""
-                 >
-<p>在上面截圖的執行過程可以看到 LLMs 理解我們所輸入的自然語言後，打開了 Chrome 瀏覽器自動使用了 <strong><code>fill</code></strong> 和 <strong><code>click</code></strong> 這兩個工作來達成任務，除此之外，因為 prompt 內容其實並沒有講得很清楚(沒有明確指定頁面元素ID)，所以它自己調用了 <strong><code>take_snapshot</code></strong> 截圖識別頁面內容來判斷下一步該如何進行，並回傳結果。</p>
-<h3 id="Navigation-automation">Navigation automation</h3>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">工具名稱</th>
-<th style="text-align:left">功能簡介</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">close_page</td>
-<td style="text-align:left">關閉分頁</td>
-</tr>
-<tr>
-<td style="text-align:left">list_pages</td>
-<td style="text-align:left">列出所有分頁</td>
-</tr>
-<tr>
-<td style="text-align:left">navigate_page</td>
-<td style="text-align:left">跳轉至指定網址</td>
-</tr>
-<tr>
-<td style="text-align:left">navigate_page_history</td>
-<td style="text-align:left">分頁歷史前進／後退</td>
-</tr>
-<tr>
-<td style="text-align:left">new_page</td>
-<td style="text-align:left">開啟新分頁</td>
-</tr>
-<tr>
-<td style="text-align:left">select_page</td>
-<td style="text-align:left">設定操作目標分頁</td>
-</tr>
-<tr>
-<td style="text-align:left">wait_for</td>
-<td style="text-align:left">等待頁面出現指定文字</td>
-</tr>
-</tbody>
-</table>
-<p>透過 Navigation automation 可以協助我們管理操作多個分頁、控制分頁歷程以及在適當時機等待頁面內容出現，常見應用包括自動化測試流程、抓取需要登入或多頁互動的資料，以及在多分頁工作流程中切換操作目標。此類工具可讓 LLMs 以自然語言指令完成跨分頁的步驟：開啟新分頁、在目標分頁中等待特定文字出現、切換回原分頁或關閉不再需要的分頁，確保後續動作的執行，例如：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1.開啟 https://www.books.com.tw 並在 id 為 &quot;key&quot; 的文字方塊中輸入 &quot;ai agent&quot;，按下 title 為 &quot;搜尋&quot; 的按鈕。</span><br><span class="line">2.在新分頁開啟查詢列表第一筆的連結，回傳：書名、作者、出版日期、定價、優惠價。</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/chrome-devtools-mcp/example02-1.jpg"
-                        class=""
-                 >
-<br>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/chrome-devtools-mcp/example02-2.jpg"
-                        class=""
-                 >
-<h3 id="Emulation">Emulation</h3>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">工具名稱</th>
-<th style="text-align:left">功能簡介</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">emulate_cpu</td>
-<td style="text-align:left">模擬 CPU 效能/限速</td>
-</tr>
-<tr>
-<td style="text-align:left">emulate_network</td>
-<td style="text-align:left">模擬網路狀況</td>
-</tr>
-<tr>
-<td style="text-align:left">resize_page</td>
-<td style="text-align:left">調整頁面視窗尺寸</td>
-</tr>
-</tbody>
-</table>
-<p>我們在前端開發時常會需要模擬不同裝置(解析度)來確認版型是否正確顯示，以往我們會需要手動切換，甚至建一個新的裝置設定來配合測試，現在就可以用自然語言表達，並讓 LLMs 來幫我們 snapshot 截圖。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">使用 iPhone 13 Pro、iPad 6、FullHD 三種檢視方式打開 https://developer.chrome.com/blog/chrome-devtools-mcp?hl=zh-tw </span><br><span class="line">並截圖儲存在目前工作目錄中，檔名使用 yyyyMMdd-裝置名稱.jpg。</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/chrome-devtools-mcp/example03.jpg"
-                        class=""
-                 >
-<h3 id="Performance">Performance</h3>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">工具名稱</th>
-<th style="text-align:left">功能簡介</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">performance_analyze_insight</td>
-<td style="text-align:left">詳細分析效能洞見</td>
-</tr>
-<tr>
-<td style="text-align:left">performance_start_trace</td>
-<td style="text-align:left">開始頁面效能記錄</td>
-</tr>
-<tr>
-<td style="text-align:left">performance_stop_trace</td>
-<td style="text-align:left">停止頁面效能記錄</td>
-</tr>
-</tbody>
-</table>
-<p>上面有一個模擬網路狀況 <strong><code>emulate_network</code></strong> 在實務上也蠻常使用的，可以模擬在網路傳輸速度不佳或是特定的網路傳輸情境，以確認我們的頁面呈現或是功能互動會不會因為傳輸過久而造成什麼問題，再搭配 <strong><code>performance_start_trace</code></strong> 和 <strong><code>performance_stop_trace</code></strong> 就可以很輕易的就達成測試並記錄數值的需求。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">模擬以 &quot;Fast 4G&quot; 開啟 https://developer.chrome.com/blog/chrome-devtools-mcp?hl=zh-tw </span><br><span class="line">確認整頁載入需要花費多少時間，不需要設定 timeout 時間，直到整頁載入完成為止。</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/chrome-devtools-mcp/example04_05.jpg"
-                        class=""
-                 >
-<h3 id="Network">Network</h3>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">工具名稱</th>
-<th style="text-align:left">功能簡介</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">get_network_request</td>
-<td style="text-align:left">取得指定 URL 請求資訊</td>
-</tr>
-<tr>
-<td style="text-align:left">list_network_requests</td>
-<td style="text-align:left">列出當前頁面網路請求</td>
-</tr>
-</tbody>
-</table>
-<p>程式開發人員工具中的 Network 可以看到頁面載入的所有資訊，在介面上也可以透過各種條件篩選或是排序來找到我們想要分析的目標，現在 Chrome DevTools MCP 也提供了對應的單筆、多筆查詢，應用上可以像是：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">打開 https://www.momoshop.com.tw/ 分析頁面中哪一個項目的 response time 最久?</span><br><span class="line">整個頁面載入使用多少傳輸量、多少時間?</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/chrome-devtools-mcp/example06.jpg"
-                        class=""
-                 >
-<h3 id="Debugging">Debugging</h3>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">工具名稱</th>
-<th style="text-align:left">功能簡介</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">evaluate_script</td>
-<td style="text-align:left">執行 JavaScript 片段</td>
-</tr>
-<tr>
-<td style="text-align:left">list_console_messages</td>
-<td style="text-align:left">列出 console 訊息</td>
-</tr>
-<tr>
-<td style="text-align:left">take_screenshot</td>
-<td style="text-align:left">擷取頁面螢幕截圖</td>
-</tr>
-<tr>
-<td style="text-align:left">take_snapshot</td>
-<td style="text-align:left">取得當前頁面元素快照</td>
-</tr>
-</tbody>
-</table>
-<p>前面幾張執行過程截圖當中都有穿插呼叫 <strong><code>evaluate_script</code></strong>，它主要是注入 JavaScript 程式片段執行並讀取回傳結果，內容當然可以自己撰寫提供給 LLMs 呼叫，但比較多數的情況可能會是 LLMs 理解完我們所提供的上下文(Context)後，為了達到最終任務目的自己加上的。這裡有兩個名稱很像的 tool：</p>
-<ul>
-<li><strong><code>take_screenshot</code></strong>：就是把目前呈現的畫面內容截圖，可以儲存成 PNG、JPEG、WebP。</li>
-<li><strong><code>take_snapshot</code></strong>：將目前畫面元素以記錄 uid 的方式將所有相關屬性記錄下來，這個適合用來作為上下文提供給 LLMs 使用，不適合人工閱讀。</li>
-</ul>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/chrome-devtools-mcp/example07.jpg"
-                        class=""
-                 >
-<h2 id="總結">總結</h2>
-<p>Chrome DevTools MCP 讓自然語言操控瀏覽器自動化、效能分析與偵錯成為可能，將原本需要撰寫程式或熟悉工具操作的流程，轉化為直覺、可被人類語句驅動的工作流程。透過 Input / Navigation / Emulation / Performance / Network / Debugging 等工具組合，LLMs 能理解任務意圖、自動擷取頁面上下文並執行相應操作，極大地降低了自動化門檻。<br><br>
-對一般使用者來說，要更容易達成自動化需求可以採取幾個實用做法：</p>
-<ul>
-<li>以明確且分步的自然語言描述任務，將複雜流程拆成小步驟（例如：導航 → 填表 → 等待 → 截圖）。</li>
-<li>善用快照與截圖作為上下文回饋，讓 LLM 有更精準的操作依據。</li>
-<li>建立常用 prompt 與範本（templates），將成功流程模組化、重複使用。</li>
-<li>先從小範圍任務切入（如：自動化登入或資料擷取），驗證後再串接更複雜的操作或流程。</li>
-<li>為關鍵步驟加入驗證與錯誤處理（檢查元素存在、逾時重試），確保穩定性與安全性。</li>
-</ul>
-<p><br>結合自然語言與 Chrome DevTools MCP，可以讓更多人不論工程背景與否，更快速地做到瀏覽器自動化與偵錯，提升開發效率並把重複性工作交給工具處理，讓團隊專注在更具價值的設計與判斷。<br>
-<br></p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://developer.chrome.com/blog/chrome-devtools-mcp?hl=zh-tw"  target="_blank">⁍ AI 代理程式適用的 Chrome 開發人員工具 (MCP)<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://github.com/ChromeDevTools/chrome-devtools-mcp"  target="_blank">⁍ GitHub | ChromeDevTools MCP<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
-]]></content>
-      <tags>
-        <tag>MCP</tag>
       </tags>
   </entry>
   <entry>
@@ -1346,6 +1071,111 @@
       </tags>
   </entry>
   <entry>
+    <title>使用 Playwright 測試框架 - 環境準備 (.NET)</title>
+    <url>/post/2025/05/how-to-use-playwright-1/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>在現代軟體開發中，自動化測試已成為確保程式碼品質的重要一環，Playwright 是一個強大的自動化測試框架，支援 Chromium / Firefox / WebKit 瀏覽器，搭配測試產生器(codegen)讓開發者能夠輕鬆撰寫可靠且高效的測試腳本。本篇文章將介紹如何在 .NET 開發環境中設置和使用 Playwright，從安裝必要的套件到撰寫基本的測試案例，幫助大家快速上手這個工具。<br>
+<br></p>
+<span id="more"></span>
+<br>
+<h2 id="使用-Visual-Studio">使用 Visual Studio</h2>
+<p>如果是慣用地表最強開發工具，打開 Visual Studio 建立一個新的 <strong><code>MSTest 測試專案</code></strong>，讓我們有一個基本測試環境可以開始撰寫 Playwright 測試。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/vs-01.png"
+                        class=""
+                 >
+<br>
+<p>要在 MSTest 使用 Playwright 必需要安裝 <strong><code>Microsoft.Playwright.MSTest</code></strong> 套件，這個套件會將 Playwright 與 MSTest 整合，使我們能夠在 MSTest 測試過程中使用 Playwright 功能。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/vs-02.png"
+                        class=""
+                 >
+<h2 id="使用-NET-CLI">使用 .NET CLI</h2>
+<p>若是使用 VSCode 開發工具，我們可以用 <strong>dotnet new</strong> 指令新增一個 PlaywrightTests 專案，預設內容會包含一個 UnitTest1.cs 檔案。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet new mstest -n PlaywrightTests</span><br><span class="line">cd PlaywrightTests</span><br></pre></td></tr></table></figure>
+<p>安裝必要的 Playwright 相依套件：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet add package Microsoft.Playwright.MSTest</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-01.png"
+                        class=""
+                 >
+<br>
+<p>建置程式碼，確認環境準備是否有異常。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet build</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-02.png"
+                        class=""
+                 >
+<br>
+<h2 id="安裝-Playwright-CLI">安裝 Playwright CLI</h2>
+<p>在 .NET 開發環境中，雖然 <strong>playwright.exe</strong> 指令沒有像 <strong>npx playwright</strong> 那麼多參數與功能，但我們在錄製網頁操作過程來產生測試程式碼 (codegen)，或是開啟追蹤檔 (show-trace) 時仍會使用到，可以透過下列指令來安裝 <strong><code>Microsoft.Playwright.CLI</code></strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool install --global Microsoft.Playwright.CLI</span><br></pre></td></tr></table></figure>
+<p>上述套件預設會被安裝到目前的使用者範圍內的 .NET 全局工具路徑中，具體安裝位置會因作業系統而異：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Windows</span><br><span class="line">C:\Users\&lt;你的用戶名&gt;\.dotnet\tools\</span><br><span class="line"></span><br><span class="line">Linux / macOS</span><br><span class="line">/home/&lt;你的用戶名&gt;/.dotnet/tools/</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-03.png"
+                        class=""
+                 >
+<p>我們可以直接開啟目錄確認工具是否安裝成功，或是使用以下指令來列出所有安裝的 .NET 工具：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool list --global</span><br></pre></td></tr></table></figure>
+<p>例：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Package Id                    Version      Commands</span><br><span class="line">-----------------------------------------------------</span><br><span class="line">dotnet-ef                     8.0.8        dotnet-ef</span><br><span class="line">microsoft.playwright.cli      1.2.3        playwright</span><br></pre></td></tr></table></figure>
+<h2 id="移除-Playwright-CLI">移除 Playwright CLI</h2>
+<p>若需要移除已安裝的套件，可以使用下列指令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool uninstall microsoft.playwright.cli</span><br></pre></td></tr></table></figure>
+<h2 id="安裝-Playwright-支援的瀏覽器">安裝 Playwright 支援的瀏覽器</h2>
+<p>Playwright 支援 Chromium、WebKit 和 Firefox 瀏覽器，我們可以使用 <strong>playwright install</strong> 指令來安裝預設瀏覽器，這個動作會將瀏覽器安裝到 <strong><mark>%LOCALAPPDATA%\ms-playwright</mark></strong> 目錄下，若想要自訂安裝的項目，可以透過 <strong>playwright help install</strong> 來瞭解所有的選項。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright install</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-04.png"
+                        class=""
+                 >
+<br>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright help install</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-05.png"
+                        class=""
+                 >
+<h2 id="小試身手">小試身手</h2>
+<p>以上 Playwright 環境設定都完成後，我們就可以直接用官網的第一個範例來小試身手：</p>
+<ul>
+<li>
+<p><code>HasTitle()</code><br>
+打開 Playwright 官方網站，檢查網站的標題是否包含特定的字串，確認網頁標題中是否包含 “Playwright” 這個字。</p>
+</li>
+<li>
+<p><code>GetStartedLink()</code><br>
+一樣是打開 Playwright 官方網站，點擊一個名為 “Get started” 的連結，然後檢查點擊後的頁面是否有一個名為 “Installation” 的標題，以確保連結正確導向到預期的頁面。</p>
+</li>
+</ul>
+<p>大家應該不難發現 Playwright 的程式碼很直覺易讀，通常也不太需要夾雜 CSS class 或 style 來尋找定位網頁上的元素，除此之外還提供了豐富的 API 來進行各種操作，如：點擊、輸入文字、截圖等，之後再陸續向大家介紹各項重點特色，希望大家也都能快速上手 Playwright，並在日常開發中提升測試效率與程式碼品質。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Text.RegularExpressions;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright.MSTest;</span><br><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">PlaywrightTests</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ExampleTest</span> : <span class="title">PageTest</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">HasTitle</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expect a title &quot;to contain&quot; a substring.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page).ToHaveTitleAsync(<span class="keyword">new</span> Regex(<span class="string">&quot;Playwright&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">GetStartedLink</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Click the get started link.</span></span><br><span class="line">        <span class="keyword">await</span> Page.GetByRole(AriaRole.Link, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Get started&quot;</span> &#125;).ClickAsync();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expects page to have a heading with the name of Installation.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page.GetByRole(AriaRole.Heading, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Installation&quot;</span> &#125;)).ToBeVisibleAsync();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>Playwright</tag>
+        <tag>Unit Test</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>關於 MCP 的 Capability Negotiation</title>
     <url>/post/2025/07/mcp-capability-negotiation/</url>
     <content><![CDATA[<img    
@@ -1667,6 +1497,347 @@
       </tags>
   </entry>
   <entry>
+    <title>Chrome DevTools MCP</title>
+    <url>/post/2025/10/chrome-devtools-mcp/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/chrome-devtools-mcp/ChromeDevTools.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>無論是前端或後端開發工程師，相信大家都經常在瀏覽器中按下 <strong><code>F12</code></strong> 使用 Developer Tool。這個開發者工具不僅能檢視與調整頁面上的 HTML 元素，也能協助測試與偵錯前端 JavaScript。此外，還可以模擬各種裝置的瀏覽情境，或限制網路速度以模擬極端的使用狀況。這些功能都包含在 Chrome DevTools MCP 提供的工具清單中，本文將帶大家快速了解這些工具在實際開發場景中的應用方式。</p>
+<span id="more"></span>
+<br>
+<h2 id="主要特色">主要特色</h2>
+<p>透過 MCP 提供的多元服務串接，我們可以以自然語言對話的方式，為 LLMs 帶來更多應用可能。目前 Chrome DevTools MCP 主要涵蓋三大面向：<strong>自動化操作</strong>、<strong>效能洞察</strong>，以及<strong>瀏覽器操作與偵錯</strong>。不論是頁面上的 HTML 元素、操作過程的截圖，或是網路請求的詳細資訊，都能作為上下文 (Context) 的來源，協助我們運用 LLMs 執行各種任務。</p>
+<p>環境需求：</p>
+<ul>
+<li>Node.js v20.19 以上</li>
+<li>Chrome 瀏覽器</li>
+<li>npm</li>
+</ul>
+<p>MCP 設定：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;mcpServers&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;chrome-devtools&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;npx&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;-y&quot;</span><span class="punctuation">,</span> <span class="string">&quot;chrome-devtools-mcp@latest&quot;</span><span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>Chrome DevTools MCP 目前分為 6 個類別，提供如下列 26 個工具：</p>
+<h3 id="Input-automation">Input automation</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">工具名稱</th>
+<th style="text-align:left">功能簡介</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">click</td>
+<td style="text-align:left">點擊指定元素</td>
+</tr>
+<tr>
+<td style="text-align:left">drag</td>
+<td style="text-align:left">拖曳元素到指定位置</td>
+</tr>
+<tr>
+<td style="text-align:left">fill</td>
+<td style="text-align:left">填入欄位或選取項目</td>
+</tr>
+<tr>
+<td style="text-align:left">fill_form</td>
+<td style="text-align:left">批量填寫多個表單元素</td>
+</tr>
+<tr>
+<td style="text-align:left">handle_dialog</td>
+<td style="text-align:left">處理彈出對話框</td>
+</tr>
+<tr>
+<td style="text-align:left">hover</td>
+<td style="text-align:left">滑鼠懸停於元素上</td>
+</tr>
+<tr>
+<td style="text-align:left">upload_file</td>
+<td style="text-align:left">於檔案欄位上傳檔案</td>
+</tr>
+</tbody>
+</table>
+<p>使用 Input automation 可以讓我們操作鍵盤 (<strong><code>fill</code></strong> , <strong><code>fill_form</code></strong>)、滑鼠 (<strong><code>click</code></strong> , <strong><code>drag</code></strong> , <strong><code>hover</code></strong>) 在頁面上的各種行為，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">開啟 https://www.tenlong.com.tw/ 在 keyword 欄位輸入 &quot;ai agent&quot; 並送出 search 查詢動作。</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/chrome-devtools-mcp/example01.jpg"
+                        class=""
+                 >
+<p>在上面截圖的執行過程可以看到 LLMs 理解我們所輸入的自然語言後，打開了 Chrome 瀏覽器自動使用了 <strong><code>fill</code></strong> 和 <strong><code>click</code></strong> 這兩個工作來達成任務，除此之外，因為 prompt 內容其實並沒有講得很清楚(沒有明確指定頁面元素ID)，所以它自己調用了 <strong><code>take_snapshot</code></strong> 截圖識別頁面內容來判斷下一步該如何進行，並回傳結果。</p>
+<h3 id="Navigation-automation">Navigation automation</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">工具名稱</th>
+<th style="text-align:left">功能簡介</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">close_page</td>
+<td style="text-align:left">關閉分頁</td>
+</tr>
+<tr>
+<td style="text-align:left">list_pages</td>
+<td style="text-align:left">列出所有分頁</td>
+</tr>
+<tr>
+<td style="text-align:left">navigate_page</td>
+<td style="text-align:left">跳轉至指定網址</td>
+</tr>
+<tr>
+<td style="text-align:left">navigate_page_history</td>
+<td style="text-align:left">分頁歷史紀錄</td>
+</tr>
+<tr>
+<td style="text-align:left">new_page</td>
+<td style="text-align:left">開啟新分頁</td>
+</tr>
+<tr>
+<td style="text-align:left">select_page</td>
+<td style="text-align:left">設定操作目標分頁</td>
+</tr>
+<tr>
+<td style="text-align:left">wait_for</td>
+<td style="text-align:left">等待頁面出現指定文字</td>
+</tr>
+</tbody>
+</table>
+<p>透過 Navigation automation 可以協助我們管理操作多個分頁、控制分頁歷程以及在適當時機等待頁面內容出現，常見應用包括自動化測試流程、抓取需要登入或多頁互動的資料，以及在多分頁工作流程中切換操作目標。此類工具可讓 LLMs 以自然語言指令完成跨分頁的步驟：開啟新分頁、在目標分頁中等待特定文字出現、切換回原分頁或關閉不再需要的分頁，確保後續動作的執行，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1.開啟 https://www.books.com.tw 並在 id 為 &quot;key&quot; 的文字方塊中輸入 &quot;ai agent&quot;，按下 title 為 &quot;搜尋&quot; 的按鈕。</span><br><span class="line">2.在新分頁開啟查詢列表第一筆的連結，回傳：書名、作者、出版日期、定價、優惠價。</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/chrome-devtools-mcp/example02-1.jpg"
+                        class=""
+                 >
+<br>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/chrome-devtools-mcp/example02-2.jpg"
+                        class=""
+                 >
+<h3 id="Emulation">Emulation</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">工具名稱</th>
+<th style="text-align:left">功能簡介</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">emulate_cpu</td>
+<td style="text-align:left">模擬 CPU 效能/限速</td>
+</tr>
+<tr>
+<td style="text-align:left">emulate_network</td>
+<td style="text-align:left">模擬網路狀況</td>
+</tr>
+<tr>
+<td style="text-align:left">resize_page</td>
+<td style="text-align:left">調整頁面視窗尺寸</td>
+</tr>
+</tbody>
+</table>
+<p>我們在前端開發時常會需要模擬不同裝置(解析度)來確認版型是否正確顯示，以往我們會需要手動切換，甚至建一個新的裝置設定來配合測試，現在就可以用自然語言表達，並讓 LLMs 來幫我們 snapshot 截圖。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">使用 iPhone 13 Pro、iPad 6、FullHD 三種檢視方式打開 https://developer.chrome.com/blog/chrome-devtools-mcp?hl=zh-tw </span><br><span class="line">並截圖儲存在目前工作目錄中，檔名使用 yyyyMMdd-裝置名稱.jpg。</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/chrome-devtools-mcp/example03.jpg"
+                        class=""
+                 >
+<h3 id="Performance">Performance</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">工具名稱</th>
+<th style="text-align:left">功能簡介</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">performance_analyze_insight</td>
+<td style="text-align:left">詳細分析效能洞見</td>
+</tr>
+<tr>
+<td style="text-align:left">performance_start_trace</td>
+<td style="text-align:left">開始頁面效能記錄</td>
+</tr>
+<tr>
+<td style="text-align:left">performance_stop_trace</td>
+<td style="text-align:left">停止頁面效能記錄</td>
+</tr>
+</tbody>
+</table>
+<p>上面有一個模擬網路狀況 <strong><code>emulate_network</code></strong> 在實務上也蠻常使用的，可以模擬在網路傳輸速度不佳或是特定的網路傳輸情境，以確認我們的頁面呈現或是功能互動會不會因為傳輸過久而造成什麼問題，再搭配 <strong><code>performance_start_trace</code></strong> 和 <strong><code>performance_stop_trace</code></strong> 就可以很輕易的就達成測試並記錄數值的需求。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">模擬以 &quot;Fast 4G&quot; 開啟 https://developer.chrome.com/blog/chrome-devtools-mcp?hl=zh-tw </span><br><span class="line">確認整頁載入需要花費多少時間，不需要設定 timeout 時間，直到整頁載入完成為止。</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/chrome-devtools-mcp/example04_05.jpg"
+                        class=""
+                 >
+<h3 id="Network">Network</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">工具名稱</th>
+<th style="text-align:left">功能簡介</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">get_network_request</td>
+<td style="text-align:left">取得指定的請求資訊</td>
+</tr>
+<tr>
+<td style="text-align:left">list_network_requests</td>
+<td style="text-align:left">列出當前頁面網路請求</td>
+</tr>
+</tbody>
+</table>
+<p>程式開發人員工具中的 Network 可以看到頁面載入的所有資訊，在介面上也可以透過各種條件篩選或是排序來找到我們想要分析的目標，現在 Chrome DevTools MCP 也提供了對應的單筆、多筆查詢，應用上可以像是：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">打開 https://www.momoshop.com.tw/ 分析頁面中哪一個項目的 response time 最久?</span><br><span class="line">整個頁面載入使用多少傳輸量、多少時間?</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/chrome-devtools-mcp/example06.jpg"
+                        class=""
+                 >
+<h3 id="Debugging">Debugging</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">工具名稱</th>
+<th style="text-align:left">功能簡介</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">evaluate_script</td>
+<td style="text-align:left">執行 JavaScript 程式片段</td>
+</tr>
+<tr>
+<td style="text-align:left">list_console_messages</td>
+<td style="text-align:left">列出 console 訊息</td>
+</tr>
+<tr>
+<td style="text-align:left">take_screenshot</td>
+<td style="text-align:left">擷取頁面螢幕截圖</td>
+</tr>
+<tr>
+<td style="text-align:left">take_snapshot</td>
+<td style="text-align:left">取得當前頁面元素快照</td>
+</tr>
+</tbody>
+</table>
+<p>前面幾張執行過程截圖當中都有穿插呼叫 <strong><code>evaluate_script</code></strong>，它主要是注入 JavaScript 程式片段執行並讀取回傳結果，內容當然可以自己撰寫提供給 LLMs 呼叫，但比較多數的情況可能會是 LLMs 理解完我們所提供的上下文(Context)後，為了達到最終任務目的自己加上的。這裡有兩個名稱很像的 tool：</p>
+<ul>
+<li><strong><code>take_screenshot</code></strong>：就是把目前呈現的畫面內容截圖，可以儲存成 PNG、JPEG、WebP。</li>
+<li><strong><code>take_snapshot</code></strong>：將目前畫面元素以記錄 uid 的方式將所有相關屬性記錄下來，這個適合用來作為上下文提供給 LLMs 使用，不適合人工閱讀。</li>
+</ul>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/chrome-devtools-mcp/example07.jpg"
+                        class=""
+                 >
+<h2 id="總結">總結</h2>
+<p>Chrome DevTools MCP 讓自然語言操控瀏覽器自動化、效能分析與偵錯成為可能，將原本需要撰寫程式或熟悉工具操作的流程，轉化為直覺、可被人類語句驅動的工作流程。透過 Input / Navigation / Emulation / Performance / Network / Debugging 等工具組合，LLMs 能理解任務意圖、自動擷取頁面上下文並執行相應操作，極大地降低了自動化門檻。<br><br>
+對一般使用者來說，要更容易達成自動化需求可以採取幾個實用做法：</p>
+<ul>
+<li>以明確且分步的自然語言描述任務，將複雜流程拆成小步驟（例如：導航 → 填表 → 等待 → 截圖）。</li>
+<li>善用快照與截圖作為上下文回饋，讓 LLM 有更精準的操作依據。</li>
+<li>建立常用 prompt 與範本（templates），將成功流程模組化、重複使用。</li>
+<li>先從小範圍任務切入（如：自動化登入或資料擷取），驗證後再串接更複雜的操作或流程。</li>
+<li>為關鍵步驟加入驗證與錯誤處理（檢查元素存在、逾時重試），確保穩定性與安全性。</li>
+</ul>
+<p><br>結合自然語言與 Chrome DevTools MCP，可以讓更多人不論工程背景與否，更快速地做到瀏覽器自動化與偵錯，提升開發效率並把重複性工作交給工具處理，讓團隊專注在更具價值的設計與判斷。<br>
+<br></p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://developer.chrome.com/blog/chrome-devtools-mcp?hl=zh-tw"  target="_blank">⁍ AI 代理程式適用的 Chrome 開發人員工具 (MCP)<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://github.com/ChromeDevTools/chrome-devtools-mcp"  target="_blank">⁍ GitHub | ChromeDevTools MCP<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+]]></content>
+      <tags>
+        <tag>MCP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用 VB5/VB6 連線至 Azure DevOps Server 2022 (TFVC)</title>
+    <url>/post/2025/04/vb-connect-to-azure-devops/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/vb-connect-to-azure-devops/VS_TFS.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>Visual Studio 從 97 發展到現在的 2022 號稱地表最強開發工具，能夠與 TFS 或 Git 版控連線自然不是問題，最近剛好遇到客戶還有許多 VB5/VB6 開發的 Winform 程式需要維護，而且版控伺服器也從 TFS 2013 升級至 Azure DevOps Server 2022，藉此機會向大家整理說明 Visual Studio 各版本與 TFS / Azure DevOps 連線的需求與設定。<br>
+<br></p>
+<span id="more"></span>
+<br>
+<h2 id="前言">前言</h2>
+<p>我們使用 Visual Studio 開發工具能夠與 TFS 連線是因為它的功能包含了 <strong><code>Team Explorer</code></strong>，明確來說是從 Visual Studio 2005 首次引入 TFS (Team Foundation Server) 起才開始包含此功能，在這個版本之前則需要額外安裝 <strong>Team Explorer</strong> 和 <strong>MSSCCI Provider</strong> (Microsoft Source Code Control Integration) 才能夠在開發工具中與 TFS 進行整合。</p>
+<h2 id="版本相依性">版本相依性</h2>
+<p>作業系統、開發工具與版控伺服器彼此間有一定的版本相依性，Windows XP 無法安裝 Team Explorer 2013，只能安裝 Team Explorer 2010，搭配 MSSCCI Provider 2010 可以連線的版本有：TFS 2005 ~ 2018 和 Azure DevOps Server 2019/2020 <mark>(不包含2022)</mark>，若舊開發環境 (Visual Studio 2013 以前) 想要與 Azure DevOps Server 2022 連線，必要最低門檻可以參考下列配置：</p>
+<ul>
+<li><strong>Windows 7 以上</strong></li>
+<li><strong>Team Explorer 2013</strong></li>
+<li><strong>MSSCCI Provider 2013</strong></li>
+</ul>
+<p>Visual Studio 97/6/2003~2008 搭配 Team Explorer 2010 + MSSCCI Provider 2010 可以從開發工具連線至 TFS 2010~2017 和 Azure DevOps Server 2019/2020，若要連線至 Azure DevOps Server 2022 則需要搭配 Team Explorer 2013 + MSSCCI Provider 2013 才行，各版本 MSSCCI Provider 可以自 Visual Studio | Marketplace 取得：</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2010MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2010 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.TeamFoundationServerMSSCCIProvider201064-bit"  target="_blank">⁍ Team Foundation Server MSSCCI Provider 2010 64-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC-9956"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M-11387"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+<h2 id="VB5-VB6">VB5/VB6</h2>
+<p>在 VB5/VB6 的工具列需要額外安裝上述提到的 MSSCCI Provider 2010/2013 才會出現 <strong>Team Foundation</strong> 選項，讓我們在開發工具中將程式碼與版控伺服器整合。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/vb-connect-to-azure-devops/create-project-from-tfs.png"
+                        class=""
+                 >
+<p>若出現下列錯誤訊息，就是 MSSCCI Provider 版本太舊了，無法連線到新的版控伺服器，例如：安裝 MSSCCI Provider 2010 但想要與 Azure DevOps Server 2022 連線，唯一解法就是安裝 Team Explorer 2013 + MSSCCI Provider 2013。</p>
+<blockquote>
+<p>TF14045: The identity 主機名稱\2ffd15ae-91e4-4df8-a346-e5be57e1340e is not a recognized identity.</p>
+</blockquote>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/vb-connect-to-azure-devops/not-a-recognized-identity.png"
+                        class=""
+                 >
+<p>在實務情境可能還會遇到其他各種版本組合，經此次嘗試後，確認 VB5/VB6 都還可以與 Azure DevOps Server 2022 的 TFVC 版控進行整合，這邊有篇文章將各種組合條列得很詳盡，也提供大家參考。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://jessehouwing.net/azure-devops-connect-any-visual-studio-version/"  target="_blank">⁍ Connect any version of Visual Studio to Azure DevOps or Azure DevOps Server<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+]]></content>
+      <tags>
+        <tag>VB5</tag>
+        <tag>VB6</tag>
+        <tag>TFS</tag>
+        <tag>Team Explorer</tag>
+        <tag>MSSCCI Provider</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MSTest 生命週期與常用屬性</title>
     <url>/post/2025/04/mstest-attribute-lifecycle/</url>
     <content><![CDATA[<img    
@@ -1745,177 +1916,6 @@
 </div>]]></content>
       <tags>
         <tag>MSTest</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用 VB5/VB6 連線至 Azure DevOps Server 2022 (TFVC)</title>
-    <url>/post/2025/04/vb-connect-to-azure-devops/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/vb-connect-to-azure-devops/VS_TFS.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>Visual Studio 從 97 發展到現在的 2022 號稱地表最強開發工具，能夠與 TFS 或 Git 版控連線自然不是問題，最近剛好遇到客戶還有許多 VB5/VB6 開發的 Winform 程式需要維護，而且版控伺服器也從 TFS 2013 升級至 Azure DevOps Server 2022，藉此機會向大家整理說明 Visual Studio 各版本與 TFS / Azure DevOps 連線的需求與設定。<br>
-<br></p>
-<span id="more"></span>
-<br>
-<h2 id="前言">前言</h2>
-<p>我們使用 Visual Studio 開發工具能夠與 TFS 連線是因為它的功能包含了 <strong><code>Team Explorer</code></strong>，明確來說是從 Visual Studio 2005 首次引入 TFS (Team Foundation Server) 起才開始包含此功能，在這個版本之前則需要額外安裝 <strong>Team Explorer</strong> 和 <strong>MSSCCI Provider</strong> (Microsoft Source Code Control Integration) 才能夠在開發工具中與 TFS 進行整合。</p>
-<h2 id="版本相依性">版本相依性</h2>
-<p>作業系統、開發工具與版控伺服器彼此間有一定的版本相依性，Windows XP 無法安裝 Team Explorer 2013，只能安裝 Team Explorer 2010，搭配 MSSCCI Provider 2010 可以連線的版本有：TFS 2005 ~ 2018 和 Azure DevOps Server 2019/2020 <mark>(不包含2022)</mark>，若舊開發環境 (Visual Studio 2013 以前) 想要與 Azure DevOps Server 2022 連線，必要最低門檻可以參考下列配置：</p>
-<ul>
-<li><strong>Windows 7 以上</strong></li>
-<li><strong>Team Explorer 2013</strong></li>
-<li><strong>MSSCCI Provider 2013</strong></li>
-</ul>
-<p>Visual Studio 97/6/2003~2008 搭配 Team Explorer 2010 + MSSCCI Provider 2010 可以從開發工具連線至 TFS 2010~2017 和 Azure DevOps Server 2019/2020，若要連線至 Azure DevOps Server 2022 則需要搭配 Team Explorer 2013 + MSSCCI Provider 2013 才行，各版本 MSSCCI Provider 可以自 Visual Studio | Marketplace 取得：</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2010MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2010 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.TeamFoundationServerMSSCCIProvider201064-bit"  target="_blank">⁍ Team Foundation Server MSSCCI Provider 2010 64-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC-9956"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M-11387"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
-<h2 id="VB5-VB6">VB5/VB6</h2>
-<p>在 VB5/VB6 的工具列需要額外安裝上述提到的 MSSCCI Provider 2010/2013 才會出現 <strong>Team Foundation</strong> 選項，讓我們在開發工具中將程式碼與版控伺服器整合。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/vb-connect-to-azure-devops/create-project-from-tfs.png"
-                        class=""
-                 >
-<p>若出現下列錯誤訊息，就是 MSSCCI Provider 版本太舊了，無法連線到新的版控伺服器，例如：安裝 MSSCCI Provider 2010 但想要與 Azure DevOps Server 2022 連線，唯一解法就是安裝 Team Explorer 2013 + MSSCCI Provider 2013。</p>
-<blockquote>
-<p>TF14045: The identity 主機名稱\2ffd15ae-91e4-4df8-a346-e5be57e1340e is not a recognized identity.</p>
-</blockquote>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/vb-connect-to-azure-devops/not-a-recognized-identity.png"
-                        class=""
-                 >
-<p>在實務情境可能還會遇到其他各種版本組合，經此次嘗試後，確認 VB5/VB6 都還可以與 Azure DevOps Server 2022 的 TFVC 版控進行整合，這邊有篇文章將各種組合條列得很詳盡，也提供大家參考。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://jessehouwing.net/azure-devops-connect-any-visual-studio-version/"  target="_blank">⁍ Connect any version of Visual Studio to Azure DevOps or Azure DevOps Server<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
-]]></content>
-      <tags>
-        <tag>VB5</tag>
-        <tag>VB6</tag>
-        <tag>TFS</tag>
-        <tag>Team Explorer</tag>
-        <tag>MSSCCI Provider</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用 Playwright 測試框架 - 環境準備 (.NET)</title>
-    <url>/post/2025/05/how-to-use-playwright-1/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>在現代軟體開發中，自動化測試已成為確保程式碼品質的重要一環，Playwright 是一個強大的自動化測試框架，支援 Chromium / Firefox / WebKit 瀏覽器，搭配測試產生器(codegen)讓開發者能夠輕鬆撰寫可靠且高效的測試腳本。本篇文章將介紹如何在 .NET 開發環境中設置和使用 Playwright，從安裝必要的套件到撰寫基本的測試案例，幫助大家快速上手這個工具。<br>
-<br></p>
-<span id="more"></span>
-<br>
-<h2 id="使用-Visual-Studio">使用 Visual Studio</h2>
-<p>如果是慣用地表最強開發工具，打開 Visual Studio 建立一個新的 <strong><code>MSTest 測試專案</code></strong>，讓我們有一個基本測試環境可以開始撰寫 Playwright 測試。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/vs-01.png"
-                        class=""
-                 >
-<br>
-<p>要在 MSTest 使用 Playwright 必需要安裝 <strong><code>Microsoft.Playwright.MSTest</code></strong> 套件，這個套件會將 Playwright 與 MSTest 整合，使我們能夠在 MSTest 測試過程中使用 Playwright 功能。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/vs-02.png"
-                        class=""
-                 >
-<h2 id="使用-NET-CLI">使用 .NET CLI</h2>
-<p>若是使用 VSCode 開發工具，我們可以用 <strong>dotnet new</strong> 指令新增一個 PlaywrightTests 專案，預設內容會包含一個 UnitTest1.cs 檔案。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet new mstest -n PlaywrightTests</span><br><span class="line">cd PlaywrightTests</span><br></pre></td></tr></table></figure>
-<p>安裝必要的 Playwright 相依套件：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet add package Microsoft.Playwright.MSTest</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-01.png"
-                        class=""
-                 >
-<br>
-<p>建置程式碼，確認環境準備是否有異常。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet build</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-02.png"
-                        class=""
-                 >
-<br>
-<h2 id="安裝-Playwright-CLI">安裝 Playwright CLI</h2>
-<p>在 .NET 開發環境中，雖然 <strong>playwright.exe</strong> 指令沒有像 <strong>npx playwright</strong> 那麼多參數與功能，但我們在錄製網頁操作過程來產生測試程式碼 (codegen)，或是開啟追蹤檔 (show-trace) 時仍會使用到，可以透過下列指令來安裝 <strong><code>Microsoft.Playwright.CLI</code></strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool install --global Microsoft.Playwright.CLI</span><br></pre></td></tr></table></figure>
-<p>上述套件預設會被安裝到目前的使用者範圍內的 .NET 全局工具路徑中，具體安裝位置會因作業系統而異：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Windows</span><br><span class="line">C:\Users\&lt;你的用戶名&gt;\.dotnet\tools\</span><br><span class="line"></span><br><span class="line">Linux / macOS</span><br><span class="line">/home/&lt;你的用戶名&gt;/.dotnet/tools/</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-03.png"
-                        class=""
-                 >
-<p>我們可以直接開啟目錄確認工具是否安裝成功，或是使用以下指令來列出所有安裝的 .NET 工具：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool list --global</span><br></pre></td></tr></table></figure>
-<p>例：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Package Id                    Version      Commands</span><br><span class="line">-----------------------------------------------------</span><br><span class="line">dotnet-ef                     8.0.8        dotnet-ef</span><br><span class="line">microsoft.playwright.cli      1.2.3        playwright</span><br></pre></td></tr></table></figure>
-<h2 id="移除-Playwright-CLI">移除 Playwright CLI</h2>
-<p>若需要移除已安裝的套件，可以使用下列指令：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool uninstall microsoft.playwright.cli</span><br></pre></td></tr></table></figure>
-<h2 id="安裝-Playwright-支援的瀏覽器">安裝 Playwright 支援的瀏覽器</h2>
-<p>Playwright 支援 Chromium、WebKit 和 Firefox 瀏覽器，我們可以使用 <strong>playwright install</strong> 指令來安裝預設瀏覽器，這個動作會將瀏覽器安裝到 <strong><mark>%LOCALAPPDATA%\ms-playwright</mark></strong> 目錄下，若想要自訂安裝的項目，可以透過 <strong>playwright help install</strong> 來瞭解所有的選項。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright install</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-04.png"
-                        class=""
-                 >
-<br>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright help install</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-05.png"
-                        class=""
-                 >
-<h2 id="小試身手">小試身手</h2>
-<p>以上 Playwright 環境設定都完成後，我們就可以直接用官網的第一個範例來小試身手：</p>
-<ul>
-<li>
-<p><code>HasTitle()</code><br>
-打開 Playwright 官方網站，檢查網站的標題是否包含特定的字串，確認網頁標題中是否包含 “Playwright” 這個字。</p>
-</li>
-<li>
-<p><code>GetStartedLink()</code><br>
-一樣是打開 Playwright 官方網站，點擊一個名為 “Get started” 的連結，然後檢查點擊後的頁面是否有一個名為 “Installation” 的標題，以確保連結正確導向到預期的頁面。</p>
-</li>
-</ul>
-<p>大家應該不難發現 Playwright 的程式碼很直覺易讀，通常也不太需要夾雜 CSS class 或 style 來尋找定位網頁上的元素，除此之外還提供了豐富的 API 來進行各種操作，如：點擊、輸入文字、截圖等，之後再陸續向大家介紹各項重點特色，希望大家也都能快速上手 Playwright，並在日常開發中提升測試效率與程式碼品質。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Text.RegularExpressions;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright.MSTest;</span><br><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">PlaywrightTests</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ExampleTest</span> : <span class="title">PageTest</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">HasTitle</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expect a title &quot;to contain&quot; a substring.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page).ToHaveTitleAsync(<span class="keyword">new</span> Regex(<span class="string">&quot;Playwright&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">GetStartedLink</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Click the get started link.</span></span><br><span class="line">        <span class="keyword">await</span> Page.GetByRole(AriaRole.Link, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Get started&quot;</span> &#125;).ClickAsync();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expects page to have a heading with the name of Installation.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page.GetByRole(AriaRole.Heading, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Installation&quot;</span> &#125;)).ToBeVisibleAsync();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>Playwright</tag>
-        <tag>Unit Test</tag>
       </tags>
   </entry>
 </search>
