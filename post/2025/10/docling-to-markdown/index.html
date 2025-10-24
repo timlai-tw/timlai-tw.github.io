@@ -337,7 +337,7 @@
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Fri Oct 24 2025 13:49:09 GMT+0800">2025-10-24 13:49:09</span>
+                <span class="datetime" data-updated="Fri Oct 24 2025 20:47:08 GMT+0800">2025-10-24 20:47:08</span>
             </span>
         
 
@@ -447,7 +447,7 @@
 </li>
 </ul>
 <p>如何取得並建置 Docling 環境可以參考 GitHub 專案，它一樣有支援 MCP 但要在它的官網才找得到說明，如同前面說的，它是完全在本地端執行，所以 MCP 是由 uvx 來執行啟動。</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;mcpServers&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;docling&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;uvx&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">&quot;--from=docling-mcp&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;docling-mcp-server&quot;</span></span><br><span class="line">      <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;servers&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;docling&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;uvx&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">&quot;--from=docling-mcp&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;docling-mcp-server&quot;</span></span><br><span class="line">      <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 <div class="tips">
 <font color="black">
 <a class="link"   href="https://github.com/docling-project/docling"  target="_blank">⁍ GitHub | Docling <i class="fas fa-external-link-alt"></i></a><br>
@@ -567,7 +567,7 @@
 <li>
 <p>整合生態與可擴充性：</p>
 <ul>
-<li>MarkItDown：以 plugin 與 MCP 為導向，容易接入 Agent / LLM pipeline。</li>
+<li>MarkItDown：以 plugin 與 MCP 為導向，容易接入 AI Agent / LLM pipeline。</li>
 <li>Docling：提供豐富的 JSON / Markdown / HTML 匯出，與 LangChain、LlamaIndex 等檢索生態整合良好，利於深度資料工程。</li>
 </ul>
 </li>
@@ -585,7 +585,9 @@
 <li>Docling：功能與選項多，需時間調校模型與處理參數，運維成本較高。</li>
 </ul>
 <h2 id="總結">總結</h2>
-<p>MarkItDown 與 Docling 均可將各類原始文件轉為 LLM 友好的結構化格式，但設計取向與適用場景不同：MarkItDown 輕量且易上手，輸出以節省 token 的 Markdown 為主，適合大量快速預處理與整合至 AI Agent / LLM pipeline；Docling 則強調高保真文件理解與版面還原，擅長複雜 PDF、表格重建及本地化運行，適用於需精準解析或資安敏感的情境。實務上建議依文件類型、解析精度、處理量與可用資源做選擇，並透過抽樣驗證或混合流程（以 MarkItDown 做批次預處理、以 Docling 處理關鍵或需人工驗證的檔案）來兼顧效率與精確性。</p>
+<p>MarkItDown 與 Docling 均可將各類原始文件轉為 LLM 友好的結構化格式，但設計取向與適用場景不同：MarkItDown 輕量且易上手，輸出以節省 token 的 Markdown 為主，適合大量快速預處理與整合至 AI Agent / LLM pipeline；Docling 則強調高保真文件理解與版面還原，擅長複雜 PDF、表格重建及本地化運行，適用於需精準解析或資安敏感的情境。</p>
+<p>實務上如果是遇到比較複雜的文件內容，例如像論文有分左右兩欄、各式表格，或是有圖片需要 OCR 辨識、流程圖想要轉換成 Mermaid，使用 Docling 產出的結果都蠻不錯的，強力推薦給大家!</p>
+<!-- 實務上建議依文件類型、解析精度、處理量與可用資源做選擇，並透過抽樣驗證或混合流程（以 MarkItDown 做批次預處理、以 Docling 處理關鍵或需人工驗證的檔案）來兼顧效率與精確性。 -->
 </li>
 </ul>
 
