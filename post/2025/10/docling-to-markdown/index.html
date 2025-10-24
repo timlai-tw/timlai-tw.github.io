@@ -9,7 +9,7 @@
     
     <title>
         
-            使用 Playwright 測試框架 - 環境準備 (.NET) |
+            整理 context 的利器 — MarkItDown 與 Docling |
         
         漫步在雲端
     </title>
@@ -301,7 +301,7 @@
             <div class="post-content-bottom border-box">
                 
                     <div class="post-title">
-                        使用 Playwright 測試框架 - 環境準備 (.NET)
+                        整理 context 的利器 — MarkItDown 與 Docling
                     </div>
                 
 
@@ -332,12 +332,12 @@
         
             <span class="meta-info-item post-create-date">
                 <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
-                <span class="datetime">2025-05-19 17:40:54</span>
+                <span class="datetime">2025-10-22 21:42:10</span>
             </span>
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Wed May 28 2025 14:09:20 GMT+0800">2025-05-28 14:09:20</span>
+                <span class="datetime" data-updated="Fri Oct 24 2025 13:49:09 GMT+0800">2025-10-24 13:49:09</span>
             </span>
         
 
@@ -347,10 +347,16 @@
             <span class="post-tag meta-info-item border-box">
                 <ul class="post-tag-ul">
                     
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/Unit-Test/">Unit Test</a></li>
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/Docling/">Docling</a></li>
                         
                     
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/Playwright/">Playwright</a></li>
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/MarkItDown/">MarkItDown</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E6%96%87%E4%BB%B6%E8%99%95%E7%90%86/">文件處理</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/RAG/">RAG</a></li>
                         
                     
                 </ul>
@@ -382,99 +388,206 @@
                          <img    
                        lazyload
                        alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
+                       data-src="/post/2025/10/docling-to-markdown/logo.png"
                          align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
                  > 
-<p>在現代軟體開發中，自動化測試已成為確保程式碼品質的重要一環，Playwright 是一個強大的自動化測試框架，支援 Chromium / Firefox / WebKit 瀏覽器，搭配測試產生器(codegen)讓開發者能夠輕鬆撰寫可靠且高效的測試腳本。本篇文章將介紹如何在 .NET 開發環境中設置和使用 Playwright，從安裝必要的套件到撰寫基本的測試案例，幫助大家快速上手這個工具。<br>
-<br></p>
+<p>在 Agentic AI 的各式應用場景中，提供正確且良好品質的上下文來源是至關重要的環結，實務上我們可能透過 RAG 從外部檢索資料，或是從手邊的各種檔案格式轉換成 markdown 來提供 LLM 作為上下文參考資料以便展開執行後續的任務，若以輕量、快速上手為考量，可以試試 MarkItDown，但若只能在純地端環境執行，或是對於文件內容(例如：表格、版面)有更高的解析需求不妨試試 Docling，本文以實務角度比較兩者設計取向、支援格式與優缺點，以及提供不同應用場景的建議。</p>
 <span id="more"></span>
-<br>
-<h2 id="使用-Visual-Studio">使用 Visual Studio</h2>
-<p>如果是慣用地表最強開發工具，打開 Visual Studio 建立一個新的 <strong><code>MSTest 測試專案</code></strong>，讓我們有一個基本測試環境可以開始撰寫 Playwright 測試。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/vs-01.png"
-                        class=""
-                 >
-<br>
-<p>要在 MSTest 使用 Playwright 必需要安裝 <strong><code>Microsoft.Playwright.MSTest</code></strong> 套件，這個套件會將 Playwright 與 MSTest 整合，使我們能夠在 MSTest 測試過程中使用 Playwright 功能。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/vs-02.png"
-                        class=""
-                 >
-<h2 id="使用-NET-CLI">使用 .NET CLI</h2>
-<p>若是使用 VSCode 開發工具，我們可以用 <strong>dotnet new</strong> 指令新增一個 PlaywrightTests 專案，預設內容會包含一個 UnitTest1.cs 檔案。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dotnet new mstest -n PlaywrightTests</span><br><span class="line">cd PlaywrightTests</span><br></pre></td></tr></table></figure>
-<p>安裝必要的 Playwright 相依套件：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet add package Microsoft.Playwright.MSTest</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-01.png"
-                        class=""
-                 >
-<br>
-<p>建置程式碼，確認環境準備是否有異常。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet build</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-02.png"
-                        class=""
-                 >
-<br>
-<h2 id="安裝-Playwright-CLI">安裝 Playwright CLI</h2>
-<p>在 .NET 開發環境中，雖然 <strong>playwright.exe</strong> 指令沒有像 <strong>npx playwright</strong> 那麼多參數與功能，但我們在錄製網頁操作過程來產生測試程式碼 (codegen)，或是開啟追蹤檔 (show-trace) 時仍會使用到，可以透過下列指令來安裝 <strong><code>Microsoft.Playwright.CLI</code></strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet tool install --global Microsoft.Playwright.CLI</span><br></pre></td></tr></table></figure>
-<p>上述套件預設會被安裝到目前的使用者範圍內的 .NET 全局工具路徑中，具體安裝位置會因作業系統而異：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Windows</span><br><span class="line">C:\Users\&lt;你的用戶名&gt;\.dotnet\tools\</span><br><span class="line"></span><br><span class="line">Linux / macOS</span><br><span class="line">/home/&lt;你的用戶名&gt;/.dotnet/tools/</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-03.png"
-                        class=""
-                 >
-<p>我們可以直接開啟目錄確認工具是否安裝成功，或是使用以下指令來列出所有安裝的 .NET 工具：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet tool list --global</span><br></pre></td></tr></table></figure>
-<p>例：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Package Id                    Version      Commands</span><br><span class="line">-----------------------------------------------------</span><br><span class="line">dotnet-ef                     8.0.8        dotnet-ef</span><br><span class="line">microsoft.playwright.cli      1.2.3        playwright</span><br></pre></td></tr></table></figure>
-<h2 id="移除-Playwright-CLI">移除 Playwright CLI</h2>
-<p>若需要移除已安裝的套件，可以使用下列指令：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet tool uninstall microsoft.playwright.cli</span><br></pre></td></tr></table></figure>
-<h2 id="安裝-Playwright-支援的瀏覽器">安裝 Playwright 支援的瀏覽器</h2>
-<p>Playwright 支援 Chromium、WebKit 和 Firefox 瀏覽器，我們可以使用 <strong>playwright install</strong> 指令來安裝預設瀏覽器，這個動作會將瀏覽器安裝到 <strong><mark>%LOCALAPPDATA%\ms-playwright</mark></strong> 目錄下，若想要自訂安裝的項目，可以透過 <strong>playwright help install</strong> 來瞭解所有的選項。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">playwright install</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-04.png"
-                        class=""
-                 >
-<br>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">playwright help install</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-05.png"
-                        class=""
-                 >
-<h2 id="小試身手">小試身手</h2>
-<p>以上 Playwright 環境設定都完成後，我們就可以直接用官網的第一個範例來小試身手：</p>
+<h2 id="為什麼要把文件「轉成-Markdown-結構化格式」？">為什麼要把文件「轉成 Markdown / 結構化格式」？</h2>
+<p>在建立知識庫、資料前處理或把企業文件提供給 LLM 時，原始文件往往可能是 PDF、各種 Office 文件格式、圖片或音訊，而真正要給 LLM 使用時，需要：</p>
 <ul>
-<li>
-<p><code>HasTitle()</code><br>
-打開 Playwright 官方網站，檢查網站的標題是否包含特定的字串，確認網頁標題中是否包含 “Playwright” 這個字。</p>
+<li>保留語意與結構（標題、段落、表格…等）。</li>
+<li>去除雜訊並以 token 使用效率高的格式呈現（例如：Markdown）。</li>
+<li>在有需要時，保留更結構化的表示（例如：JSON）以便後續自動化處理。</li>
+</ul>
+<p>MarkItDown 與 Docling 都致力於把各種來源轉成容易被 LLM 或檢索系統消化的輸出，但設計側重與功能集合有明顯差異，下面我們直接比較。</p>
+<h2 id="MarkItDown">MarkItDown</h2>
+<ul>
+<li>出處：由 Microsoft AutoGen 團隊維護（Python）。</li>
+<li>設計取向：把各式檔案轉成「結構化 Markdown」；以 LLM 與文本分析為取向。</li>
+<li>優勢：
+<ul>
+<li>直接產生適合 LLM 的 Markdown（標題、列表、表格、內嵌程式碼等）。</li>
+<li>支援多媒體（圖片 OCR、音訊轉錄、YouTube 字幕抓取）。</li>
+<li>可用作 MCP 伺服器，利於 AI Agent／LLM 整合。</li>
+</ul>
 </li>
-<li>
-<p><code>GetStartedLink()</code><br>
-一樣是打開 Playwright 官方網站，點擊一個名為 “Get started” 的連結，然後檢查點擊後的頁面是否有一個名為 “Installation” 的標題，以確保連結正確導向到預期的頁面。</p>
+<li>限制：
+<ul>
+<li>對於複雜的 PDF 版面（精細表格、多欄佈局、複雜閱讀順序），解析深度稍嫌不足。</li>
+<li>若要取得更高階 PDF 能力，可能會依賴 Azure Document Intelligence（雲端）。</li>
+</ul>
 </li>
 </ul>
-<p>大家應該不難發現 Playwright 的程式碼很直覺易讀，通常也不太需要夾雜 CSS class 或 style 來尋找定位網頁上的元素，除此之外還提供了豐富的 API 來進行各種操作，如：點擊、輸入文字、截圖等，之後再陸續向大家介紹各項重點特色，希望大家也都能快速上手 Playwright，並在日常開發中提升測試效率與程式碼品質。</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Text.RegularExpressions;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright.MSTest;</span><br><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">PlaywrightTests</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ExampleTest</span> : <span class="title">PageTest</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">HasTitle</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expect a title &quot;to contain&quot; a substring.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page).ToHaveTitleAsync(<span class="keyword">new</span> Regex(<span class="string">&quot;Playwright&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">GetStartedLink</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Click the get started link.</span></span><br><span class="line">        <span class="keyword">await</span> Page.GetByRole(AriaRole.Link, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Get started&quot;</span> &#125;).ClickAsync();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expects page to have a heading with the name of Installation.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page.GetByRole(AriaRole.Heading, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Installation&quot;</span> &#125;)).ToBeVisibleAsync();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>若要使用 MarkItDown MCP 現在可以在 GitHub MCP Registry(https://github.com/mcp) 列表找到，也可以 docker 方式或 clone 整個專案在本地端以 STDIO 的方式執行，參考微軟官方 GitHub 說明。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://github.com/mcp"  target="_blank">⁍ GitHub MCP Registry<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://github.com/microsoft/markitdown?tab=readme-ov-file"  target="_blank">⁍ GitHub | MarkItDown<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://github.com/microsoft/markitdown/tree/main/packages/markitdown-mcp"  target="_blank">⁍ GitHub | MarkItDown MCP<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+<h2 id="Docling">Docling</h2>
+<ul>
+<li>出處：由 Docling Project（原起始於 IBM Research Zurich，目前管於 LF AI &amp; Data）維護。</li>
+<li>設計取向：專注於文件理解，特別是進階 PDF 解析（版面、閱讀順序、表格結構、公式、程式碼、影像分類），並提供統一的 DoclingDocument 表示與多種匯出選項。</li>
+<li>優勢：
+<ul>
+<li>在複雜 PDF（掃描文件、排版、多欄表格）與表格重構上表現優異，使用自家模型（DocLayNet、TableFormer）提升解析品質。</li>
+<li>支援本地執行（適合敏感資料或隔離環境），也有 VLM / ASR 整合能力。</li>
+<li>輸出豐富：Markdown / HTML / JSON / DocTags 等，便於後續分析或顯示詳細資訊。</li>
+<li>與 LangChain、LlamaIndex、Haystack 等生態系可以直接整合，便於搭建 RAG pipeline。</li>
+</ul>
+</li>
+<li>限制：
+<ul>
+<li>因為功能較廣、選項較多，學習曲線會比 MarkItDown 高。</li>
+<li>Docling 會完全在本地環境執行，需要考量相關系統資源 (是優點也是缺點)。</li>
+</ul>
+</li>
+</ul>
+<p>如何取得並建置 Docling 環境可以參考 GitHub 專案，它一樣有支援 MCP 但要在它的官網才找得到說明，如同前面說的，它是完全在本地端執行，所以 MCP 是由 uvx 來執行啟動。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;mcpServers&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;docling&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;uvx&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">&quot;--from=docling-mcp&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;docling-mcp-server&quot;</span></span><br><span class="line">      <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://github.com/docling-project/docling"  target="_blank">⁍ GitHub | Docling <i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://docling-project.github.io/docling/"  target="_blank">⁍ Docling<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://docling-project.github.io/docling/usage/mcp/"  target="_blank">⁍ Docling MCP<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+<h2 id="支援格式與各面向比較">支援格式與各面向比較</h2>
+<table>
+<thead>
+<tr>
+<th>格式</th>
+<th>MarkItDown</th>
+<th>Docling</th>
+<th>備註</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PDF</td>
+<td>良好</td>
+<td>優秀（尤其是複雜/掃描文件）</td>
+<td>MarkItDown 對一般 PDF 處理良好；若需高保真解析或掃描 OCR 建議用 Docling</td>
+</tr>
+<tr>
+<td>DOCX / PPTX / XLSX</td>
+<td>支援</td>
+<td>支援</td>
+<td>兩者皆可處理 Office 文件</td>
+</tr>
+<tr>
+<td>Images</td>
+<td>OCR、EXIF 支援</td>
+<td>OCR + VLM（視覺語言模型）分類支援</td>
+<td>Docling 在影像分類與 VLM 整合上較強</td>
+</tr>
+<tr>
+<td>Audio (WAV / MP3)</td>
+<td>支援音訊轉錄</td>
+<td>ASR 支援</td>
+<td>兩者皆支援轉錄；可串接不同模型以改善品質</td>
+</tr>
+<tr>
+<td>HTML</td>
+<td>支援</td>
+<td>支援</td>
+<td>皆可匯入網頁內容</td>
+</tr>
+<tr>
+<td>Markdown</td>
+<td>原生支援</td>
+<td>支援匯入/匯出</td>
+<td></td>
+</tr>
+<tr>
+<td>CSV / JSON / XML</td>
+<td>文字格式支援</td>
+<td>支援</td>
+<td>適合結構化文字資料</td>
+</tr>
+<tr>
+<td>YouTube</td>
+<td>可抓取與轉錄</td>
+<td>可處理 WebVTT / 影片字幕</td>
+<td>MarkItDown 偏向抓取與轉錄；Docling 處理字幕檔更完整</td>
+</tr>
+<tr>
+<td>EPUB / ZIP</td>
+<td>支援</td>
+<td>支援</td>
+<td>支援程度依內容與封裝方式而異</td>
+</tr>
+<tr>
+<td>VTT / WebVTT</td>
+<td>支援</td>
+<td>支援</td>
+<td>若以字幕為主，Docling 支援度較好</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>設計目標：</p>
+<ul>
+<li>MarkItDown：以「快速把各類來源轉成 LLM-friendly Markdown」為核心，偏重 token 效率與多媒體前處理。</li>
+<li>Docling：以「高保真文件理解」為核心，強調版面/表格/閱讀順序的精確還原與 lossless 結構化。</li>
+</ul>
+</li>
+<li>
+<p>解析深度與還原度：</p>
+<ul>
+<li>MarkItDown：輸出以可讀且可索引的 Markdown 為主，對一般文件足夠；遇到跨欄或複雜表格時可能會犧牲部分細節。</li>
+<li>Docling：使用版面模型與表格重建，保留更多區塊座標與結構資訊，適合需精準抽取或重現原始排版的情境。</li>
+</ul>
+</li>
+<li>
+<p>多媒體支援：</p>
+<ul>
+<li>MarkItDown：支援音訊轉錄、YouTube 字幕抓取、圖片 OCR 等，偏向 LLM 前處理工作流。</li>
+<li>Docling：也支援 OCR/ASR/VLM，但更強調影像分類、表格語意重構與公式/程式碼片段的解析。</li>
+</ul>
+</li>
+<li>
+<p>本地化 vs 雲端依賴：</p>
+<ul>
+<li>MarkItDown：可本地執行，但在某些高階 PDF 能力上會建議採用雲端 Azure Document Intelligence 作為選項。</li>
+<li>Docling：設計上強調本地端運行，適合敏感資料或離線環境。</li>
+</ul>
+</li>
+<li>
+<p>效能與資源需求：</p>
+<ul>
+<li>MarkItDown：輕量、上手快，適合大量快速預處理。</li>
+<li>Docling：依賴模型與較高運算資源，單檔處理時間較長但輸出更精確。</li>
+</ul>
+</li>
+<li>
+<p>整合生態與可擴充性：</p>
+<ul>
+<li>MarkItDown：以 plugin 與 MCP 為導向，容易接入 Agent / LLM pipeline。</li>
+<li>Docling：提供豐富的 JSON / Markdown / HTML 匯出，與 LangChain、LlamaIndex 等檢索生態整合良好，利於深度資料工程。</li>
+</ul>
+</li>
+<li>
+<p>可驗證性與審核：</p>
+<ul>
+<li>MarkItDown：輸出簡潔，人工檢視方便，但在表格或版面細節需抽樣驗證。</li>
+<li>Docling：提供中間結構（座標、區塊、表格邊界），便於自動化驗證與回溯修正。</li>
+</ul>
+</li>
+<li>
+<p>學習曲線與運維成本：</p>
+<ul>
+<li>MarkItDown：學習低、文件少、運維簡單。</li>
+<li>Docling：功能與選項多，需時間調校模型與處理參數，運維成本較高。</li>
+</ul>
+<h2 id="總結">總結</h2>
+<p>MarkItDown 與 Docling 均可將各類原始文件轉為 LLM 友好的結構化格式，但設計取向與適用場景不同：MarkItDown 輕量且易上手，輸出以節省 token 的 Markdown 為主，適合大量快速預處理與整合至 AI Agent / LLM pipeline；Docling 則強調高保真文件理解與版面還原，擅長複雜 PDF、表格重建及本地化運行，適用於需精準解析或資安敏感的情境。實務上建議依文件類型、解析精度、處理量與可用資源做選擇，並透過抽樣驗證或混合流程（以 MarkItDown 做批次預處理、以 Docling 處理關鍵或需人工驗證的檔案）來兼顧效率與精確性。</p>
+</li>
+</ul>
 
                     
                 </div>
@@ -485,11 +598,11 @@
     <div class="copyright-info-content border-box">
         <div class="copyright-info-top border-box">
             <div class="copyright-post-title border-box text-ellipsis">
-                使用 Playwright 測試框架 - 環境準備 (.NET)
+                整理 context 的利器 — MarkItDown 與 Docling
             </div>
 
             <div class="copyright-post-link border-box text-ellipsis">
-                post/2025/05/how-to-use-playwright-1/
+                post/2025/10/docling-to-markdown/
             </div>
         </div>
 
@@ -505,7 +618,7 @@
                 <div class="type">
                     發布於
                 </div>
-                <div class="content">2025-05-19 17:40</div>
+                <div class="content">2025-10-22 21:42</div>
             </div>
 
 
@@ -541,11 +654,19 @@
                             <ul class="post-tags-box border-box">
                                 
                                     <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/Unit-Test/">Unit Test</a>
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/Docling/">Docling</a>
                                     </li>
                                 
                                     <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/Playwright/">Playwright</a>
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/MarkItDown/">MarkItDown</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E6%96%87%E4%BB%B6%E8%99%95%E7%90%86/">文件處理</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/RAG/">RAG</a>
                                     </li>
                                 
                             </ul>
@@ -561,31 +682,15 @@
                 
                     <div class="post-nav border-box">
                         
-                            <div class="prev-post">
-                                <a class="prev"
-                                   rel="prev"
-                                   href="/post/2025/05/how-to-use-playwright-2/"
-                                   title="使用 Playwright 測試框架 - 執行階段 (.NET)"
-                                >
-                                    <span class="left arrow-icon flex-center">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </span>
-                                    <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">使用 Playwright 測試框架 - 執行階段 (.NET)</span>
-                                        <span class="post-nav-item">上一篇</span>
-                                    </span>
-                                </a>
-                            </div>
-                        
                         
                             <div class="next-post">
                                 <a class="next"
                                    rel="next"
-                                   href="/post/2025/04/mstest-attribute-lifecycle/"
-                                   title="MSTest 生命週期與常用屬性"
+                                   href="/post/2025/10/chrome-devtools-mcp/"
+                                   title="Chrome DevTools MCP"
                                 >
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">MSTest 生命週期與常用屬性</span>
+                                        <span class="post-nav-title-item text-ellipsis">Chrome DevTools MCP</span>
                                         <span class="post-nav-item">下一篇</span>
                                     </span>
                                     <span class="right arrow-icon flex-center">
@@ -680,7 +785,7 @@
             <div class="pc-post-toc left-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Visual-Studio"><span class="nav-text">使用 Visual Studio</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-NET-CLI"><span class="nav-text">使用 .NET CLI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%9D-Playwright-CLI"><span class="nav-text">安裝 Playwright CLI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%BB%E9%99%A4-Playwright-CLI"><span class="nav-text">移除 Playwright CLI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%9D-Playwright-%E6%94%AF%E6%8F%B4%E7%9A%84%E7%80%8F%E8%A6%BD%E5%99%A8"><span class="nav-text">安裝 Playwright 支援的瀏覽器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E8%A9%A6%E8%BA%AB%E6%89%8B"><span class="nav-text">小試身手</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%82%BA%E4%BB%80%E9%BA%BC%E8%A6%81%E6%8A%8A%E6%96%87%E4%BB%B6%E3%80%8C%E8%BD%89%E6%88%90-Markdown-%E7%B5%90%E6%A7%8B%E5%8C%96%E6%A0%BC%E5%BC%8F%E3%80%8D%EF%BC%9F"><span class="nav-text">為什麼要把文件「轉成 Markdown &#x2F; 結構化格式」？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MarkItDown"><span class="nav-text">MarkItDown</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docling"><span class="nav-text">Docling</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%AF%E6%8F%B4%E6%A0%BC%E5%BC%8F%E8%88%87%E5%90%84%E9%9D%A2%E5%90%91%E6%AF%94%E8%BC%83"><span class="nav-text">支援格式與各面向比較</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B8%BD%E7%B5%90"><span class="nav-text">總結</span></a></li></ol>
     </div>
 </div>
 
@@ -884,7 +989,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Visual-Studio"><span class="nav-text">使用 Visual Studio</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-NET-CLI"><span class="nav-text">使用 .NET CLI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%9D-Playwright-CLI"><span class="nav-text">安裝 Playwright CLI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%BB%E9%99%A4-Playwright-CLI"><span class="nav-text">移除 Playwright CLI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%9D-Playwright-%E6%94%AF%E6%8F%B4%E7%9A%84%E7%80%8F%E8%A6%BD%E5%99%A8"><span class="nav-text">安裝 Playwright 支援的瀏覽器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E8%A9%A6%E8%BA%AB%E6%89%8B"><span class="nav-text">小試身手</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%82%BA%E4%BB%80%E9%BA%BC%E8%A6%81%E6%8A%8A%E6%96%87%E4%BB%B6%E3%80%8C%E8%BD%89%E6%88%90-Markdown-%E7%B5%90%E6%A7%8B%E5%8C%96%E6%A0%BC%E5%BC%8F%E3%80%8D%EF%BC%9F"><span class="nav-text">為什麼要把文件「轉成 Markdown &#x2F; 結構化格式」？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MarkItDown"><span class="nav-text">MarkItDown</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docling"><span class="nav-text">Docling</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%AF%E6%8F%B4%E6%A0%BC%E5%BC%8F%E8%88%87%E5%90%84%E9%9D%A2%E5%90%91%E6%AF%94%E8%BC%83"><span class="nav-text">支援格式與各面向比較</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B8%BD%E7%B5%90"><span class="nav-text">總結</span></a></li></ol>
     </div>
 </div>
 
