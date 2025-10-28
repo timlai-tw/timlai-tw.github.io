@@ -224,327 +224,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Azure DevOps Services / Server 使用者授權</title>
-    <url>/post/2025/04/azure-devops-licensing-description/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-licensing-description/affliction512.jpg"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>Azure DevOps 是一個可以讓我們有效管理軟體開發流程，同時維持良好團隊協作的強大平台，除了可以直接使用雲端 Azure DevOps Services，也可以在地端自建 Azure DevOps Server 讓企業內部環境也能提供相同的服務，但許多人遇到的第一個問題是如何購買授權才能讓成本效益最大化？這篇文章主要協助大家瞭解 Azure DevOps 在授權與定價上的內容。</p>
-<br>
-<span id="more"></span>
-<br>
-<h2 id="Azure-DevOps-Services">Azure DevOps Services</h2>
-<p>Azure DevOps 有五個主要功能：</p>
-<ol>
-<li><strong>Azure Boards</strong> (專案管理、看板管理、Scrum / Kanban、討論議題)</li>
-<li><strong>Azure Repos</strong> (程式碼版控 TFVC/git)</li>
-<li><strong>Azure Pipelines</strong> (自動化建置部署)</li>
-<li><strong>Azure Artifacts</strong> (套件管理、自建套件來源)</li>
-<li><strong>Azure Test Plans</strong> (建立與執行測試計劃)</li>
-</ol>
-<h3 id="Basic-Plan-與-Basic-Test-Plans">Basic Plan 與 Basic + Test Plans</h3>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-licensing-description/Basic_TestPlans.jpg"
-                        class=""
-                 >
-<p>在 Azure DevOps 定價頁面中的 <strong><code>Basic Plan</code></strong> 包含了前面四項功能，費用是 <strong>USD $6</strong> (每個人/月)，折合台幣就要看當月的匯率計算 (例如目前是 TWD <strong>$191</strong>)；一般來說，在專案團隊裡並不是每個成員都需要建立與管理測試計劃，所以 <strong>Azure Test Plans</strong> 這項功能額外被拆出來計價，若選擇 <strong><code>Basic + Test Plans</code></strong> 費用則是 <strong>USD $52</strong> (大約 TWD <strong>$1663</strong>)。</p>
-<h3 id="Stakeholder">Stakeholder</h3>
-<p>除了上述兩種存取層級(Access level)之外，還有一種是免費、可使用<mark>有限功能</mark>的 <strong><code>Stakeholder</code></strong>，比較簡單的來說，這個存取層級可以：</p>
-<ul>
-<li>建立 / 編輯 / 查詢工作項目</li>
-<li>檢視 / 核准 pipeline</li>
-<li>檢視測試計劃</li>
-</ul>
-<p>如同它的名稱一樣：想要瞭解專案資訊，但又不需要實際參與開發實作細節(例如：單位主管、使用單位…等)，就不用再額外採購授權，使用 <strong><code>Stakeholder</code></strong> 這個存取層級就行。若需要 <strong>程式碼版控</strong>、<strong>建立/編輯 pipeline</strong>、<strong>執行測試計劃</strong> 那就不用猶豫了，至少一定需要 <strong><code>Basic</code></strong> 存取層級才能使用，這些資訊可以參閱下列連結，利用頁面裡的幣別下拉選單、拖曳數量捲軸來即時檢視費用估算，頁面最後還有一個針對不同存取層級的功能比較表，方便大家查閱。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/"  target="_blank">⁍ Azure DevOps 定價<i class="fas fa-external-link-alt"></i></a>
-<br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/organizations/security/stakeholder-access?view=azure-devops"  target="_blank">⁍ 項目關係人存取快速參考<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<h3 id="Visual-Studio-Subscription">Visual Studio Subscription</h3>
-<p>若目前已經具備 <strong>Visual Studio monthly subscription</strong> (注意：<mark>訂閱制</mark>才行)，它也包含了 Azure DevOps 的使用授權，基本上可以理解為：<strong>Visual Studio Professional monthly subscription</strong> 包含了 <strong><code>Basic Plan</code></strong>，而 <strong>Visual Studio Enterprise monthly subscription</strong> 包含了 <strong><code>Basic + Test Plans</code></strong>，詳細功能支援列表可以參考下列連結。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/organizations/security/access-levels?view=azure-devops"  target="_blank">⁍ 關於存取層級<i class="fas fa-external-link-alt"></i></a>
-<br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=ms.vs-professional-monthly"  target="_blank">⁍ Visual Studio Professional monthly subscription<i class="fas fa-external-link-alt"></i></a>
-<br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=ms.vs-enterprise-monthly"  target="_blank">⁍ Visual Studio Enterprise monthly subscription<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<h2 id="Azure-DevOps-Server">Azure DevOps Server</h2>
-<p>要在地端環境自建 Azure DevOps Server 則需要先準備好 SQL Server 環境，兩者在版本上有相依性，例如：Azure DevOps Server 2022 需要搭配 SQL Server 2019 以上 (不支援 Linux 上的 SQL Server)，其他版本與相關需求建議可以參考下列連結。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/server/requirements?view=azure-devops-2022"  target="_blank">⁍ Azure DevOps 內部部署的需求<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<p>以授權的概念來說，安裝幾台 Azure DevOps Server 就需要幾個 Server CAL，可以透過下列幾種方式取得合法授權：</p>
-<ul>
-<li>傳統購買 (<mark>3年SA</mark>) Azure DevOps <mark>Server</mark> CAL</li>
-<li>Visual Studio Professional / Enterprise monthly subscription (包含 Azure DevOps Server CAL)</li>
-</ul>
-<br>
-<p>地端的使用者授權可以由下列幾種方式取得合法授權：</p>
-<ul>
-<li>傳統購買 (<mark>3年SA</mark>) Azure DevOps User CAL (包含 <strong><code>Basic + Test Plans</code></strong> 所有功能)</li>
-<li>Visual Studio Professional / Enterprise monthly subscription (包含 Azure DevOps <mark>User</mark> CAL)</li>
-<li>Azure DevOps <strong><code>Basic</code></strong> 或 <strong><code>Basic + Test Plans</code></strong> (雲端的每人每月購買方式，也包含了地端的使用者授權)</li>
-</ul>
-<br>
-<p>以上是對於 Azure DevOps Services / Server 授權的整理說明，若大家還有其他不瞭解的地方，歡迎透過下方留言討論。 😃</p>
-]]></content>
-      <tags>
-        <tag>Azure DevOps</tag>
-        <tag>授權</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Azure DevOps REST API 說明</title>
-    <url>/post/2025/04/azure-devops-rest-api/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-rest-api/rest_api.jpg"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>當我們要自行擴充或串接 Azure DevOps Services / Server 功能時，可以透過 Azure DevOps REST API 來進行客制開發，例如：想要寫一支程式每天發送各專案在版控儲存庫的差異紀錄，或是想要在公司內部表單系統審核後，觸發執行指定的 pipeline … 族繁不及備載，使用 REST API 透過 HTTP 呼叫的好處是可以不用侷限於特定的程式語言，也方便用 Postman 之類的工具測試，這篇整理了呼叫 Azure DevOps REST API 的前置作業與相關說明，方便大家上手😁。</p>
-<span id="more"></span>
-<br>
-<h2 id="REST-API">REST API</h2>
-<p>使用 Azure DevOps REST API 時，其 URI 規格如下：</p>
-<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">VERB https://&#123;instance&#125;/&#123;organization&#125;/&#123;project&#125;/_apis/&#123;area&#125;/&#123;resource&#125;?api-version=&#123;version&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><strong>VERB</strong><br>
-與一般 RESTful API 相同，在串接 Azure DevOps 各種情境時， <strong><font color='green'>GET</font></strong> / <strong><font color='brown'>POST</font></strong> / <strong><font color='red'>DELETE</font></strong> / <strong><font color='purple'>PATCH</font></strong> 都有機會用到。</li>
-<li><strong>instance</strong><br>
-如果是使用雲端的 Azure DevOps Services 指的就是 <span>dev.azure.com</span>，地端則是 Azure DevOps Server 所在的位址。</li>
-<li><strong>organization/project</strong><br>
-取決於 API 作用的範圍，在 URI 裡會有 organization 或 organization/project，例如：使用 API 建立個人權杖 (PAT)，則會是：<br>
-<strong><font color='brown'>POST</font></strong> https://vssps.dev.azure.com/<mark>{organization}</mark>/_apis/tokens/pats?api-version=7.2<br>
-或者像是用 API 建立一個工作項目，則是：<br>
-<strong><font color='brown'>POST</font></strong> https://dev.azure.com/<mark>{organization}/{project}</mark>/_apis/wit/workitems/${type}?api-version=7.2</li>
-<li><strong>{area}/{resource}</strong><br>
-從這邊大概可以看出呼叫的 API 是做哪方面的操作，以上面兩個例子 (建立 PAT、建立 Work item) 來說：<br>
-<strong><font color='brown'>POST</font></strong> https://vssps.dev.azure.com/{organization}/_apis/<mark>tokens/pats</mark>?api-version=7.2<br>
-<strong><font color='brown'>POST</font></strong> https://dev.azure.com/{organization}/{project}/_apis/<mark>wit/workitems/${type}</mark>?api-version=7.2</li>
-<li><strong>version</strong><br>
-通常我們在串接 API 時會明確指定 version，因為每個 TFS / Azure DevOps 版本對於 API 支援的 api-version 也有所不同 (如下表)，如果不指定 api-version 則會自動選用目前產品最新的穩定版本，例如：在 Azure DevOps Server 2019 它會自動取用 5.0 來執行，在不加 api-version 的情況下，若日後升級到 Azure DevOps Server 2022，則會自動取用 7.0 來執行，為維持串接程式正常運作，不會因為 API 版本差異而造成異常，一般我們都會加上指定的 api-version 版號。</li>
-</ul>
-<blockquote>
-<p>提醒大家：<br>
-如果是使用 preview 版本 (例如：<strong><code>7.2-preview.3</code></strong>)，該 preview 版本會在 <strong>12 週</strong> 後停用，被穩定的正式版本取代。</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>Products</th>
-<th style="text-align:center">1.0</th>
-<th style="text-align:center">2.0</th>
-<th style="text-align:center">3.0</th>
-<th style="text-align:center">4.0</th>
-<th style="text-align:center">5.0</th>
-<th style="text-align:center">6.0</th>
-<th style="text-align:center">7.0</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Azure DevOps Services</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-</tr>
-<tr>
-<td>Azure DevOps Server 2022</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-</tr>
-<tr>
-<td>Azure DevOps Server 2020</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Azure DevOps Server 2019</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Team Foundation Server 2018</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Team Foundation Server 2017</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Team Foundation Server 2015</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-</tr>
-</tbody>
-</table>
-<h2 id="PAT-Personal-Access-Token">PAT (Personal Access Token)</h2>
-<p>要使用 Azure DevOps REST API 存取資源前都必需先經過驗證成功才行，建立 <strong><code>個人存取權杖 (PAT)</code></strong> 可以算是安全又簡便的方式，若想要實作 OAuth 2.0 或其他頁面驗證方式，可以參考下列連結：</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/get-started/authentication/authentication-guidance?toc=%2Fazure%2Fdevops%2Fmarketplace-extensibility%2Ftoc.json&view=azure-devops"  target="_blank">⁍ 選擇正確的驗證機制<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<p>要建立一個 PAT 可以從 Azure DevOps 畫面右上角 <strong><code>User settings</code></strong> → <strong><code>Personal access tokens</code></strong> 進入。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-rest-api/pat.png"
-                        class=""
-                 >
-<br>
-<p>點選 <strong><code>+ New Token</code></strong> 按鈕。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-rest-api/pat_1.png"
-                        class=""
-                 >
-<br>
-<p>接著就是 PAT 存取期限、授權範圍等相關設定：</p>
-<ul>
-<li><strong>Organization</strong><br>
-選擇 <strong>特定的 Organization</strong> 或 <strong>All accessible organizations</strong> (允許存取全部組織)。</li>
-<li><strong>Expiration (UTC)</strong><br>
-有效期限可以選擇 <strong>30 / 60 / 90 天</strong>，或是 <strong>Custom defined</strong> (<mark>最長只能一年</mark>)</li>
-<li><strong>Scopes</strong><br>
-可以選擇 <strong>Full access</strong> (允許存取全部範圍) 或 <strong>Custom defined</strong> 針對各個功能進一步設定，基於最低權限原則，建議大家可以有意義的命名 token 名稱，並且只勾選必要的 <strong>Scopes</strong> 授權範圍。</li>
-</ul>
-<p>建立 PAT 後，僅能 <strong><code>Revoke</code></strong> (撤銷) 或是 <strong><code>Regenerate</code></strong> (重新產生)，沒有辦法再用任何方式檢視原本產生的 token 內容，大家記得要妥善保存。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-rest-api/pat_2.png"
-                        class=""
-                 >
-<h2 id="NET-Client-Library">.NET Client Library</h2>
-<p>如果是使用 .NET 進行程式開發，還有一個選擇是從 NuGet.org 下載 Client library 使用，套件相依關係如下圖。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-rest-api/dotnet-client-libraries-dependancy-diagram.jpg"
-                        class=""
-                 >
-<br>
-<p>最新版本可以由 NuGet.org 查詢結果找到： https://www.nuget.org/packages?q=azure+devops+.net ，套件和 Azure DevOps 版本一樣有相依性， 使用前要留意一下目前環境的 TFS / Azure DevOps Server 版本，例如：Azure DevOps Server 2019 只能使用到套件 16.143.x 版。</p>
-<table>
-<thead>
-<tr>
-<th>套件版本</th>
-<th>Azure DevOps 版本</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>16.205.x</td>
-<td>versions &gt;= Azure DevOps Server 2022</td>
-</tr>
-<tr>
-<td>16.170.x</td>
-<td>versions &gt;= Azure DevOps Server 2020</td>
-</tr>
-<tr>
-<td>16.153.x</td>
-<td>versions &gt;= Azure DevOps Server 2019 Update 1</td>
-</tr>
-<tr>
-<td>16.143.x</td>
-<td>versions &gt;= Azure DevOps Server 2019</td>
-</tr>
-<tr>
-<td>15.131.x</td>
-<td>versions &gt;= TFS 2018 Update 1</td>
-</tr>
-<tr>
-<td>15.112.x</td>
-<td>versions &gt;= TFS 2017 Update 1</td>
-</tr>
-<tr>
-<td>14.102.x</td>
-<td>versions &gt;= TFS 2015 Update 3</td>
-</tr>
-<tr>
-<td>14.95.x</td>
-<td>versions &gt;= TFS 2015 Update 2</td>
-</tr>
-<tr>
-<td>14.89.x</td>
-<td>versions &gt;= TFS 2015 Update 1</td>
-</tr>
-<tr>
-<td>14.83.x</td>
-<td>versions &gt;= TFS 2015</td>
-</tr>
-</tbody>
-</table>
-<p>在實務開發上還是得花些時間先瞭解套件定義了哪些 class、提供了什麼 function，這部份可以參考官方說明和 github sample code，如果有特殊需求或環境考量需要使用的話，可以參考下列連結：</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/concepts/dotnet-client-libraries?view=azure-devops&viewFallbackFrom=vsts"  target="_blank">⁍ .NET 用戶端程式庫<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/get-started/client-libraries/samples?view=azure-devops"  target="_blank">⁍ C# 用戶端連結庫範例<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://github.com/microsoft/azure-devops-dotnet-samples"  target="_blank">⁍ .NET samples for Azure DevOps<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<p>(💁 看完上面連結內容有沒有覺得還是使用 REST API 比較方便 💖)</p>
-]]></content>
-      <tags>
-        <tag>Azure DevOps</tag>
-        <tag>Azure DevOps REST API</tag>
-        <tag>PAT</tag>
-        <tag>.NET Client Library</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Azure DevOps MCP Server</title>
     <url>/post/2025/06/azure-devops-mcp-server/</url>
     <content><![CDATA[<img    
@@ -984,6 +663,327 @@
       </tags>
   </entry>
   <entry>
+    <title>Azure DevOps Services / Server 使用者授權</title>
+    <url>/post/2025/04/azure-devops-licensing-description/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-licensing-description/affliction512.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>Azure DevOps 是一個可以讓我們有效管理軟體開發流程，同時維持良好團隊協作的強大平台，除了可以直接使用雲端 Azure DevOps Services，也可以在地端自建 Azure DevOps Server 讓企業內部環境也能提供相同的服務，但許多人遇到的第一個問題是如何購買授權才能讓成本效益最大化？這篇文章主要協助大家瞭解 Azure DevOps 在授權與定價上的內容。</p>
+<br>
+<span id="more"></span>
+<br>
+<h2 id="Azure-DevOps-Services">Azure DevOps Services</h2>
+<p>Azure DevOps 有五個主要功能：</p>
+<ol>
+<li><strong>Azure Boards</strong> (專案管理、看板管理、Scrum / Kanban、討論議題)</li>
+<li><strong>Azure Repos</strong> (程式碼版控 TFVC/git)</li>
+<li><strong>Azure Pipelines</strong> (自動化建置部署)</li>
+<li><strong>Azure Artifacts</strong> (套件管理、自建套件來源)</li>
+<li><strong>Azure Test Plans</strong> (建立與執行測試計劃)</li>
+</ol>
+<h3 id="Basic-Plan-與-Basic-Test-Plans">Basic Plan 與 Basic + Test Plans</h3>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-licensing-description/Basic_TestPlans.jpg"
+                        class=""
+                 >
+<p>在 Azure DevOps 定價頁面中的 <strong><code>Basic Plan</code></strong> 包含了前面四項功能，費用是 <strong>USD $6</strong> (每個人/月)，折合台幣就要看當月的匯率計算 (例如目前是 TWD <strong>$191</strong>)；一般來說，在專案團隊裡並不是每個成員都需要建立與管理測試計劃，所以 <strong>Azure Test Plans</strong> 這項功能額外被拆出來計價，若選擇 <strong><code>Basic + Test Plans</code></strong> 費用則是 <strong>USD $52</strong> (大約 TWD <strong>$1663</strong>)。</p>
+<h3 id="Stakeholder">Stakeholder</h3>
+<p>除了上述兩種存取層級(Access level)之外，還有一種是免費、可使用<mark>有限功能</mark>的 <strong><code>Stakeholder</code></strong>，比較簡單的來說，這個存取層級可以：</p>
+<ul>
+<li>建立 / 編輯 / 查詢工作項目</li>
+<li>檢視 / 核准 pipeline</li>
+<li>檢視測試計劃</li>
+</ul>
+<p>如同它的名稱一樣：想要瞭解專案資訊，但又不需要實際參與開發實作細節(例如：單位主管、使用單位…等)，就不用再額外採購授權，使用 <strong><code>Stakeholder</code></strong> 這個存取層級就行。若需要 <strong>程式碼版控</strong>、<strong>建立/編輯 pipeline</strong>、<strong>執行測試計劃</strong> 那就不用猶豫了，至少一定需要 <strong><code>Basic</code></strong> 存取層級才能使用，這些資訊可以參閱下列連結，利用頁面裡的幣別下拉選單、拖曳數量捲軸來即時檢視費用估算，頁面最後還有一個針對不同存取層級的功能比較表，方便大家查閱。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/"  target="_blank">⁍ Azure DevOps 定價<i class="fas fa-external-link-alt"></i></a>
+<br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/organizations/security/stakeholder-access?view=azure-devops"  target="_blank">⁍ 項目關係人存取快速參考<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h3 id="Visual-Studio-Subscription">Visual Studio Subscription</h3>
+<p>若目前已經具備 <strong>Visual Studio monthly subscription</strong> (注意：<mark>訂閱制</mark>才行)，它也包含了 Azure DevOps 的使用授權，基本上可以理解為：<strong>Visual Studio Professional monthly subscription</strong> 包含了 <strong><code>Basic Plan</code></strong>，而 <strong>Visual Studio Enterprise monthly subscription</strong> 包含了 <strong><code>Basic + Test Plans</code></strong>，詳細功能支援列表可以參考下列連結。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/organizations/security/access-levels?view=azure-devops"  target="_blank">⁍ 關於存取層級<i class="fas fa-external-link-alt"></i></a>
+<br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=ms.vs-professional-monthly"  target="_blank">⁍ Visual Studio Professional monthly subscription<i class="fas fa-external-link-alt"></i></a>
+<br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=ms.vs-enterprise-monthly"  target="_blank">⁍ Visual Studio Enterprise monthly subscription<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h2 id="Azure-DevOps-Server">Azure DevOps Server</h2>
+<p>要在地端環境自建 Azure DevOps Server 則需要先準備好 SQL Server 環境，兩者在版本上有相依性，例如：Azure DevOps Server 2022 需要搭配 SQL Server 2019 以上 (不支援 Linux 上的 SQL Server)，其他版本與相關需求建議可以參考下列連結。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/server/requirements?view=azure-devops-2022"  target="_blank">⁍ Azure DevOps 內部部署的需求<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<p>以授權的概念來說，安裝幾台 Azure DevOps Server 就需要幾個 Server CAL，可以透過下列幾種方式取得合法授權：</p>
+<ul>
+<li>傳統購買 (<mark>3年SA</mark>) Azure DevOps <mark>Server</mark> CAL</li>
+<li>Visual Studio Professional / Enterprise monthly subscription (包含 Azure DevOps Server CAL)</li>
+</ul>
+<br>
+<p>地端的使用者授權可以由下列幾種方式取得合法授權：</p>
+<ul>
+<li>傳統購買 (<mark>3年SA</mark>) Azure DevOps User CAL (包含 <strong><code>Basic + Test Plans</code></strong> 所有功能)</li>
+<li>Visual Studio Professional / Enterprise monthly subscription (包含 Azure DevOps <mark>User</mark> CAL)</li>
+<li>Azure DevOps <strong><code>Basic</code></strong> 或 <strong><code>Basic + Test Plans</code></strong> (雲端的每人每月購買方式，也包含了地端的使用者授權)</li>
+</ul>
+<br>
+<p>以上是對於 Azure DevOps Services / Server 授權的整理說明，若大家還有其他不瞭解的地方，歡迎透過下方留言討論。 😃</p>
+]]></content>
+      <tags>
+        <tag>Azure DevOps</tag>
+        <tag>授權</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Azure DevOps REST API 說明</title>
+    <url>/post/2025/04/azure-devops-rest-api/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-rest-api/rest_api.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>當我們要自行擴充或串接 Azure DevOps Services / Server 功能時，可以透過 Azure DevOps REST API 來進行客制開發，例如：想要寫一支程式每天發送各專案在版控儲存庫的差異紀錄，或是想要在公司內部表單系統審核後，觸發執行指定的 pipeline … 族繁不及備載，使用 REST API 透過 HTTP 呼叫的好處是可以不用侷限於特定的程式語言，也方便用 Postman 之類的工具測試，這篇整理了呼叫 Azure DevOps REST API 的前置作業與相關說明，方便大家上手😁。</p>
+<span id="more"></span>
+<br>
+<h2 id="REST-API">REST API</h2>
+<p>使用 Azure DevOps REST API 時，其 URI 規格如下：</p>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">VERB https://&#123;instance&#125;/&#123;organization&#125;/&#123;project&#125;/_apis/&#123;area&#125;/&#123;resource&#125;?api-version=&#123;version&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>VERB</strong><br>
+與一般 RESTful API 相同，在串接 Azure DevOps 各種情境時， <strong><font color='green'>GET</font></strong> / <strong><font color='brown'>POST</font></strong> / <strong><font color='red'>DELETE</font></strong> / <strong><font color='purple'>PATCH</font></strong> 都有機會用到。</li>
+<li><strong>instance</strong><br>
+如果是使用雲端的 Azure DevOps Services 指的就是 <span>dev.azure.com</span>，地端則是 Azure DevOps Server 所在的位址。</li>
+<li><strong>organization/project</strong><br>
+取決於 API 作用的範圍，在 URI 裡會有 organization 或 organization/project，例如：使用 API 建立個人權杖 (PAT)，則會是：<br>
+<strong><font color='brown'>POST</font></strong> https://vssps.dev.azure.com/<mark>{organization}</mark>/_apis/tokens/pats?api-version=7.2<br>
+或者像是用 API 建立一個工作項目，則是：<br>
+<strong><font color='brown'>POST</font></strong> https://dev.azure.com/<mark>{organization}/{project}</mark>/_apis/wit/workitems/${type}?api-version=7.2</li>
+<li><strong>{area}/{resource}</strong><br>
+從這邊大概可以看出呼叫的 API 是做哪方面的操作，以上面兩個例子 (建立 PAT、建立 Work item) 來說：<br>
+<strong><font color='brown'>POST</font></strong> https://vssps.dev.azure.com/{organization}/_apis/<mark>tokens/pats</mark>?api-version=7.2<br>
+<strong><font color='brown'>POST</font></strong> https://dev.azure.com/{organization}/{project}/_apis/<mark>wit/workitems/${type}</mark>?api-version=7.2</li>
+<li><strong>version</strong><br>
+通常我們在串接 API 時會明確指定 version，因為每個 TFS / Azure DevOps 版本對於 API 支援的 api-version 也有所不同 (如下表)，如果不指定 api-version 則會自動選用目前產品最新的穩定版本，例如：在 Azure DevOps Server 2019 它會自動取用 5.0 來執行，在不加 api-version 的情況下，若日後升級到 Azure DevOps Server 2022，則會自動取用 7.0 來執行，為維持串接程式正常運作，不會因為 API 版本差異而造成異常，一般我們都會加上指定的 api-version 版號。</li>
+</ul>
+<blockquote>
+<p>提醒大家：<br>
+如果是使用 preview 版本 (例如：<strong><code>7.2-preview.3</code></strong>)，該 preview 版本會在 <strong>12 週</strong> 後停用，被穩定的正式版本取代。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Products</th>
+<th style="text-align:center">1.0</th>
+<th style="text-align:center">2.0</th>
+<th style="text-align:center">3.0</th>
+<th style="text-align:center">4.0</th>
+<th style="text-align:center">5.0</th>
+<th style="text-align:center">6.0</th>
+<th style="text-align:center">7.0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Azure DevOps Services</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+</tr>
+<tr>
+<td>Azure DevOps Server 2022</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+</tr>
+<tr>
+<td>Azure DevOps Server 2020</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td>Azure DevOps Server 2019</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td>Team Foundation Server 2018</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td>Team Foundation Server 2017</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td>Team Foundation Server 2015</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+</tr>
+</tbody>
+</table>
+<h2 id="PAT-Personal-Access-Token">PAT (Personal Access Token)</h2>
+<p>要使用 Azure DevOps REST API 存取資源前都必需先經過驗證成功才行，建立 <strong><code>個人存取權杖 (PAT)</code></strong> 可以算是安全又簡便的方式，若想要實作 OAuth 2.0 或其他頁面驗證方式，可以參考下列連結：</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/get-started/authentication/authentication-guidance?toc=%2Fazure%2Fdevops%2Fmarketplace-extensibility%2Ftoc.json&view=azure-devops"  target="_blank">⁍ 選擇正確的驗證機制<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<p>要建立一個 PAT 可以從 Azure DevOps 畫面右上角 <strong><code>User settings</code></strong> → <strong><code>Personal access tokens</code></strong> 進入。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-rest-api/pat.png"
+                        class=""
+                 >
+<br>
+<p>點選 <strong><code>+ New Token</code></strong> 按鈕。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-rest-api/pat_1.png"
+                        class=""
+                 >
+<br>
+<p>接著就是 PAT 存取期限、授權範圍等相關設定：</p>
+<ul>
+<li><strong>Organization</strong><br>
+選擇 <strong>特定的 Organization</strong> 或 <strong>All accessible organizations</strong> (允許存取全部組織)。</li>
+<li><strong>Expiration (UTC)</strong><br>
+有效期限可以選擇 <strong>30 / 60 / 90 天</strong>，或是 <strong>Custom defined</strong> (<mark>最長只能一年</mark>)</li>
+<li><strong>Scopes</strong><br>
+可以選擇 <strong>Full access</strong> (允許存取全部範圍) 或 <strong>Custom defined</strong> 針對各個功能進一步設定，基於最低權限原則，建議大家可以有意義的命名 token 名稱，並且只勾選必要的 <strong>Scopes</strong> 授權範圍。</li>
+</ul>
+<p>建立 PAT 後，僅能 <strong><code>Revoke</code></strong> (撤銷) 或是 <strong><code>Regenerate</code></strong> (重新產生)，沒有辦法再用任何方式檢視原本產生的 token 內容，大家記得要妥善保存。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-rest-api/pat_2.png"
+                        class=""
+                 >
+<h2 id="NET-Client-Library">.NET Client Library</h2>
+<p>如果是使用 .NET 進行程式開發，還有一個選擇是從 NuGet.org 下載 Client library 使用，套件相依關係如下圖。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-rest-api/dotnet-client-libraries-dependancy-diagram.jpg"
+                        class=""
+                 >
+<br>
+<p>最新版本可以由 NuGet.org 查詢結果找到： https://www.nuget.org/packages?q=azure+devops+.net ，套件和 Azure DevOps 版本一樣有相依性， 使用前要留意一下目前環境的 TFS / Azure DevOps Server 版本，例如：Azure DevOps Server 2019 只能使用到套件 16.143.x 版。</p>
+<table>
+<thead>
+<tr>
+<th>套件版本</th>
+<th>Azure DevOps 版本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>16.205.x</td>
+<td>versions &gt;= Azure DevOps Server 2022</td>
+</tr>
+<tr>
+<td>16.170.x</td>
+<td>versions &gt;= Azure DevOps Server 2020</td>
+</tr>
+<tr>
+<td>16.153.x</td>
+<td>versions &gt;= Azure DevOps Server 2019 Update 1</td>
+</tr>
+<tr>
+<td>16.143.x</td>
+<td>versions &gt;= Azure DevOps Server 2019</td>
+</tr>
+<tr>
+<td>15.131.x</td>
+<td>versions &gt;= TFS 2018 Update 1</td>
+</tr>
+<tr>
+<td>15.112.x</td>
+<td>versions &gt;= TFS 2017 Update 1</td>
+</tr>
+<tr>
+<td>14.102.x</td>
+<td>versions &gt;= TFS 2015 Update 3</td>
+</tr>
+<tr>
+<td>14.95.x</td>
+<td>versions &gt;= TFS 2015 Update 2</td>
+</tr>
+<tr>
+<td>14.89.x</td>
+<td>versions &gt;= TFS 2015 Update 1</td>
+</tr>
+<tr>
+<td>14.83.x</td>
+<td>versions &gt;= TFS 2015</td>
+</tr>
+</tbody>
+</table>
+<p>在實務開發上還是得花些時間先瞭解套件定義了哪些 class、提供了什麼 function，這部份可以參考官方說明和 github sample code，如果有特殊需求或環境考量需要使用的話，可以參考下列連結：</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/concepts/dotnet-client-libraries?view=azure-devops&viewFallbackFrom=vsts"  target="_blank">⁍ .NET 用戶端程式庫<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/get-started/client-libraries/samples?view=azure-devops"  target="_blank">⁍ C# 用戶端連結庫範例<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://github.com/microsoft/azure-devops-dotnet-samples"  target="_blank">⁍ .NET samples for Azure DevOps<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<p>(💁 看完上面連結內容有沒有覺得還是使用 REST API 比較方便 💖)</p>
+]]></content>
+      <tags>
+        <tag>Azure DevOps</tag>
+        <tag>Azure DevOps REST API</tag>
+        <tag>PAT</tag>
+        <tag>.NET Client Library</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Chrome DevTools MCP</title>
     <url>/post/2025/10/chrome-devtools-mcp/</url>
     <content><![CDATA[<img    
@@ -1259,6 +1259,31 @@
       </tags>
   </entry>
   <entry>
+    <title>Devdays Asia 2025 簡報下載</title>
+    <url>/post/2025/10/devdays-asia-2025/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/devdays-asia-2025/DevdaysAsia2025.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>今年是微軟 50 週年、DevDays 10 週年，話題大多圍繞在 Agentic AI，考量多數企業還是有 On-Premises 需求，所以這次我將主題訂在如何使用 Azure DevOps + GitHub Copilot 重新打造 SDLC，讓大家瞭解不是雲原生環境還可以有哪些應用，以及賦與 LLM 更多 Tools 後，可以讓我們的軟體開發過程產生多大的助益和改變，雖然主題是 Azure DevOps 與 GitHub Copilot，但基本上套在任何軟體開發流程概念都是一樣的，提供給大家參考，有任何想討論交流也歡迎大家留言或直接與我聯繫。</p>
+<span id="more"></span>
+<br>
+<div class="tips">
+<font color="black">
+<a href="/post/2025/10/devdays-asia-2025/0925_Track A 1330-1400_DevDaysAsia_20250925_精誠軟體.pdf" target="_blank">⁍ Azure DevOps 與 GitHub Copilot：AI 驅動的團隊協作新時代</a><br>
+<a class="link"   href="https://www.digitimes.com.tw/Seminar/DevDaysAsia2025/index.html"  target="_blank">⁍ DevDays Asia 2025 亞太技術年會 | 議程介紹<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://onedrive.live.com/?redeem=aHR0cHM6Ly8xZHJ2Lm1zL2YvYy85NmJjZGNhMWVkYWIwZmMyL0VvUncyR1ZIaVRaUG1NNW1Ib0hPeWxFQlpvSW5aOU55ckY1QVJsOU5wbGpYWXc_ZT01VlhkMXQ&id=96BCDCA1EDAB0FC2%21s65d8708489474f3698ce661e81ceca51&cid=96BCDCA1EDAB0FC2"  target="_blank">⁍ DevDays Asia 2025 亞太技術年會 | 所有簡報下載 (OneDrive)<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>]]></content>
+      <tags>
+        <tag>Azure DevOps</tag>
+        <tag>Devdays Asia 2025</tag>
+        <tag>GitHub Copilot</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>整理 context 的利器 — MarkItDown 與 Docling</title>
     <url>/post/2025/10/docling-to-markdown/</url>
     <content><![CDATA[<img    
@@ -1474,6 +1499,93 @@
       </tags>
   </entry>
   <entry>
+    <title>使用 Playwright 測試框架 - 執行階段 (.NET)</title>
+    <url>/post/2025/05/how-to-use-playwright-2/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p><a href="/post/2024/11/how-to-use-playwright-1">上一篇文章</a>提到了如何使用 Playwright 的測試產生器(codegen) 錄製腳本，除了可以運用在自動化測試之外，舉凡想要透過程式來自動執行的一連串行為，都可以透過 Playwright 來完成，本篇文章使用 Windows Sandbox 全新環境來執行由 .NET 8 撰寫的 Console 程式，讓大家知道建置產生執行檔後，還需要哪些必要的環境設定才可以正常讓程式運作。<br>
+<br></p>
+<span id="more"></span>
+<br>
+<h2 id="安裝-NET-Runtime">安裝 .NET Runtime</h2>
+<p>不論是以前的 .NET Framework 或是現在的 .NET Core，在執行時都需要安裝 .NET Runtime 才能順利運行開發好的程式，以下圖 Console 專案建置後的執行檔為例，畫面還會很貼心的指引我們目前的需求版本和下載路徑，完成安裝後便可順利執行 Console 程式。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/dotnet8.png"
+                        class=""
+                 >
+<br>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://dotnet.microsoft.com/download"  target="_blank">⁍ 下載 .NET<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h2 id="安裝-PowerShell">安裝 PowerShell</h2>
+<p>如果是全新的環境，安裝完 .NET Runtime 後應該還會出現如下圖的錯誤，主要原因是：</p>
+<ul>
+<li>pwsh 找不到路徑 (或是沒有安裝 PowerShell)</li>
+<li>缺少 WebDriver (Edge/Chrome/Firefox)</li>
+</ul>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/pwsh.png"
+                        class=""
+                 >
+<br>
+若要安裝 PowerShell 可以依據自己的作業系統參考下列連結：
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5"  target="_blank">⁍ 在 Windows 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-linux?view=powershell-7.5"  target="_blank">⁍ 在 Linux 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-macos?view=powershell-7.5"  target="_blank">⁍ 在 macOS 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h2 id="安裝-WebDriver">安裝 WebDriver</h2>
+<p>在上圖的錯誤訊息中有提到如下指令，路徑中的 <strong><mark>netX</mark></strong> 要替換為自己使用的版本路徑，而其中的 playwright.ps1 會存在於 .NET 程式建置後的 bin 目錄中，這個 .ps1 的主要用途是在 Windows 環境下執行 Playwright 測試，讓它可以正確找到 Playwright 主程式和相關驅動程式，確認 pwsh 指令可以運作後，就可以接著安裝 WebDriver 了。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pwsh bin/Debug/netX/playwright.ps1 install</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/playwright.png"
+                        class=""
+                 >
+<br>
+若在 install 之後沒有加上任何參數，則會安裝下列預設項目：
+<ul>
+<li>Chromium</li>
+<li>Chromium Headless Shell</li>
+<li>Firefox</li>
+<li>Webkit</li>
+<li>FFMPEG</li>
+</ul>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/install.png"
+                        class=""
+                 >
+<br>
+也可以依自己的需求安裝指定項目，可使用 install -h 查看相關資訊：
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/custom.png"
+                        class=""
+                 >
+<h2 id="總結">總結</h2>
+<p>本文介紹了在全新環境下，如何讓 .NET 8 撰寫的 Playwright 測試程式順利執行，包含安裝 .NET Runtime、PowerShell 及 WebDriver 等必要步驟。只要依照上述流程完成環境設定，就能避免常見的錯誤訊息，順利執行自動化測試。希望這些說明能幫助你在不同平台上快速部署與運行 Playwright 測試專案。</p>
+]]></content>
+      <tags>
+        <tag>Playwright</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>使用 Playwright 測試框架 - 環境準備 (.NET)</title>
     <url>/post/2025/05/how-to-use-playwright-1/</url>
     <content><![CDATA[<img    
@@ -1574,95 +1686,8 @@
 <figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Text.RegularExpressions;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright.MSTest;</span><br><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">PlaywrightTests</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ExampleTest</span> : <span class="title">PageTest</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">HasTitle</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expect a title &quot;to contain&quot; a substring.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page).ToHaveTitleAsync(<span class="keyword">new</span> Regex(<span class="string">&quot;Playwright&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">GetStartedLink</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Click the get started link.</span></span><br><span class="line">        <span class="keyword">await</span> Page.GetByRole(AriaRole.Link, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Get started&quot;</span> &#125;).ClickAsync();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expects page to have a heading with the name of Installation.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page.GetByRole(AriaRole.Heading, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Installation&quot;</span> &#125;)).ToBeVisibleAsync();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
+        <tag>Playwright</tag>
         <tag>Unit Test</tag>
-        <tag>Playwright</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用 Playwright 測試框架 - 執行階段 (.NET)</title>
-    <url>/post/2025/05/how-to-use-playwright-2/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p><a href="/post/2024/11/how-to-use-playwright-1">上一篇文章</a>提到了如何使用 Playwright 的測試產生器(codegen) 錄製腳本，除了可以運用在自動化測試之外，舉凡想要透過程式來自動執行的一連串行為，都可以透過 Playwright 來完成，本篇文章使用 Windows Sandbox 全新環境來執行由 .NET 8 撰寫的 Console 程式，讓大家知道建置產生執行檔後，還需要哪些必要的環境設定才可以正常讓程式運作。<br>
-<br></p>
-<span id="more"></span>
-<br>
-<h2 id="安裝-NET-Runtime">安裝 .NET Runtime</h2>
-<p>不論是以前的 .NET Framework 或是現在的 .NET Core，在執行時都需要安裝 .NET Runtime 才能順利運行開發好的程式，以下圖 Console 專案建置後的執行檔為例，畫面還會很貼心的指引我們目前的需求版本和下載路徑，完成安裝後便可順利執行 Console 程式。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/dotnet8.png"
-                        class=""
-                 >
-<br>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://dotnet.microsoft.com/download"  target="_blank">⁍ 下載 .NET<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<h2 id="安裝-PowerShell">安裝 PowerShell</h2>
-<p>如果是全新的環境，安裝完 .NET Runtime 後應該還會出現如下圖的錯誤，主要原因是：</p>
-<ul>
-<li>pwsh 找不到路徑 (或是沒有安裝 PowerShell)</li>
-<li>缺少 WebDriver (Edge/Chrome/Firefox)</li>
-</ul>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/pwsh.png"
-                        class=""
-                 >
-<br>
-若要安裝 PowerShell 可以依據自己的作業系統參考下列連結：
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5"  target="_blank">⁍ 在 Windows 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-linux?view=powershell-7.5"  target="_blank">⁍ 在 Linux 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-macos?view=powershell-7.5"  target="_blank">⁍ 在 macOS 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<h2 id="安裝-WebDriver">安裝 WebDriver</h2>
-<p>在上圖的錯誤訊息中有提到如下指令，路徑中的 <strong><mark>netX</mark></strong> 要替換為自己使用的版本路徑，而其中的 playwright.ps1 會存在於 .NET 程式建置後的 bin 目錄中，這個 .ps1 的主要用途是在 Windows 環境下執行 Playwright 測試，讓它可以正確找到 Playwright 主程式和相關驅動程式，確認 pwsh 指令可以運作後，就可以接著安裝 WebDriver 了。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pwsh bin/Debug/netX/playwright.ps1 install</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/playwright.png"
-                        class=""
-                 >
-<br>
-若在 install 之後沒有加上任何參數，則會安裝下列預設項目：
-<ul>
-<li>Chromium</li>
-<li>Chromium Headless Shell</li>
-<li>Firefox</li>
-<li>Webkit</li>
-<li>FFMPEG</li>
-</ul>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/install.png"
-                        class=""
-                 >
-<br>
-也可以依自己的需求安裝指定項目，可使用 install -h 查看相關資訊：
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/custom.png"
-                        class=""
-                 >
-<h2 id="總結">總結</h2>
-<p>本文介紹了在全新環境下，如何讓 .NET 8 撰寫的 Playwright 測試程式順利執行，包含安裝 .NET Runtime、PowerShell 及 WebDriver 等必要步驟。只要依照上述流程完成環境設定，就能避免常見的錯誤訊息，順利執行自動化測試。希望這些說明能幫助你在不同平台上快速部署與運行 Playwright 測試專案。</p>
-]]></content>
-      <tags>
-        <tag>Playwright</tag>
       </tags>
   </entry>
   <entry>
@@ -1846,72 +1871,6 @@
 </div>]]></content>
       <tags>
         <tag>MSTest</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用 VB5/VB6 連線至 Azure DevOps Server 2022 (TFVC)</title>
-    <url>/post/2025/04/vb-connect-to-azure-devops/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/vb-connect-to-azure-devops/VS_TFS.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>Visual Studio 從 97 發展到現在的 2022 號稱地表最強開發工具，能夠與 TFS 或 Git 版控連線自然不是問題，最近剛好遇到客戶還有許多 VB5/VB6 開發的 Winform 程式需要維護，而且版控伺服器也從 TFS 2013 升級至 Azure DevOps Server 2022，藉此機會向大家整理說明 Visual Studio 各版本與 TFS / Azure DevOps 連線的需求與設定。<br>
-<br></p>
-<span id="more"></span>
-<br>
-<h2 id="前言">前言</h2>
-<p>我們使用 Visual Studio 開發工具能夠與 TFS 連線是因為它的功能包含了 <strong><code>Team Explorer</code></strong>，明確來說是從 Visual Studio 2005 首次引入 TFS (Team Foundation Server) 起才開始包含此功能，在這個版本之前則需要額外安裝 <strong>Team Explorer</strong> 和 <strong>MSSCCI Provider</strong> (Microsoft Source Code Control Integration) 才能夠在開發工具中與 TFS 進行整合。</p>
-<h2 id="版本相依性">版本相依性</h2>
-<p>作業系統、開發工具與版控伺服器彼此間有一定的版本相依性，Windows XP 無法安裝 Team Explorer 2013，只能安裝 Team Explorer 2010，搭配 MSSCCI Provider 2010 可以連線的版本有：TFS 2005 ~ 2018 和 Azure DevOps Server 2019/2020 <mark>(不包含2022)</mark>，若舊開發環境 (Visual Studio 2013 以前) 想要與 Azure DevOps Server 2022 連線，必要最低門檻可以參考下列配置：</p>
-<ul>
-<li><strong>Windows 7 以上</strong></li>
-<li><strong>Team Explorer 2013</strong></li>
-<li><strong>MSSCCI Provider 2013</strong></li>
-</ul>
-<p>Visual Studio 97/6/2003~2008 搭配 Team Explorer 2010 + MSSCCI Provider 2010 可以從開發工具連線至 TFS 2010~2017 和 Azure DevOps Server 2019/2020，若要連線至 Azure DevOps Server 2022 則需要搭配 Team Explorer 2013 + MSSCCI Provider 2013 才行，各版本 MSSCCI Provider 可以自 Visual Studio | Marketplace 取得：</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2010MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2010 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.TeamFoundationServerMSSCCIProvider201064-bit"  target="_blank">⁍ Team Foundation Server MSSCCI Provider 2010 64-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC-9956"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M-11387"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
-<h2 id="VB5-VB6">VB5/VB6</h2>
-<p>在 VB5/VB6 的工具列需要額外安裝上述提到的 MSSCCI Provider 2010/2013 才會出現 <strong>Team Foundation</strong> 選項，讓我們在開發工具中將程式碼與版控伺服器整合。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/vb-connect-to-azure-devops/create-project-from-tfs.png"
-                        class=""
-                 >
-<p>若出現下列錯誤訊息，就是 MSSCCI Provider 版本太舊了，無法連線到新的版控伺服器，例如：安裝 MSSCCI Provider 2010 但想要與 Azure DevOps Server 2022 連線，唯一解法就是安裝 Team Explorer 2013 + MSSCCI Provider 2013。</p>
-<blockquote>
-<p>TF14045: The identity 主機名稱\2ffd15ae-91e4-4df8-a346-e5be57e1340e is not a recognized identity.</p>
-</blockquote>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/vb-connect-to-azure-devops/not-a-recognized-identity.png"
-                        class=""
-                 >
-<p>在實務情境可能還會遇到其他各種版本組合，經此次嘗試後，確認 VB5/VB6 都還可以與 Azure DevOps Server 2022 的 TFVC 版控進行整合，這邊有篇文章將各種組合條列得很詳盡，也提供大家參考。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://jessehouwing.net/azure-devops-connect-any-visual-studio-version/"  target="_blank">⁍ Connect any version of Visual Studio to Azure DevOps or Azure DevOps Server<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
-]]></content>
-      <tags>
-        <tag>VB5</tag>
-        <tag>VB6</tag>
-        <tag>TFS</tag>
-        <tag>Team Explorer</tag>
-        <tag>MSSCCI Provider</tag>
       </tags>
   </entry>
   <entry>
@@ -2131,6 +2090,72 @@
       <tags>
         <tag>Azure DevOps</tag>
         <tag>Azure Pipelines Agents</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用 VB5/VB6 連線至 Azure DevOps Server 2022 (TFVC)</title>
+    <url>/post/2025/04/vb-connect-to-azure-devops/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/vb-connect-to-azure-devops/VS_TFS.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>Visual Studio 從 97 發展到現在的 2022 號稱地表最強開發工具，能夠與 TFS 或 Git 版控連線自然不是問題，最近剛好遇到客戶還有許多 VB5/VB6 開發的 Winform 程式需要維護，而且版控伺服器也從 TFS 2013 升級至 Azure DevOps Server 2022，藉此機會向大家整理說明 Visual Studio 各版本與 TFS / Azure DevOps 連線的需求與設定。<br>
+<br></p>
+<span id="more"></span>
+<br>
+<h2 id="前言">前言</h2>
+<p>我們使用 Visual Studio 開發工具能夠與 TFS 連線是因為它的功能包含了 <strong><code>Team Explorer</code></strong>，明確來說是從 Visual Studio 2005 首次引入 TFS (Team Foundation Server) 起才開始包含此功能，在這個版本之前則需要額外安裝 <strong>Team Explorer</strong> 和 <strong>MSSCCI Provider</strong> (Microsoft Source Code Control Integration) 才能夠在開發工具中與 TFS 進行整合。</p>
+<h2 id="版本相依性">版本相依性</h2>
+<p>作業系統、開發工具與版控伺服器彼此間有一定的版本相依性，Windows XP 無法安裝 Team Explorer 2013，只能安裝 Team Explorer 2010，搭配 MSSCCI Provider 2010 可以連線的版本有：TFS 2005 ~ 2018 和 Azure DevOps Server 2019/2020 <mark>(不包含2022)</mark>，若舊開發環境 (Visual Studio 2013 以前) 想要與 Azure DevOps Server 2022 連線，必要最低門檻可以參考下列配置：</p>
+<ul>
+<li><strong>Windows 7 以上</strong></li>
+<li><strong>Team Explorer 2013</strong></li>
+<li><strong>MSSCCI Provider 2013</strong></li>
+</ul>
+<p>Visual Studio 97/6/2003~2008 搭配 Team Explorer 2010 + MSSCCI Provider 2010 可以從開發工具連線至 TFS 2010~2017 和 Azure DevOps Server 2019/2020，若要連線至 Azure DevOps Server 2022 則需要搭配 Team Explorer 2013 + MSSCCI Provider 2013 才行，各版本 MSSCCI Provider 可以自 Visual Studio | Marketplace 取得：</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2010MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2010 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.TeamFoundationServerMSSCCIProvider201064-bit"  target="_blank">⁍ Team Foundation Server MSSCCI Provider 2010 64-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC-9956"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M-11387"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+<h2 id="VB5-VB6">VB5/VB6</h2>
+<p>在 VB5/VB6 的工具列需要額外安裝上述提到的 MSSCCI Provider 2010/2013 才會出現 <strong>Team Foundation</strong> 選項，讓我們在開發工具中將程式碼與版控伺服器整合。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/vb-connect-to-azure-devops/create-project-from-tfs.png"
+                        class=""
+                 >
+<p>若出現下列錯誤訊息，就是 MSSCCI Provider 版本太舊了，無法連線到新的版控伺服器，例如：安裝 MSSCCI Provider 2010 但想要與 Azure DevOps Server 2022 連線，唯一解法就是安裝 Team Explorer 2013 + MSSCCI Provider 2013。</p>
+<blockquote>
+<p>TF14045: The identity 主機名稱\2ffd15ae-91e4-4df8-a346-e5be57e1340e is not a recognized identity.</p>
+</blockquote>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/vb-connect-to-azure-devops/not-a-recognized-identity.png"
+                        class=""
+                 >
+<p>在實務情境可能還會遇到其他各種版本組合，經此次嘗試後，確認 VB5/VB6 都還可以與 Azure DevOps Server 2022 的 TFVC 版控進行整合，這邊有篇文章將各種組合條列得很詳盡，也提供大家參考。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://jessehouwing.net/azure-devops-connect-any-visual-studio-version/"  target="_blank">⁍ Connect any version of Visual Studio to Azure DevOps or Azure DevOps Server<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+]]></content>
+      <tags>
+        <tag>VB5</tag>
+        <tag>VB6</tag>
+        <tag>TFS</tag>
+        <tag>Team Explorer</tag>
+        <tag>MSSCCI Provider</tag>
       </tags>
   </entry>
 </search>
