@@ -100,130 +100,6 @@
       </tags>
   </entry>
   <entry>
-    <title>使用 Azure DevOps REST API 建立專案</title>
-    <url>/post/2025/04/azure-devops-create-project/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-create-project/create-project.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>要使用 Azure DevOps 各項功能之前，首先得先建立一個專案，同時必須選擇專案的版本控制是 <strong>TFVC</strong> (Team Fundation Version Control) 還是 <strong>git</strong>，以及專案要使用的流程範本 (Process template)，預設有 <strong>Basic / Agile / Scrum / CMMI</strong> 四種，這次我們就不透過網頁介面建立專案，直接使用 API 小試身手 🎣 。</p>
-<br>
-<span id="more"></span>
-<br>
-<h2 id="前言">前言</h2>
-<p>當我們想要使用 <strong>Azure DevOps REST API</strong> 進行程式串接時，首先要確認使用情境是 <strong><code>雲端</code></strong> 還是 <strong><code>地端</code></strong>，因為兩者對於 API 的支援程度不盡相同，例如：<strong>Audit log</strong> 目前只有在雲端才能查詢、下載，地端還沒有支援，使用哪一版的 API 也要稍微留意(在<a href="/post/2024/09/azure-devops-rest-api">上一篇文章</a>有說明原因)，這些都可以在 API 說明頁面左上角透過下拉選單來快速切換檢視，以便我們確認 API 規格與差異。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-create-project/version_dropdown.png"
-                        class=""
-                 >
-<br>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/en-us/rest/api/azure/devops/?view=azure-devops-rest-7.2"  target="_blank">⁍ Azure DevOps Services REST API Reference<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<br>
-<h2 id="API-規格確認">API 規格確認</h2>
-<p>經由上面的參考連結，我們可以在 <strong>Core &gt; Projects &gt; Create</strong> 找到建立專案的 API 規格：</p>
-<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">雲端</span><br><span class="line">POST https://dev.azure.com/&#123;organization&#125;/_apis/projects?api-version=7.2-preview.4</span><br></pre></td></tr></table></figure>
-<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">地端</span><br><span class="line">POST https://&#123;instance&#125;/&#123;collection&#125;/_apis/projects?api-version=7.0</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-create-project/core_projects_create.png"
-                        class=""
-                 >
-<br>
-<p>在頁面上對於 Request Body 的屬性和型別宣告都會逐一說明，但唯一美中不足的是我們看不出來哪些屬性是必要項目(Required)，比較簡便的方式是可以使用 Postman 填入 PAT 驗證後進行測試，通常在 Reponse 都會告訴我們缺少什麼必要欄位值，Postman 設定步驟如下：</p>
-<br>
-<ol>
-<li>Authorization 的 Auth Type 選擇 <strong><code>Basic Auth</code></strong>，並將 PAT 填入 Password 欄位，Username 空白即可。(如何建立 PAT 可以參考：<a href="/post/2024/09/azure-devops-rest-api">上一篇文章</a>)</li>
-</ol>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-create-project/basic_auth.png"
-                        class=""
-                 >
-<br>
-<ol start="2">
-<li>Headers 的 Content-Type 設定 <strong><code>application/json</code></strong>。</li>
-</ol>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-create-project/content_type.png"
-                        class=""
-                 >
-<br>
-<ol start="3">
-<li>Body 格式選擇 <strong><code>raw</code></strong> 和 <strong><code>JSON</code></strong>，內容先輸入 <strong><code>&#123;&#125;</code></strong> 然後按下 <strong><code>Send</code></strong> 按鈕。</li>
-</ol>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-create-project/400_bad.png"
-                        class=""
-                 >
-<br>
-<p>由 message 回傳的資訊我們就可以得知，必要的屬性有：</p>
-<ul>
-<li><strong>name</strong> : 專案名稱</li>
-<li><strong>description</strong>: 專案描述說明</li>
-<li><strong>visibility</strong> : 專案可層級 (Public或Private，預設是Private)</li>
-<li><strong>capabilities</strong> : 版控方式、流程範本是必要項目。</li>
-</ul>
-<p>完整的 Request Body 內容可以參考下列內容：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;MyNewProject&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This is a new project created via API&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;capabilities&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;versioncontrol&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;sourceControlType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Git&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;processTemplate&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;templateTypeId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;6b724908-ef14-45cf-84f8-768b5384da45&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-<br>
-<p>送出 Request 成功後，可以得到如下訊息：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-create-project/202_accepted.png"
-                        class=""
-                 >
-<br>
-<p>開啟 Azure DevOps 畫面確認新增的專案是否有正常出現。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-create-project/my_new_project.png"
-                        class=""
-                 >
-<h2 id="流程範本-Process-template">流程範本 (Process template)</h2>
-<p>在 Azure DevOps 預設有 <strong>Basic / Agile / Scrum / CMMI</strong> 四種流程範本，一般我本幾乎不會去關心它的 templateTypeId (GUID) 是什麼，這邊需要透過另一支查詢 Process template 列表的 API 來取得資訊：</p>
-<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">雲端</span><br><span class="line">GET GET https://dev.azure.com/&#123;organization&#125;/_apis/process/processes?api-version=7.2-preview.1</span><br></pre></td></tr></table></figure>
-<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">地端</span><br><span class="line">GET https://&#123;instance&#125;/&#123;collection&#125;/_apis/process/processes?api-version=7.0</span><br></pre></td></tr></table></figure>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;count&quot;</span><span class="punctuation">:</span> <span class="number">4</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;adcc42ab-9882-485e-a3ed-7678f01f66bc&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is flexible and will work great for most teams using Agile planning methods, including those practicing Scrum.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/adcc42ab-9882-485e-a3ed-7678f01f66bc&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Agile&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;27450541-8e31-4150-9947-dc59f998fc01&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is for more formal projects requiring a framework for process improvement and an auditable record of decisions.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/27450541-8e31-4150-9947-dc59f998fc01&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;CMMI&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;b8a3a935-7e91-48b8-a94c-606d37c3e9f2&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is flexible for any process and great for teams getting started with Azure DevOps.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/b8a3a935-7e91-48b8-a94c-606d37c3e9f2&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Basic&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;6b724908-ef14-45cf-84f8-768b5384da45&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is for teams who follow the Scrum framework.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/6b724908-ef14-45cf-84f8-768b5384da45&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Scrum&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-<h2 id="後記">後記</h2>
-<p>再回過頭來看，其實我們上面做的這些動作就是以 API 的方式送出畫面上建立專案的必要欄位而已：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-create-project/new_project.png"
-                        class=""
-                 >
-<br>
-<p>附帶一提，若是以 C# 實作，在 Header 傳遞 PAT 需要先以 <strong>Base64</strong> 編碼才行，可以參考下列完整範例呼叫範例(第31行)：</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> System.Net.Http;</span><br><span class="line"><span class="keyword">using</span> System.Net.Http.Headers;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Newtonsoft.Json;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ProcessTemplate</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">public</span> <span class="built_in">string</span> Id &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">		<span class="keyword">public</span> <span class="built_in">string</span> Name &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ProcessTemplatesResponse</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">public</span> List&lt;ProcessTemplate&gt; Value &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">static</span> <span class="keyword">async</span> Task <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">string</span> pat = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">		<span class="built_in">string</span> serverName = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">		<span class="built_in">string</span> collectionName = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">		<span class="built_in">string</span> url = <span class="string">$&quot;http://<span class="subst">&#123;serverName&#125;</span>/<span class="subst">&#123;collectionName&#125;</span>/_apis/process/processes?api-version=7.0&quot;</span>;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">using</span> (HttpClient client = <span class="keyword">new</span> HttpClient())</span><br><span class="line">		&#123;</span><br><span class="line">			client.DefaultRequestHeaders.Authorization = <span class="keyword">new</span> AuthenticationHeaderValue(<span class="string">&quot;Basic&quot;</span>, Convert.ToBase64String(Encoding.ASCII.GetBytes(<span class="string">$&quot;:<span class="subst">&#123;pat&#125;</span>&quot;</span>)));</span><br><span class="line">			HttpResponseMessage response = <span class="keyword">await</span> client.GetAsync(url);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (response.IsSuccessStatusCode)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="built_in">string</span> result = <span class="keyword">await</span> response.Content.ReadAsStringAsync();</span><br><span class="line">				<span class="keyword">var</span> processTemplates = JsonConvert.DeserializeObject&lt;ProcessTemplatesResponse&gt;(result);</span><br><span class="line"></span><br><span class="line">				<span class="keyword">foreach</span> (<span class="keyword">var</span> process <span class="keyword">in</span> processTemplates.Value)</span><br><span class="line">				&#123;</span><br><span class="line">					Console.WriteLine(<span class="string">$&quot;Name: <span class="subst">&#123;process.Name&#125;</span>, ID: <span class="subst">&#123;process.Id&#125;</span>&quot;</span>);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			&#123;</span><br><span class="line">				Console.WriteLine(<span class="string">$&quot;Failed to get process templates: <span class="subst">&#123;response.StatusCode&#125;</span>&quot;</span>);</span><br><span class="line">				<span class="built_in">string</span> error = <span class="keyword">await</span> response.Content.ReadAsStringAsync();</span><br><span class="line">				Console.WriteLine(error);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<br>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/how-to/call-rest-api?view=azure-devops"  target="_blank">⁍ 開始使用 REST API
-<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>]]></content>
-      <tags>
-        <tag>Azure DevOps</tag>
-        <tag>Azure DevOps REST API</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Azure DevOps Services / Server 使用者授權</title>
     <url>/post/2025/04/azure-devops-licensing-description/</url>
     <content><![CDATA[<img    
@@ -984,6 +860,130 @@
       </tags>
   </entry>
   <entry>
+    <title>使用 Azure DevOps REST API 建立專案</title>
+    <url>/post/2025/04/azure-devops-create-project/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/create-project.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>要使用 Azure DevOps 各項功能之前，首先得先建立一個專案，同時必須選擇專案的版本控制是 <strong>TFVC</strong> (Team Fundation Version Control) 還是 <strong>git</strong>，以及專案要使用的流程範本 (Process template)，預設有 <strong>Basic / Agile / Scrum / CMMI</strong> 四種，這次我們就不透過網頁介面建立專案，直接使用 API 小試身手 🎣 。</p>
+<br>
+<span id="more"></span>
+<br>
+<h2 id="前言">前言</h2>
+<p>當我們想要使用 <strong>Azure DevOps REST API</strong> 進行程式串接時，首先要確認使用情境是 <strong><code>雲端</code></strong> 還是 <strong><code>地端</code></strong>，因為兩者對於 API 的支援程度不盡相同，例如：<strong>Audit log</strong> 目前只有在雲端才能查詢、下載，地端還沒有支援，使用哪一版的 API 也要稍微留意(在<a href="/post/2024/09/azure-devops-rest-api">上一篇文章</a>有說明原因)，這些都可以在 API 說明頁面左上角透過下拉選單來快速切換檢視，以便我們確認 API 規格與差異。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/version_dropdown.png"
+                        class=""
+                 >
+<br>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/en-us/rest/api/azure/devops/?view=azure-devops-rest-7.2"  target="_blank">⁍ Azure DevOps Services REST API Reference<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<br>
+<h2 id="API-規格確認">API 規格確認</h2>
+<p>經由上面的參考連結，我們可以在 <strong>Core &gt; Projects &gt; Create</strong> 找到建立專案的 API 規格：</p>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">雲端</span><br><span class="line">POST https://dev.azure.com/&#123;organization&#125;/_apis/projects?api-version=7.2-preview.4</span><br></pre></td></tr></table></figure>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">地端</span><br><span class="line">POST https://&#123;instance&#125;/&#123;collection&#125;/_apis/projects?api-version=7.0</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/core_projects_create.png"
+                        class=""
+                 >
+<br>
+<p>在頁面上對於 Request Body 的屬性和型別宣告都會逐一說明，但唯一美中不足的是我們看不出來哪些屬性是必要項目(Required)，比較簡便的方式是可以使用 Postman 填入 PAT 驗證後進行測試，通常在 Reponse 都會告訴我們缺少什麼必要欄位值，Postman 設定步驟如下：</p>
+<br>
+<ol>
+<li>Authorization 的 Auth Type 選擇 <strong><code>Basic Auth</code></strong>，並將 PAT 填入 Password 欄位，Username 空白即可。(如何建立 PAT 可以參考：<a href="/post/2024/09/azure-devops-rest-api">上一篇文章</a>)</li>
+</ol>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/basic_auth.png"
+                        class=""
+                 >
+<br>
+<ol start="2">
+<li>Headers 的 Content-Type 設定 <strong><code>application/json</code></strong>。</li>
+</ol>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/content_type.png"
+                        class=""
+                 >
+<br>
+<ol start="3">
+<li>Body 格式選擇 <strong><code>raw</code></strong> 和 <strong><code>JSON</code></strong>，內容先輸入 <strong><code>&#123;&#125;</code></strong> 然後按下 <strong><code>Send</code></strong> 按鈕。</li>
+</ol>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/400_bad.png"
+                        class=""
+                 >
+<br>
+<p>由 message 回傳的資訊我們就可以得知，必要的屬性有：</p>
+<ul>
+<li><strong>name</strong> : 專案名稱</li>
+<li><strong>description</strong>: 專案描述說明</li>
+<li><strong>visibility</strong> : 專案可層級 (Public或Private，預設是Private)</li>
+<li><strong>capabilities</strong> : 版控方式、流程範本是必要項目。</li>
+</ul>
+<p>完整的 Request Body 內容可以參考下列內容：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;MyNewProject&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This is a new project created via API&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;capabilities&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;versioncontrol&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;sourceControlType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Git&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;processTemplate&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;templateTypeId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;6b724908-ef14-45cf-84f8-768b5384da45&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<br>
+<p>送出 Request 成功後，可以得到如下訊息：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/202_accepted.png"
+                        class=""
+                 >
+<br>
+<p>開啟 Azure DevOps 畫面確認新增的專案是否有正常出現。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/my_new_project.png"
+                        class=""
+                 >
+<h2 id="流程範本-Process-template">流程範本 (Process template)</h2>
+<p>在 Azure DevOps 預設有 <strong>Basic / Agile / Scrum / CMMI</strong> 四種流程範本，一般我本幾乎不會去關心它的 templateTypeId (GUID) 是什麼，這邊需要透過另一支查詢 Process template 列表的 API 來取得資訊：</p>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">雲端</span><br><span class="line">GET GET https://dev.azure.com/&#123;organization&#125;/_apis/process/processes?api-version=7.2-preview.1</span><br></pre></td></tr></table></figure>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">地端</span><br><span class="line">GET https://&#123;instance&#125;/&#123;collection&#125;/_apis/process/processes?api-version=7.0</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;count&quot;</span><span class="punctuation">:</span> <span class="number">4</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;adcc42ab-9882-485e-a3ed-7678f01f66bc&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is flexible and will work great for most teams using Agile planning methods, including those practicing Scrum.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/adcc42ab-9882-485e-a3ed-7678f01f66bc&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Agile&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;27450541-8e31-4150-9947-dc59f998fc01&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is for more formal projects requiring a framework for process improvement and an auditable record of decisions.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/27450541-8e31-4150-9947-dc59f998fc01&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;CMMI&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;b8a3a935-7e91-48b8-a94c-606d37c3e9f2&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is flexible for any process and great for teams getting started with Azure DevOps.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/b8a3a935-7e91-48b8-a94c-606d37c3e9f2&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Basic&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;6b724908-ef14-45cf-84f8-768b5384da45&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is for teams who follow the Scrum framework.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/6b724908-ef14-45cf-84f8-768b5384da45&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Scrum&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<h2 id="後記">後記</h2>
+<p>再回過頭來看，其實我們上面做的這些動作就是以 API 的方式送出畫面上建立專案的必要欄位而已：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/new_project.png"
+                        class=""
+                 >
+<br>
+<p>附帶一提，若是以 C# 實作，在 Header 傳遞 PAT 需要先以 <strong>Base64</strong> 編碼才行，可以參考下列完整範例呼叫範例(第31行)：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> System.Net.Http;</span><br><span class="line"><span class="keyword">using</span> System.Net.Http.Headers;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Newtonsoft.Json;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ProcessTemplate</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">public</span> <span class="built_in">string</span> Id &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">		<span class="keyword">public</span> <span class="built_in">string</span> Name &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ProcessTemplatesResponse</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">public</span> List&lt;ProcessTemplate&gt; Value &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">static</span> <span class="keyword">async</span> Task <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">string</span> pat = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">		<span class="built_in">string</span> serverName = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">		<span class="built_in">string</span> collectionName = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">		<span class="built_in">string</span> url = <span class="string">$&quot;http://<span class="subst">&#123;serverName&#125;</span>/<span class="subst">&#123;collectionName&#125;</span>/_apis/process/processes?api-version=7.0&quot;</span>;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">using</span> (HttpClient client = <span class="keyword">new</span> HttpClient())</span><br><span class="line">		&#123;</span><br><span class="line">			client.DefaultRequestHeaders.Authorization = <span class="keyword">new</span> AuthenticationHeaderValue(<span class="string">&quot;Basic&quot;</span>, Convert.ToBase64String(Encoding.ASCII.GetBytes(<span class="string">$&quot;:<span class="subst">&#123;pat&#125;</span>&quot;</span>)));</span><br><span class="line">			HttpResponseMessage response = <span class="keyword">await</span> client.GetAsync(url);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (response.IsSuccessStatusCode)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="built_in">string</span> result = <span class="keyword">await</span> response.Content.ReadAsStringAsync();</span><br><span class="line">				<span class="keyword">var</span> processTemplates = JsonConvert.DeserializeObject&lt;ProcessTemplatesResponse&gt;(result);</span><br><span class="line"></span><br><span class="line">				<span class="keyword">foreach</span> (<span class="keyword">var</span> process <span class="keyword">in</span> processTemplates.Value)</span><br><span class="line">				&#123;</span><br><span class="line">					Console.WriteLine(<span class="string">$&quot;Name: <span class="subst">&#123;process.Name&#125;</span>, ID: <span class="subst">&#123;process.Id&#125;</span>&quot;</span>);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			&#123;</span><br><span class="line">				Console.WriteLine(<span class="string">$&quot;Failed to get process templates: <span class="subst">&#123;response.StatusCode&#125;</span>&quot;</span>);</span><br><span class="line">				<span class="built_in">string</span> error = <span class="keyword">await</span> response.Content.ReadAsStringAsync();</span><br><span class="line">				Console.WriteLine(error);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<br>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/how-to/call-rest-api?view=azure-devops"  target="_blank">⁍ 開始使用 REST API
+<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>]]></content>
+      <tags>
+        <tag>Azure DevOps</tag>
+        <tag>Azure DevOps REST API</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Azure DevOps 的 Wiki 應用</title>
     <url>/post/2025/10/azure-devops-wiki/</url>
     <content><![CDATA[<img    
@@ -1045,7 +1045,7 @@
 <li><strong>大小寫敏感</strong>：頁面標題區有分大小寫，每行所條列的項目應與頁面標題和檔名中使用的大小寫一致。</li>
 <li><strong>階層結構</strong>：Wiki 根目錄的 .order 檔案指定根層級頁面的顯示順序，每個子資料夾也可以有自己的 .order 檔案來定義該資料夾的頁面順序。</li>
 <li><strong>未列出的檔案</strong>：.order 檔案中未列出的檔案會呈現在頁面順序中的最後。</li>
-<li><strong>設定首頁</strong>：<mark>將首頁名稱放在根目錄 .order 檔案的第一行，即可指定 Wiki 的首頁。</mark></li>
+<li><strong>設定首頁</strong>：<strong><mark>將首頁名稱放在根目錄 .order 檔案的第一行，即可指定 Wiki 的首頁。</mark></strong></li>
 </ol>
 <h3 id="還原為字母順序">還原為字母順序</h3>
 <p>如果想要將自訂順序還原為字母順序，只需刪除 .order 檔案即可，刪除後 Git 會自動建立新的 .order 檔案，使用預設的字母順序。</p>
@@ -1083,7 +1083,7 @@
                        data-src="/post/2025/10/azure-devops-wiki/folder1-noContent.jpg"
                         class=""
                  >
-<p><mark>若想要編輯 folder1 資料夾的頁面，必需在同一層路徑中新增一個和目錄名稱相同的 .md (folder1.md)，這個檔案並不會顯示在 Wiki 列表中，而是會直接呈現在 folder1 資料夾的頁面。</mark></p>
+<p><strong><mark>若想要編輯 folder1 資料夾的頁面，必需在同一層路徑中新增一個和目錄名稱相同的 .md (folder1.md)，這個檔案並不會顯示在 Wiki 列表中，而是會直接呈現在 folder1 資料夾的頁面。</mark></strong></p>
 <figure class="highlight text"><table><tr><td class="code"><pre><span class="line">|- folder1</span><br><span class="line">|- 123.md</span><br><span class="line">|-- subfolder1</span><br><span class="line">|   |-- file1.md</span><br><span class="line">|   |-- file2.md</span><br><span class="line">|- folder1.md</span><br></pre></td></tr></table></figure>
 <img  
                        lazyload
@@ -1118,118 +1118,6 @@
       <tags>
         <tag>Azure DevOps</tag>
         <tag>Wiki</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Devdays Asia 2025 簡報下載</title>
-    <url>/post/2025/10/devdays-asia-2025/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/devdays-asia-2025/DevdaysAsia2025.jpg"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>今年是微軟 50 週年、DevDays 10 週年，話題大多圍繞在 Agentic AI，考量多數企業還是有 On-Premises 需求，所以這次我將主題訂在如何使用 Azure DevOps + GitHub Copilot 重新打造 SDLC，讓大家瞭解不是雲原生環境還可以有哪些應用，以及賦與 LLM 更多 Tools 後，可以讓我們的軟體開發過程產生多大的助益和改變，雖然主題是 Azure DevOps 與 GitHub Copilot，但基本上套在任何軟體開發流程概念都是一樣的，提供給大家參考，有任何想討論交流也歡迎大家留言或直接與我聯繫。</p>
-<span id="more"></span>
-<br>
-<div class="tips">
-<font color="black">
-<a href="/post/2025/10/devdays-asia-2025/0925_Track A 1330-1400_DevDaysAsia_20250925_精誠軟體.pdf" target="_blank">⁍ Azure DevOps 與 GitHub Copilot：AI 驅動的團隊協作新時代</a><br>
-<a class="link"   href="https://www.digitimes.com.tw/Seminar/DevDaysAsia2025/index.html"  target="_blank">⁍ DevDays Asia 2025 亞太技術年會 | 議程介紹<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://onedrive.live.com/?redeem=aHR0cHM6Ly8xZHJ2Lm1zL2YvYy85NmJjZGNhMWVkYWIwZmMyL0VvUncyR1ZIaVRaUG1NNW1Ib0hPeWxFQlpvSW5aOU55ckY1QVJsOU5wbGpYWXc_ZT01VlhkMXQ&id=96BCDCA1EDAB0FC2%21s65d8708489474f3698ce661e81ceca51&cid=96BCDCA1EDAB0FC2"  target="_blank">⁍ DevDays Asia 2025 亞太技術年會 | 所有簡報下載 (OneDrive)<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>]]></content>
-      <tags>
-        <tag>Azure DevOps</tag>
-        <tag>Devdays Asia 2025</tag>
-        <tag>GitHub Copilot</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用 Playwright 測試框架 - 執行階段 (.NET)</title>
-    <url>/post/2025/05/how-to-use-playwright-2/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p><a href="/post/2024/11/how-to-use-playwright-1">上一篇文章</a>提到了如何使用 Playwright 的測試產生器(codegen) 錄製腳本，除了可以運用在自動化測試之外，舉凡想要透過程式來自動執行的一連串行為，都可以透過 Playwright 來完成，本篇文章使用 Windows Sandbox 全新環境來執行由 .NET 8 撰寫的 Console 程式，讓大家知道建置產生執行檔後，還需要哪些必要的環境設定才可以正常讓程式運作。<br>
-<br></p>
-<span id="more"></span>
-<br>
-<h2 id="安裝-NET-Runtime">安裝 .NET Runtime</h2>
-<p>不論是以前的 .NET Framework 或是現在的 .NET Core，在執行時都需要安裝 .NET Runtime 才能順利運行開發好的程式，以下圖 Console 專案建置後的執行檔為例，畫面還會很貼心的指引我們目前的需求版本和下載路徑，完成安裝後便可順利執行 Console 程式。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/dotnet8.png"
-                        class=""
-                 >
-<br>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://dotnet.microsoft.com/download"  target="_blank">⁍ 下載 .NET<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<h2 id="安裝-PowerShell">安裝 PowerShell</h2>
-<p>如果是全新的環境，安裝完 .NET Runtime 後應該還會出現如下圖的錯誤，主要原因是：</p>
-<ul>
-<li>pwsh 找不到路徑 (或是沒有安裝 PowerShell)</li>
-<li>缺少 WebDriver (Edge/Chrome/Firefox)</li>
-</ul>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/pwsh.png"
-                        class=""
-                 >
-<br>
-若要安裝 PowerShell 可以依據自己的作業系統參考下列連結：
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5"  target="_blank">⁍ 在 Windows 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-linux?view=powershell-7.5"  target="_blank">⁍ 在 Linux 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-macos?view=powershell-7.5"  target="_blank">⁍ 在 macOS 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<h2 id="安裝-WebDriver">安裝 WebDriver</h2>
-<p>在上圖的錯誤訊息中有提到如下指令，路徑中的 <strong><mark>netX</mark></strong> 要替換為自己使用的版本路徑，而其中的 playwright.ps1 會存在於 .NET 程式建置後的 bin 目錄中，這個 .ps1 的主要用途是在 Windows 環境下執行 Playwright 測試，讓它可以正確找到 Playwright 主程式和相關驅動程式，確認 pwsh 指令可以運作後，就可以接著安裝 WebDriver 了。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pwsh bin/Debug/netX/playwright.ps1 install</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/playwright.png"
-                        class=""
-                 >
-<br>
-若在 install 之後沒有加上任何參數，則會安裝下列預設項目：
-<ul>
-<li>Chromium</li>
-<li>Chromium Headless Shell</li>
-<li>Firefox</li>
-<li>Webkit</li>
-<li>FFMPEG</li>
-</ul>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/install.png"
-                        class=""
-                 >
-<br>
-也可以依自己的需求安裝指定項目，可使用 install -h 查看相關資訊：
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/custom.png"
-                        class=""
-                 >
-<h2 id="總結">總結</h2>
-<p>本文介紹了在全新環境下，如何讓 .NET 8 撰寫的 Playwright 測試程式順利執行，包含安裝 .NET Runtime、PowerShell 及 WebDriver 等必要步驟。只要依照上述流程完成環境設定，就能避免常見的錯誤訊息，順利執行自動化測試。希望這些說明能幫助你在不同平台上快速部署與運行 Playwright 測試專案。</p>
-]]></content>
-      <tags>
-        <tag>Playwright</tag>
       </tags>
   </entry>
   <entry>
@@ -1508,6 +1396,111 @@
       </tags>
   </entry>
   <entry>
+    <title>使用 Playwright 測試框架 - 環境準備 (.NET)</title>
+    <url>/post/2025/05/how-to-use-playwright-1/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>在現代軟體開發中，自動化測試已成為確保程式碼品質的重要一環，Playwright 是一個強大的自動化測試框架，支援 Chromium / Firefox / WebKit 瀏覽器，搭配測試產生器(codegen)讓開發者能夠輕鬆撰寫可靠且高效的測試腳本。本篇文章將介紹如何在 .NET 開發環境中設置和使用 Playwright，從安裝必要的套件到撰寫基本的測試案例，幫助大家快速上手這個工具。<br>
+<br></p>
+<span id="more"></span>
+<br>
+<h2 id="使用-Visual-Studio">使用 Visual Studio</h2>
+<p>如果是慣用地表最強開發工具，打開 Visual Studio 建立一個新的 <strong><code>MSTest 測試專案</code></strong>，讓我們有一個基本測試環境可以開始撰寫 Playwright 測試。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/vs-01.png"
+                        class=""
+                 >
+<br>
+<p>要在 MSTest 使用 Playwright 必需要安裝 <strong><code>Microsoft.Playwright.MSTest</code></strong> 套件，這個套件會將 Playwright 與 MSTest 整合，使我們能夠在 MSTest 測試過程中使用 Playwright 功能。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/vs-02.png"
+                        class=""
+                 >
+<h2 id="使用-NET-CLI">使用 .NET CLI</h2>
+<p>若是使用 VSCode 開發工具，我們可以用 <strong>dotnet new</strong> 指令新增一個 PlaywrightTests 專案，預設內容會包含一個 UnitTest1.cs 檔案。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet new mstest -n PlaywrightTests</span><br><span class="line">cd PlaywrightTests</span><br></pre></td></tr></table></figure>
+<p>安裝必要的 Playwright 相依套件：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet add package Microsoft.Playwright.MSTest</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-01.png"
+                        class=""
+                 >
+<br>
+<p>建置程式碼，確認環境準備是否有異常。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet build</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-02.png"
+                        class=""
+                 >
+<br>
+<h2 id="安裝-Playwright-CLI">安裝 Playwright CLI</h2>
+<p>在 .NET 開發環境中，雖然 <strong>playwright.exe</strong> 指令沒有像 <strong>npx playwright</strong> 那麼多參數與功能，但我們在錄製網頁操作過程來產生測試程式碼 (codegen)，或是開啟追蹤檔 (show-trace) 時仍會使用到，可以透過下列指令來安裝 <strong><code>Microsoft.Playwright.CLI</code></strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool install --global Microsoft.Playwright.CLI</span><br></pre></td></tr></table></figure>
+<p>上述套件預設會被安裝到目前的使用者範圍內的 .NET 全局工具路徑中，具體安裝位置會因作業系統而異：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Windows</span><br><span class="line">C:\Users\&lt;你的用戶名&gt;\.dotnet\tools\</span><br><span class="line"></span><br><span class="line">Linux / macOS</span><br><span class="line">/home/&lt;你的用戶名&gt;/.dotnet/tools/</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-03.png"
+                        class=""
+                 >
+<p>我們可以直接開啟目錄確認工具是否安裝成功，或是使用以下指令來列出所有安裝的 .NET 工具：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool list --global</span><br></pre></td></tr></table></figure>
+<p>例：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Package Id                    Version      Commands</span><br><span class="line">-----------------------------------------------------</span><br><span class="line">dotnet-ef                     8.0.8        dotnet-ef</span><br><span class="line">microsoft.playwright.cli      1.2.3        playwright</span><br></pre></td></tr></table></figure>
+<h2 id="移除-Playwright-CLI">移除 Playwright CLI</h2>
+<p>若需要移除已安裝的套件，可以使用下列指令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool uninstall microsoft.playwright.cli</span><br></pre></td></tr></table></figure>
+<h2 id="安裝-Playwright-支援的瀏覽器">安裝 Playwright 支援的瀏覽器</h2>
+<p>Playwright 支援 Chromium、WebKit 和 Firefox 瀏覽器，我們可以使用 <strong>playwright install</strong> 指令來安裝預設瀏覽器，這個動作會將瀏覽器安裝到 <strong><mark>%LOCALAPPDATA%\ms-playwright</mark></strong> 目錄下，若想要自訂安裝的項目，可以透過 <strong>playwright help install</strong> 來瞭解所有的選項。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright install</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-04.png"
+                        class=""
+                 >
+<br>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright help install</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-05.png"
+                        class=""
+                 >
+<h2 id="小試身手">小試身手</h2>
+<p>以上 Playwright 環境設定都完成後，我們就可以直接用官網的第一個範例來小試身手：</p>
+<ul>
+<li>
+<p><code>HasTitle()</code><br>
+打開 Playwright 官方網站，檢查網站的標題是否包含特定的字串，確認網頁標題中是否包含 “Playwright” 這個字。</p>
+</li>
+<li>
+<p><code>GetStartedLink()</code><br>
+一樣是打開 Playwright 官方網站，點擊一個名為 “Get started” 的連結，然後檢查點擊後的頁面是否有一個名為 “Installation” 的標題，以確保連結正確導向到預期的頁面。</p>
+</li>
+</ul>
+<p>大家應該不難發現 Playwright 的程式碼很直覺易讀，通常也不太需要夾雜 CSS class 或 style 來尋找定位網頁上的元素，除此之外還提供了豐富的 API 來進行各種操作，如：點擊、輸入文字、截圖等，之後再陸續向大家介紹各項重點特色，希望大家也都能快速上手 Playwright，並在日常開發中提升測試效率與程式碼品質。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Text.RegularExpressions;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright.MSTest;</span><br><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">PlaywrightTests</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ExampleTest</span> : <span class="title">PageTest</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">HasTitle</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expect a title &quot;to contain&quot; a substring.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page).ToHaveTitleAsync(<span class="keyword">new</span> Regex(<span class="string">&quot;Playwright&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">GetStartedLink</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Click the get started link.</span></span><br><span class="line">        <span class="keyword">await</span> Page.GetByRole(AriaRole.Link, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Get started&quot;</span> &#125;).ClickAsync();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expects page to have a heading with the name of Installation.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page.GetByRole(AriaRole.Heading, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Installation&quot;</span> &#125;)).ToBeVisibleAsync();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>Unit Test</tag>
+        <tag>Playwright</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>整理 context 的利器 — MarkItDown 與 Docling</title>
     <url>/post/2025/10/docling-to-markdown/</url>
     <content><![CDATA[<img    
@@ -1723,192 +1716,6 @@
       </tags>
   </entry>
   <entry>
-    <title>使用 Playwright 測試框架 - 環境準備 (.NET)</title>
-    <url>/post/2025/05/how-to-use-playwright-1/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>在現代軟體開發中，自動化測試已成為確保程式碼品質的重要一環，Playwright 是一個強大的自動化測試框架，支援 Chromium / Firefox / WebKit 瀏覽器，搭配測試產生器(codegen)讓開發者能夠輕鬆撰寫可靠且高效的測試腳本。本篇文章將介紹如何在 .NET 開發環境中設置和使用 Playwright，從安裝必要的套件到撰寫基本的測試案例，幫助大家快速上手這個工具。<br>
-<br></p>
-<span id="more"></span>
-<br>
-<h2 id="使用-Visual-Studio">使用 Visual Studio</h2>
-<p>如果是慣用地表最強開發工具，打開 Visual Studio 建立一個新的 <strong><code>MSTest 測試專案</code></strong>，讓我們有一個基本測試環境可以開始撰寫 Playwright 測試。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/vs-01.png"
-                        class=""
-                 >
-<br>
-<p>要在 MSTest 使用 Playwright 必需要安裝 <strong><code>Microsoft.Playwright.MSTest</code></strong> 套件，這個套件會將 Playwright 與 MSTest 整合，使我們能夠在 MSTest 測試過程中使用 Playwright 功能。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/vs-02.png"
-                        class=""
-                 >
-<h2 id="使用-NET-CLI">使用 .NET CLI</h2>
-<p>若是使用 VSCode 開發工具，我們可以用 <strong>dotnet new</strong> 指令新增一個 PlaywrightTests 專案，預設內容會包含一個 UnitTest1.cs 檔案。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet new mstest -n PlaywrightTests</span><br><span class="line">cd PlaywrightTests</span><br></pre></td></tr></table></figure>
-<p>安裝必要的 Playwright 相依套件：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet add package Microsoft.Playwright.MSTest</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-01.png"
-                        class=""
-                 >
-<br>
-<p>建置程式碼，確認環境準備是否有異常。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet build</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-02.png"
-                        class=""
-                 >
-<br>
-<h2 id="安裝-Playwright-CLI">安裝 Playwright CLI</h2>
-<p>在 .NET 開發環境中，雖然 <strong>playwright.exe</strong> 指令沒有像 <strong>npx playwright</strong> 那麼多參數與功能，但我們在錄製網頁操作過程來產生測試程式碼 (codegen)，或是開啟追蹤檔 (show-trace) 時仍會使用到，可以透過下列指令來安裝 <strong><code>Microsoft.Playwright.CLI</code></strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool install --global Microsoft.Playwright.CLI</span><br></pre></td></tr></table></figure>
-<p>上述套件預設會被安裝到目前的使用者範圍內的 .NET 全局工具路徑中，具體安裝位置會因作業系統而異：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Windows</span><br><span class="line">C:\Users\&lt;你的用戶名&gt;\.dotnet\tools\</span><br><span class="line"></span><br><span class="line">Linux / macOS</span><br><span class="line">/home/&lt;你的用戶名&gt;/.dotnet/tools/</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-03.png"
-                        class=""
-                 >
-<p>我們可以直接開啟目錄確認工具是否安裝成功，或是使用以下指令來列出所有安裝的 .NET 工具：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool list --global</span><br></pre></td></tr></table></figure>
-<p>例：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Package Id                    Version      Commands</span><br><span class="line">-----------------------------------------------------</span><br><span class="line">dotnet-ef                     8.0.8        dotnet-ef</span><br><span class="line">microsoft.playwright.cli      1.2.3        playwright</span><br></pre></td></tr></table></figure>
-<h2 id="移除-Playwright-CLI">移除 Playwright CLI</h2>
-<p>若需要移除已安裝的套件，可以使用下列指令：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool uninstall microsoft.playwright.cli</span><br></pre></td></tr></table></figure>
-<h2 id="安裝-Playwright-支援的瀏覽器">安裝 Playwright 支援的瀏覽器</h2>
-<p>Playwright 支援 Chromium、WebKit 和 Firefox 瀏覽器，我們可以使用 <strong>playwright install</strong> 指令來安裝預設瀏覽器，這個動作會將瀏覽器安裝到 <strong><mark>%LOCALAPPDATA%\ms-playwright</mark></strong> 目錄下，若想要自訂安裝的項目，可以透過 <strong>playwright help install</strong> 來瞭解所有的選項。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright install</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-04.png"
-                        class=""
-                 >
-<br>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright help install</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-05.png"
-                        class=""
-                 >
-<h2 id="小試身手">小試身手</h2>
-<p>以上 Playwright 環境設定都完成後，我們就可以直接用官網的第一個範例來小試身手：</p>
-<ul>
-<li>
-<p><code>HasTitle()</code><br>
-打開 Playwright 官方網站，檢查網站的標題是否包含特定的字串，確認網頁標題中是否包含 “Playwright” 這個字。</p>
-</li>
-<li>
-<p><code>GetStartedLink()</code><br>
-一樣是打開 Playwright 官方網站，點擊一個名為 “Get started” 的連結，然後檢查點擊後的頁面是否有一個名為 “Installation” 的標題，以確保連結正確導向到預期的頁面。</p>
-</li>
-</ul>
-<p>大家應該不難發現 Playwright 的程式碼很直覺易讀，通常也不太需要夾雜 CSS class 或 style 來尋找定位網頁上的元素，除此之外還提供了豐富的 API 來進行各種操作，如：點擊、輸入文字、截圖等，之後再陸續向大家介紹各項重點特色，希望大家也都能快速上手 Playwright，並在日常開發中提升測試效率與程式碼品質。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Text.RegularExpressions;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright.MSTest;</span><br><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">PlaywrightTests</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ExampleTest</span> : <span class="title">PageTest</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">HasTitle</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expect a title &quot;to contain&quot; a substring.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page).ToHaveTitleAsync(<span class="keyword">new</span> Regex(<span class="string">&quot;Playwright&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">GetStartedLink</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Click the get started link.</span></span><br><span class="line">        <span class="keyword">await</span> Page.GetByRole(AriaRole.Link, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Get started&quot;</span> &#125;).ClickAsync();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expects page to have a heading with the name of Installation.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page.GetByRole(AriaRole.Heading, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Installation&quot;</span> &#125;)).ToBeVisibleAsync();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>Playwright</tag>
-        <tag>Unit Test</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MSTest 生命週期與常用屬性</title>
-    <url>/post/2025/04/mstest-attribute-lifecycle/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/mstest-attribute-lifecycle/MSTest.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>在軟體開發過程中，妥善進行測試可以協助我們確保程式碼的功能性與可靠性，不論是最小範圍的<strong>單元測試 (Unit Tests)</strong> 或是模擬實際用戶的<strong>端對端測試(E2E Tests)</strong>，都是品質把關的重要防線，而 MSTest 除了被整合在 Visual Studio 中，簡化了 .NET 應用程式建立和執行單元測試的過程，也可以透過 Azure Pipelines 將既有的測試專案整合到 CI 流程裡，這篇主要帶大家瞭解 MSTest 生命週期以及常用屬性，以便大家更能掌握自己的測試流程。</p>
-<span id="more"></span>
-<br>
-<h2 id="前言">前言</h2>
-<p><strong>測試類別(TestClass)</strong> 和 <strong>測試方法(TestMethod)</strong> 是 MSTest 核心要素，一個 TestClass 可以包含一個或多個 TestMethod，而我們實際要執行測試的內容就是寫在每個 TestMethod 裡，一般大家比較熟知的 3A Principle (<strong>A</strong>rrange-<strong>A</strong>ct-<strong>A</strong>ssert) 可以幫助我們快速聚焦測試方法裡面該撰寫的內容，簡單範例如下：</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyTestClass</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod1</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Arrange: 初始化測試過程中所需要的變數、物件或其他設定。</span></span><br><span class="line">        <span class="built_in">int</span> a = <span class="number">1</span>;</span><br><span class="line">        <span class="built_in">int</span> b = <span class="number">2</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// Act: 實際測試操作、內容。</span></span><br><span class="line">        <span class="built_in">int</span> ans = a + b;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Assert: 驗證操作是否產生預期結果。</span></span><br><span class="line">        <span class="built_in">int</span> excepted = <span class="number">3</span>;</span><br><span class="line">        Assert.AreEqual(expected, actual);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="測試組件">測試組件</h2>
-<p>一個 MSTest 專案建置完成後會產生一個組件(Assembly)，白話來說就是 bin 目錄的 dll 檔案，其中可以包含多個 TestClass，而一個 TestClass 裡可以有各自的 TestMethod (層級如下圖)，此外，我們會使用 <strong><code>[TestClass]</code></strong> 和 <strong><code>[TestMethod]</code></strong> 屬性項目在 MSTest 專案標記程式碼中哪些是測試類別與測試方法，下列四種寫法都代表相同的意思：</p>
-<ul>
-<li>[TestClass()]</li>
-<li>[TestClassAttribute()]</li>
-<li>[TestClass]</li>
-<li>[TestClassAttribute]</li>
-</ul>
-<div style="max-width: 800px; text-align:center;">
-<pre class="mermaid">flowchart LR
-  subgraph 測試組件 Assembly 
-    subgraph 測試類別 TestClass 
-        subgraph 測試方法 TestMethod 
-            Test1 --> Test2 --> TestN
-        end
-    end    
-  end</pre>
-</div>
-<h2 id="生命週期">生命週期</h2>
-<p>當我們實際在撰寫或執行多個測試時，經常需要在不同情境時初始化或清除測試資料，而上述提到的 <strong>組件層級</strong> / <strong>類別層級</strong> / <strong>測試層級</strong> 都提供了 <mark>Initialize</mark> 和 <mark>Cleanup</mark> 屬性讓我們可以在適當的時機會處理對應的邏輯。在下列範例程式中：TestProject1 組件中包含了兩個類別：Calculator(加法、減法運算)，CaculatorTests(測試類別)，在測試類別中撰寫了兩個 TestMethod (Test_AddMethod 和 Test_SubtractMethod)，同時也加上了 Constructor / Dispose、AssemblyInit / AssemblyCleanup、ClassInit / Cleanup、TestInit / TestCleanup，大家應該不難發現，這些函式都是成對的，可以直接參考下列範例程式碼與執行結果，瞭解一個測試組件從開始執行到結束歷經了哪些階段。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Diagnostics;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Calculator</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Add</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> a + b;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Subtract</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> a - b;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">CalculatorTests</span> : <span class="title">IDisposable</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> Calculator calculator;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">CalculatorTests</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;CalculatorTests - Constructor&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在整個測試程序集開始時執行一次</span></span><br><span class="line">        [<span class="meta">AssemblyInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">AssemblyInit</span>(<span class="params">TestContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;AssemblyInitialize: 測試程序集初始化。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在所有測試執行前初始化，只執行一次</span></span><br><span class="line">        [<span class="meta">ClassInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ClassInit</span>(<span class="params">TestContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;ClassInitialize: 初始化 Calculator 類別實例。&quot;</span>);</span><br><span class="line">            calculator = <span class="keyword">new</span> Calculator();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在每個測試方法執行前調用</span></span><br><span class="line">        [<span class="meta">TestInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestInit</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;TestInitialize: 開始執行新的測試。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 測試加法功能</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">TestCategory(<span class="string">&quot;CalculatorTests&quot;</span>)</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Test_AddMethod</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;Test_AddMethod: 測試加法運算。&quot;</span>);</span><br><span class="line">            <span class="built_in">int</span> result = calculator.Add(<span class="number">5</span>, <span class="number">3</span>);</span><br><span class="line">            Assert.AreEqual(<span class="number">8</span>, result, <span class="string">&quot;加法結果不正確&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 測試減法功能</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">TestCategory(<span class="string">&quot;CalculatorTests&quot;</span>)</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Test_SubtractMethod</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;Test_SubtractMethod: 測試減法運算。&quot;</span>);</span><br><span class="line">            <span class="built_in">int</span> result = calculator.Subtract(<span class="number">10</span>, <span class="number">5</span>);</span><br><span class="line">            Assert.AreEqual(<span class="number">5</span>, result, <span class="string">&quot;減法結果不正確&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在每個測試方法執行後調用</span></span><br><span class="line">        [<span class="meta">TestCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;TestCleanup: 測試完成，清理測試上下文。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在所有測試執行完畢後清理，只執行一次</span></span><br><span class="line">        [<span class="meta">ClassCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ClassCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;ClassCleanup: 清理 Calculator 類別實例。&quot;</span>);</span><br><span class="line">            <span class="comment">//calculator = null;</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在整個測試程序集結束時執行一次</span></span><br><span class="line">        [<span class="meta">AssemblyCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">AssemblyCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;AssemblyCleanup: 測試程序集清理。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Dispose</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;CalculatorTests - Dispose&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/mstest-attribute-lifecycle/console-run-test.png"
-                        class=""
-                 >
-<h2 id="常用屬性">常用屬性</h2>
-<h3 id="逾時設定-TimeoutAttribute">逾時設定 TimeoutAttribute</h3>
-<p><strong><code>TimeoutAttribute</code></strong> 用於設定測試方法的最大執行時間（以<strong>毫秒</strong>為單位）。如果執行測試超過指定的時間限制，測試則會失敗，這個屬性可以讓我們避免測試執行時間過長，或是為某些測試情境設定一個逾時期限，如下範例：</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"><span class="keyword">using</span> System.Threading;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">TimeoutExampleTests</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 這個測試會在 500 毫秒內完成，所以它會通過</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">Timeout(1000)</span>]  <span class="comment">// 設置 1 秒的超時</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod_WithSufficientTime</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">500</span>);  <span class="comment">// 模擬較短的處理時間</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);  <span class="comment">// 假設這是測試邏輯</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 這個測試會因為超時而失敗</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">Timeout(1000)</span>]  <span class="comment">// 設置 1 秒的超時</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod_WithTimeout</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1500</span>);  <span class="comment">// 模擬超過1秒的處理時間</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);  <span class="comment">// 假設這是測試邏輯</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="平行測試-ParallelizeAttribute">平行測試 ParallelizeAttribute</h3>
-<p>自 MSTest v2 起，提供了兩個關於平行測試的屬性：</p>
-<ul>
-<li><strong><code>ParallelizeAttribute</code></strong>：可以應用於類別或測試集來啟用平行測試。</li>
-<li><strong><code>DoNotParallelizeAttribute</code></strong>：可以應用於個別測試方法來<mark>禁止</mark>它與其他測試並行執行。</li>
-</ul>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"><span class="keyword">using</span> System.Threading;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    [<span class="meta">Parallelize(Workers = 2, Scope = ExecutionScope.MethodLevel)</span>]  <span class="comment">// 啟用並行，指定最多兩個工作線程</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ParallelTests</span></span><br><span class="line">    &#123;</span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod1</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod2</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">9</span>, <span class="number">3</span> * <span class="number">3</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 禁止這個方法與其他測試並行執行</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">DoNotParallelize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod3_DoNotParallelize</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">15</span>, <span class="number">5</span> * <span class="number">3</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><strong><code>[Parallelize(Workers = 2, Scope = ExecutionScope.MethodLevel)]</code></strong>：
-<ul>
-<li>Workers = 2 表示最多使用 2 個執行緒來執行平行測試。</li>
-<li>Scope = ExecutionScope.MethodLevel 表示在方法層級平行測試，代表每個測試方法可以平行執行；如果想要在類別層級，可以設定為 ExecutionScope.ClassLevel。</li>
-</ul>
-</li>
-<li>TestMethod1 和 TestMethod2：<br>
-因為類別層級已經使用 Parallelize 屬性，並且設定 Workers = 2 表示這兩個測試方法會在執行緒池裡平行執行。</li>
-<li>TestMethod3_DoNotParallelize：<br>
-這個方法加了 <strong><code>[DoNotParallelize]</code></strong>，所以它<mark>不會</mark>與其他方法同時執行，當 TestMethod3_DoNotParallelize 執行時，其他平行測試會暫停，直到這個測試完成。</li>
-</ul>
-<h2 id="後記">後記</h2>
-<p>MSTest 從推出至今已經來到了 v3，從一開始只能在 Windows 平台上運作，隨著 .NET Framework 的演進，也逐步支援跨平台運行，特別是在 .NET Core 和 .NET 5 之後，MSTest 成為了 .NET 生態系中一個可靠且簡單易用的測試框架。它不僅適合快速撰寫單元測試，還能與多種持續整合和部署工具無縫結合，例如：Azure DevOps 和 GitHub Actions。</p>
-<p>由於應用程式複雜度日益提高，MSTest 從 v2 開始也提供了平行測試，允許多個測試同時執行，這不僅加快了測試速度，也提高了 CI/CD 的效能。平行測試使開發人員能夠在不影響測試完整性的前提下，顯著縮短測試週期，對大型專案尤為重要。此外，MSTest 也包含：數據驅動測試、生命週期管理、異常處理測試等，這讓我們能夠更全面地驗證應用程式的功能和效能。</p>
-<p>MSTest 的易用性使得它適合不同規模的專案，加上 Visual Studio 開發工具與 Azure DevOps Services 的支援，不論是小型開發團隊或是大型企業應用，都能輕鬆採用，為軟體開發專案品質把關，也讓整個 DevOps 流程更加完善。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://github.com/microsoft/testfx"  target="_blank">⁍ Microsoft Test Framework<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/core/testing/unit-testing-with-mstest?source=recommendations"  target="_blank">⁍ 使用 MSTest 和 .NET 進行 C# 單元測試<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/core/testing/unit-testing-mstest-writing-tests-attributes"  target="_blank">⁍ MSTest 屬性<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://www.meziantou.net/mstest-v2-setup-a-test-project-and-run-tests.htm"  target="_blank">⁍ MSTest v2: Setup a test project and run tests<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>]]></content>
-      <tags>
-        <tag>MSTest</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>關於 MCP 的 Capability Negotiation</title>
     <url>/post/2025/07/mcp-capability-negotiation/</url>
     <content><![CDATA[<img    
@@ -2011,69 +1818,115 @@
       </tags>
   </entry>
   <entry>
-    <title>使用 VB5/VB6 連線至 Azure DevOps Server 2022 (TFVC)</title>
-    <url>/post/2025/04/vb-connect-to-azure-devops/</url>
+    <title>Devdays Asia 2025 簡報下載</title>
+    <url>/post/2025/10/devdays-asia-2025/</url>
     <content><![CDATA[<img    
                        lazyload
                        alt="image"
-                       data-src="/post/2025/04/vb-connect-to-azure-devops/VS_TFS.png"
+                       data-src="/post/2025/10/devdays-asia-2025/DevdaysAsia2025.jpg"
                          align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
                  > 
-<p>Visual Studio 從 97 發展到現在的 2022 號稱地表最強開發工具，能夠與 TFS 或 Git 版控連線自然不是問題，最近剛好遇到客戶還有許多 VB5/VB6 開發的 Winform 程式需要維護，而且版控伺服器也從 TFS 2013 升級至 Azure DevOps Server 2022，藉此機會向大家整理說明 Visual Studio 各版本與 TFS / Azure DevOps 連線的需求與設定。<br>
+<p>今年是微軟 50 週年、DevDays 10 週年，話題大多圍繞在 Agentic AI，考量多數企業還是有 On-Premises 需求，所以這次我將主題訂在如何使用 Azure DevOps + GitHub Copilot 重新打造 SDLC，讓大家瞭解不是雲原生環境還可以有哪些應用，以及賦與 LLM 更多 Tools 後，可以讓我們的軟體開發過程產生多大的助益和改變，雖然主題是 Azure DevOps 與 GitHub Copilot，但基本上套在任何軟體開發流程概念都是一樣的，提供給大家參考，有任何想討論交流也歡迎大家留言或直接與我聯繫。</p>
+<span id="more"></span>
+<br>
+<div class="tips">
+<font color="black">
+<a href="/post/2025/10/devdays-asia-2025/0925_Track A 1330-1400_DevDaysAsia_20250925_精誠軟體.pdf" target="_blank">⁍ Azure DevOps 與 GitHub Copilot：AI 驅動的團隊協作新時代</a><br>
+<a class="link"   href="https://www.digitimes.com.tw/Seminar/DevDaysAsia2025/index.html"  target="_blank">⁍ DevDays Asia 2025 亞太技術年會 | 議程介紹<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://onedrive.live.com/?redeem=aHR0cHM6Ly8xZHJ2Lm1zL2YvYy85NmJjZGNhMWVkYWIwZmMyL0VvUncyR1ZIaVRaUG1NNW1Ib0hPeWxFQlpvSW5aOU55ckY1QVJsOU5wbGpYWXc_ZT01VlhkMXQ&id=96BCDCA1EDAB0FC2%21s65d8708489474f3698ce661e81ceca51&cid=96BCDCA1EDAB0FC2"  target="_blank">⁍ DevDays Asia 2025 亞太技術年會 | 所有簡報下載 (OneDrive)<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>]]></content>
+      <tags>
+        <tag>Azure DevOps</tag>
+        <tag>Devdays Asia 2025</tag>
+        <tag>GitHub Copilot</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用 Playwright 測試框架 - 執行階段 (.NET)</title>
+    <url>/post/2025/05/how-to-use-playwright-2/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p><a href="/post/2024/11/how-to-use-playwright-1">上一篇文章</a>提到了如何使用 Playwright 的測試產生器(codegen) 錄製腳本，除了可以運用在自動化測試之外，舉凡想要透過程式來自動執行的一連串行為，都可以透過 Playwright 來完成，本篇文章使用 Windows Sandbox 全新環境來執行由 .NET 8 撰寫的 Console 程式，讓大家知道建置產生執行檔後，還需要哪些必要的環境設定才可以正常讓程式運作。<br>
 <br></p>
 <span id="more"></span>
 <br>
-<h2 id="前言">前言</h2>
-<p>我們使用 Visual Studio 開發工具能夠與 TFS 連線是因為它的功能包含了 <strong><code>Team Explorer</code></strong>，明確來說是從 Visual Studio 2005 首次引入 TFS (Team Foundation Server) 起才開始包含此功能，在這個版本之前則需要額外安裝 <strong>Team Explorer</strong> 和 <strong>MSSCCI Provider</strong> (Microsoft Source Code Control Integration) 才能夠在開發工具中與 TFS 進行整合。</p>
-<h2 id="版本相依性">版本相依性</h2>
-<p>作業系統、開發工具與版控伺服器彼此間有一定的版本相依性，Windows XP 無法安裝 Team Explorer 2013，只能安裝 Team Explorer 2010，搭配 MSSCCI Provider 2010 可以連線的版本有：TFS 2005 ~ 2018 和 Azure DevOps Server 2019/2020 <mark>(不包含2022)</mark>，若舊開發環境 (Visual Studio 2013 以前) 想要與 Azure DevOps Server 2022 連線，必要最低門檻可以參考下列配置：</p>
+<h2 id="安裝-NET-Runtime">安裝 .NET Runtime</h2>
+<p>不論是以前的 .NET Framework 或是現在的 .NET Core，在執行時都需要安裝 .NET Runtime 才能順利運行開發好的程式，以下圖 Console 專案建置後的執行檔為例，畫面還會很貼心的指引我們目前的需求版本和下載路徑，完成安裝後便可順利執行 Console 程式。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/dotnet8.png"
+                        class=""
+                 >
+<br>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://dotnet.microsoft.com/download"  target="_blank">⁍ 下載 .NET<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h2 id="安裝-PowerShell">安裝 PowerShell</h2>
+<p>如果是全新的環境，安裝完 .NET Runtime 後應該還會出現如下圖的錯誤，主要原因是：</p>
 <ul>
-<li><strong>Windows 7 以上</strong></li>
-<li><strong>Team Explorer 2013</strong></li>
-<li><strong>MSSCCI Provider 2013</strong></li>
+<li>pwsh 找不到路徑 (或是沒有安裝 PowerShell)</li>
+<li>缺少 WebDriver (Edge/Chrome/Firefox)</li>
 </ul>
-<p>Visual Studio 97/6/2003~2008 搭配 Team Explorer 2010 + MSSCCI Provider 2010 可以從開發工具連線至 TFS 2010~2017 和 Azure DevOps Server 2019/2020，若要連線至 Azure DevOps Server 2022 則需要搭配 Team Explorer 2013 + MSSCCI Provider 2013 才行，各版本 MSSCCI Provider 可以自 Visual Studio | Marketplace 取得：</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2010MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2010 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.TeamFoundationServerMSSCCIProvider201064-bit"  target="_blank">⁍ Team Foundation Server MSSCCI Provider 2010 64-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC-9956"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M-11387"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
-<h2 id="VB5-VB6">VB5/VB6</h2>
-<p>在 VB5/VB6 的工具列需要額外安裝上述提到的 MSSCCI Provider 2010/2013 才會出現 <strong>Team Foundation</strong> 選項，讓我們在開發工具中將程式碼與版控伺服器整合。</p>
 <img  
                        lazyload
                        alt="image"
-                       data-src="/post/2025/04/vb-connect-to-azure-devops/create-project-from-tfs.png"
+                       data-src="/post/2025/05/how-to-use-playwright-2/pwsh.png"
                         class=""
                  >
-<p>若出現下列錯誤訊息，就是 MSSCCI Provider 版本太舊了，無法連線到新的版控伺服器，例如：安裝 MSSCCI Provider 2010 但想要與 Azure DevOps Server 2022 連線，唯一解法就是安裝 Team Explorer 2013 + MSSCCI Provider 2013。</p>
-<blockquote>
-<p>TF14045: The identity 主機名稱\2ffd15ae-91e4-4df8-a346-e5be57e1340e is not a recognized identity.</p>
-</blockquote>
+<br>
+若要安裝 PowerShell 可以依據自己的作業系統參考下列連結：
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5"  target="_blank">⁍ 在 Windows 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-linux?view=powershell-7.5"  target="_blank">⁍ 在 Linux 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-macos?view=powershell-7.5"  target="_blank">⁍ 在 macOS 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h2 id="安裝-WebDriver">安裝 WebDriver</h2>
+<p>在上圖的錯誤訊息中有提到如下指令，路徑中的 <strong><mark>netX</mark></strong> 要替換為自己使用的版本路徑，而其中的 playwright.ps1 會存在於 .NET 程式建置後的 bin 目錄中，這個 .ps1 的主要用途是在 Windows 環境下執行 Playwright 測試，讓它可以正確找到 Playwright 主程式和相關驅動程式，確認 pwsh 指令可以運作後，就可以接著安裝 WebDriver 了。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pwsh bin/Debug/netX/playwright.ps1 install</span><br></pre></td></tr></table></figure>
 <img  
                        lazyload
                        alt="image"
-                       data-src="/post/2025/04/vb-connect-to-azure-devops/not-a-recognized-identity.png"
+                       data-src="/post/2025/05/how-to-use-playwright-2/playwright.png"
                         class=""
                  >
-<p>在實務情境可能還會遇到其他各種版本組合，經此次嘗試後，確認 VB5/VB6 都還可以與 Azure DevOps Server 2022 的 TFVC 版控進行整合，這邊有篇文章將各種組合條列得很詳盡，也提供大家參考。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://jessehouwing.net/azure-devops-connect-any-visual-studio-version/"  target="_blank">⁍ Connect any version of Visual Studio to Azure DevOps or Azure DevOps Server<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
+<br>
+若在 install 之後沒有加上任何參數，則會安裝下列預設項目：
+<ul>
+<li>Chromium</li>
+<li>Chromium Headless Shell</li>
+<li>Firefox</li>
+<li>Webkit</li>
+<li>FFMPEG</li>
+</ul>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/install.png"
+                        class=""
+                 >
+<br>
+也可以依自己的需求安裝指定項目，可使用 install -h 查看相關資訊：
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/custom.png"
+                        class=""
+                 >
+<h2 id="總結">總結</h2>
+<p>本文介紹了在全新環境下，如何讓 .NET 8 撰寫的 Playwright 測試程式順利執行，包含安裝 .NET Runtime、PowerShell 及 WebDriver 等必要步驟。只要依照上述流程完成環境設定，就能避免常見的錯誤訊息，順利執行自動化測試。希望這些說明能幫助你在不同平台上快速部署與運行 Playwright 測試專案。</p>
 ]]></content>
       <tags>
-        <tag>VB5</tag>
-        <tag>VB6</tag>
-        <tag>TFS</tag>
-        <tag>Team Explorer</tag>
-        <tag>MSSCCI Provider</tag>
+        <tag>Playwright</tag>
       </tags>
   </entry>
   <entry>
@@ -2293,6 +2146,153 @@
       <tags>
         <tag>Azure DevOps</tag>
         <tag>Azure Pipelines Agents</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MSTest 生命週期與常用屬性</title>
+    <url>/post/2025/04/mstest-attribute-lifecycle/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/mstest-attribute-lifecycle/MSTest.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>在軟體開發過程中，妥善進行測試可以協助我們確保程式碼的功能性與可靠性，不論是最小範圍的<strong>單元測試 (Unit Tests)</strong> 或是模擬實際用戶的<strong>端對端測試(E2E Tests)</strong>，都是品質把關的重要防線，而 MSTest 除了被整合在 Visual Studio 中，簡化了 .NET 應用程式建立和執行單元測試的過程，也可以透過 Azure Pipelines 將既有的測試專案整合到 CI 流程裡，這篇主要帶大家瞭解 MSTest 生命週期以及常用屬性，以便大家更能掌握自己的測試流程。</p>
+<span id="more"></span>
+<br>
+<h2 id="前言">前言</h2>
+<p><strong>測試類別(TestClass)</strong> 和 <strong>測試方法(TestMethod)</strong> 是 MSTest 核心要素，一個 TestClass 可以包含一個或多個 TestMethod，而我們實際要執行測試的內容就是寫在每個 TestMethod 裡，一般大家比較熟知的 3A Principle (<strong>A</strong>rrange-<strong>A</strong>ct-<strong>A</strong>ssert) 可以幫助我們快速聚焦測試方法裡面該撰寫的內容，簡單範例如下：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyTestClass</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod1</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Arrange: 初始化測試過程中所需要的變數、物件或其他設定。</span></span><br><span class="line">        <span class="built_in">int</span> a = <span class="number">1</span>;</span><br><span class="line">        <span class="built_in">int</span> b = <span class="number">2</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// Act: 實際測試操作、內容。</span></span><br><span class="line">        <span class="built_in">int</span> ans = a + b;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Assert: 驗證操作是否產生預期結果。</span></span><br><span class="line">        <span class="built_in">int</span> excepted = <span class="number">3</span>;</span><br><span class="line">        Assert.AreEqual(expected, actual);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="測試組件">測試組件</h2>
+<p>一個 MSTest 專案建置完成後會產生一個組件(Assembly)，白話來說就是 bin 目錄的 dll 檔案，其中可以包含多個 TestClass，而一個 TestClass 裡可以有各自的 TestMethod (層級如下圖)，此外，我們會使用 <strong><code>[TestClass]</code></strong> 和 <strong><code>[TestMethod]</code></strong> 屬性項目在 MSTest 專案標記程式碼中哪些是測試類別與測試方法，下列四種寫法都代表相同的意思：</p>
+<ul>
+<li>[TestClass()]</li>
+<li>[TestClassAttribute()]</li>
+<li>[TestClass]</li>
+<li>[TestClassAttribute]</li>
+</ul>
+<div style="max-width: 800px; text-align:center;">
+<pre class="mermaid">flowchart LR
+  subgraph 測試組件 Assembly 
+    subgraph 測試類別 TestClass 
+        subgraph 測試方法 TestMethod 
+            Test1 --> Test2 --> TestN
+        end
+    end    
+  end</pre>
+</div>
+<h2 id="生命週期">生命週期</h2>
+<p>當我們實際在撰寫或執行多個測試時，經常需要在不同情境時初始化或清除測試資料，而上述提到的 <strong>組件層級</strong> / <strong>類別層級</strong> / <strong>測試層級</strong> 都提供了 <mark>Initialize</mark> 和 <mark>Cleanup</mark> 屬性讓我們可以在適當的時機會處理對應的邏輯。在下列範例程式中：TestProject1 組件中包含了兩個類別：Calculator(加法、減法運算)，CaculatorTests(測試類別)，在測試類別中撰寫了兩個 TestMethod (Test_AddMethod 和 Test_SubtractMethod)，同時也加上了 Constructor / Dispose、AssemblyInit / AssemblyCleanup、ClassInit / Cleanup、TestInit / TestCleanup，大家應該不難發現，這些函式都是成對的，可以直接參考下列範例程式碼與執行結果，瞭解一個測試組件從開始執行到結束歷經了哪些階段。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Diagnostics;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Calculator</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Add</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> a + b;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Subtract</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> a - b;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">CalculatorTests</span> : <span class="title">IDisposable</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> Calculator calculator;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">CalculatorTests</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;CalculatorTests - Constructor&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在整個測試程序集開始時執行一次</span></span><br><span class="line">        [<span class="meta">AssemblyInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">AssemblyInit</span>(<span class="params">TestContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;AssemblyInitialize: 測試程序集初始化。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在所有測試執行前初始化，只執行一次</span></span><br><span class="line">        [<span class="meta">ClassInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ClassInit</span>(<span class="params">TestContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;ClassInitialize: 初始化 Calculator 類別實例。&quot;</span>);</span><br><span class="line">            calculator = <span class="keyword">new</span> Calculator();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在每個測試方法執行前調用</span></span><br><span class="line">        [<span class="meta">TestInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestInit</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;TestInitialize: 開始執行新的測試。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 測試加法功能</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">TestCategory(<span class="string">&quot;CalculatorTests&quot;</span>)</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Test_AddMethod</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;Test_AddMethod: 測試加法運算。&quot;</span>);</span><br><span class="line">            <span class="built_in">int</span> result = calculator.Add(<span class="number">5</span>, <span class="number">3</span>);</span><br><span class="line">            Assert.AreEqual(<span class="number">8</span>, result, <span class="string">&quot;加法結果不正確&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 測試減法功能</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">TestCategory(<span class="string">&quot;CalculatorTests&quot;</span>)</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Test_SubtractMethod</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;Test_SubtractMethod: 測試減法運算。&quot;</span>);</span><br><span class="line">            <span class="built_in">int</span> result = calculator.Subtract(<span class="number">10</span>, <span class="number">5</span>);</span><br><span class="line">            Assert.AreEqual(<span class="number">5</span>, result, <span class="string">&quot;減法結果不正確&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在每個測試方法執行後調用</span></span><br><span class="line">        [<span class="meta">TestCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;TestCleanup: 測試完成，清理測試上下文。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在所有測試執行完畢後清理，只執行一次</span></span><br><span class="line">        [<span class="meta">ClassCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ClassCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;ClassCleanup: 清理 Calculator 類別實例。&quot;</span>);</span><br><span class="line">            <span class="comment">//calculator = null;</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在整個測試程序集結束時執行一次</span></span><br><span class="line">        [<span class="meta">AssemblyCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">AssemblyCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;AssemblyCleanup: 測試程序集清理。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Dispose</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;CalculatorTests - Dispose&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/mstest-attribute-lifecycle/console-run-test.png"
+                        class=""
+                 >
+<h2 id="常用屬性">常用屬性</h2>
+<h3 id="逾時設定-TimeoutAttribute">逾時設定 TimeoutAttribute</h3>
+<p><strong><code>TimeoutAttribute</code></strong> 用於設定測試方法的最大執行時間（以<strong>毫秒</strong>為單位）。如果執行測試超過指定的時間限制，測試則會失敗，這個屬性可以讓我們避免測試執行時間過長，或是為某些測試情境設定一個逾時期限，如下範例：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"><span class="keyword">using</span> System.Threading;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">TimeoutExampleTests</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 這個測試會在 500 毫秒內完成，所以它會通過</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">Timeout(1000)</span>]  <span class="comment">// 設置 1 秒的超時</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod_WithSufficientTime</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">500</span>);  <span class="comment">// 模擬較短的處理時間</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);  <span class="comment">// 假設這是測試邏輯</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 這個測試會因為超時而失敗</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">Timeout(1000)</span>]  <span class="comment">// 設置 1 秒的超時</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod_WithTimeout</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1500</span>);  <span class="comment">// 模擬超過1秒的處理時間</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);  <span class="comment">// 假設這是測試邏輯</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="平行測試-ParallelizeAttribute">平行測試 ParallelizeAttribute</h3>
+<p>自 MSTest v2 起，提供了兩個關於平行測試的屬性：</p>
+<ul>
+<li><strong><code>ParallelizeAttribute</code></strong>：可以應用於類別或測試集來啟用平行測試。</li>
+<li><strong><code>DoNotParallelizeAttribute</code></strong>：可以應用於個別測試方法來<mark>禁止</mark>它與其他測試並行執行。</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"><span class="keyword">using</span> System.Threading;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    [<span class="meta">Parallelize(Workers = 2, Scope = ExecutionScope.MethodLevel)</span>]  <span class="comment">// 啟用並行，指定最多兩個工作線程</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ParallelTests</span></span><br><span class="line">    &#123;</span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod1</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod2</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">9</span>, <span class="number">3</span> * <span class="number">3</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 禁止這個方法與其他測試並行執行</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">DoNotParallelize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod3_DoNotParallelize</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">15</span>, <span class="number">5</span> * <span class="number">3</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong><code>[Parallelize(Workers = 2, Scope = ExecutionScope.MethodLevel)]</code></strong>：
+<ul>
+<li>Workers = 2 表示最多使用 2 個執行緒來執行平行測試。</li>
+<li>Scope = ExecutionScope.MethodLevel 表示在方法層級平行測試，代表每個測試方法可以平行執行；如果想要在類別層級，可以設定為 ExecutionScope.ClassLevel。</li>
+</ul>
+</li>
+<li>TestMethod1 和 TestMethod2：<br>
+因為類別層級已經使用 Parallelize 屬性，並且設定 Workers = 2 表示這兩個測試方法會在執行緒池裡平行執行。</li>
+<li>TestMethod3_DoNotParallelize：<br>
+這個方法加了 <strong><code>[DoNotParallelize]</code></strong>，所以它<mark>不會</mark>與其他方法同時執行，當 TestMethod3_DoNotParallelize 執行時，其他平行測試會暫停，直到這個測試完成。</li>
+</ul>
+<h2 id="後記">後記</h2>
+<p>MSTest 從推出至今已經來到了 v3，從一開始只能在 Windows 平台上運作，隨著 .NET Framework 的演進，也逐步支援跨平台運行，特別是在 .NET Core 和 .NET 5 之後，MSTest 成為了 .NET 生態系中一個可靠且簡單易用的測試框架。它不僅適合快速撰寫單元測試，還能與多種持續整合和部署工具無縫結合，例如：Azure DevOps 和 GitHub Actions。</p>
+<p>由於應用程式複雜度日益提高，MSTest 從 v2 開始也提供了平行測試，允許多個測試同時執行，這不僅加快了測試速度，也提高了 CI/CD 的效能。平行測試使開發人員能夠在不影響測試完整性的前提下，顯著縮短測試週期，對大型專案尤為重要。此外，MSTest 也包含：數據驅動測試、生命週期管理、異常處理測試等，這讓我們能夠更全面地驗證應用程式的功能和效能。</p>
+<p>MSTest 的易用性使得它適合不同規模的專案，加上 Visual Studio 開發工具與 Azure DevOps Services 的支援，不論是小型開發團隊或是大型企業應用，都能輕鬆採用，為軟體開發專案品質把關，也讓整個 DevOps 流程更加完善。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://github.com/microsoft/testfx"  target="_blank">⁍ Microsoft Test Framework<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/core/testing/unit-testing-with-mstest?source=recommendations"  target="_blank">⁍ 使用 MSTest 和 .NET 進行 C# 單元測試<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/core/testing/unit-testing-mstest-writing-tests-attributes"  target="_blank">⁍ MSTest 屬性<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://www.meziantou.net/mstest-v2-setup-a-test-project-and-run-tests.htm"  target="_blank">⁍ MSTest v2: Setup a test project and run tests<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>]]></content>
+      <tags>
+        <tag>MSTest</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用 VB5/VB6 連線至 Azure DevOps Server 2022 (TFVC)</title>
+    <url>/post/2025/04/vb-connect-to-azure-devops/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/vb-connect-to-azure-devops/VS_TFS.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>Visual Studio 從 97 發展到現在的 2022 號稱地表最強開發工具，能夠與 TFS 或 Git 版控連線自然不是問題，最近剛好遇到客戶還有許多 VB5/VB6 開發的 Winform 程式需要維護，而且版控伺服器也從 TFS 2013 升級至 Azure DevOps Server 2022，藉此機會向大家整理說明 Visual Studio 各版本與 TFS / Azure DevOps 連線的需求與設定。<br>
+<br></p>
+<span id="more"></span>
+<br>
+<h2 id="前言">前言</h2>
+<p>我們使用 Visual Studio 開發工具能夠與 TFS 連線是因為它的功能包含了 <strong><code>Team Explorer</code></strong>，明確來說是從 Visual Studio 2005 首次引入 TFS (Team Foundation Server) 起才開始包含此功能，在這個版本之前則需要額外安裝 <strong>Team Explorer</strong> 和 <strong>MSSCCI Provider</strong> (Microsoft Source Code Control Integration) 才能夠在開發工具中與 TFS 進行整合。</p>
+<h2 id="版本相依性">版本相依性</h2>
+<p>作業系統、開發工具與版控伺服器彼此間有一定的版本相依性，Windows XP 無法安裝 Team Explorer 2013，只能安裝 Team Explorer 2010，搭配 MSSCCI Provider 2010 可以連線的版本有：TFS 2005 ~ 2018 和 Azure DevOps Server 2019/2020 <mark>(不包含2022)</mark>，若舊開發環境 (Visual Studio 2013 以前) 想要與 Azure DevOps Server 2022 連線，必要最低門檻可以參考下列配置：</p>
+<ul>
+<li><strong>Windows 7 以上</strong></li>
+<li><strong>Team Explorer 2013</strong></li>
+<li><strong>MSSCCI Provider 2013</strong></li>
+</ul>
+<p>Visual Studio 97/6/2003~2008 搭配 Team Explorer 2010 + MSSCCI Provider 2010 可以從開發工具連線至 TFS 2010~2017 和 Azure DevOps Server 2019/2020，若要連線至 Azure DevOps Server 2022 則需要搭配 Team Explorer 2013 + MSSCCI Provider 2013 才行，各版本 MSSCCI Provider 可以自 Visual Studio | Marketplace 取得：</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2010MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2010 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.TeamFoundationServerMSSCCIProvider201064-bit"  target="_blank">⁍ Team Foundation Server MSSCCI Provider 2010 64-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC-9956"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M-11387"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+<h2 id="VB5-VB6">VB5/VB6</h2>
+<p>在 VB5/VB6 的工具列需要額外安裝上述提到的 MSSCCI Provider 2010/2013 才會出現 <strong>Team Foundation</strong> 選項，讓我們在開發工具中將程式碼與版控伺服器整合。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/vb-connect-to-azure-devops/create-project-from-tfs.png"
+                        class=""
+                 >
+<p>若出現下列錯誤訊息，就是 MSSCCI Provider 版本太舊了，無法連線到新的版控伺服器，例如：安裝 MSSCCI Provider 2010 但想要與 Azure DevOps Server 2022 連線，唯一解法就是安裝 Team Explorer 2013 + MSSCCI Provider 2013。</p>
+<blockquote>
+<p>TF14045: The identity 主機名稱\2ffd15ae-91e4-4df8-a346-e5be57e1340e is not a recognized identity.</p>
+</blockquote>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/vb-connect-to-azure-devops/not-a-recognized-identity.png"
+                        class=""
+                 >
+<p>在實務情境可能還會遇到其他各種版本組合，經此次嘗試後，確認 VB5/VB6 都還可以與 Azure DevOps Server 2022 的 TFVC 版控進行整合，這邊有篇文章將各種組合條列得很詳盡，也提供大家參考。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://jessehouwing.net/azure-devops-connect-any-visual-studio-version/"  target="_blank">⁍ Connect any version of Visual Studio to Azure DevOps or Azure DevOps Server<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+]]></content>
+      <tags>
+        <tag>VB5</tag>
+        <tag>VB6</tag>
+        <tag>TFS</tag>
+        <tag>Team Explorer</tag>
+        <tag>MSSCCI Provider</tag>
       </tags>
   </entry>
 </search>
