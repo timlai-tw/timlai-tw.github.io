@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Azure, DevOps, Azure DevOps, Scrum, Kanban, Azure APIM, 敏捷開發, 雲端技術, 開發心得, 開發筆記">
+    <meta name="description" content="分享 Azure 雲端技術應用與開發心得，也包含 Azure DevOps 實戰經驗與其他日常開發筆記。">
+    <meta name="author" content="Tim Lai">
+    
+    <title>
+        
+            VS Code 的 Custom Instructions |
+        
+        漫步在雲端
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/logoT.png">
+    
+    
+<link rel="stylesheet" href="/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/brands.min.css">
+
+    
+        
+            
+        
+            
+                
+<link rel="stylesheet" href="/css/markdown.css">
+
+            
+        
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"timlai.dev","root":"/","language":"zh-TW","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"漫步在雲端","author":"Tim Lai","avatar":"/images/angu100.jpg","logo":"/images/logoT.png","favicon":"/images/logoT.png"},"menu":{"home":"/                         || fa-solid fa-home","archives":"/archives             || fa-solid fa-box-archive","tags":"/tags                     || fa-solid fa-tags","links":"/links                   || fa-solid fa-link","about":"/about                   || fa-solid fa-address-card"},"first_screen":{"enable":false,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"If something is difficult or painful, do it more often.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":null,"weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":"https://www.facebook.com/yutai.lai.91","email":"yutai.lai@gmail.com"}},"scroll":{"progress_bar":true,"percent":false,"hide_header":true},"home":{"announcement":null,"category":true,"tag":true,"post_datetime":"updated"},"post":{"author_badge":{"enable":false,"level_badge":false,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":false,"min2read":false},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":true,"share":false,"reward":{"enable":false,"img_link":null,"text":null,"icon":null}},"code_block":{"tools":{"enable":true,"style":"default"},"highlight_theme":"default"},"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true,"layout":"left"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":true}},"local_search":{"enable":true,"preload":true},"comment":{"enable":true,"use":"disqus","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":"timlai-tw","github_admins":"timlai-tw","repository":"hexo-site-comments","client_id":"Ov23liXKo7rRoe2CP8fx","client_secret":"206bafbd0af7bfbc4489392884591ac53c68b63c","proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.36"},"waline":{"server_url":null,"reaction":false,"version":"3.2.1"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":"yutailai"}},"rss":{"enable":true},"lazyload":{"enable":true},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":true},"footer":{"since":2023,"word_count":false,"site_deploy":{"enable":true,"provider":"github","url":null},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":true,"css":[null,"/css/markdown.css"],"js":[null]},"root":"","source_data":{"links":[{"title":"訂閱授權與定價"},{"name":"Visual Studio","link":"https://visualstudio.microsoft.com/zh-hant/subscriptions/#%e5%b7%a5%e5%85%b7?cat=visual-studio-enterprise-subscription-with-github-enterprise-zh-hant","description":"Visual Studio 訂閱與權益","avatar":"/images/icon/microsoft.png"},{"name":"Microsoft Licensing","link":"https://www.microsoft.com/licensing/terms/zh-TW/productoffering/AzureDevOpsServer/OL","description":"Microsoft 產品條款","avatar":"/images/icon/microsoft.png"},{"name":"Azure DevOps","link":"https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/","description":"Azure DevOps Services 定價","avatar":"/images/icon/azure-devops.svg"},{"name":"Azure 定價計算機","link":"https://azure.microsoft.com/zh-tw/pricing/calculator/","description":"計算使用 Azure 的預估每小時或每月成本。","avatar":"/images/icon/calculator.png"},{"title":"常用下載"},{"name":"Visual Studio","link":"https://visualstudio.microsoft.com/zh-hant/downloads/","description":"Visual Studio / VS Code 與其他工具、架構和可轉散發套件","avatar":"/images/icon/visual-studio-product-icon.svg"},{"name":"Azure DevOps Office® Integration 2019","link":"https://visualstudio.microsoft.com/zh-hant/downloads/#azure-devops-office-integration-2019","description":"Azure DevOps 與 Office 整合工具","avatar":"/images/icon/excel.webp"},{"name":"Microsoft Power BI Desktop","link":"https://www.microsoft.com/zh-tw/download/details.aspx?id=58494","description":"結合了先進的互動式視覺效果，並內建領先業界的資料查詢與模型。","avatar":"/images/icon/power-bi-icon-384x512-bujnuaon.png"},{"name":"Visual Studio Marketplace","link":"https://marketplace.visualstudio.com/","description":"尋找、安裝及管理 Visual Studio 的延伸模組","avatar":"/images/icon/azure-marketplace.png"},{"name":"Microsoft Source Code Control Interface (MSSCCI) Provider","link":"https://marketplace.visualstudio.com/search?term=msscci&target=VS&category=Tools&vsVersion=&subCategory=All&sortBy=Relevance","description":"MSSCCI Provider 2010~2015 32/64 位元","avatar":"/images/icon/msscci.jpg"}]},"version":"4.2.2"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分鐘前","hour":"%s 小時前","day":"%s 天前","week":"%s 周前","month":"%s 個月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"複製程式碼","copied":"已複製","fold":"折疊程式碼區塊","folded":"已折疊"}
+    KEEP.language_copy_copyright = {"copy":"複製版權資訊","copied":"已複製","title":"原文標題","author":"原文作者","link":"原文連結"}
+  </script>
+    
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2LZYYGR2Y3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2LZYYGR2Y3');
+</script>
+
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="漫步在雲端" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left flex-start border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="/images/logoT.png">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               漫步在雲端
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc border-box">
+                <ul class="menu-list border-box">
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-home"></i>
+                                
+                                <!-- 首頁 -->
+                                首頁
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/archives">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                
+                                <!-- 檔案室 -->
+                                檔案室
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/tags">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-tags"></i>
+                                
+                                <!-- 標籤 -->
+                                標籤
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/links">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-link"></i>
+                                
+                                <!-- 連結 -->
+                                連結
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/about">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-address-card"></i>
+                                
+                                <!-- 關於 -->
+                                關於
+                                
+                            </a>
+                            
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="menu-text-color fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile border-box flex-start">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list border-box">
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-home"></i>
+                                </span>
+                            
+                            <!-- 首頁 -->
+                            首頁
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/archives">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                </span>
+                            
+                            <!-- 檔案室 -->
+                            檔案室
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/tags">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-tags"></i>
+                                </span>
+                            
+                            <!-- 標籤 -->
+                            標籤
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/links">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-link"></i>
+                                </span>
+                            
+                            <!-- 連結 -->
+                            連結
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/about">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-address-card"></i>
+                                </span>
+                            
+                            <!-- 關於 -->
+                            關於
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        VS Code 的 Custom Instructions
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/angu100.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Tim Lai</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+
+    <div class="post-meta-info-container border-box post">
+
+
+
+<!-- <div class="post-meta-info-container border-box post"> -->
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2025-11-01 11:11:24</span>
+            </span>
+
+            <span class="meta-info-item post-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="datetime" data-updated="Sun Nov 02 2025 22:29:49 GMT+0800">2025-11-02 22:29:49</span>
+            </span>
+        
+
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/GitHub-Copilot/">GitHub Copilot</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/VSCode/">VSCode</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item post-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body ">
+                    
+
+                    
+                         <img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/11/vscode-custom-instructions/vscode-github-copilot.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>隨著 AI 輔助開發工具的普及，GitHub Copilot 已成為許多開發者日常工作中不可或缺（CP值最高）的助手。在預設情況下 GitHub Copilot 僅能提供通用的程式碼建議與回應。為了讓 AI 更貼近專案需求、遵循團隊的程式碼風格，以及提升開發效率，VS Code 提供了多種自訂機制，讓開發者能夠客製化 GitHub Copilot 的行為。本文將介紹 VS Code 中 GitHub Copilot 可以自訂的幾種方式：Custom Instructions、Prompt Files 以及 Chat Modes，協助大家打造更符合個人或團隊需求的 AI 開發環境。</p>
+<span id="more"></span>
+<br>
+<p>GitHub Copilot 可以依據上下文提供程式碼建議，但每個專案或團隊都有其獨特的需求：不同的程式碼風格、特定的開發框架、安全性檢查標準，或是團隊約定的最佳實踐。透過自訂機制我們可以：</p>
+<ul>
+<li><strong>統一程式碼風格</strong>：確保生成的程式碼符合專案規範。</li>
+<li><strong>提升工作效率</strong>：減少重複性的提示輸入，讓 AI 自動遵循既定規則。</li>
+<li><strong>強化專案一致性</strong>：讓所有團隊成員使用相同的 AI 輔助標準。</li>
+<li><strong>擴展 AI 能力</strong>：透過工具整合與外部服務連接，讓 AI 執行更複雜的任務。</li>
+</ul>
+<p>在 VS Code 中我們可以從最基本的設定逐步延伸到進階的工作流程，依需求打造專屬的 AI 開發環境。VS Code 的工作區設定通常儲存在專案根目錄下的 <strong><code>.vscode</code></strong> 資料夾；而 GitHub Copilot 的客製 instructions、prompt 與 chat modes 則常放在 <strong><code>.github</code></strong> 目錄中。順帶一提，VS Code 的使用者設定也可以放在系統的使用者設定（User Settings）路徑：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">VS Code</span><br><span class="line">%APPDATA%\Code\User\settings.json</span><br><span class="line">%APPDATA%\Code\User\prompts\*.md</span><br><span class="line">--</span><br><span class="line">VS Code Insider</span><br><span class="line">%APPDATA%\Code - Insiders\User\settings.json</span><br><span class="line">%APPDATA%\Code - Insiders\User\prompts\*.md</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/11/vscode-custom-instructions/custom-instructions.jpg"
+                        class=""
+                 >
+<h2 id="Custom-Instructions">Custom Instructions</h2>
+<p>Custom Instructions 讓我們可以在 Markdown 檔案中定義通用規則，這些 instructions 會自動套用到 AI 產生程式碼的方式以及處理其他開發任務的行為。相較於在每次對話中手動重複提供相同的上下文，Custom Instructions 能確保 AI 回應始終符合我們程式碼實作與專案需求。需要注意的是 Custom Instructions <mark><strong>不會套用於編輯器中的程式碼自動完成功能（code completions），僅影響聊天互動的回應內容</strong></mark>。</p>
+<h3 id="Instructions-類型">Instructions 類型</h3>
+<p>VS Code 支援下列基於 Markdown 的 instructions 檔案，這些檔案可以同時存在，VS Code 會將它們合併並加入到聊天的上下文中：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">檔案類型</th>
+<th style="text-align:left">說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">.github/copilot-instructions.md</td>
+<td style="text-align:left">單一檔案且檔名與路徑都要符合規定，會自動套用於工作區中的所有聊天請求。</td>
+</tr>
+<tr>
+<td style="text-align:left">.instructions.md</td>
+<td style="text-align:left">可依據實際需求建立多個檔案，針對特定任務或檔案使用，透過 <strong><code>applyTo</code></strong> 定義適用範圍。</td>
+</tr>
+<tr>
+<td style="text-align:left">AGENTS.md （experimental）</td>
+<td style="text-align:left">可以在工作區中定義多個 AI agent 的使用情境。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="使用-copilot-instructions-md">使用 copilot-instructions.md</h3>
+<p>適合定義全域的規範（例如：目前專案的 Coding Guidline）, 在工作區根目錄建立 <strong>.github/copilot-instructions.md</strong> 檔案後，VSCode 就會自動將其套用到所有聊天請求中。</p>
+<p><strong>設定步驟：</strong></p>
+<ol>
+<li>啟用 VS Code 設定 <strong>github.copilot.chat.codeGeneration.useInstructionFiles</strong>（預設是已啟用)。</li>
+<li>在工作區根目錄建立 <strong>.github/copilot-instructions.md</strong> 檔案。</li>
+<li>使用 Markdown 格式以自然語言描述內容。</li>
+</ol>
+<p><strong>以 C# Coding Guidline 為例：</strong></p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># 專案程式碼規範（C# / .NET 8）</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 使用 C# 開發（目標平台：.NET 8），專案建議啟用 Nullable Reference Types（在 csproj 中設定 <span class="code">`&lt;Nullable&gt;enable&lt;/Nullable&gt;`</span>）</span><br><span class="line"><span class="bullet">-</span> 遵循 <span class="code">`.editorconfig`</span> 與 Microsoft 建議（使用 <span class="code">`dotnet format`</span>、Roslyn analyzers，如 <span class="code">`Microsoft.CodeAnalysis.NetAnalyzers`</span>），並在 CI 中自動檢查格式與規則</span><br><span class="line"><span class="bullet">-</span> 命名規則：</span><br><span class="line"><span class="bullet">  -</span> 公開型別（類別、結構、介面）、方法、屬性、事件：PascalCase（介面以 <span class="code">`I`</span> 前綴）</span><br><span class="line"><span class="bullet">  -</span> 私有欄位使用 <span class="code">`_camelCase`</span>（底線 + camelCase）或 <span class="code">`camelCase`</span>，局部變數使用 <span class="code">`camelCase`</span></span><br><span class="line"><span class="bullet">  -</span> 非同步方法以 <span class="code">`Async`</span> 後綴（例如：<span class="code">`GetItemsAsync`</span>）</span><br><span class="line"><span class="bullet">-</span> 所有公開 API 與重要方法應加上 XML 文件註解（<span class="code">`///`</span>），說明用途、參數與回傳值，以利產生文件與使用者理解</span><br><span class="line"><span class="bullet">-</span> 優先使用 <span class="code">`async`</span>/<span class="code">`await`</span>，避免使用 <span class="code">`async void`</span>（事件處理器除外）；所有可取消的非同步方法應接收 <span class="code">`CancellationToken`</span></span><br><span class="line"><span class="bullet">-</span> 使用依賴注入（DI）與介面抽象，避免全域靜態狀態；以相依反轉提高可測性</span><br><span class="line"><span class="bullet">-</span> 資源釋放使用 <span class="code">`using`</span> / <span class="code">`await using`</span> 或透過 DI 管理生命週期，避免手動忘記 Dispose</span><br><span class="line"><span class="bullet">-</span> 序列化建議使用 <span class="code">`System.Text.Json`</span>（除非有特殊需求才考慮 Newtonsoft.Json），並注意用 JsonSerializerOptions 設定</span><br><span class="line"><span class="bullet">-</span> 例外處理：不要靜默吞錯；捕獲例外時要有明確策略（記錄、重試或以 Domain-specific 例外包裝再拋出）</span><br><span class="line"><span class="bullet">-</span> 日誌請使用結構化日誌（例如：Microsoft.Extensions.Logging），在日誌中記錄足夠的上下文，不要記錄敏感資訊</span><br><span class="line"><span class="bullet">-</span> 測試：為核心邏輯撰寫單元測試、為重要整合與端對端流程建立整合測試，CI 中執行 <span class="code">`dotnet test`</span></span><br><span class="line"><span class="bullet">-</span> 效能考量：避免不必要的複製與分配；在熱路徑考慮使用 <span class="code">`Span&lt;T&gt;/Memory&lt;T&gt;`</span> 與 pooling 技術，但以可讀性為優先</span><br><span class="line"><span class="bullet">-</span> 安全性：不要在原始碼中放置密碼或金鑰；使用 Secret Manager、環境變數或外部秘密管理系統（如 Key Vault）</span><br><span class="line"><span class="bullet">-</span> 避免使用 <span class="code">`dynamic`</span> 或 <span class="code">`unsafe`</span>，除非有充分理由並在程式碼中加上註解與測試</span><br></pre></td></tr></table></figure>
+<h3 id="使用-instructions-md">使用 .instructions.md</h3>
+<p>當我們需要針對不同的程式語言、框架或任務建立專屬指示時，可以使用 <strong>.instructions.md</strong> 檔案。<mark>透過 <strong>applyTo</strong> 屬性，可以指定套用的檔案或路徑範圍</mark>。</p>
+<p><strong>檔案結構：</strong></p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">description: &quot;Python 專案程式碼規範&quot;</span><br><span class="line"><span class="section">applyTo: &quot;<span class="strong">**/<span class="emphasis">*.py&quot;</span></span></span></span><br><span class="line"><span class="emphasis"><span class="strong"><span class="section">---</span></span></span></span><br><span class="line"><span class="emphasis"><span class="strong"><span class="section"></span></span></span></span><br><span class="line"><span class="emphasis"><span class="strong"><span class="section"># Python 程式撰寫風格</span></span></span></span><br><span class="line"><span class="emphasis"><span class="strong"><span class="section"></span></span></span></span><br><span class="line"><span class="emphasis"><span class="strong"><span class="section">- 遵循 PEP 8 風格指南</span></span></span></span><br><span class="line"><span class="emphasis"><span class="strong"><span class="section">- 優先考慮可讀性與清晰度</span></span></span></span><br><span class="line"><span class="emphasis"><span class="strong"><span class="section">- 為每個函式撰寫清晰簡潔的註解</span></span></span></span><br><span class="line"><span class="emphasis"><span class="strong"><span class="section">- 確保函式名稱具有描述性並包含型別提示</span></span></span></span><br><span class="line"><span class="emphasis"><span class="strong"><span class="section">- 保持適當的縮排（每層使用 1 個 Tab 間隔）</span></span></span></span><br></pre></td></tr></table></figure>
+<p><strong>建立方式：</strong></p>
+<ol>
+<li>在 Chat 中選擇 <strong>Configure Chat &gt; Instructions &gt; New instruction file</strong></li>
+<li>選擇儲存位置（Workspace 或 User Profile）</li>
+<li>輸入檔案名稱並撰寫指示內容</li>
+<li>使用 applyTo 定義套用的範圍（例如：<strong>*.ts</strong> , <strong>*.tsx</strong>）</li>
+</ol>
+<p><mark><strong>注意事項</strong></mark><br>
+過去我們習慣把各種自訂情境集中寫在 <strong>.github/copilot-instructions.md</strong>，但這樣容易造成不必要的 token 浪費或增加模型誤判（幻覺）的風險。現在可以透過建立多個獨立的 instruction 檔案來區分不同情境，並以 <strong>applyTo</strong> 指定要套用的檔案或路徑。不過在定義 custom instruction 時，要特別留意 <strong>applyTo</strong> 的範圍設定。例如下圖所示，本來只想針對特定檔案執行程式碼審查（review）以檢查是否符合 coding guideline，但若其他情境也設定了相同的 <strong>applyTo</strong>（例如都指定 *.cs），就可能出現規則衝突或語意矛盾，而這類上下文衝突往往是造成 AI 幻覺的主要原因。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/11/vscode-custom-instructions/review-coding-guideline.jpg"
+                        class=""
+                 >
+<h3 id="設定檔">設定檔</h3>
+<p>對於 Custom Instructions 我們也可以透過 VS Code 的使用者設定或工作區設定來定義。在設定檔（VS Code 的 <strong>settings.json</strong>）中，既可以直接把內容輸入到 <strong><code>text</code></strong> 屬性，也可以用 <strong><code>file</code></strong> 屬性指定實體檔案路徑。此外，<strong>Code generation</strong> 與 <strong>Test generation</strong> 已明確建議改用 Instruction files，並標示為 deprecated（已棄用）。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">使用情境</th>
+<th style="text-align:left">設定項目</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Code review</td>
+<td style="text-align:left">github.copilot.chat.reviewSelection.instructions</td>
+</tr>
+<tr>
+<td style="text-align:left">Commit message generation</td>
+<td style="text-align:left">github.copilot.chat.commitMessageGeneration.instructions</td>
+</tr>
+<tr>
+<td style="text-align:left">Pull Request title and description generation</td>
+<td style="text-align:left">github.copilot.chat.pullRequestDescriptionGeneration.instructions</td>
+</tr>
+<tr>
+<td style="text-align:left">Code generation <strong>(deprecated)</strong></td>
+<td style="text-align:left">github.copilot.chat.codeGeneration.instructions</td>
+</tr>
+<tr>
+<td style="text-align:left">Test generation <strong>(deprecated)</strong></td>
+<td style="text-align:left">github.copilot.chat.testGeneration.instructions</td>
+</tr>
+</tbody>
+</table>
+<p><strong>設定範例：</strong></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;github.copilot.chat.pullRequestDescriptionGeneration.instructions&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span> <span class="attr">&quot;text&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Always include a list of key changes.&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;github.copilot.chat.reviewSelection.instructions&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span> <span class="attr">&quot;file&quot;</span><span class="punctuation">:</span> <span class="string">&quot;guidance/backend-review-guidelines.md&quot;</span> <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span> <span class="attr">&quot;file&quot;</span><span class="punctuation">:</span> <span class="string">&quot;guidance/frontend-review-guidelines.md&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/11/vscode-custom-instructions/custom-instructions-settings.jpg"
+                        class=""
+                 >
+<h3 id="撰寫技巧">撰寫技巧</h3>
+<ul>
+<li>保持指示簡短且獨立，每條指示應該是單一、簡單的陳述。</li>
+<li>針對特定任務或程式語言，使用多個 <strong>.instructions.md</strong> 檔案，並透過 <strong><code>applyTo</code></strong> 屬性選擇性套用。</li>
+<li>將專案特定的指示儲存在工作區中，以便與團隊成員共享並納入版本控制。</li>
+<li>在 Prompt Files 和 Chat Modes 中參考 Instructions 檔案，保持內容簡潔並避免重複。</li>
+</ul>
+<h2 id="Prompt-Files">Prompt Files</h2>
+<p>Prompt Files 是可重複使用的 Markdown 檔案，可以定義我們常用、可重複執行的任務。與 Custom Instructions 不同的是，Prompt Files 是獨立的提示，可以在聊天中直接執行。我們可以在其中包含任務特定的上下文與執行指引，並結合 Custom Instructions 確保複雜任務的一致執行，在 VS Code 的 GitHub Copilot 對話視窗中只要輸入 <strong><code>/</code></strong> 就可以選擇自訂的 Prompt Files。</p>
+<h3 id="檔案結構">檔案結構</h3>
+<p>Prompt Files 使用 <mark><strong>.prompt.md</strong></mark> 副檔名，結構如下：</p>
+<p><strong>YAML frontmatter</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">&quot;建立 React 表單元件&quot;</span></span><br><span class="line"><span class="attr">mode:</span> <span class="string">&quot;agent&quot;</span></span><br><span class="line"><span class="attr">model:</span> <span class="string">&quot;Claude Sonnet 4&quot;</span></span><br><span class="line"><span class="attr">tools:</span> [<span class="string">&quot;search&quot;</span>, <span class="string">&quot;fetch&quot;</span>, <span class="string">&quot;git&quot;</span>]</span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">欄位</th>
+<th style="text-align:left">說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">description</td>
+<td style="text-align:left">提示的簡短描述。</td>
+</tr>
+<tr>
+<td style="text-align:left">mode</td>
+<td style="text-align:left">聊天模式：<code>ask</code>、<code>edit</code> 或 <code>agent</code>（預設）。</td>
+</tr>
+<tr>
+<td style="text-align:left">model</td>
+<td style="text-align:left">執行提示時使用的語言模型，若未指定則使用目前選擇的模型。</td>
+</tr>
+<tr>
+<td style="text-align:left">tools</td>
+<td style="text-align:left">可使用的工具或工具集名稱陣列。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Markdown 格式的提示指示</strong></p>
+<p>在主體中可以使用變數，例如：</p>
+<ul>
+<li>工作區變數：<code>$&#123;workspaceFolder&#125;</code>、<code>$&#123;workspaceFolderBasename&#125;</code></li>
+<li>選取變數：<code>$&#123;selection&#125;</code>、<code>$&#123;selectedText&#125;</code></li>
+<li>檔案上下文變數：<code>$&#123;file&#125;</code>、<code>$&#123;fileBasename&#125;</code>、<code>$&#123;fileDirname&#125;</code></li>
+<li>輸入變數：<code>$&#123;input:variableName&#125;</code>、<code>$&#123;input:variableName:placeholder&#125;</code></li>
+</ul>
+<h3 id="建立-Prompt-File">建立 Prompt File</h3>
+<p><strong>步驟：</strong></p>
+<ol>
+<li>啟用設定 <strong>chat.promptFiles</strong> （預設已啟用，且路徑是 .github/prompts）。</li>
+<li>在 Chat 視窗中選擇 <strong>Configure Chat &gt; Prompt Files &gt; New prompt file</strong>。</li>
+<li>選擇儲存位置（Workspace 或 User Profile）。</li>
+<li>輸入檔案名稱並使用 Markdown 格式撰寫提示內容。</li>
+</ol>
+<p><strong>範例：</strong></p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">description: &quot;建立可重複使用的 React 表單元件&quot;</span><br><span class="line">mode: &quot;agent&quot;</span><br><span class="line"><span class="section">tools: [&quot;search&quot;, &quot;edit&quot;]</span></span><br><span class="line"><span class="section">---</span></span><br><span class="line"></span><br><span class="line"><span class="section"># 建立 React 表單元件</span></span><br><span class="line"></span><br><span class="line">請建立一個可重複使用的 React 表單元件，具有以下特性：</span><br><span class="line"></span><br><span class="line"><span class="bullet">1.</span> 使用 TypeScript 並包含完整的型別定義</span><br><span class="line"><span class="bullet">2.</span> 支援表單驗證（使用 React Hook Form）</span><br><span class="line"><span class="bullet">3.</span> 包含錯誤訊息顯示</span><br><span class="line"><span class="bullet">4.</span> 具有可自訂的樣式屬性</span><br><span class="line"><span class="bullet">5.</span> 提供使用範例與說明文件</span><br><span class="line"></span><br><span class="line">元件名稱：$&#123;input:componentName:FormComponent&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="使用-Prompt-File">使用 Prompt File</h3>
+<p>有三種方式可以執行 Prompt File：</p>
+<ol>
+<li><strong>在 Chat 視窗中輸入</strong>：在聊天輸入欄位中輸入 <code>/</code> 後接 prompt file 名稱和參數，例如：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/create-react-form: componentName=LoginForm</span><br></pre></td></tr></table></figure>
+</li>
+<li><strong>使用命令面板</strong>：執行 <strong>Chat: Run Prompt</strong> 命令並從列表中選擇 prompt file。</li>
+<li><strong>直接執行</strong>：在編輯器中開啟 prompt file，點擊編輯器標題列的播放按鈕。</li>
+</ol>
+<h2 id="Chat-Modes">Chat Modes</h2>
+<p>Chat Modes 可以為特定角色或任務建立專屬的 AI 助理，在 Markdown 檔案中我們可以定義其範圍與能力、可存取的工具以及語言模型。不同的任務需要不同的能力，例如在規劃階段可能只需要唯讀工具進行研究與分析以防止意外的程式碼變更，而實作模式則需要完整的編輯能力。Chat Modes 讓我們能夠精確指定每個任務可用的工具，確保 AI 具備適合該工作的能力。</p>
+<h3 id="Chat-Mode-檔案結構">Chat Mode 檔案結構</h3>
+<p>Chat Mode 檔案使用 <mark><strong>.chatmode.md</strong></mark> 副檔名，結構如下：</p>
+<p><strong>YAML frontmatter</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">&quot;建立實作計畫&quot;</span></span><br><span class="line"><span class="attr">tools:</span> [<span class="string">&quot;search&quot;</span>, <span class="string">&quot;fetch&quot;</span>]</span><br><span class="line"><span class="attr">model:</span> <span class="string">&quot;Claude Sonnet 4&quot;</span></span><br><span class="line"><span class="attr">handoffs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">label:</span> <span class="string">&quot;開始實作&quot;</span></span><br><span class="line">    <span class="attr">agent:</span> <span class="string">&quot;implementation&quot;</span></span><br><span class="line">    <span class="attr">prompt:</span> <span class="string">&quot;請根據上述計畫開始實作&quot;</span></span><br><span class="line">    <span class="attr">send:</span> <span class="literal">false</span></span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">欄位</th>
+<th style="text-align:left">說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">description</td>
+<td style="text-align:left">Chat mode 的簡短描述，顯示在聊天輸入欄位的文字。</td>
+</tr>
+<tr>
+<td style="text-align:left">tools</td>
+<td style="text-align:left">可用的工具或工具集名稱列表。</td>
+</tr>
+<tr>
+<td style="text-align:left">model</td>
+<td style="text-align:left">執行提示時使用的 AI 模型。</td>
+</tr>
+<tr>
+<td style="text-align:left"><mark>handoffs</mark> （experimental）</td>
+<td style="text-align:left">可選的後續動作或提示列表，用於在 Chat Modes 之間轉換。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Handoffs">Handoffs</h3>
+<p>Handoffs 是 VS Code Insiders 版本的實驗性功能，讓我們能夠建立引導式的順序工作流程，在不同 Chat Modes 之間轉換並提供建議的下一步操作。在聊天回應完成後，會出現交接按鈕，讓使用者可以帶著相關上下文提示移動到下一個模式。以軟體開發流程為例，我們可以設計如下三個 Chat mode：</p>
+<ul>
+<li>規劃（planning）— 產出任務清單與接受準則。</li>
+<li>實作（implementation）— 產生/修改程式碼、建立測試、建立 branch。</li>
+<li>程式碼審查（review）— 讀取程式碼變更、產生 review 建議和 PR 描述。</li>
+</ul>
+<p>透過 Handoffs 可以讓我們在「規劃」完成後，一鍵把上下文（任務清單、接受準則、檔案清單）傳到「實作」模式，或從「實作」傳到「審查」模式，讓下一個模式能立即取得足夠的上下文與行動指示（也可選擇自動執行或先由使用者確認）。</p>
+<p><strong>planning.chatmode.md</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">&quot;規劃模式 — 擬定需求與任務拆分&quot;</span></span><br><span class="line"><span class="attr">tools:</span> [<span class="string">&quot;search&quot;</span>]</span><br><span class="line"><span class="attr">model:</span> <span class="string">&quot;default&quot;</span></span><br><span class="line"><span class="attr">handoffs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">label:</span> <span class="string">&quot;開始實作&quot;</span></span><br><span class="line">    <span class="attr">agent:</span> <span class="string">&quot;implementation&quot;</span></span><br><span class="line">    <span class="attr">prompt:</span> <span class="string">|</span></span><br><span class="line"><span class="string">      我已完成規劃。請以下列任務清單開始實作：</span></span><br><span class="line"><span class="string">      任務清單：</span></span><br><span class="line"><span class="string">      &#123;&#123;tasks&#125;&#125;</span></span><br><span class="line"><span class="string">      接受準則：</span></span><br><span class="line"><span class="string">      &#123;&#123;acceptance&#125;&#125;</span></span><br><span class="line"><span class="string">      請建立一個實作任務（branch + 主要檔案列表），並在實作模式中列出需要產生或修改的檔案與測試。</span></span><br><span class="line"><span class="string"></span>    <span class="attr">send:</span> <span class="literal">false</span></span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+<p><strong>implementation.chatmode.md</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">&quot;實作模式 — 產生程式碼、測試與 commit&quot;</span></span><br><span class="line"><span class="attr">tools:</span> [<span class="string">&quot;edit&quot;</span>, <span class="string">&quot;git&quot;</span>, <span class="string">&quot;search&quot;</span>]</span><br><span class="line"><span class="attr">model:</span> <span class="string">&quot;default&quot;</span></span><br><span class="line"><span class="attr">handoffs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">label:</span> <span class="string">&quot;送交審查&quot;</span></span><br><span class="line">    <span class="attr">agent:</span> <span class="string">&quot;review&quot;</span></span><br><span class="line">    <span class="attr">prompt:</span> <span class="string">|</span></span><br><span class="line"><span class="string">      已完成實作，請啟動審查流程：</span></span><br><span class="line"><span class="string">      - 列出本次變更檔案</span></span><br><span class="line"><span class="string">      - 產生 PR 標題與描述（包含變更重點、測試覆蓋與注意事項）</span></span><br><span class="line"><span class="string">      - 若發現明顯問題請直接在 review 模式中提出建議</span></span><br><span class="line"><span class="string"></span>    <span class="attr">send:</span> <span class="literal">false</span></span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+<p><strong>review.chatmode.md</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">&quot;審查模式 — 生成審查建議與 PR 文案&quot;</span></span><br><span class="line"><span class="attr">tools:</span> [<span class="string">&quot;search&quot;</span>]</span><br><span class="line"><span class="attr">model:</span> <span class="string">&quot;default&quot;</span></span><br><span class="line"><span class="attr">handoffs:</span> []</span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+<p>handoffs 屬性說明：</p>
+<ul>
+<li>label：在 Chat 介面會看到的按鈕名稱。</li>
+<li>agent：目標 Chat Mode 的識別名稱（通常與對應 .chatmode.md 的檔案名或 agent 名稱一致）。</li>
+<li>prompt：傳給目標模式的內容（建議使用簡短清楚的指示，也可用變數替換）。</li>
+<li>send：
+<ul>
+<li>true 表示使用者點按後立即將 prompt 送出並執行。</li>
+<li>false 表示只切換到目標模式並把 prompt 放在輸入框，讓使用者檢視/修改後再發送。</li>
+</ul>
+</li>
+</ul>
+<h3 id="建立-Chat-Mode">建立 Chat Mode</h3>
+<ol>
+<li>在 Chat 視窗中選擇 <strong>Configure Chat &gt; Modes &gt; Create new custom chat mode file</strong>。</li>
+<li>選擇儲存位置（Workspace 或 User Profile）。</li>
+<li>輸入 Chat Mode 的名稱（此名稱會顯示在 Chat 視窗的 Chat Mode 下拉選單中）。</li>
+<li>在新建立的 <strong>.chatmode.md</strong> 檔案中提供詳細資訊。</li>
+</ol>
+<h3 id="工具列表優先順序">工具列表優先順序</h3>
+<p>當 chat mode 和 prompt file 都指定了 <strong>tools</strong> 欄位時，可用工具的優先順序如下：</p>
+<ol>
+<li>Prompt file 中指定的工具（如果有）。</li>
+<li>Prompt file 中參考的 Chat Mode 的工具（如果有）。</li>
+<li>所選 chat mode 的預設工具。</li>
+</ol>
+<h2 id="客製化的實際應用情境">客製化的實際應用情境</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">使用情境</th>
+<th style="text-align:left">建議方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">專案級程式碼規範</td>
+<td style="text-align:left">Custom Instructions</td>
+</tr>
+<tr>
+<td style="text-align:left">程式語言或框架特定規則</td>
+<td style="text-align:left">Custom Instructions（搭配 glob patterns）</td>
+</tr>
+<tr>
+<td style="text-align:left">可重複使用的開發任務</td>
+<td style="text-align:left">Prompt Files</td>
+</tr>
+<tr>
+<td style="text-align:left">以規劃或研究模式使用聊天</td>
+<td style="text-align:left">Custom Chat Modes</td>
+</tr>
+<tr>
+<td style="text-align:left">定義專門的工作流程</td>
+<td style="text-align:left">Custom Chat Modes</td>
+</tr>
+<tr>
+<td style="text-align:left">整合外部服務</td>
+<td style="text-align:left">MCP and Tools</td>
+</tr>
+</tbody>
+</table>
+<h2 id="入門建議">入門建議</h2>
+<h3 id="1-嘗試不同的語言模型">1. 嘗試不同的語言模型</h3>
+<p>從實驗不同的語言模型開始，為不同類型的工作獲得更好的結果。使用聊天中的模型選擇器切換模型，簡單任務使用較快的模型，複雜推理使用更強大的模型，例如：一般工作任務可以使用 GPT-5 mini (0x)，實際要產生程式碼再選擇 Claude Sonnet 4.5 (1x)。</p>
+<h3 id="2-設定基本指引">2. 設定基本指引</h3>
+<p>建立 Custom Instructions 可讓所有與 LLM 的聊天互動產生一致的結果。建議在工作區建立一個包含程式碼規範與偏好的 <strong>.github/copilot-instructions.md</strong>，以改善聊天回應；一般來說，整個專案應遵循的規範可在此定義。</p>
+<h3 id="3-加入任務自動化">3. 加入任務自動化</h3>
+<p>識別重複性任務後，為常見工作流程建立 Prompt Files。就像開發時會把常用的程式碼區塊抽成共用元件一樣，在 GitHub Copilot 的情境中，這類流程可儲存為獨立的 Prompt Files 以便重複使用。</p>
+<h3 id="4-擴展能力">4. 擴展能力</h3>
+<p>當需要連接外部服務或執行特定操作時，可以加入 MCP servers 和工具來擴展 LLM 的輔助能力。</p>
+<h3 id="5-建立自己的工作流程">5. 建立自己的工作流程</h3>
+<p>我們也可以透過建立自訂的 Chat Modes 並結合特定工具、指示與上下文，針對特定角色或專案階段使用，甚至也可以透過 handoffs 的方式來實作一個像是 Spec-kit 但卻又更符合自己需求的工作流程。</p>
+<h2 id="結語">結語</h2>
+<p>透過 Custom Instructions、Prompt Files 和 Chat Modes 三種機制，VS Code 中的 GitHub Copilot 能夠從通用的 AI 助手轉變為貼近專案需求、遵循團隊規範的專屬開發夥伴。Custom Instructions 提供全域或特定範圍的程式碼規範，Prompt Files 讓重複性任務標準化與自動化，而 Chat Modes 則為不同角色與工作流程建立專門的 AI 環境。這些客製化功能不僅提升了開發效率，也確保了團隊協作的一致性。從最簡單的設定檔開始，逐步建立適合你的 AI 開發環境，讓 GitHub Copilot 成為真正理解你需求的智慧助手。</p>
+<p><mark>下面參考連結有一個 Awesome Copilot (非常重要)，裡面有豐富的 Instructions / Prompts / Chat Modes 可以參考使用，大家記得一定要去挖寶!</mark></p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://code.visualstudio.com/docs/copilot/customization/overview"  target="_blank">⁍ Customize chat to your workflow<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://code.visualstudio.com/docs/copilot/customization/custom-instructions"  target="_blank">⁍ Use custom instructions in VS Code<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://code.visualstudio.com/docs/copilot/customization/prompt-files"  target="_blank">⁍ Use prompt files in VS Code<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://code.visualstudio.com/docs/copilot/customization/custom-chat-modes"  target="_blank">⁍ Custom chat modes in VS Code<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://github.com/github/awesome-copilot"  target="_blank">⁍ GitHub | Awesome Copilot<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+
+                    
+                </div>
+
+                
+                        
+<div class="post-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="copyright-post-title border-box text-ellipsis">
+                VS Code 的 Custom Instructions
+            </div>
+
+            <div class="copyright-post-link border-box text-ellipsis">
+                post/2025/11/vscode-custom-instructions/
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="copyright-post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">Tim Lai</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    發布於
+                </div>
+                <div class="content">2025-11-01 11:11</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    版權
+                </div>
+                <div class="content tooltip" data-tooltip-content="CC BY-NC-SA 4.0">
+                    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant" target="_blank">
+                        
+                            <i class="fa-brands fa-creative-commons"></i>
+                            <i class="fa-brands fa-creative-commons-by"></i>
+                            <i class="fa-brands fa-creative-commons-nc"></i>
+                            <i class="fa-brands fa-creative-commons-sa"></i>
+                        
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-tooltip-content="複製版權資訊" data-tooltip-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/GitHub-Copilot/">GitHub Copilot</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/VSCode/">VSCode</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/post/2025/10/azure-devops-wiki/"
+                                   title="Azure DevOps 的 Wiki 應用"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">Azure DevOps 的 Wiki 應用</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;留言
+        </div>
+        <div class="comment-plugin-fail border-box">
+    <span class="fail-tip">留言插件載入失敗</span>
+    <button class="reload keep-button">點擊重新載入</button>
+</div>
+<div class="comment-plugin-loading flex-center border-box">
+    <i class="loading-icon fa-solid fa-spinner fa-spin"></i>
+    <span class="load-tip">正在載入留言套件</span>
+</div>
+<script data-pjax>
+  window.KeepCommentPlugin = {}
+  window.KeepCommentPlugin.hideLoading = () => {
+    const cplDom = document.querySelector('.comments-container .comment-plugin-loading')
+    cplDom.style.display = 'none'
+  }
+  window.KeepCommentPlugin.loadFailHandle = () => {
+    window.KeepCommentPlugin.hideLoading()
+    const cpfDom = document.querySelector('.comments-container .comment-plugin-fail')
+    cpfDom.style.display = 'flex'
+    cpfDom.querySelector('.reload').addEventListener('click', () => {
+      window.location.reload()
+    })
+  }
+</script>
+
+        
+            
+
+    <div class="disqus-comments-container">
+        <div id="disqus_thread"></div>
+        <script data-pjax
+                onerror="window.KeepCommentPlugin.loadFailHandle()"
+        >
+          if (!window.KeepCommentPlugin?.initDisqus) {
+            window.KeepCommentPlugin.initDisqus = () => {
+              const script = document.createElement('script')
+              script.async = true
+              script.src = '//yutailai.disqus.com/embed.js'
+              script.setAttribute('data-timestamp', `${Date.now()}`)
+              document.querySelector('.disqus-comments-container').appendChild(script)
+              script.onerror = () => {
+                window.KeepCommentPlugin.loadFailHandle()
+              }
+              script.onload = () => {
+                window.KeepCommentPlugin.hideLoading()
+              }
+            }
+          }
+
+          if ('true' === "true") {
+            setTimeout(() => {
+              window.KeepCommentPlugin.initDisqus()
+            }, 1000)
+          } else {
+            window.addEventListener("DOMContentLoaded", window.KeepCommentPlugin.initDisqus)
+          }
+        </script>
+        <script id="dsq-count-scr" src="//yutailai.disqus.com/count.js" async></script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc left-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Custom-Instructions"><span class="nav-text">Custom Instructions</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Instructions-%E9%A1%9E%E5%9E%8B"><span class="nav-text">Instructions 類型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-copilot-instructions-md"><span class="nav-text">使用 copilot-instructions.md</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-instructions-md"><span class="nav-text">使用 .instructions.md</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A%E6%AA%94"><span class="nav-text">設定檔</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%92%B0%E5%AF%AB%E6%8A%80%E5%B7%A7"><span class="nav-text">撰寫技巧</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Prompt-Files"><span class="nav-text">Prompt Files</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AA%94%E6%A1%88%E7%B5%90%E6%A7%8B"><span class="nav-text">檔案結構</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B-Prompt-File"><span class="nav-text">建立 Prompt File</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Prompt-File"><span class="nav-text">使用 Prompt File</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Chat-Modes"><span class="nav-text">Chat Modes</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Chat-Mode-%E6%AA%94%E6%A1%88%E7%B5%90%E6%A7%8B"><span class="nav-text">Chat Mode 檔案結構</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Handoffs"><span class="nav-text">Handoffs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B-Chat-Mode"><span class="nav-text">建立 Chat Mode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E5%88%97%E8%A1%A8%E5%84%AA%E5%85%88%E9%A0%86%E5%BA%8F"><span class="nav-text">工具列表優先順序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E8%A3%BD%E5%8C%96%E7%9A%84%E5%AF%A6%E9%9A%9B%E6%87%89%E7%94%A8%E6%83%85%E5%A2%83"><span class="nav-text">客製化的實際應用情境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%A5%E9%96%80%E5%BB%BA%E8%AD%B0"><span class="nav-text">入門建議</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%98%97%E8%A9%A6%E4%B8%8D%E5%90%8C%E7%9A%84%E8%AA%9E%E8%A8%80%E6%A8%A1%E5%9E%8B"><span class="nav-text">1. 嘗試不同的語言模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A8%AD%E5%AE%9A%E5%9F%BA%E6%9C%AC%E6%8C%87%E5%BC%95"><span class="nav-text">2. 設定基本指引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%8A%A0%E5%85%A5%E4%BB%BB%E5%8B%99%E8%87%AA%E5%8B%95%E5%8C%96"><span class="nav-text">3. 加入任務自動化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%93%B4%E5%B1%95%E8%83%BD%E5%8A%9B"><span class="nav-text">4. 擴展能力</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%BB%BA%E7%AB%8B%E8%87%AA%E5%B7%B1%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-text">5. 建立自己的工作流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-text">結語</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+
+<footer class="footer border-box">
+    <div class="copyright-info info-item">
+        &copy;&nbsp;<span>2023</span>&nbsp;-&nbsp;2025
+        
+            &nbsp;<i class="fas fa-heart icon-animate" style="color:red"></i>&nbsp;&nbsp;<a href="/">Tim Lai</a>
+        
+    </div>
+
+    <!-- <div class="theme-info info-item">
+        <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;框架&nbsp;&&nbsp;主題&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+    </div> -->
+
+    
+        
+        <div class="deploy-info info-item">
+            
+            本站由 <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/images/brands/github.png"></span> 提供部署服務
+            
+        </div>
+    
+
+    
+        <div class="count-info info-item">
+            
+
+            
+                <span class="count-item border-box uv">
+                    <span class="item-type border-box">訪問人數</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+                <span class="count-item border-box pv">
+                    <span class="item-type border-box">頁面瀏覽數</span>
+                    <span class="item-value border-box pv" id="busuanzi_value_site_pv"></span>
+                </span>
+            
+        </div>
+    
+
+    
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools left-toc">
+            <div class="post-tools-container border-box">
+    <ul class="post-tools-list border-box">
+        <!-- PC encrypt again -->
+        
+
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <!-- toggle mode -->
+        
+            <li class="tools-item tool-toggle-theme-mode flex-center">
+                <i class="fas fa-moon"></i>
+            </li>
+        
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        <!-- to bottom -->
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜尋..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Custom-Instructions"><span class="nav-text">Custom Instructions</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Instructions-%E9%A1%9E%E5%9E%8B"><span class="nav-text">Instructions 類型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-copilot-instructions-md"><span class="nav-text">使用 copilot-instructions.md</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-instructions-md"><span class="nav-text">使用 .instructions.md</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A%E6%AA%94"><span class="nav-text">設定檔</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%92%B0%E5%AF%AB%E6%8A%80%E5%B7%A7"><span class="nav-text">撰寫技巧</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Prompt-Files"><span class="nav-text">Prompt Files</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AA%94%E6%A1%88%E7%B5%90%E6%A7%8B"><span class="nav-text">檔案結構</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B-Prompt-File"><span class="nav-text">建立 Prompt File</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Prompt-File"><span class="nav-text">使用 Prompt File</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Chat-Modes"><span class="nav-text">Chat Modes</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Chat-Mode-%E6%AA%94%E6%A1%88%E7%B5%90%E6%A7%8B"><span class="nav-text">Chat Mode 檔案結構</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Handoffs"><span class="nav-text">Handoffs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B-Chat-Mode"><span class="nav-text">建立 Chat Mode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E5%88%97%E8%A1%A8%E5%84%AA%E5%85%88%E9%A0%86%E5%BA%8F"><span class="nav-text">工具列表優先順序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E8%A3%BD%E5%8C%96%E7%9A%84%E5%AF%A6%E9%9A%9B%E6%87%89%E7%94%A8%E6%83%85%E5%A2%83"><span class="nav-text">客製化的實際應用情境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%A5%E9%96%80%E5%BB%BA%E8%AD%B0"><span class="nav-text">入門建議</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%98%97%E8%A9%A6%E4%B8%8D%E5%90%8C%E7%9A%84%E8%AA%9E%E8%A8%80%E6%A8%A1%E5%9E%8B"><span class="nav-text">1. 嘗試不同的語言模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A8%AD%E5%AE%9A%E5%9F%BA%E6%9C%AC%E6%8C%87%E5%BC%95"><span class="nav-text">2. 設定基本指引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%8A%A0%E5%85%A5%E4%BB%BB%E5%8B%99%E8%87%AA%E5%8B%95%E5%8C%96"><span class="nav-text">3. 加入任務自動化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%93%B4%E5%B1%95%E8%83%BD%E5%8A%9B"><span class="nav-text">4. 擴展能力</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%BB%BA%E7%AB%8B%E8%87%AA%E5%B7%B1%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-text">5. 建立自己的工作流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-text">結語</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+
+
+<!-- common js -->
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/toggle-theme.js"></script>
+
+<script src="/js/code-block.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+
+<!-- local search -->
+
+    
+<script src="/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+    
+<script src="/js/lazyload.js"></script>
+
+
+
+<div class="pjax">
+    <!-- home page -->
+    
+
+    <!-- post page -->
+    
+        <!-- post-helper -->
+        
+<script src="/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+            
+<script src="/js/post/copyright-info.js"></script>
+
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+    
+<script src="//cdn.jsdelivr.net/npm/mermaid@11.2.1/dist/mermaid.min.js"></script>
+
+    <script data-pjax>
+      if (window.mermaid) {
+        mermaid.init()
+      }
+    </script>
+
+
+
+
+
+
+<!-- pjax -->
+
+    
+<script src="/js/libs/pjax.min.js"></script>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart()
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd()
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'))
+            KEEP.initExecute()
+        });
+    });
+</script>
+
+
+
+
+    
+        
+    
+
+</body>
+</html>
