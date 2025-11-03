@@ -337,7 +337,7 @@
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Mon Nov 03 2025 17:58:47 GMT+0800">2025-11-03 17:58:47</span>
+                <span class="datetime" data-updated="Tue Nov 04 2025 00:43:37 GMT+0800">2025-11-04 00:43:37</span>
             </span>
         
 
@@ -393,7 +393,6 @@
                  > 
 <p>在 Agentic AI 的各式應用場景中，提供正確且良好品質的上下文來源是至關重要的環結，實務上我們可能透過 RAG 從外部檢索資料，或是從手邊的各種檔案格式轉換成 markdown 來提供 LLM 作為上下文參考資料以便展開執行後續的任務，若以輕量、快速上手為考量，可以試試 MarkItDown，但若只能在純地端環境執行，或是對於文件內容(例如：表格、版面)有更高的解析需求不妨試試 Docling，本文以實務角度比較兩者設計取向、支援格式與優缺點，以及提供不同應用場景的建議。</p>
 <span id="more"></span>
-<h2 id="為什麼要把文件「轉成-Markdown-結構化格式」？">為什麼要把文件「轉成 Markdown / 結構化格式」？</h2>
 <p>在建立知識庫、資料前處理或把企業文件提供給 LLM 時，原始文件往往可能是 PDF、各種 Office 文件格式、圖片或音訊，而真正要給 LLM 使用時，需要：</p>
 <ul>
 <li>保留語意與結構（標題、段落、表格…等）。</li>
@@ -454,6 +453,7 @@
 <a class="link"   href="https://docling-project.github.io/docling/usage/mcp/"  target="_blank">⁍ Docling MCP<i class="fas fa-external-link-alt"></i></a><br>
 </font>
 </div>
+<p>如果想要手動在 mcp.json 加入這兩個 MCP 工具，可以直接參考：</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	<span class="attr">&quot;servers&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		<span class="attr">&quot;microsoft/markitdown&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">			<span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;stdio&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;uvx&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">				<span class="string">&quot;markitdown-mcp==0.0.1a4&quot;</span></span><br><span class="line">			<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;gallery&quot;</span><span class="punctuation">:</span> <span class="string">&quot;https://api.mcp.github.com&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1.0.0&quot;</span></span><br><span class="line">		<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">		 <span class="attr">&quot;docling&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		 <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;uvx&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">				<span class="string">&quot;--from=docling-mcp&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="string">&quot;docling-mcp-server&quot;</span></span><br><span class="line">			<span class="punctuation">]</span></span><br><span class="line">		<span class="punctuation">&#125;</span></span><br><span class="line">	<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;inputs&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 <h2 id="支援格式與各面向比較">支援格式與各面向比較</h2>
 <table>
@@ -584,11 +584,32 @@
 <li>MarkItDown：學習低、文件少、運維簡單。</li>
 <li>Docling：功能與選項多，需時間調校模型與處理參數，運維成本較高。</li>
 </ul>
-<h2 id="總結">總結</h2>
-<p>MarkItDown 與 Docling 均可將各類原始文件轉為 LLM 友好的結構化格式，但設計取向與適用場景不同：MarkItDown 輕量且易上手，輸出以節省 token 的 Markdown 為主，適合大量快速預處理與整合至 AI Agent / LLM pipeline；Docling 則強調高保真文件理解與版面還原，擅長複雜 PDF、表格重建及本地化運行，適用於需精準解析或資安敏感的情境。實務上如果是遇到比較複雜的文件內容，例如像論文有分左右兩欄、各式表格，或是有圖片需要 OCR 辨識、流程圖想要轉換成 Mermaid，使用 Docling 產出的結果都蠻不錯的，強力推薦給大家!</p>
-<!-- 實務上建議依文件類型、解析精度、處理量與可用資源做選擇，並透過抽樣驗證或混合流程（以 MarkItDown 做批次預處理、以 Docling 處理關鍵或需人工驗證的檔案）來兼顧效率與精確性。 -->
 </li>
 </ul>
+<h2 id="總結">總結</h2>
+<p>MarkItDown 與 Docling 均可將各類原始文件轉為 LLM 友好的結構化格式，但設計取向與適用場景不同：MarkItDown 輕量且易上手，輸出以節省 token 的 Markdown 為主，適合大量快速預處理與整合至 AI Agent / LLM pipeline；Docling 則強調高保真文件理解與版面還原，擅長複雜 PDF、表格重建及本地化運行，適用於需精準解析或資安敏感的情境。實務上如果是遇到比較複雜的文件內容，例如像論文有分左右兩欄、各式表格，或是有圖片需要 OCR 辨識、流程圖想要轉換成 Mermaid，使用 Docling 產出的結果都蠻不錯的，強力推薦給大家!</p>
+  <!-- 實務上建議依文件類型、解析精度、處理量與可用資源做選擇，並透過抽樣驗證或混合流程（以 MarkItDown 做批次預處理、以 Docling 處理關鍵或需人工驗證的檔案）來兼顧效率與精確性。 -->
+<p>.xls -&gt; .md</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/docling-to-markdown/docling-excel.jpg"
+                        class=""
+                 >
+<p>.pptx -&gt; .md</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/docling-to-markdown/docling-pptx.jpg"
+                        class=""
+                 >
+<p>使用本地端資源運行 Docling</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/docling-to-markdown/docling-performance.jpg"
+                        class=""
+                 >
 
                     
                 </div>
@@ -802,7 +823,7 @@
             <div class="pc-post-toc left-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%82%BA%E4%BB%80%E9%BA%BC%E8%A6%81%E6%8A%8A%E6%96%87%E4%BB%B6%E3%80%8C%E8%BD%89%E6%88%90-Markdown-%E7%B5%90%E6%A7%8B%E5%8C%96%E6%A0%BC%E5%BC%8F%E3%80%8D%EF%BC%9F"><span class="nav-text">為什麼要把文件「轉成 Markdown &#x2F; 結構化格式」？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MarkItDown"><span class="nav-text">MarkItDown</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docling"><span class="nav-text">Docling</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%AF%E6%8F%B4%E6%A0%BC%E5%BC%8F%E8%88%87%E5%90%84%E9%9D%A2%E5%90%91%E6%AF%94%E8%BC%83"><span class="nav-text">支援格式與各面向比較</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B8%BD%E7%B5%90"><span class="nav-text">總結</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MarkItDown"><span class="nav-text">MarkItDown</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docling"><span class="nav-text">Docling</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%AF%E6%8F%B4%E6%A0%BC%E5%BC%8F%E8%88%87%E5%90%84%E9%9D%A2%E5%90%91%E6%AF%94%E8%BC%83"><span class="nav-text">支援格式與各面向比較</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B8%BD%E7%B5%90"><span class="nav-text">總結</span></a></li></ol>
     </div>
 </div>
 
@@ -1006,7 +1027,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%82%BA%E4%BB%80%E9%BA%BC%E8%A6%81%E6%8A%8A%E6%96%87%E4%BB%B6%E3%80%8C%E8%BD%89%E6%88%90-Markdown-%E7%B5%90%E6%A7%8B%E5%8C%96%E6%A0%BC%E5%BC%8F%E3%80%8D%EF%BC%9F"><span class="nav-text">為什麼要把文件「轉成 Markdown &#x2F; 結構化格式」？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MarkItDown"><span class="nav-text">MarkItDown</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docling"><span class="nav-text">Docling</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%AF%E6%8F%B4%E6%A0%BC%E5%BC%8F%E8%88%87%E5%90%84%E9%9D%A2%E5%90%91%E6%AF%94%E8%BC%83"><span class="nav-text">支援格式與各面向比較</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B8%BD%E7%B5%90"><span class="nav-text">總結</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MarkItDown"><span class="nav-text">MarkItDown</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docling"><span class="nav-text">Docling</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%AF%E6%8F%B4%E6%A0%BC%E5%BC%8F%E8%88%87%E5%90%84%E9%9D%A2%E5%90%91%E6%AF%94%E8%BC%83"><span class="nav-text">支援格式與各面向比較</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B8%BD%E7%B5%90"><span class="nav-text">總結</span></a></li></ol>
     </div>
 </div>
 
