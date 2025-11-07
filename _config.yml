@@ -128,7 +128,7 @@ markdown:
     xhtmlOut: false
     langPrefix: 'language-'
     breaks: true
-    linkify: true
+    linkify: false
     typographer: true
     quotes: '“”‘’'
   enable_rules:
@@ -163,4 +163,18 @@ markdown:
     isSPA: true
   inline: false  # https://markdown-it.github.io/markdown-it/#MarkdownIt.renderInline
 
- 
+# lightgallery:
+#  js: 'https://cdn.jsdelivr.net/lightgallery.js/1.0.1/js/lightgallery.min.js'
+#  css: 'https://cdn.jsdelivr.net/lightgallery.js/1.0.1/css/lightgallery.min.css'
+#  plugins: {}
+
+# mermaid chart
+mermaid: ## mermaid url https://github.com/knsv/mermaid
+  enable: true  # default true
+  version: "11.2.1" # default v7.1.2
+  options:  # find more api options from https://github.com/knsv/mermaid/blob/master/src/mermaidAPI.js
+    #startOnload: true  // default true
+
+# Google Analytics
+google_analytics: G-2LZYYGR2Y3
+    

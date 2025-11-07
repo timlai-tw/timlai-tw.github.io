@@ -1,12 +1,12 @@
 ---
 title: Azure DevOps Services / Server 使用者授權
-date: 2024-09-03 11:36:15
+date: 2025-04-03 11:36:15
 tags: 
  - Azure DevOps
  - 授權
 ---
 
-<img src="/post/2024/09/azure-devops-licensing-description/affliction512.jpg" align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"/> 
+<img src="/post/2025/04/azure-devops-licensing-description/affliction512.jpg" align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"/> 
 
 Azure DevOps 是一個可以讓我們有效管理軟體開發流程，同時維持良好團隊協作的強大平台，除了可以直接使用雲端 Azure DevOps Services，也可以在地端自建 Azure DevOps Server 讓企業內部環境也能提供相同的服務，但許多人遇到的第一個問題是如何購買授權才能讓成本效益最大化？這篇文章主要協助大家瞭解 Azure DevOps 在授權與定價上的內容。
 

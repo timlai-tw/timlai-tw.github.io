@@ -149,3 +149,54 @@ A footnote can also have multiple lines[^2].
 
 
 
+```mermaid
+flowchart
+  subgraph Assembly
+    subgraph AssemblyInitialize
+    end
+    subgraph Class
+    end    
+    subgraph AssemblyCleanup
+    end
+  end
+```
+
+<div style="max-width: 400px; text-align:center;">
+```mermaid
+---
+title: Hello Title
+config:
+  theme: base
+  themeVariables:
+    primaryColor: "#00ff00"
+---
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```
+</div>
+
+```mermaid
+---
+title: Hello Title
+config:
+  theme: base
+  themeVariables:
+    primaryColor: "#00ff00"
+---
+flowchart
+	Hello --> World
+```
+
+```mermaid
+flowchart LR
+  subgraph Assembly
+    subgraph Class
+        subgraph Test
+            Test1 --> Test2 --> TestN
+        end
+    end    
+  end
+```

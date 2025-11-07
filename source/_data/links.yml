@@ -5,6 +5,11 @@
   description: Visual Studio 訂閱與權益
   avatar: /images/icon/microsoft.png
 
+- name: Microsoft Licensing
+  link: https://www.microsoft.com/licensing/terms/zh-TW/productoffering/AzureDevOpsServer/OL
+  description: Microsoft 產品條款
+  avatar: /images/icon/microsoft.png
+
 - name: Azure DevOps
   link: https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/
   description: Azure DevOps Services 定價
@@ -27,7 +32,17 @@
   description: Azure DevOps 與 Office 整合工具
   avatar: /images/icon/excel.webp
 
+- name: Microsoft Power BI Desktop
+  link: https://www.microsoft.com/zh-tw/download/details.aspx?id=58494
+  description: 結合了先進的互動式視覺效果，並內建領先業界的資料查詢與模型。
+  avatar: /images/icon/power-bi-icon-384x512-bujnuaon.png
+
 - name: Visual Studio Marketplace
   link: https://marketplace.visualstudio.com/
   description: 尋找、安裝及管理 Visual Studio 的延伸模組
   avatar: /images/icon/azure-marketplace.png
+
+- name: Microsoft Source Code Control Interface (MSSCCI) Provider
+  link: https://marketplace.visualstudio.com/search?term=msscci&target=VS&category=Tools&vsVersion=&subCategory=All&sortBy=Relevance
+  description: MSSCCI Provider 2010~2015 32/64 位元
+  avatar: /images/icon/msscci.jpg

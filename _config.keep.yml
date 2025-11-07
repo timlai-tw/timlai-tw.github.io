@@ -107,7 +107,7 @@ scroll:
 # ---------------------------------------------------------------------------------------
 home:
   # Website announcement in home page
-  announcement: 網站建構測試中。
+  announcement: #網站建構測試中。
 
   # Show category in home page post block
   category: true           # Option values: true | false

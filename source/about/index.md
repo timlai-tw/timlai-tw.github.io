@@ -1,36 +1,89 @@
 ---
-title: about
+title: 關於我
 date: 2024-08-30 12:27:15
 comment: true
 page_cover: /images/banner/its-banner.png
 ---
 
-<!-- <img src="/images/angu100.jpg" align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"/>  -->
 
-<script>
-function openDialog() {
-  document.getElementById('imageDialog').style.display = 'block';
-  document.getElementById('overlay').style.display = 'block';
+```csharp
+using System;
+using System.Collections.Generic;
+
+[Serializable]
+public record TimLai : ICloudArchitect, IDevOpsEnthusiast
+{
+    public string Name { get; init; } = "Tim Lai";
+    public string Title = null;
+    public string Email = "yutai.lai@gmail.com";    
+    public string Profession => "軟體開發與系統架構設計";
+    public int YearsOfExperience => 20;
+
+    public string Summary => $"Hi，我是 {Name}！軟體開發是我一直以來從事的領域，也是興趣所在。"+
+                              "我熱愛學習新技術並將其應用在實際專案中，"+
+                              "在這 AI 蓬勃發展的時代，如何善用 LLMs 與各項工具來提升軟體開發品質與效率，"+
+                              "將會是我未來持續探索的方向。";
+
+    public List<string> Skills { get; } = new()
+    {
+        "Azure DevOps 導入與應用",
+        "Azure 解決方案架構設計",
+        "SPFx & Microsoft Graph",
+        "GitHub Copilot 整合應用",
+        "專案管理與敏捷方法論"
+    };
+
+    public IReadOnlyList<string> Interests => new[]
+    {
+        "硬筆書法 🖋️",
+        "羽毛球 🏸",
+        "咖啡/烘豆/手沖/拉花 ☕️",
+        "人文紀錄 📸",
+    };
+    
+    public IReadOnlyList<string> Certifications => new[]
+    {
+        "ISO/IEC 27001:2022 Lead Auditor (Information Security Management Systems)",
+        "PMI Project Management Professional (PMP)®",
+        "PMI Agile Certified Practitioner (PMI-ACP)®",
+        "PMI Professional in Business Analysis (PMI-PBA)®",
+        "Gemini Certified Educator",
+        "Kanban Management Professional (KMP)®",
+        "Team Kanban Practitioner (TKP)®",
+        "Microsoft 365 Certified: Fundamentals",
+        "Microsoft Certified: Azure AI Engineer Associate",
+        "Microsoft Certified: Azure Developer Associate",
+        "Microsoft Certified: Azure Fundamentals",
+        "Microsoft Certified: DevOps Engineer Expert",
+        "Microsoft Certified: Microsoft Azure Administrator",
+        "Microsoft Certified: Security, Compliance, and Identity Fundamentals"
+    };
+
+    public Uri LinkedIn => new("https://www.linkedin.com/in/tim-lai-6886b1135/");
+
+    public string Motto => GetMotto();
+
+    public event EventHandler? DeploySuccess;
+
+    public void Deploy()
+    {
+        Console.WriteLine("Deploying MyLife pipeline...");
+        DeploySuccess?.Invoke(this, EventArgs.Empty);
+    }
+
+    private string GetMotto() => "If something is difficult or painful, do it more often.";
 }
 
-function closeDialog() {
-  document.getElementById('imageDialog').style.display = 'none';
-  document.getElementById('overlay').style.display = 'none';
+public interface ICloudArchitect
+{
+    string Title { get; }
+    void Deploy();
 }
-</script>
 
-Hello 大家好，我是 Tim。
-
-在軟體開發這條路上一轉眼也過了十幾年，我熟悉軟體開發與系統整合，使用 Azure 服務為企業提供了不少解決方案，此外，也熟悉專案管理和敏捷方法，具有 PMP/ ACP / PBA / KMP 等專業認證，在 DevOps 這條路上，最欠缺的應該就是 `理論`、`實務經驗`、`工具` 的結合，之後也會多寫寫文章跟大家分享工作上的實務經驗，若有需要協助的地方，也歡迎透過下方留言或與我直接聯繫 <a href="javascript:void(0);" onclick="openDialog()"><i class="fa-brands fa-line" style="color:#00B900"></i></a> <a href="mailto:yutai.lai@gmail.com"><i class="fa-regular fa-envelope"></i></a>。
-
-<!-- Dialog HTML -->
-<div id="imageDialog" style="text-align:center; display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); z-index:1000; background:white; padding:20px; box-shadow:0 0 10px rgba(0,0,0,0.5);">
-  <img src="/images/line_yutai.lai.jpg" alt="图片" style="max-width:100%; height:auto;" />
-  <button onclick="closeDialog()" style="margin-top:10px;">關閉</button>
-</div>
-
-<!-- 背景遮罩 -->
-<div id="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;" onclick="closeDialog()"></div>
-
-<!-- JavaScript -->
+public interface IDevOpsEnthusiast
+{
+    List<string> Skills { get; }
+    event EventHandler? DeploySuccess;
+}
+```
 
