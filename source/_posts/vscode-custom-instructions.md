@@ -307,7 +307,7 @@ handoffs:
 **review.chatmode.md**
 ```yaml
 ---
-description: "審查模式 — 生成審查建議與 PR 文案"
+description: "審查模式 — 產生審查建議與 PR 文案"
 tools: ["search"]
 model: "default"
 handoffs: []
