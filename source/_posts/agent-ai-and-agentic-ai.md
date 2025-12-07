@@ -8,7 +8,7 @@ tags:
 
 <img src="/post/2025/12/agent-ai-and-agentic-ai/agentic-ai.jpg" align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"/>
 
-今年大家應該蠻常聽到 **Agent AI** 和 **Agentic AI** 這兩個詞，名稱看起來很像、都有「Agent」，但實際上指的東西不太一樣：一個是「單一代理」的能力，另一個則是「多代理系統」的整體架構。這篇就用比較生活化的比喻，來整理兩者的差異，以及 Microsoft 在 Agentic AI 上目前提供的幾種主要解決方案：**Copilot Studio / Azure AI Foundry Agent Service / Microsoft Agent Framework / Semantic Kernel**，方便大家選擇適合自己的開發路線。
+今年大家應該蠻常聽到 **Agent AI** 和 **Agentic AI** 這兩個詞，名稱看起來很像、都有「Agent」，但實際上指的東西不太一樣：一個是「單一代理」的能力，另一個則是「多代理系統」的整體架構。本篇文章以比較白話的比喻來整理兩者的差異，以及 Microsoft 在 Agentic AI 上目前提供的幾種主要解決方案：**Copilot Studio / Azure AI Foundry Agent Service / Microsoft Agent Framework / Semantic Kernel**，方便大家選擇適合自己的開發路線。
 
 <!-- more -->
 
