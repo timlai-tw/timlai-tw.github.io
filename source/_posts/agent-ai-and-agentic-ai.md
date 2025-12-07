@@ -91,7 +91,7 @@ tags:
 {% asset_img Microsoft-Agentic-AI-Comparison.jpg %}
 <br>
 
-## Copilot Studio：從「聊天機器人」長大的 Agent 平台
+### Copilot Studio：從「聊天機器人」長大的 Agent 平台
 
 **Copilot Studio** 可以把它想成是「做聊天機器人、做工作流程型 Copilot」的低程式碼平台，很多情境其實已經很接近單一 Agent：
 
@@ -115,7 +115,7 @@ tags:
 
 <br>
 
-## Azure AI Foundry Agent Service：雲端託管的 Agent 平台
+### Azure AI Foundry Agent Service：雲端託管的 Agent 平台
 
 **Azure AI Foundry Agent Service** 可以視為「由雲端幫你托管 Agent」，我們透過 SDK 或 Portal 定義好下列項目：
 
@@ -138,7 +138,7 @@ tags:
 
 <br>
 
-## Microsoft Agent Framework：多代理與 A2A 的核心 SDK
+### Microsoft Agent Framework：多代理與 A2A 的核心 SDK
 
 **Microsoft Agent Framework** 是最近 (2025/10/1) 才開源的 **Agent / Agentic AI 專用 SDK**，同時支援 **Python** 和 **.NET**，可以視為把原本的 **Semantic Kernel** 與 **AutoGen** 整併、提升後的新一代框架。
 
@@ -166,7 +166,7 @@ tags:
 
 <br>
 
-## Semantic Kernel：輕量、模組化的協調 SDK
+### Semantic Kernel：輕量、模組化的協調 SDK
 
 **Semantic Kernel** 則是比較早期推出的 LLM 協調 SDK，一樣支援 .NET / Python，主要幫我們處理：
 
@@ -202,7 +202,7 @@ tags:
 | 部署 / 維運 | 由 Microsoft 全託管 | Azure 全託管 | 本機自架或上雲 | 由應用程式自行負責 | 
 | 適用對象 | 業務、IT、一般開發者 | 有雲端經驗的開發團隊 | 進階開發者 | 想在既有程式裡加上 LLM 的開發者 | 
 
-## 什麼情境適合哪一個？
+### 什麼情境適合哪一個？
 
 - **「我要快速做一個會聊天、會幫忙查資料或執行流程的助理」**
 	→  先看 Copilot Studio，門檻最低、上線最快。
@@ -218,7 +218,7 @@ tags:
 
 <br>
 
-## 先想清楚「要解決的問題」，再選工具
+### 先想清楚「要解決的問題」，再選工具
 
 「我要學的是 AI Agent 還是 Agentic AI？」其實兩者並不是互斥的選項，而是 **不同層級的抽象**：
 
@@ -233,5 +233,6 @@ tags:
 - 或是用 Azure AI Foundry Agent Service 接手雲端託管與營運。
 
 <br>
+
 AI Agent 與 Agentic AI 是「不同層級」的設計：前者聚焦於讓單一代理能夠自主使用工具完成任務，後者則著重於多個代理之間的協作與流程編排。實務上建議採取由淺入深的策略：先用 Copilot Studio 或簡單的 Agent 快速驗證想法，確認核心流程與資料來源；接著把關鍵邏輯以 Semantic Kernel 或 Microsoft Agent Framework 封裝、進行測試與版本管理；最後視需求將成熟的元件移入 Azure AI Foundry 等託管平台以滿足安全與運維需求。選擇工具時，應以「要解決的問題、團隊技術能力與營運需求」為優先，從小型 PoC 漸進到 Production 架構，才能最小化風險並累積實作經驗。
 
