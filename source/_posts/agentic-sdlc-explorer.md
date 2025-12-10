@@ -202,7 +202,7 @@ Agent AI 帶來的不是「一個超強的萬能助理」，而是讓我們可�
 - 想像如果有一個 Agent 待在那個位置，它可以幫你做什麼。
 - 從最有感、風險最低的一兩個情境開始試驗。
 
-Demo Site 我已經發佈到 https://sdlc.timlai.dev/ ，大家也可以直接到 GitHub 專案 https://github.com/timlai-tw/agentic-ai-sdlc 提 issue、分享你在團隊裡導入 Agentic SDLC 的經驗，我也會持續在這個部落格記錄相關的實作心得與工具觀察。
+Demo Site 我已經發佈到 <https://sdlc.timlai.dev/> 大家也可以直接到 GitHub 專案 <https://github.com/timlai-tw/agentic-ai-sdlc> 提 issue、分享你在團隊裡導入 Agentic SDLC 的經驗，我也會持續在這個部落格記錄相關的實作心得與趨勢觀察。
 
 <div class="tips">
 <font color="black">
