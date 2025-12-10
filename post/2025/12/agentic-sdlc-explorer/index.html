@@ -9,7 +9,7 @@
     
     <title>
         
-            Agent AI 與 Agentic AI 的差別 |
+            Agentic AI 與 SDLC 協奏曲 |
         
         漫步在雲端
     </title>
@@ -301,7 +301,7 @@
             <div class="post-content-bottom border-box">
                 
                     <div class="post-title">
-                        Agent AI 與 Agentic AI 的差別
+                        Agentic AI 與 SDLC 協奏曲
                     </div>
                 
 
@@ -332,12 +332,12 @@
         
             <span class="meta-info-item post-create-date">
                 <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
-                <span class="datetime">2025-12-06 09:22:29</span>
+                <span class="datetime">2025-12-09 21:42:51</span>
             </span>
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Mon Dec 08 2025 00:54:48 GMT+0800">2025-12-08 00:54:48</span>
+                <span class="datetime" data-updated="Thu Dec 11 2025 00:50:38 GMT+0800">2025-12-11 00:50:38</span>
             </span>
         
 
@@ -351,6 +351,9 @@
                         
                     
                             <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/Agentic-AI/">Agentic AI</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/SDLC/">SDLC</a></li>
                         
                     
                 </ul>
@@ -382,318 +385,236 @@
                          <img    
                        lazyload
                        alt="image"
-                       data-src="/post/2025/12/agent-ai-and-agentic-ai/agentic-ai.jpg"
+                       data-src="/post/2025/12/agentic-sdlc-explorer/sdlc.jpg"
                          align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 >
-<p>今年大家應該蠻常聽到 <strong>Agent AI</strong> 和 <strong>Agentic AI</strong> 這兩個詞，名稱看起來很像、都有「Agent」，但實際上指的東西不太一樣：一個是「單一代理」的能力，另一個則是「多代理系統」的整體架構。本篇文章以比較白話的比喻來整理兩者的差異，以及 Microsoft 在 Agentic AI 上目前提供的幾種主要解決方案：<strong>Copilot Studio / Azure AI Foundry Agent Service / Microsoft Agent Framework / Semantic Kernel</strong>，方便大家選擇適合自己的開發路線。</p>
+                 > 
+<p>在工作上我經常需要跟客戶討論 DevOps 與軟體工作流程，從需求管理、版本控管，到建置、測試與佈署，這幾年又加上 AI / Agentic AI 的導入議題，光靠投影片或架構圖常常很難在短時間內讓大家有「同一個畫面」。也因為這樣，我做了一個小小的 side project —— <strong>Agentic SDLC Explorer</strong>，想用一個可以點點看的互動式網站，來幫助大家快速了解 Agent 在 SDLC 各階段可以扮演什麼角色。</p>
 <span id="more"></span>
 <br>
-<h2 id="什麼是-AI-Agent？什麼是-Agentic-AI？">什麼是 AI Agent？什麼是 Agentic AI？</h2>
-<p>先用一句話來區分：</p>
+<h2 id="為什麼會做-Agentic-SDLC-Explorer？">為什麼會做 Agentic SDLC Explorer？</h2>
+<p>這幾年在跟客戶討論 DevOps 或 SDLC 優化時，越來越常被問到幾個問題：</p>
 <ul>
-<li><strong>AI Agent</strong> 比較像是一位「可以自己想辦法完成任務的助手」。</li>
-<li><strong>Agentic AI</strong> 則是一個「由很多專業助手組成的團隊」，可以協調分工、一起完成一個複雜目標。</li>
+<li>「AI 在我們的開發流程裡，<strong>到底能幫上什麼忙</strong>？」</li>
+<li>「除了 IDE 裡的 GitHub Copilot，能不能有更『流程化』的應用？」</li>
+<li>「如果要導入 Agent，是不是整個 SDLC 都要重改？」</li>
 </ul>
-<br>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/12/agent-ai-and-agentic-ai/AI-Agent-vs-Agentic-AI.jpg"
-                        class=""
-                 >
-<br>
-<h3 id="AI-Agent：會自己用工具的智慧助手">AI Agent：會自己用工具的智慧助手</h3>
-<p>一般我們說的 <strong>AI Agent（AI 代理）</strong>，指的是一個以 LLM 為核心、能夠：</p>
+<p>多數團隊其實已經有一套既有流程（Jira / Azure DevOps / GitHub / Jenkins / 自家 Pipeline…），真正的問題不是「要不要用 AI」，而是：</p>
 <ul>
-<li>讀懂使用者的目標。</li>
-<li>規劃完成任務需要的步驟。</li>
-<li>在過程中主動呼叫工具。</li>
-<li>根據工具回傳結果調整接下來要做什麼。</li>
+<li>哪些工作可以交給 Agent？</li>
+<li>這些 Agent 應該長什麼樣子？</li>
+<li>在實務中，怎麼跟既有 SDLC 串在一起？</li>
 </ul>
-<p>也就是說，它不再只是單純回覆文字，而是會「自己動手做事」，例如：</p>
-<ul>
-<li>我們請它「幫我彙整一份這週專案進度並寄信給主管」，它會：
+<p>所以我做了這個 <strong>Agentic SDLC Explorer</strong>，把整個 SDLC 拆成幾個大家比較熟悉的階段，試著用「<strong>如果有一個 Agent 在這裡，它可以幫你做哪些事？</strong>」這個角度來整理，方便在顧問或工作坊場合用來示範與討論。</p>
+<br>
+<h2 id="什麼是-Agentic-SDLC-Explorer？">什麼是 Agentic SDLC Explorer？</h2>
+<p>簡單來說，<strong>Agentic SDLC Explorer</strong> 是一個以 <strong>Vite + React</strong> 打造的輕量前端示範專案，用來視覺化展示 Agent（自動化代理）在軟體開發生命週期（SDLC）中可以協助的各種工作。畫面上會把 SDLC 的不同階段切成數個區塊，點選每個區塊可以展開對應的 Agent 情境與說明，讓大家不用看長篇文件，就能快速瀏覽可能的應用方式。</p>
+<p>這個專案目前主要聚焦在「<strong>情境與概念整理</strong>」，也就是：</p>
 <ol>
-<li>先去查專案系統的狀態（例如：Azure DevOps MCP）。</li>
-<li>整理成文字報告。</li>
-<li>呼叫工具寄信送出（例如：API 或 Microsoft Team Webhook)。</li>
+<li>幫你把腦中鬆散的想法具體化：哪些工作其實可以交給 Agent？</li>
+<li>提供一個討論框架：在跟團隊或利害關係人溝通時，有一個共同的視覺化藍圖可以對焦。</li>
 </ol>
-</li>
-</ul>
-<p>這整個流程都是由一個 Agent 自己掌握、自己決定何時呼叫哪一個工具。</p>
-<h3 id="Agentic-AI：多代理協作的系統">Agentic AI：多代理協作的系統</h3>
-<p><strong>Agentic AI（代理式 AI）</strong> 則是把「多個 Agent」組織成一個協作系統，讓它們可以彼此溝通、分工合作，來處理一個單一 Agent 很難搞定的複雜任務。例如：</p>
-<ul>
-<li>從一段 1 小時的 YouTube 影片，自動產生：逐字稿整理、重點大綱、教學文章、社群貼文。</li>
-</ul>
-<p>在 Agentic AI 的架構下，我們可能會看到這樣的分工：</p>
-<ul>
-<li><strong>影片分析 Agent</strong>：負責從影片拿到逐字稿、拆段、標註重點。</li>
-<li><strong>內容整理 Agent</strong>：把資料整理成易讀的大綱、章節結構。</li>
-<li><strong>寫作 Agent</strong>：依照不同輸出格式（部落格、教學、社群貼文）產生內容。</li>
-<li><strong>審稿 / 品質控管 Agent</strong>：檢查語氣、品牌一致性、避免重複內容。</li>
-</ul>
-<p>中間會有一個「協調者」負責安排工作流程、把上一個 Agent 的輸出當成下一個 Agent 的輸入，這就是所謂的 <strong>Agentic workflow</strong>。</p>
-<h3 id="差異重點整理">差異重點整理</h3>
-<p>用表格簡單整理一下兩者差異：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">特性</th>
-<th style="text-align:left">AI Agent</th>
-<th style="text-align:left">Agentic AI</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">任務範圍</td>
-<td style="text-align:left">一次專注在一個明確任務</td>
-<td style="text-align:left">處理跨多步驟、多角色的大目標</td>
-</tr>
-<tr>
-<td style="text-align:left">架構組成</td>
-<td style="text-align:left">以單一 LLM + 工具為主</td>
-<td style="text-align:left">多個 Agent + 協調流程</td>
-</tr>
-<tr>
-<td style="text-align:left">互動模式</td>
-<td style="text-align:left">使用者 → 單一 Agent → 工具</td>
-<td style="text-align:left">使用者 → 協調層 → 多個 Agent 協作</td>
-</tr>
-<tr>
-<td style="text-align:left">自主程度</td>
-<td style="text-align:left">中等：可以自己決定如何用工具</td>
-<td style="text-align:left">較高：可以自己規劃、分派、調整流程</td>
-</tr>
-<tr>
-<td style="text-align:left">資訊流向</td>
-<td style="text-align:left">Input → Agent → Tools → Output</td>
-<td style="text-align:left">Input → Agent1 → Agent2 → … → Output</td>
-</tr>
-</tbody>
-</table>
-<p>如果把 AI Agent 比喻成一位「超強助理」，那 Agentic AI 就比較像是「一個專案團隊」，裡面有 PM、工程師、設計、測試，各司其職又互相協作。</p>
 <br>
-<h2 id="Microsoft-在-Agentic-AI-上的解決方案版圖">Microsoft 在 Agentic AI 上的解決方案版圖</h2>
-<p>談完概念之後，回到實務選型：<strong>如果我想在 Microsoft 生態系裡做 Agent / Agentic AI，手上有哪些工具可以選？</strong></p>
-<p>目前大致可以分成四條路線，從「幾乎不用寫程式」到「完全程式碼主導」都有：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">解決方案</th>
-<th style="text-align:left">定位</th>
-<th style="text-align:left">適用對象</th>
-<th style="text-align:left">程式碼需求</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left"><strong>Copilot Studio</strong></td>
-<td style="text-align:left">低程式碼 AI Agent 平台</td>
-<td style="text-align:left">業務部門、一般開發者</td>
-<td style="text-align:left">幾乎不用寫程式</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>Azure AI Foundry Agent Service</strong></td>
-<td style="text-align:left">雲端託管 Agent 服務</td>
-<td style="text-align:left">企業 IT / 後端工程師</td>
-<td style="text-align:left">中等程式碼量</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>Microsoft Agent Framework</strong></td>
-<td style="text-align:left">開源 Agent / 多代理框架 SDK</td>
-<td style="text-align:left">進階開發者、架構師</td>
-<td style="text-align:left">高度程式碼客製</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>Semantic Kernel</strong></td>
-<td style="text-align:left">輕量級協調 SDK</td>
-<td style="text-align:left">.NET / Python 開發者</td>
-<td style="text-align:left">中高程式碼量</td>
-</tr>
-</tbody>
-</table>
-<br>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/12/agent-ai-and-agentic-ai/Microsoft-Agentic-AI-Comparison.jpg"
-                        class=""
-                 >
-<br>
-<h3 id="Copilot-Studio：從「聊天機器人」長大的-Agent-平台">Copilot Studio：從「聊天機器人」長大的 Agent 平台</h3>
-<p><strong>Copilot Studio</strong> 可以把它想成是「做聊天機器人、做工作流程型 Copilot」的低程式碼平台，很多情境其實已經很接近單一 Agent：</p>
-<ul>
-<li>透過圖形化介面定義對話流程、條件分支。</li>
-<li>連接各種資料來源（SharePoint、OneDrive、Dynamics、外部 API…）。</li>
-<li>透過 <strong>Connector / Plug‑in / MCP</strong> 把外部系統當成工具來使用。</li>
-<li>不需要自己處理 Prompt、記憶體、狀態儲存等細節。</li>
-</ul>
-<p><strong>優點</strong>：</p>
-<ul>
-<li>幾乎不用寫程式，適合業務單位或一般開發者。</li>
-<li>內建大量連接器，串接常見 SaaS / Microsoft 365 生態非常方便。</li>
-<li>可以快速發佈到 Teams、Web、LINE 等多種通路。</li>
-</ul>
-<p><strong>限制 / 缺點</strong>：</p>
-<ul>
-<li>複雜的 Agentic workflow（多代理協作、細緻的狀態機）比較難完全用圖形化介面表達。</li>
-<li>對於版本控管、CI/CD、程式碼共用等軟體工程議題，彈性不如純程式碼框架。</li>
-</ul>
-<p>如果你的需求是：「想要先做一個可以用的智慧助理，重點是快、好維護」，那 Copilot Studio 是個蠻好的起點。</p>
-<br>
-<h3 id="Azure-AI-Foundry-Agent-Service：雲端託管的-Agent-平台">Azure AI Foundry Agent Service：雲端託管的 Agent 平台</h3>
-<p><strong>Azure AI Foundry Agent Service</strong> 可以視為「由雲端幫你托管 Agent」，我們透過 SDK 或 Portal 定義好下列項目：</p>
-<ul>
-<li>使用哪個模型（例如 Azure OpenAI GPT‑4o 或其他大語言模型）。</li>
-<li>這個 Agent 可以用哪些工具（Function / API / 檔案 / 搜尋等）。</li>
-<li>一些系統層的參數（如安全性、網路、儲存體、Log 等）。</li>
-</ul>
-<p>優點是：</p>
-<ul>
-<li><strong>雲端全託管</strong>：不需要自己維運負責推理的工作節點、負載平衡、監控、Log 儲存。</li>
-<li><strong>企業級安全性</strong>：支援 VNet、Private Endpoint、BYO Storage 等企業需求。</li>
-<li><strong>多模型支援</strong>：可以選用不同家族的模型（例如：GPT、Llama、GROK-4）依場景搭配。</li>
-</ul>
-<p>相對的：</p>
-<ul>
-<li>必須部署在 Azure，成本與規模需要事前評估。</li>
-<li>仍然需要一定程度的程式碼與架構設計。</li>
-</ul>
-<p>如果已經有開發團隊，希望把 Agent 當成一種「雲端服務元件」，又不想自己維護整套推理基礎架構，那 Azure AI Foundry Agent Service 會是一個折衷但穩健的選擇。</p>
-<br>
-<h3 id="Microsoft-Agent-Framework：多代理與-A2A-的核心-SDK">Microsoft Agent Framework：多代理與 A2A 的核心 SDK</h3>
-<p><strong>Microsoft Agent Framework</strong> 是最近 (2025/10/1) 才開源的 <strong>Agent / Agentic AI 專用 SDK</strong>，同時支援 <strong>Python</strong> 和 <strong>.NET</strong>，可以視為把原本的 <strong>Semantic Kernel</strong> 與 <strong>AutoGen</strong> 整併、提升後的新一代框架。</p>
-<p>它的設計大致有下列幾項重點：</p>
-<ul>
-<li><strong>多代理協調</strong>：原生支援 Agent 之間互相對話、協作，適合實作複雜工作流程。</li>
-<li><strong>A2A（Agent‑to‑Agent）協定</strong>：讓不同執行環境、甚至不同平台上的 Agent 也能互通。</li>
-<li><strong>MCP / OpenAPI 工具整合</strong>：可以很方便地把 API、外部系統包裝成 Agent 的工具。</li>
-<li><strong>生產環境就緒</strong>：有錯誤處理、重試、持久化與觀測性等機制，方便從 PoC 走到 Production。</li>
-</ul>
-<p><strong>優點</strong>：</p>
-<ul>
-<li>架構上就是為「Agentic AI」設計，很適合把多個專業 Agent 組合成工作流程。</li>
-<li>與 Azure AI Foundry、Microsoft 365 Copilot、Copilot Studio 等平台都可以互相整合。</li>
-<li>開源、可行自架設，也可以搭配雲端服務一起使用。</li>
-</ul>
-<p><strong>缺點 / 挑戰</strong>：</p>
-<ul>
-<li>技術門檻相對高，需要熟悉 LLM + 分散式系統 + 軟體架構設計。</li>
-<li>功能很多，設計彈性也高，前期會需要花時間建立團隊內部的 best practices。</li>
-</ul>
-<p>從定位來看，它比較像是：</p>
-<blockquote>
-<p>「如果你想打造一個可以長期演進、支援多代理協作的 AI 應用平台，Agent Framework 就是那個核心 SDK。」</p>
-</blockquote>
-<br>
-<h3 id="Semantic-Kernel：輕量、模組化的協調-SDK">Semantic Kernel：輕量、模組化的協調 SDK</h3>
-<p><strong>Semantic Kernel</strong> 則是比較早期推出的 LLM 協調 SDK，一樣支援 .NET / Python，主要幫我們處理：</p>
-<ul>
-<li>Prompt 組合與模板化。</li>
-<li>指令 Function、工具呼叫（例如：把 C# method 變成可被模型呼叫的 function）。</li>
-<li>記憶體 (Memory)、Planner 等常見 Agent 開發場景。</li>
-</ul>
-<p>它本身也可以用來做「單一 Agent」、或是簡單的多 Agent 情境，不過 <strong>多代理協作這一塊，目前的主角已經漸漸交棒給 Microsoft Agent Framework</strong>，Semantic Kernel 則偏向：</p>
-<ul>
-<li>在既有 .NET / Python 專案裡「嵌入 LLM 能力」的工具箱。</li>
-<li>作為 Agent Framework 的一個重要組件或輔助 SDK。</li>
-</ul>
-<p><strong>優點</strong>：</p>
-<ul>
-<li>輕量、好嵌入，對 .NET 開發環境相當友善。</li>
-<li>社群成熟、文件與範例多，很多既有教學都以它為基礎。</li>
-</ul>
-<p><strong>限制</strong>：</p>
-<ul>
-<li>如果要實作複雜的多代理 workflow，會需要自己多寫一層協調邏輯，或是搭配 Microsoft Agent Framework。</li>
-</ul>
-<br>
-<h2 id="四種方案的比較與選擇建議">四種方案的比較與選擇建議</h2>
-<p>最後用一張對照表，看一下四種方案的差異：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">特性</th>
-<th style="text-align:left">Copilot Studio</th>
-<th style="text-align:left">Azure AI Foundry Agent Service</th>
-<th style="text-align:left">Microsoft Agent Framework</th>
-<th style="text-align:left">Semantic Kernel</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">開發方式</td>
-<td style="text-align:left">圖形化 / 對話式</td>
-<td style="text-align:left">SDK + Portal 管理</td>
-<td style="text-align:left">Python / .NET SDK</td>
-<td style="text-align:left">.NET / Python SDK</td>
-</tr>
-<tr>
-<td style="text-align:left">多代理協作</td>
-<td style="text-align:left">有限（偏向單一 Agent）</td>
-<td style="text-align:left">支援，但由服務端協調</td>
-<td style="text-align:left">原生支援、多代理主場</td>
-<td style="text-align:left">可實作，但需自行組裝</td>
-</tr>
-<tr>
-<td style="text-align:left">MCP / 工具整合</td>
-<td style="text-align:left">以 Connector / MCP 方式整合</td>
-<td style="text-align:left">支援工具呼叫與多模型</td>
-<td style="text-align:left">原生支援 MCP / OpenAPI / A2A</td>
-<td style="text-align:left">透過 plug‑in / function 整合</td>
-</tr>
-<tr>
-<td style="text-align:left">部署 / 維運</td>
-<td style="text-align:left">由 Microsoft 全託管</td>
-<td style="text-align:left">Azure 全託管</td>
-<td style="text-align:left">本機自架或上雲</td>
-<td style="text-align:left">由應用程式自行負責</td>
-</tr>
-<tr>
-<td style="text-align:left">適用對象</td>
-<td style="text-align:left">業務、IT、一般開發者</td>
-<td style="text-align:left">有雲端經驗的開發團隊</td>
-<td style="text-align:left">進階開發者</td>
-<td style="text-align:left">想在既有程式裡加上 LLM 的開發者</td>
-</tr>
-</tbody>
-</table>
-<h3 id="什麼情境適合哪一個？">什麼情境適合哪一個？</h3>
-<ul>
+<h2 id="目標與設計理念">目標與設計理念</h2>
+<p>在設計這個 side project 時，我自己抓了兩個核心目標：</p>
+<ol>
 <li>
-<p><strong>「我要快速做一個會聊天、會幫忙查資料或執行流程的助理」</strong><br>
-→  先看 Copilot Studio，門檻最低、上線最快。</p>
+<p><strong>示範 Agent 在不同 SDLC 階段的可能應用</strong><br>
+從需求分析、系統設計、開發、測試、安全、程式碼審查，到部署與維運，嘗試列出各階段可以交給 Agent 處理或輔助的任務，讓大家看到「不只是在寫程式時可以用 GitHub Copilot」。</p>
 </li>
 <li>
-<p><strong>「我們有後端團隊，希望把 Agent 當成一個穩定的雲端服務元件」</strong><br>
-→ 可以考慮 Azure AI Foundry Agent Service，享受託管與企業級安全性。</p>
+<p><strong>提供可直接執行的範例介面</strong><br>
+雖然現在版本主要還是概念展示，但整個專案結構就是一般前端專案，日後可以很容易地把某些情境換成真實 API / Agent 後端實作，慢慢演進成一個「可以真的點一點就幫你做事」的 Agentic SDLC 工具箱。</p>
+</li>
+</ol>
+<br>
+<h2 id="Agent-AI-在-SDLC-中的應用範疇">Agent AI 在 SDLC 中的應用範疇</h2>
+<p>在 Agentic SDLC Explorer 裡，我把 SDLC 粗略切成幾個比較容易對應到日常工作的區塊，下面逐一說明每個範疇適合出現哪些 Agent，以及它們可以幫上什麼忙。</p>
+<br>
+<h3 id="1-需求-Backlog：從想法到可實作的工作項目">1. 需求 / Backlog：從想法到可實作的工作項目</h3>
+<p>在需求管理這一段，我通常會想像有幾種類型的 Agent：</p>
+<ul>
+<li>
+<p><strong>需求整理 Agent</strong>：</p>
+<ul>
+<li>協助整理會議紀錄、Email、聊天訊息，把零散的想法歸納成可管理的 Backlog 項目。</li>
+<li>協助補上缺少的欄位，例如：商業價值、風險、驗收條件、相依關係等。</li>
+</ul>
 </li>
 <li>
-<p><strong>「我們已經有一堆 .NET / Python 系統，只是想讓它們變得更聰明一點」</strong><br>
-→ 從 Semantic Kernel 下手，把 LLM 能力「嵌進去」既有應用程式。</p>
+<p><strong>規格檢視 Agent</strong>：</p>
+<ul>
+<li>檢查需求描述是否含糊不清、是否缺少邊界條件或錯誤情境。</li>
+<li>參考現有系統文件或程式碼，提醒「這個需求可能會影響到哪些模組」。</li>
+</ul>
 </li>
 <li>
-<p><strong>「我們要打造一個可長期演進的多代理平台，未來可能會跟內部系統深度整合」</strong><br>
-→ 把 Microsoft Agent Framework 當成主軸，必要時再搭配其他服務。</p>
+<p><strong>系統設計輔助 Agent</strong>：</p>
+<ul>
+<li>根據需求內容，協助產生初步架構圖、資料流、模組切分建議。</li>
+<li>提出多種實作選項（例如：同步 vs 非同步、事件式設計 vs 傳統呼叫），幫助架構師做決策。</li>
+</ul>
 </li>
 </ul>
+<p>在 Explorer 的介面上，這一塊會被標示成「需求 / Backlog」，點進去可以看到上面提到的這類情境，方便跟 PM 或 BA 討論「哪些還是要人決定、哪些可以交給 Agent 做第一輪整理」。</p>
 <br>
-<h3 id="先想清楚「要解決的問題」，再選工具">先想清楚「要解決的問題」，再選工具</h3>
-<p>「我要學的是 AI Agent 還是 Agentic AI？」其實兩者並不是互斥的選項，而是 <strong>不同層級的抽象</strong>：</p>
+<h3 id="2-開發-Agentic-Coding：讓-IDE-真的變成你的-Pair">2. 開發 / Agentic Coding：讓 IDE 真的變成你的 Pair</h3>
+<p>談到開發階段，大家第一個想到的通常是 IDE 裡的 GitHub Copilot 或類似工具，但在 Agent 視角下，可以再往前幾步：</p>
 <ul>
-<li>先理解 <strong>AI Agent</strong>：學會怎麼讓一個 Agent 聽懂需求、會用工具、能把事情做完。</li>
-<li>再往上看 <strong>Agentic AI</strong>：學會怎麼設計整個 workflow、怎麼切出不同專業 Agent、如何協調它們的合作與溝通。</li>
+<li>
+<p><strong>程式碼理解 Agent</strong>：</p>
+<ul>
+<li>對既有程式碼庫進行分析，協助回答「這支服務在做什麼？」「這段 legacy code 改動會影響哪裡？」。</li>
+<li>依需求或 Issue，自動找出相關檔案、類別與測試，當成開發起手式。</li>
+</ul>
+</li>
+<li>
+<p><strong>多語言程式碼翻譯 Agent</strong>：</p>
+<ul>
+<li>把 VB6 / VB.NET / Java 等舊系統片段，逐步翻譯成目標語言（例如 C#、TypeScript），同時標註需要人工確認的區塊。</li>
+</ul>
+</li>
+<li>
+<p><strong>Refactoring / Pattern 建議 Agent</strong>：</p>
+<ul>
+<li>觀察重複邏輯，提出重構建議（提煉函數、抽共用模組、導入設計模式等）。</li>
+<li>在 PR 或本地編輯階段，提醒程式碼味道（Code Smell）或潛在技術債。</li>
+</ul>
+</li>
+</ul>
+<p>這些都不一定要是「一個超級大 Agent」，實務上更常見的做法是：</p>
+<ul>
+<li>讓 IDE 內建 GitHub Copilot 負責即時補全與解說，</li>
+<li>再搭配幾個針對特定語言或框架的後端 Agent，負責比較重的分析工作，</li>
+<li>透過 MCP / API 或自訂工具，把結果回寫到開發者的工作環境中。</li>
 </ul>
 <br>
-微軟提供的這四條路線，剛好也從「低程式碼 → 高自訂」排成一個光譜，我們可以：
+<h3 id="3-測試與安全：從「寫測試」變成「設計測試策略」">3. 測試與安全：從「寫測試」變成「設計測試策略」</h3>
+<p>在測試這一段，Agent 很適合扮演的是「測試策略設計師」與「測試產生器」：</p>
 <ul>
-<li>先用 Copilot Studio 做出可以 demo 的東西，</li>
-<li>再把關鍵部分細部展開到 Microsoft Agent Framework / Semantic Kernel，</li>
-<li>或是用 Azure AI Foundry Agent Service 接手雲端託管與營運。</li>
+<li>
+<p><strong>單元測試產生 Agent</strong>：</p>
+<ul>
+<li>根據既有程式碼與需求描述，自動產生單元測試範本，並幫你補齊常見的正常 / 例外情境。</li>
+<li>協助重構既有測試，讓測試名稱更清楚、結構更一致。</li>
+</ul>
+</li>
+<li>
+<p><strong>整合測試 / 合約測試 Agent</strong>：</p>
+<ul>
+<li>根據 API 規格（OpenAPI / gRPC / 內部文件），自動產生合約測試樣本與測試資料集。</li>
+<li>協助模擬下游系統行為（Mock / Stub），加速測試環境就緒。</li>
+</ul>
+</li>
+<li>
+<p><strong>安全性分析 Agent</strong>：</p>
+<ul>
+<li>包裝 SAST / DAST 工具的輸出結果，轉成比較「人看得懂」的風險說明與修正建議。</li>
+<li>在 PR 或 Build 階段對惡意輸入、權限控管、密碼與金鑰管理作靜態檢查，幫忙標註優先順序。</li>
+</ul>
+</li>
+</ul>
+<p>當然，最終的測試策略仍需要測試工程師或團隊自己決定，但 Agent 可以把大量「機械式、可重複」的工作處理掉，讓人類把時間花在設計更好的測試場景，而不是在那邊苦苦寫樣板。</p>
+<br>
+<h3 id="4-程式碼提交與審查：讓-PR-審查更聚焦在設計與風險">4. 程式碼提交與審查：讓 PR 審查更聚焦在設計與風險</h3>
+<p>在 Commit / PR 流程中，可以想像幾個常見的 Agent：</p>
+<ul>
+<li>
+<p><strong>變更摘要 Agent</strong>：</p>
+<ul>
+<li>針對這次 Commit / PR，自動整理「改了什麼」、「為什麼要改」、「可能影響到什麼」三個重點。</li>
+<li>協助產生較高品質的 PR 描述，讓 Reviewer 不用自己從 diff 猜動機。</li>
+</ul>
+</li>
+<li>
+<p><strong>Code Review 佐助 Agent</strong>：</p>
+<ul>
+<li>結合程式碼規範（Coding Guidelines）、安全規則與團隊慣例，先跑一輪初步檢查，把明顯問題先標出來。</li>
+<li>幫 Reviewer 統整重點：哪幾個檔案改最多？哪幾個區塊需要多人共同確認？</li>
+</ul>
+</li>
+<li>
+<p><strong>合規 / 安全審查 Agent</strong>：</p>
+<ul>
+<li>對涉入隱私資料、金流、權限的變更多做一層檢查，確保沒有誤用敏感 API 或外洩機會。</li>
+</ul>
+</li>
+</ul>
+<p>這類 Agent 不一定要「自動幫你按 Approve」，比較實際的做法是：</p>
+<ul>
+<li>把 Review 的「雜訊」濾掉，</li>
+<li>協助排出「這個 PR 裡最值得你花時間看的地方」，</li>
+<li>讓 Reviewer 有更多時間專注在架構設計、風險與長期維護性。</li>
 </ul>
 <br>
-<p>AI Agent 與 Agentic AI 是「不同層級」的設計：前者聚焦於讓單一代理能夠自主使用工具完成任務，後者則著重於多個代理之間的協作與流程編排。實務上建議採取由淺入深的策略：先用 Copilot Studio 或簡單的 Agent 快速驗證想法，確認核心流程與資料來源；接著把關鍵邏輯以 Semantic Kernel 或 Microsoft Agent Framework 封裝、進行測試與版本管理；最後視需求將成熟的元件移入 Azure AI Foundry 等託管平台以滿足安全與運維需求。選擇工具時，應以「要解決的問題、團隊技術能力與營運需求」為優先，從小型 PoC 漸進到 Production 架構，才能最小化風險並累積實作經驗。</p>
+<h3 id="5-部署與維運：從-Log-與警報中找出可以行動的訊息">5. 部署與維運：從 Log 與警報中找出可以行動的訊息</h3>
+<p>在 CI/CD 與維運階段，Agent 的角色通常比較偏向「觀察者 + 分析師」：</p>
+<ul>
+<li>
+<p><strong>Pipeline 輔助 Agent</strong>：</p>
+<ul>
+<li>監看建置結果與測試報告，將錯誤訊息轉成具體建議（例如：哪個測試常壞？是 flaky 還是真的有問題？）。</li>
+<li>針對常失敗的 Stage，提出切分或重構建議，協助 DevOps 工程師優化 Pipeline。</li>
+</ul>
+</li>
+<li>
+<p><strong>Incident / On-call 助理 Agent</strong>：</p>
+<ul>
+<li>當監控系統跳出警報時，整理相關的 Log、最近變更、影響的服務與使用者數量，讓 On-call 能在幾分鐘內掌握大局。</li>
+<li>協助產生初版的 Incident Report 或 Postmortem 草稿，後續再由團隊補完。</li>
+</ul>
+</li>
+</ul>
+<p>這些應用都很適合被視覺化放在 SDLC Explorer 裡，幫助團隊思考：「我們目前哪一段流程最痛？是不是可以先從這裡開始試驗 Agent？」</p>
+<br>
+<h3 id="6-文件與發佈：讓知識累積變得更自然">6. 文件與發佈：讓知識累積變得更自然</h3>
+<p>最後一塊是很多團隊都想做、但總是排不出時間的：「文件與發佈」。</p>
+<ul>
+<li>
+<p><strong>文件產生 / 更新 Agent</strong>：</p>
+<ul>
+<li>根據需求、設計決策與程式碼變更，自動產生或更新 API 文件、架構說明、系統操作手冊草稿。</li>
+<li>協助比對「實際系統行為」與「文件描述」是否一致，標出可能已過期的段落。</li>
+</ul>
+</li>
+<li>
+<p><strong>Release Notes 助理 Agent</strong>：</p>
+<ul>
+<li>根據這個 Sprint 或 Release 所有 PR / Work Items，整理出對使用者友善的更新說明。</li>
+<li>針對不同受眾（End User / 內部技術人員 / 管理層）產生不同版本的摘要。</li>
+</ul>
+</li>
+<li>
+<p><strong>溝通與訓練素材 Agent</strong>：</p>
+<ul>
+<li>把新功能的設計說明轉成簡報、教學稿、FAQ，減少重複解釋的時間。</li>
+</ul>
+</li>
+</ul>
+<p>這些工作本質上都很適合由 Agent 先做 70%，再由人類補上最後 30% 的細緻度與裁量。</p>
+<br>
+<h2 id="Explorer-本身可以怎麼擴充？">Explorer 本身可以怎麼擴充？</h2>
+<p>目前的 Agentic SDLC Explorer 主要還是「情境導覽 + 視覺化地圖」，但因為是走 <strong>Vite + React 的標準前端專案結構</strong>，未來可以有很多延伸方向，例如：</p>
+<ul>
+<li>在每個 SDLC 區塊下，掛上真實後端 Agent 的 API，讓使用者可以直接在畫面上觸發 Demo（例如：產生測試、總結 Issue、分析 Log）。</li>
+<li>加入篩選與標籤功能，依角色（開發 / 測試 / DevOps / PM）或成熟度（PoC / Pilot / Production）來瀏覽適合的情境。</li>
+<li>把成功案例與實作筆記寫回到這個網站，形成一種「Agentic SDLC 實戰索引」。</li>
+</ul>
+<p>如果你有其他想補充的場景，也非常歡迎直接發 PR 到 GitHub 專案，一起把這張 SDLC + Agent 地圖補得更完整。</p>
+<br>
+<h2 id="結語">結語</h2>
+<p>Agent AI 帶來的不是「一個超強的萬能助理」，而是讓我們可以在 SDLC 的各個角落，放進許多專精且可協作的 Agent，幫忙處理大量重複、機械、需要跨系統查資料的工作。<strong>Agentic SDLC Explorer</strong> 這個 side project，只是我在顧問工作中為了方便說明而做的一個小工具，但也希望它能成為大家在規劃 AI / Agent 導入時的一個起點：</p>
+<ul>
+<li>先看清楚目前 SDLC 上有哪些痛點與瓶頸。</li>
+<li>想像如果有一個 Agent 待在那個位置，它可以幫你做什麼。</li>
+<li>從最有感、風險最低的一兩個情境開始試驗。</li>
+</ul>
+<p>Demo Site 我已經發佈到 <a class="link"   target="_blank" rel="noopener" href="https://sdlc.timlai.dev/" >https://sdlc.timlai.dev/<i class="fas fa-external-link-alt"></i></a> ，大家也可以直接到 GitHub 專案 <a class="link"   target="_blank" rel="noopener" href="https://github.com/timlai-tw/agentic-ai-sdlc" >https://github.com/timlai-tw/agentic-ai-sdlc<i class="fas fa-external-link-alt"></i></a> 提 issue、分享你在團隊裡導入 Agentic SDLC 的經驗，我也會持續在這個部落格記錄相關的實作心得與工具觀察。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://sdlc.timlai.dev"  target="_blank">⁍ Agentic AI and SDLC Orchestration<i class="fas fa-external-link-alt"></i></a>
+<a class="link"   href="https://github.com/timlai-tw/agentic-ai-sdlc"  target="_blank">⁍ GitHub | Agentic SDLC Explorer<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
 
                     
                 </div>
@@ -704,11 +625,11 @@
     <div class="copyright-info-content border-box">
         <div class="copyright-info-top border-box">
             <div class="copyright-post-title border-box text-ellipsis">
-                Agent AI 與 Agentic AI 的差別
+                Agentic AI 與 SDLC 協奏曲
             </div>
 
             <div class="copyright-post-link border-box text-ellipsis">
-                post/2025/12/agent-ai-and-agentic-ai/
+                post/2025/12/agentic-sdlc-explorer/
             </div>
         </div>
 
@@ -724,7 +645,7 @@
                 <div class="type">
                     發布於
                 </div>
-                <div class="content">2025-12-06 09:22</div>
+                <div class="content">2025-12-09 21:42</div>
             </div>
 
 
@@ -767,6 +688,10 @@
                                         <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/Agentic-AI/">Agentic AI</a>
                                     </li>
                                 
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/SDLC/">SDLC</a>
+                                    </li>
+                                
                             </ul>
                         
                     </div>
@@ -780,31 +705,15 @@
                 
                     <div class="post-nav border-box">
                         
-                            <div class="prev-post">
-                                <a class="prev"
-                                   rel="prev"
-                                   href="/post/2025/12/agentic-sdlc-explorer/"
-                                   title="Agentic AI 與 SDLC 協奏曲"
-                                >
-                                    <span class="left arrow-icon flex-center">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </span>
-                                    <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">Agentic AI 與 SDLC 協奏曲</span>
-                                        <span class="post-nav-item">上一篇</span>
-                                    </span>
-                                </a>
-                            </div>
-                        
                         
                             <div class="next-post">
                                 <a class="next"
                                    rel="next"
-                                   href="/post/2025/11/vscode-custom-instructions/"
-                                   title="VS Code 的 Custom Instructions"
+                                   href="/post/2025/12/agent-ai-and-agentic-ai/"
+                                   title="Agent AI 與 Agentic AI 的差別"
                                 >
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">VS Code 的 Custom Instructions</span>
+                                        <span class="post-nav-title-item text-ellipsis">Agent AI 與 Agentic AI 的差別</span>
                                         <span class="post-nav-item">下一篇</span>
                                     </span>
                                     <span class="right arrow-icon flex-center">
@@ -899,7 +808,7 @@
             <div class="pc-post-toc left-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-AI-Agent%EF%BC%9F%E4%BB%80%E9%BA%BC%E6%98%AF-Agentic-AI%EF%BC%9F"><span class="nav-text">什麼是 AI Agent？什麼是 Agentic AI？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AI-Agent%EF%BC%9A%E6%9C%83%E8%87%AA%E5%B7%B1%E7%94%A8%E5%B7%A5%E5%85%B7%E7%9A%84%E6%99%BA%E6%85%A7%E5%8A%A9%E6%89%8B"><span class="nav-text">AI Agent：會自己用工具的智慧助手</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Agentic-AI%EF%BC%9A%E5%A4%9A%E4%BB%A3%E7%90%86%E5%8D%94%E4%BD%9C%E7%9A%84%E7%B3%BB%E7%B5%B1"><span class="nav-text">Agentic AI：多代理協作的系統</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%AE%E7%95%B0%E9%87%8D%E9%BB%9E%E6%95%B4%E7%90%86"><span class="nav-text">差異重點整理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Microsoft-%E5%9C%A8-Agentic-AI-%E4%B8%8A%E7%9A%84%E8%A7%A3%E6%B1%BA%E6%96%B9%E6%A1%88%E7%89%88%E5%9C%96"><span class="nav-text">Microsoft 在 Agentic AI 上的解決方案版圖</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Copilot-Studio%EF%BC%9A%E5%BE%9E%E3%80%8C%E8%81%8A%E5%A4%A9%E6%A9%9F%E5%99%A8%E4%BA%BA%E3%80%8D%E9%95%B7%E5%A4%A7%E7%9A%84-Agent-%E5%B9%B3%E5%8F%B0"><span class="nav-text">Copilot Studio：從「聊天機器人」長大的 Agent 平台</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Azure-AI-Foundry-Agent-Service%EF%BC%9A%E9%9B%B2%E7%AB%AF%E8%A8%97%E7%AE%A1%E7%9A%84-Agent-%E5%B9%B3%E5%8F%B0"><span class="nav-text">Azure AI Foundry Agent Service：雲端託管的 Agent 平台</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Microsoft-Agent-Framework%EF%BC%9A%E5%A4%9A%E4%BB%A3%E7%90%86%E8%88%87-A2A-%E7%9A%84%E6%A0%B8%E5%BF%83-SDK"><span class="nav-text">Microsoft Agent Framework：多代理與 A2A 的核心 SDK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Semantic-Kernel%EF%BC%9A%E8%BC%95%E9%87%8F%E3%80%81%E6%A8%A1%E7%B5%84%E5%8C%96%E7%9A%84%E5%8D%94%E8%AA%BF-SDK"><span class="nav-text">Semantic Kernel：輕量、模組化的協調 SDK</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E7%A8%AE%E6%96%B9%E6%A1%88%E7%9A%84%E6%AF%94%E8%BC%83%E8%88%87%E9%81%B8%E6%93%87%E5%BB%BA%E8%AD%B0"><span class="nav-text">四種方案的比較與選擇建議</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E9%BA%BC%E6%83%85%E5%A2%83%E9%81%A9%E5%90%88%E5%93%AA%E4%B8%80%E5%80%8B%EF%BC%9F"><span class="nav-text">什麼情境適合哪一個？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%88%E6%83%B3%E6%B8%85%E6%A5%9A%E3%80%8C%E8%A6%81%E8%A7%A3%E6%B1%BA%E7%9A%84%E5%95%8F%E9%A1%8C%E3%80%8D%EF%BC%8C%E5%86%8D%E9%81%B8%E5%B7%A5%E5%85%B7"><span class="nav-text">先想清楚「要解決的問題」，再選工具</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%82%BA%E4%BB%80%E9%BA%BC%E6%9C%83%E5%81%9A-Agentic-SDLC-Explorer%EF%BC%9F"><span class="nav-text">為什麼會做 Agentic SDLC Explorer？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-Agentic-SDLC-Explorer%EF%BC%9F"><span class="nav-text">什麼是 Agentic SDLC Explorer？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E6%A8%99%E8%88%87%E8%A8%AD%E8%A8%88%E7%90%86%E5%BF%B5"><span class="nav-text">目標與設計理念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Agent-AI-%E5%9C%A8-SDLC-%E4%B8%AD%E7%9A%84%E6%87%89%E7%94%A8%E7%AF%84%E7%96%87"><span class="nav-text">Agent AI 在 SDLC 中的應用範疇</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%9C%80%E6%B1%82-Backlog%EF%BC%9A%E5%BE%9E%E6%83%B3%E6%B3%95%E5%88%B0%E5%8F%AF%E5%AF%A6%E4%BD%9C%E7%9A%84%E5%B7%A5%E4%BD%9C%E9%A0%85%E7%9B%AE"><span class="nav-text">1. 需求 &#x2F; Backlog：從想法到可實作的工作項目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E9%96%8B%E7%99%BC-Agentic-Coding%EF%BC%9A%E8%AE%93-IDE-%E7%9C%9F%E7%9A%84%E8%AE%8A%E6%88%90%E4%BD%A0%E7%9A%84-Pair"><span class="nav-text">2. 開發 &#x2F; Agentic Coding：讓 IDE 真的變成你的 Pair</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%B8%AC%E8%A9%A6%E8%88%87%E5%AE%89%E5%85%A8%EF%BC%9A%E5%BE%9E%E3%80%8C%E5%AF%AB%E6%B8%AC%E8%A9%A6%E3%80%8D%E8%AE%8A%E6%88%90%E3%80%8C%E8%A8%AD%E8%A8%88%E6%B8%AC%E8%A9%A6%E7%AD%96%E7%95%A5%E3%80%8D"><span class="nav-text">3. 測試與安全：從「寫測試」變成「設計測試策略」</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E7%A8%8B%E5%BC%8F%E7%A2%BC%E6%8F%90%E4%BA%A4%E8%88%87%E5%AF%A9%E6%9F%A5%EF%BC%9A%E8%AE%93-PR-%E5%AF%A9%E6%9F%A5%E6%9B%B4%E8%81%9A%E7%84%A6%E5%9C%A8%E8%A8%AD%E8%A8%88%E8%88%87%E9%A2%A8%E9%9A%AA"><span class="nav-text">4. 程式碼提交與審查：讓 PR 審查更聚焦在設計與風險</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E9%83%A8%E7%BD%B2%E8%88%87%E7%B6%AD%E9%81%8B%EF%BC%9A%E5%BE%9E-Log-%E8%88%87%E8%AD%A6%E5%A0%B1%E4%B8%AD%E6%89%BE%E5%87%BA%E5%8F%AF%E4%BB%A5%E8%A1%8C%E5%8B%95%E7%9A%84%E8%A8%8A%E6%81%AF"><span class="nav-text">5. 部署與維運：從 Log 與警報中找出可以行動的訊息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E6%96%87%E4%BB%B6%E8%88%87%E7%99%BC%E4%BD%88%EF%BC%9A%E8%AE%93%E7%9F%A5%E8%AD%98%E7%B4%AF%E7%A9%8D%E8%AE%8A%E5%BE%97%E6%9B%B4%E8%87%AA%E7%84%B6"><span class="nav-text">6. 文件與發佈：讓知識累積變得更自然</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Explorer-%E6%9C%AC%E8%BA%AB%E5%8F%AF%E4%BB%A5%E6%80%8E%E9%BA%BC%E6%93%B4%E5%85%85%EF%BC%9F"><span class="nav-text">Explorer 本身可以怎麼擴充？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-text">結語</span></a></li></ol>
     </div>
 </div>
 
@@ -1103,7 +1012,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-AI-Agent%EF%BC%9F%E4%BB%80%E9%BA%BC%E6%98%AF-Agentic-AI%EF%BC%9F"><span class="nav-text">什麼是 AI Agent？什麼是 Agentic AI？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AI-Agent%EF%BC%9A%E6%9C%83%E8%87%AA%E5%B7%B1%E7%94%A8%E5%B7%A5%E5%85%B7%E7%9A%84%E6%99%BA%E6%85%A7%E5%8A%A9%E6%89%8B"><span class="nav-text">AI Agent：會自己用工具的智慧助手</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Agentic-AI%EF%BC%9A%E5%A4%9A%E4%BB%A3%E7%90%86%E5%8D%94%E4%BD%9C%E7%9A%84%E7%B3%BB%E7%B5%B1"><span class="nav-text">Agentic AI：多代理協作的系統</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%AE%E7%95%B0%E9%87%8D%E9%BB%9E%E6%95%B4%E7%90%86"><span class="nav-text">差異重點整理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Microsoft-%E5%9C%A8-Agentic-AI-%E4%B8%8A%E7%9A%84%E8%A7%A3%E6%B1%BA%E6%96%B9%E6%A1%88%E7%89%88%E5%9C%96"><span class="nav-text">Microsoft 在 Agentic AI 上的解決方案版圖</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Copilot-Studio%EF%BC%9A%E5%BE%9E%E3%80%8C%E8%81%8A%E5%A4%A9%E6%A9%9F%E5%99%A8%E4%BA%BA%E3%80%8D%E9%95%B7%E5%A4%A7%E7%9A%84-Agent-%E5%B9%B3%E5%8F%B0"><span class="nav-text">Copilot Studio：從「聊天機器人」長大的 Agent 平台</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Azure-AI-Foundry-Agent-Service%EF%BC%9A%E9%9B%B2%E7%AB%AF%E8%A8%97%E7%AE%A1%E7%9A%84-Agent-%E5%B9%B3%E5%8F%B0"><span class="nav-text">Azure AI Foundry Agent Service：雲端託管的 Agent 平台</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Microsoft-Agent-Framework%EF%BC%9A%E5%A4%9A%E4%BB%A3%E7%90%86%E8%88%87-A2A-%E7%9A%84%E6%A0%B8%E5%BF%83-SDK"><span class="nav-text">Microsoft Agent Framework：多代理與 A2A 的核心 SDK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Semantic-Kernel%EF%BC%9A%E8%BC%95%E9%87%8F%E3%80%81%E6%A8%A1%E7%B5%84%E5%8C%96%E7%9A%84%E5%8D%94%E8%AA%BF-SDK"><span class="nav-text">Semantic Kernel：輕量、模組化的協調 SDK</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E7%A8%AE%E6%96%B9%E6%A1%88%E7%9A%84%E6%AF%94%E8%BC%83%E8%88%87%E9%81%B8%E6%93%87%E5%BB%BA%E8%AD%B0"><span class="nav-text">四種方案的比較與選擇建議</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E9%BA%BC%E6%83%85%E5%A2%83%E9%81%A9%E5%90%88%E5%93%AA%E4%B8%80%E5%80%8B%EF%BC%9F"><span class="nav-text">什麼情境適合哪一個？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%88%E6%83%B3%E6%B8%85%E6%A5%9A%E3%80%8C%E8%A6%81%E8%A7%A3%E6%B1%BA%E7%9A%84%E5%95%8F%E9%A1%8C%E3%80%8D%EF%BC%8C%E5%86%8D%E9%81%B8%E5%B7%A5%E5%85%B7"><span class="nav-text">先想清楚「要解決的問題」，再選工具</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%82%BA%E4%BB%80%E9%BA%BC%E6%9C%83%E5%81%9A-Agentic-SDLC-Explorer%EF%BC%9F"><span class="nav-text">為什麼會做 Agentic SDLC Explorer？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-Agentic-SDLC-Explorer%EF%BC%9F"><span class="nav-text">什麼是 Agentic SDLC Explorer？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E6%A8%99%E8%88%87%E8%A8%AD%E8%A8%88%E7%90%86%E5%BF%B5"><span class="nav-text">目標與設計理念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Agent-AI-%E5%9C%A8-SDLC-%E4%B8%AD%E7%9A%84%E6%87%89%E7%94%A8%E7%AF%84%E7%96%87"><span class="nav-text">Agent AI 在 SDLC 中的應用範疇</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%9C%80%E6%B1%82-Backlog%EF%BC%9A%E5%BE%9E%E6%83%B3%E6%B3%95%E5%88%B0%E5%8F%AF%E5%AF%A6%E4%BD%9C%E7%9A%84%E5%B7%A5%E4%BD%9C%E9%A0%85%E7%9B%AE"><span class="nav-text">1. 需求 &#x2F; Backlog：從想法到可實作的工作項目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E9%96%8B%E7%99%BC-Agentic-Coding%EF%BC%9A%E8%AE%93-IDE-%E7%9C%9F%E7%9A%84%E8%AE%8A%E6%88%90%E4%BD%A0%E7%9A%84-Pair"><span class="nav-text">2. 開發 &#x2F; Agentic Coding：讓 IDE 真的變成你的 Pair</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%B8%AC%E8%A9%A6%E8%88%87%E5%AE%89%E5%85%A8%EF%BC%9A%E5%BE%9E%E3%80%8C%E5%AF%AB%E6%B8%AC%E8%A9%A6%E3%80%8D%E8%AE%8A%E6%88%90%E3%80%8C%E8%A8%AD%E8%A8%88%E6%B8%AC%E8%A9%A6%E7%AD%96%E7%95%A5%E3%80%8D"><span class="nav-text">3. 測試與安全：從「寫測試」變成「設計測試策略」</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E7%A8%8B%E5%BC%8F%E7%A2%BC%E6%8F%90%E4%BA%A4%E8%88%87%E5%AF%A9%E6%9F%A5%EF%BC%9A%E8%AE%93-PR-%E5%AF%A9%E6%9F%A5%E6%9B%B4%E8%81%9A%E7%84%A6%E5%9C%A8%E8%A8%AD%E8%A8%88%E8%88%87%E9%A2%A8%E9%9A%AA"><span class="nav-text">4. 程式碼提交與審查：讓 PR 審查更聚焦在設計與風險</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E9%83%A8%E7%BD%B2%E8%88%87%E7%B6%AD%E9%81%8B%EF%BC%9A%E5%BE%9E-Log-%E8%88%87%E8%AD%A6%E5%A0%B1%E4%B8%AD%E6%89%BE%E5%87%BA%E5%8F%AF%E4%BB%A5%E8%A1%8C%E5%8B%95%E7%9A%84%E8%A8%8A%E6%81%AF"><span class="nav-text">5. 部署與維運：從 Log 與警報中找出可以行動的訊息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E6%96%87%E4%BB%B6%E8%88%87%E7%99%BC%E4%BD%88%EF%BC%9A%E8%AE%93%E7%9F%A5%E8%AD%98%E7%B4%AF%E7%A9%8D%E8%AE%8A%E5%BE%97%E6%9B%B4%E8%87%AA%E7%84%B6"><span class="nav-text">6. 文件與發佈：讓知識累積變得更自然</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Explorer-%E6%9C%AC%E8%BA%AB%E5%8F%AF%E4%BB%A5%E6%80%8E%E9%BA%BC%E6%93%B4%E5%85%85%EF%BC%9F"><span class="nav-text">Explorer 本身可以怎麼擴充？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-text">結語</span></a></li></ol>
     </div>
 </div>
 
