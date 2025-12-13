@@ -1,330 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Agent AI 與 Agentic AI 的差別</title>
-    <url>/post/2025/12/agent-ai-and-agentic-ai/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/12/agent-ai-and-agentic-ai/agentic-ai.jpg"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 >
-<p>今年大家應該蠻常聽到 <strong>Agent AI</strong> 和 <strong>Agentic AI</strong> 這兩個詞，名稱看起來很像、都有「Agent」，但實際上指的東西不太一樣：一個是「單一代理」的能力，另一個則是「多代理系統」的整體架構。本篇文章以比較白話的比喻來整理兩者的差異，以及 Microsoft 在 Agentic AI 上目前提供的幾種主要解決方案：<strong>Copilot Studio / Azure AI Foundry Agent Service / Microsoft Agent Framework / Semantic Kernel</strong>，方便大家選擇適合自己的開發路線。</p>
-<span id="more"></span>
-<br>
-<h2 id="什麼是-AI-Agent？什麼是-Agentic-AI？">什麼是 AI Agent？什麼是 Agentic AI？</h2>
-<p>先用一句話來區分：</p>
-<ul>
-<li><strong>AI Agent</strong> 比較像是一位「可以自己想辦法完成任務的助手」。</li>
-<li><strong>Agentic AI</strong> 則是一個「由很多專業助手組成的團隊」，可以協調分工、一起完成一個複雜目標。</li>
-</ul>
-<br>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/12/agent-ai-and-agentic-ai/AI-Agent-vs-Agentic-AI.jpg"
-                        class=""
-                 >
-<br>
-<h3 id="AI-Agent：會自己用工具的智慧助手">AI Agent：會自己用工具的智慧助手</h3>
-<p>一般我們說的 <strong>AI Agent（AI 代理）</strong>，指的是一個以 LLM 為核心、能夠：</p>
-<ul>
-<li>讀懂使用者的目標。</li>
-<li>規劃完成任務需要的步驟。</li>
-<li>在過程中主動呼叫工具。</li>
-<li>根據工具回傳結果調整接下來要做什麼。</li>
-</ul>
-<p>也就是說，它不再只是單純回覆文字，而是會「自己動手做事」，例如：</p>
-<ul>
-<li>我們請它「幫我彙整一份這週專案進度並寄信給主管」，它會：
-<ol>
-<li>先去查專案系統的狀態（例如：Azure DevOps MCP）。</li>
-<li>整理成文字報告。</li>
-<li>呼叫工具寄信送出（例如：API 或 Microsoft Team Webhook)。</li>
-</ol>
-</li>
-</ul>
-<p>這整個流程都是由一個 Agent 自己掌握、自己決定何時呼叫哪一個工具。</p>
-<h3 id="Agentic-AI：多代理協作的系統">Agentic AI：多代理協作的系統</h3>
-<p><strong>Agentic AI（代理式 AI）</strong> 則是把「多個 Agent」組織成一個協作系統，讓它們可以彼此溝通、分工合作，來處理一個單一 Agent 很難搞定的複雜任務。例如：</p>
-<ul>
-<li>從一段 1 小時的 YouTube 影片，自動產生：逐字稿整理、重點大綱、教學文章、社群貼文。</li>
-</ul>
-<p>在 Agentic AI 的架構下，我們可能會看到這樣的分工：</p>
-<ul>
-<li><strong>影片分析 Agent</strong>：負責從影片拿到逐字稿、拆段、標註重點。</li>
-<li><strong>內容整理 Agent</strong>：把資料整理成易讀的大綱、章節結構。</li>
-<li><strong>寫作 Agent</strong>：依照不同輸出格式（部落格、教學、社群貼文）產生內容。</li>
-<li><strong>審稿 / 品質控管 Agent</strong>：檢查語氣、品牌一致性、避免重複內容。</li>
-</ul>
-<p>中間會有一個「協調者」負責安排工作流程、把上一個 Agent 的輸出當成下一個 Agent 的輸入，這就是所謂的 <strong>Agentic workflow</strong>。</p>
-<h3 id="差異重點整理">差異重點整理</h3>
-<p>用表格簡單整理一下兩者差異：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">特性</th>
-<th style="text-align:left">AI Agent</th>
-<th style="text-align:left">Agentic AI</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">任務範圍</td>
-<td style="text-align:left">一次專注在一個明確任務</td>
-<td style="text-align:left">處理跨多步驟、多角色的大目標</td>
-</tr>
-<tr>
-<td style="text-align:left">架構組成</td>
-<td style="text-align:left">以單一 LLM + 工具為主</td>
-<td style="text-align:left">多個 Agent + 協調流程</td>
-</tr>
-<tr>
-<td style="text-align:left">互動模式</td>
-<td style="text-align:left">使用者 → 單一 Agent → 工具</td>
-<td style="text-align:left">使用者 → 協調層 → 多個 Agent 協作</td>
-</tr>
-<tr>
-<td style="text-align:left">自主程度</td>
-<td style="text-align:left">中等：可以自己決定如何用工具</td>
-<td style="text-align:left">較高：可以自己規劃、分派、調整流程</td>
-</tr>
-<tr>
-<td style="text-align:left">資訊流向</td>
-<td style="text-align:left">Input → Agent → Tools → Output</td>
-<td style="text-align:left">Input → Agent1 → Agent2 → … → Output</td>
-</tr>
-</tbody>
-</table>
-<p>如果把 AI Agent 比喻成一位「超強助理」，那 Agentic AI 就比較像是「一個專案團隊」，裡面有 PM、工程師、設計、測試，各司其職又互相協作。</p>
-<br>
-<h2 id="Microsoft-在-Agentic-AI-上的解決方案版圖">Microsoft 在 Agentic AI 上的解決方案版圖</h2>
-<p>談完概念之後，回到實務選型：<strong>如果我想在 Microsoft 生態系裡做 Agent / Agentic AI，手上有哪些工具可以選？</strong></p>
-<p>目前大致可以分成四條路線，從「幾乎不用寫程式」到「完全程式碼主導」都有：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">解決方案</th>
-<th style="text-align:left">定位</th>
-<th style="text-align:left">適用對象</th>
-<th style="text-align:left">程式碼需求</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left"><strong>Copilot Studio</strong></td>
-<td style="text-align:left">低程式碼 AI Agent 平台</td>
-<td style="text-align:left">業務部門、一般開發者</td>
-<td style="text-align:left">幾乎不用寫程式</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>Azure AI Foundry Agent Service</strong></td>
-<td style="text-align:left">雲端託管 Agent 服務</td>
-<td style="text-align:left">企業 IT / 後端工程師</td>
-<td style="text-align:left">中等程式碼量</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>Microsoft Agent Framework</strong></td>
-<td style="text-align:left">開源 Agent / 多代理框架 SDK</td>
-<td style="text-align:left">進階開發者、架構師</td>
-<td style="text-align:left">高度程式碼客製</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>Semantic Kernel</strong></td>
-<td style="text-align:left">輕量級協調 SDK</td>
-<td style="text-align:left">.NET / Python 開發者</td>
-<td style="text-align:left">中高程式碼量</td>
-</tr>
-</tbody>
-</table>
-<br>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/12/agent-ai-and-agentic-ai/Microsoft-Agentic-AI-Comparison.jpg"
-                        class=""
-                 >
-<br>
-<h3 id="Copilot-Studio：從「聊天機器人」長大的-Agent-平台">Copilot Studio：從「聊天機器人」長大的 Agent 平台</h3>
-<p><strong>Copilot Studio</strong> 可以把它想成是「做聊天機器人、做工作流程型 Copilot」的低程式碼平台，很多情境其實已經很接近單一 Agent：</p>
-<ul>
-<li>透過圖形化介面定義對話流程、條件分支。</li>
-<li>連接各種資料來源（SharePoint、OneDrive、Dynamics、外部 API…）。</li>
-<li>透過 <strong>Connector / Plug‑in / MCP</strong> 把外部系統當成工具來使用。</li>
-<li>不需要自己處理 Prompt、記憶體、狀態儲存等細節。</li>
-</ul>
-<p><strong>優點</strong>：</p>
-<ul>
-<li>幾乎不用寫程式，適合業務單位或一般開發者。</li>
-<li>內建大量連接器，串接常見 SaaS / Microsoft 365 生態非常方便。</li>
-<li>可以快速發佈到 Teams、Web、LINE 等多種通路。</li>
-</ul>
-<p><strong>限制 / 缺點</strong>：</p>
-<ul>
-<li>複雜的 Agentic workflow（多代理協作、細緻的狀態機）比較難完全用圖形化介面表達。</li>
-<li>對於版本控管、CI/CD、程式碼共用等軟體工程議題，彈性不如純程式碼框架。</li>
-</ul>
-<p>如果你的需求是：「想要先做一個可以用的智慧助理，重點是快、好維護」，那 Copilot Studio 是個蠻好的起點。</p>
-<br>
-<h3 id="Azure-AI-Foundry-Agent-Service：雲端託管的-Agent-平台">Azure AI Foundry Agent Service：雲端託管的 Agent 平台</h3>
-<p><strong>Azure AI Foundry Agent Service</strong> 可以視為「由雲端幫你托管 Agent」，我們透過 SDK 或 Portal 定義好下列項目：</p>
-<ul>
-<li>使用哪個模型（例如 Azure OpenAI GPT‑4o 或其他大語言模型）。</li>
-<li>這個 Agent 可以用哪些工具（Function / API / 檔案 / 搜尋等）。</li>
-<li>一些系統層的參數（如安全性、網路、儲存體、Log 等）。</li>
-</ul>
-<p>優點是：</p>
-<ul>
-<li><strong>雲端全託管</strong>：不需要自己維運負責推理的工作節點、負載平衡、監控、Log 儲存。</li>
-<li><strong>企業級安全性</strong>：支援 VNet、Private Endpoint、BYO Storage 等企業需求。</li>
-<li><strong>多模型支援</strong>：可以選用不同家族的模型（例如：GPT、Llama、GROK-4）依場景搭配。</li>
-</ul>
-<p>相對的：</p>
-<ul>
-<li>必須部署在 Azure，成本與規模需要事前評估。</li>
-<li>仍然需要一定程度的程式碼與架構設計。</li>
-</ul>
-<p>如果已經有開發團隊，希望把 Agent 當成一種「雲端服務元件」，又不想自己維護整套推理基礎架構，那 Azure AI Foundry Agent Service 會是一個折衷但穩健的選擇。</p>
-<br>
-<h3 id="Microsoft-Agent-Framework：多代理與-A2A-的核心-SDK">Microsoft Agent Framework：多代理與 A2A 的核心 SDK</h3>
-<p><strong>Microsoft Agent Framework</strong> 是最近 (2025/10/1) 才開源的 <strong>Agent / Agentic AI 專用 SDK</strong>，同時支援 <strong>Python</strong> 和 <strong>.NET</strong>，可以視為把原本的 <strong>Semantic Kernel</strong> 與 <strong>AutoGen</strong> 整併、提升後的新一代框架。</p>
-<p>它的設計大致有下列幾項重點：</p>
-<ul>
-<li><strong>多代理協調</strong>：原生支援 Agent 之間互相對話、協作，適合實作複雜工作流程。</li>
-<li><strong>A2A（Agent‑to‑Agent）協定</strong>：讓不同執行環境、甚至不同平台上的 Agent 也能互通。</li>
-<li><strong>MCP / OpenAPI 工具整合</strong>：可以很方便地把 API、外部系統包裝成 Agent 的工具。</li>
-<li><strong>生產環境就緒</strong>：有錯誤處理、重試、持久化與觀測性等機制，方便從 PoC 走到 Production。</li>
-</ul>
-<p><strong>優點</strong>：</p>
-<ul>
-<li>架構上就是為「Agentic AI」設計，很適合把多個專業 Agent 組合成工作流程。</li>
-<li>與 Azure AI Foundry、Microsoft 365 Copilot、Copilot Studio 等平台都可以互相整合。</li>
-<li>開源、可行自架設，也可以搭配雲端服務一起使用。</li>
-</ul>
-<p><strong>缺點 / 挑戰</strong>：</p>
-<ul>
-<li>技術門檻相對高，需要熟悉 LLM + 分散式系統 + 軟體架構設計。</li>
-<li>功能很多，設計彈性也高，前期會需要花時間建立團隊內部的 best practices。</li>
-</ul>
-<p>從定位來看，它比較像是：</p>
-<blockquote>
-<p>「如果你想打造一個可以長期演進、支援多代理協作的 AI 應用平台，Agent Framework 就是那個核心 SDK。」</p>
-</blockquote>
-<br>
-<h3 id="Semantic-Kernel：輕量、模組化的協調-SDK">Semantic Kernel：輕量、模組化的協調 SDK</h3>
-<p><strong>Semantic Kernel</strong> 則是比較早期推出的 LLM 協調 SDK，一樣支援 .NET / Python，主要幫我們處理：</p>
-<ul>
-<li>Prompt 組合與模板化。</li>
-<li>指令 Function、工具呼叫（例如：把 C# method 變成可被模型呼叫的 function）。</li>
-<li>記憶體 (Memory)、Planner 等常見 Agent 開發場景。</li>
-</ul>
-<p>它本身也可以用來做「單一 Agent」、或是簡單的多 Agent 情境，不過 <strong>多代理協作這一塊，目前的主角已經漸漸交棒給 Microsoft Agent Framework</strong>，Semantic Kernel 則偏向：</p>
-<ul>
-<li>在既有 .NET / Python 專案裡「嵌入 LLM 能力」的工具箱。</li>
-<li>作為 Agent Framework 的一個重要組件或輔助 SDK。</li>
-</ul>
-<p><strong>優點</strong>：</p>
-<ul>
-<li>輕量、好嵌入，對 .NET 開發環境相當友善。</li>
-<li>社群成熟、文件與範例多，很多既有教學都以它為基礎。</li>
-</ul>
-<p><strong>限制</strong>：</p>
-<ul>
-<li>如果要實作複雜的多代理 workflow，會需要自己多寫一層協調邏輯，或是搭配 Microsoft Agent Framework。</li>
-</ul>
-<br>
-<h2 id="四種方案的比較與選擇建議">四種方案的比較與選擇建議</h2>
-<p>最後用一張對照表，看一下四種方案的差異：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">特性</th>
-<th style="text-align:left">Copilot Studio</th>
-<th style="text-align:left">Azure AI Foundry Agent Service</th>
-<th style="text-align:left">Microsoft Agent Framework</th>
-<th style="text-align:left">Semantic Kernel</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">開發方式</td>
-<td style="text-align:left">圖形化 / 對話式</td>
-<td style="text-align:left">SDK + Portal 管理</td>
-<td style="text-align:left">Python / .NET SDK</td>
-<td style="text-align:left">.NET / Python SDK</td>
-</tr>
-<tr>
-<td style="text-align:left">多代理協作</td>
-<td style="text-align:left">有限（偏向單一 Agent）</td>
-<td style="text-align:left">支援，但由服務端協調</td>
-<td style="text-align:left">原生支援、多代理主場</td>
-<td style="text-align:left">可實作，但需自行組裝</td>
-</tr>
-<tr>
-<td style="text-align:left">MCP / 工具整合</td>
-<td style="text-align:left">以 Connector / MCP 方式整合</td>
-<td style="text-align:left">支援工具呼叫與多模型</td>
-<td style="text-align:left">原生支援 MCP / OpenAPI / A2A</td>
-<td style="text-align:left">透過 plug‑in / function 整合</td>
-</tr>
-<tr>
-<td style="text-align:left">部署 / 維運</td>
-<td style="text-align:left">由 Microsoft 全託管</td>
-<td style="text-align:left">Azure 全託管</td>
-<td style="text-align:left">本機自架或上雲</td>
-<td style="text-align:left">由應用程式自行負責</td>
-</tr>
-<tr>
-<td style="text-align:left">適用對象</td>
-<td style="text-align:left">業務、IT、一般開發者</td>
-<td style="text-align:left">有雲端經驗的開發團隊</td>
-<td style="text-align:left">進階開發者</td>
-<td style="text-align:left">想在既有程式裡加上 LLM 的開發者</td>
-</tr>
-</tbody>
-</table>
-<h3 id="什麼情境適合哪一個？">什麼情境適合哪一個？</h3>
-<ul>
-<li>
-<p><strong>「我要快速做一個會聊天、會幫忙查資料或執行流程的助理」</strong><br>
-→  先看 Copilot Studio，門檻最低、上線最快。</p>
-</li>
-<li>
-<p><strong>「我們有後端團隊，希望把 Agent 當成一個穩定的雲端服務元件」</strong><br>
-→ 可以考慮 Azure AI Foundry Agent Service，享受託管與企業級安全性。</p>
-</li>
-<li>
-<p><strong>「我們已經有一堆 .NET / Python 系統，只是想讓它們變得更聰明一點」</strong><br>
-→ 從 Semantic Kernel 下手，把 LLM 能力「嵌進去」既有應用程式。</p>
-</li>
-<li>
-<p><strong>「我們要打造一個可長期演進的多代理平台，未來可能會跟內部系統深度整合」</strong><br>
-→ 把 Microsoft Agent Framework 當成主軸，必要時再搭配其他服務。</p>
-</li>
-</ul>
-<br>
-<h3 id="先想清楚「要解決的問題」，再選工具">先想清楚「要解決的問題」，再選工具</h3>
-<p>「我要學的是 AI Agent 還是 Agentic AI？」其實兩者並不是互斥的選項，而是 <strong>不同層級的抽象</strong>：</p>
-<ul>
-<li>先理解 <strong>AI Agent</strong>：學會怎麼讓一個 Agent 聽懂需求、會用工具、能把事情做完。</li>
-<li>再往上看 <strong>Agentic AI</strong>：學會怎麼設計整個 workflow、怎麼切出不同專業 Agent、如何協調它們的合作與溝通。</li>
-</ul>
-<br>
-微軟提供的這四條路線，剛好也從「低程式碼 → 高自訂」排成一個光譜，我們可以：
-<ul>
-<li>先用 Copilot Studio 做出可以 demo 的東西，</li>
-<li>再把關鍵部分細部展開到 Microsoft Agent Framework / Semantic Kernel，</li>
-<li>或是用 Azure AI Foundry Agent Service 接手雲端託管與營運。</li>
-</ul>
-<br>
-<p>AI Agent 與 Agentic AI 是「不同層級」的設計：前者聚焦於讓單一代理能夠自主使用工具完成任務，後者則著重於多個代理之間的協作與流程編排。實務上建議採取由淺入深的策略：先用 Copilot Studio 或簡單的 Agent 快速驗證想法，確認核心流程與資料來源；接著把關鍵邏輯以 Semantic Kernel 或 Microsoft Agent Framework 封裝、進行測試與版本管理；最後視需求將成熟的元件移入 Azure AI Foundry 等託管平台以滿足安全與運維需求。選擇工具時，應以「要解決的問題、團隊技術能力與營運需求」為優先，從小型 PoC 漸進到 Production 架構，才能最小化風險並累積實作經驗。</p>
-]]></content>
-      <tags>
-        <tag>Agent AI</tag>
-        <tag>Agentic AI</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Agentic AI 與 SDLC 協奏曲</title>
     <url>/post/2025/12/agentic-sdlc-explorer/</url>
     <content><![CDATA[<img    
@@ -667,6 +343,454 @@
       </tags>
   </entry>
   <entry>
+    <title>Agent AI 與 Agentic AI 的差別</title>
+    <url>/post/2025/12/agent-ai-and-agentic-ai/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/12/agent-ai-and-agentic-ai/agentic-ai.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 >
+<p>今年大家應該蠻常聽到 <strong>Agent AI</strong> 和 <strong>Agentic AI</strong> 這兩個詞，名稱看起來很像、都有「Agent」，但實際上指的東西不太一樣：一個是「單一代理」的能力，另一個則是「多代理系統」的整體架構。本篇文章以比較白話的比喻來整理兩者的差異，以及 Microsoft 在 Agentic AI 上目前提供的幾種主要解決方案：<strong>Copilot Studio / Azure AI Foundry Agent Service / Microsoft Agent Framework / Semantic Kernel</strong>，方便大家選擇適合自己的開發路線。</p>
+<span id="more"></span>
+<br>
+<h2 id="什麼是-AI-Agent？什麼是-Agentic-AI？">什麼是 AI Agent？什麼是 Agentic AI？</h2>
+<p>先用一句話來區分：</p>
+<ul>
+<li><strong>AI Agent</strong> 比較像是一位「可以自己想辦法完成任務的助手」。</li>
+<li><strong>Agentic AI</strong> 則是一個「由很多專業助手組成的團隊」，可以協調分工、一起完成一個複雜目標。</li>
+</ul>
+<br>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/12/agent-ai-and-agentic-ai/AI-Agent-vs-Agentic-AI.jpg"
+                        class=""
+                 >
+<br>
+<h3 id="AI-Agent：會自己用工具的智慧助手">AI Agent：會自己用工具的智慧助手</h3>
+<p>一般我們說的 <strong>AI Agent（AI 代理）</strong>，指的是一個以 LLM 為核心、能夠：</p>
+<ul>
+<li>讀懂使用者的目標。</li>
+<li>規劃完成任務需要的步驟。</li>
+<li>在過程中主動呼叫工具。</li>
+<li>根據工具回傳結果調整接下來要做什麼。</li>
+</ul>
+<p>也就是說，它不再只是單純回覆文字，而是會「自己動手做事」，例如：</p>
+<ul>
+<li>我們請它「幫我彙整一份這週專案進度並寄信給主管」，它會：
+<ol>
+<li>先去查專案系統的狀態（例如：Azure DevOps MCP）。</li>
+<li>整理成文字報告。</li>
+<li>呼叫工具寄信送出（例如：API 或 Microsoft Team Webhook)。</li>
+</ol>
+</li>
+</ul>
+<p>這整個流程都是由一個 Agent 自己掌握、自己決定何時呼叫哪一個工具。</p>
+<h3 id="Agentic-AI：多代理協作的系統">Agentic AI：多代理協作的系統</h3>
+<p><strong>Agentic AI（代理式 AI）</strong> 則是把「多個 Agent」組織成一個協作系統，讓它們可以彼此溝通、分工合作，來處理一個單一 Agent 很難搞定的複雜任務。例如：</p>
+<ul>
+<li>從一段 1 小時的 YouTube 影片，自動產生：逐字稿整理、重點大綱、教學文章、社群貼文。</li>
+</ul>
+<p>在 Agentic AI 的架構下，我們可能會看到這樣的分工：</p>
+<ul>
+<li><strong>影片分析 Agent</strong>：負責從影片拿到逐字稿、拆段、標註重點。</li>
+<li><strong>內容整理 Agent</strong>：把資料整理成易讀的大綱、章節結構。</li>
+<li><strong>寫作 Agent</strong>：依照不同輸出格式（部落格、教學、社群貼文）產生內容。</li>
+<li><strong>審稿 / 品質控管 Agent</strong>：檢查語氣、品牌一致性、避免重複內容。</li>
+</ul>
+<p>中間會有一個「協調者」負責安排工作流程、把上一個 Agent 的輸出當成下一個 Agent 的輸入，這就是所謂的 <strong>Agentic workflow</strong>。</p>
+<h3 id="差異重點整理">差異重點整理</h3>
+<p>用表格簡單整理一下兩者差異：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">特性</th>
+<th style="text-align:left">AI Agent</th>
+<th style="text-align:left">Agentic AI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">任務範圍</td>
+<td style="text-align:left">一次專注在一個明確任務</td>
+<td style="text-align:left">處理跨多步驟、多角色的大目標</td>
+</tr>
+<tr>
+<td style="text-align:left">架構組成</td>
+<td style="text-align:left">以單一 LLM + 工具為主</td>
+<td style="text-align:left">多個 Agent + 協調流程</td>
+</tr>
+<tr>
+<td style="text-align:left">互動模式</td>
+<td style="text-align:left">使用者 → 單一 Agent → 工具</td>
+<td style="text-align:left">使用者 → 協調層 → 多個 Agent 協作</td>
+</tr>
+<tr>
+<td style="text-align:left">自主程度</td>
+<td style="text-align:left">中等：可以自己決定如何用工具</td>
+<td style="text-align:left">較高：可以自己規劃、分派、調整流程</td>
+</tr>
+<tr>
+<td style="text-align:left">資訊流向</td>
+<td style="text-align:left">Input → Agent → Tools → Output</td>
+<td style="text-align:left">Input → Agent1 → Agent2 → … → Output</td>
+</tr>
+</tbody>
+</table>
+<p>如果把 AI Agent 比喻成一位「超強助理」，那 Agentic AI 就比較像是「一個專案團隊」，裡面有 PM、工程師、設計、測試，各司其職又互相協作。</p>
+<br>
+<h2 id="Microsoft-在-Agentic-AI-上的解決方案版圖">Microsoft 在 Agentic AI 上的解決方案版圖</h2>
+<p>談完概念之後，回到實務選型：<strong>如果我想在 Microsoft 生態系裡做 Agent / Agentic AI，手上有哪些工具可以選？</strong></p>
+<p>目前大致可以分成四條路線，從「幾乎不用寫程式」到「完全程式碼主導」都有：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">解決方案</th>
+<th style="text-align:left">定位</th>
+<th style="text-align:left">適用對象</th>
+<th style="text-align:left">程式碼需求</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Copilot Studio</strong></td>
+<td style="text-align:left">低程式碼 AI Agent 平台</td>
+<td style="text-align:left">業務部門、一般開發者</td>
+<td style="text-align:left">幾乎不用寫程式</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Azure AI Foundry Agent Service</strong></td>
+<td style="text-align:left">雲端託管 Agent 服務</td>
+<td style="text-align:left">企業 IT / 後端工程師</td>
+<td style="text-align:left">中等程式碼量</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Microsoft Agent Framework</strong></td>
+<td style="text-align:left">開源 Agent / 多代理框架 SDK</td>
+<td style="text-align:left">進階開發者、架構師</td>
+<td style="text-align:left">高度程式碼客製</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Semantic Kernel</strong></td>
+<td style="text-align:left">輕量級協調 SDK</td>
+<td style="text-align:left">.NET / Python 開發者</td>
+<td style="text-align:left">中高程式碼量</td>
+</tr>
+</tbody>
+</table>
+<br>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/12/agent-ai-and-agentic-ai/Microsoft-Agentic-AI-Comparison.jpg"
+                        class=""
+                 >
+<br>
+<h3 id="Copilot-Studio：從「聊天機器人」長大的-Agent-平台">Copilot Studio：從「聊天機器人」長大的 Agent 平台</h3>
+<p><strong>Copilot Studio</strong> 可以把它想成是「做聊天機器人、做工作流程型 Copilot」的低程式碼平台，很多情境其實已經很接近單一 Agent：</p>
+<ul>
+<li>透過圖形化介面定義對話流程、條件分支。</li>
+<li>連接各種資料來源（SharePoint、OneDrive、Dynamics、外部 API…）。</li>
+<li>透過 <strong>Connector / Plug‑in / MCP</strong> 把外部系統當成工具來使用。</li>
+<li>不需要自己處理 Prompt、記憶體、狀態儲存等細節。</li>
+</ul>
+<p><strong>優點</strong>：</p>
+<ul>
+<li>幾乎不用寫程式，適合業務單位或一般開發者。</li>
+<li>內建大量連接器，串接常見 SaaS / Microsoft 365 生態非常方便。</li>
+<li>可以快速發佈到 Teams、Web、LINE 等多種通路。</li>
+</ul>
+<p><strong>限制 / 缺點</strong>：</p>
+<ul>
+<li>複雜的 Agentic workflow（多代理協作、細緻的狀態機）比較難完全用圖形化介面表達。</li>
+<li>對於版本控管、CI/CD、程式碼共用等軟體工程議題，彈性不如純程式碼框架。</li>
+</ul>
+<p>如果你的需求是：「想要先做一個可以用的智慧助理，重點是快、好維護」，那 Copilot Studio 是個蠻好的起點。</p>
+<br>
+<h3 id="Azure-AI-Foundry-Agent-Service：雲端託管的-Agent-平台">Azure AI Foundry Agent Service：雲端託管的 Agent 平台</h3>
+<p><strong>Azure AI Foundry Agent Service</strong> 可以視為「由雲端幫你托管 Agent」，我們透過 SDK 或 Portal 定義好下列項目：</p>
+<ul>
+<li>使用哪個模型（例如 Azure OpenAI GPT‑4o 或其他大語言模型）。</li>
+<li>這個 Agent 可以用哪些工具（Function / API / 檔案 / 搜尋等）。</li>
+<li>一些系統層的參數（如安全性、網路、儲存體、Log 等）。</li>
+</ul>
+<p>優點是：</p>
+<ul>
+<li><strong>雲端全託管</strong>：不需要自己維運負責推理的工作節點、負載平衡、監控、Log 儲存。</li>
+<li><strong>企業級安全性</strong>：支援 VNet、Private Endpoint、BYO Storage 等企業需求。</li>
+<li><strong>多模型支援</strong>：可以選用不同家族的模型（例如：GPT、Llama、GROK-4）依場景搭配。</li>
+</ul>
+<p>相對的：</p>
+<ul>
+<li>必須部署在 Azure，成本與規模需要事前評估。</li>
+<li>仍然需要一定程度的程式碼與架構設計。</li>
+</ul>
+<p>如果已經有開發團隊，希望把 Agent 當成一種「雲端服務元件」，又不想自己維護整套推理基礎架構，那 Azure AI Foundry Agent Service 會是一個折衷但穩健的選擇。</p>
+<br>
+<h3 id="Microsoft-Agent-Framework：多代理與-A2A-的核心-SDK">Microsoft Agent Framework：多代理與 A2A 的核心 SDK</h3>
+<p><strong>Microsoft Agent Framework</strong> 是最近 (2025/10/1) 才開源的 <strong>Agent / Agentic AI 專用 SDK</strong>，同時支援 <strong>Python</strong> 和 <strong>.NET</strong>，可以視為把原本的 <strong>Semantic Kernel</strong> 與 <strong>AutoGen</strong> 整併、提升後的新一代框架。</p>
+<p>它的設計大致有下列幾項重點：</p>
+<ul>
+<li><strong>多代理協調</strong>：原生支援 Agent 之間互相對話、協作，適合實作複雜工作流程。</li>
+<li><strong>A2A（Agent‑to‑Agent）協定</strong>：讓不同執行環境、甚至不同平台上的 Agent 也能互通。</li>
+<li><strong>MCP / OpenAPI 工具整合</strong>：可以很方便地把 API、外部系統包裝成 Agent 的工具。</li>
+<li><strong>生產環境就緒</strong>：有錯誤處理、重試、持久化與觀測性等機制，方便從 PoC 走到 Production。</li>
+</ul>
+<p><strong>優點</strong>：</p>
+<ul>
+<li>架構上就是為「Agentic AI」設計，很適合把多個專業 Agent 組合成工作流程。</li>
+<li>與 Azure AI Foundry、Microsoft 365 Copilot、Copilot Studio 等平台都可以互相整合。</li>
+<li>開源、可行自架設，也可以搭配雲端服務一起使用。</li>
+</ul>
+<p><strong>缺點 / 挑戰</strong>：</p>
+<ul>
+<li>技術門檻相對高，需要熟悉 LLM + 分散式系統 + 軟體架構設計。</li>
+<li>功能很多，設計彈性也高，前期會需要花時間建立團隊內部的 best practices。</li>
+</ul>
+<p>從定位來看，它比較像是：</p>
+<blockquote>
+<p>「如果你想打造一個可以長期演進、支援多代理協作的 AI 應用平台，Agent Framework 就是那個核心 SDK。」</p>
+</blockquote>
+<br>
+<h3 id="Semantic-Kernel：輕量、模組化的協調-SDK">Semantic Kernel：輕量、模組化的協調 SDK</h3>
+<p><strong>Semantic Kernel</strong> 則是比較早期推出的 LLM 協調 SDK，一樣支援 .NET / Python，主要幫我們處理：</p>
+<ul>
+<li>Prompt 組合與模板化。</li>
+<li>指令 Function、工具呼叫（例如：把 C# method 變成可被模型呼叫的 function）。</li>
+<li>記憶體 (Memory)、Planner 等常見 Agent 開發場景。</li>
+</ul>
+<p>它本身也可以用來做「單一 Agent」、或是簡單的多 Agent 情境，不過 <strong>多代理協作這一塊，目前的主角已經漸漸交棒給 Microsoft Agent Framework</strong>，Semantic Kernel 則偏向：</p>
+<ul>
+<li>在既有 .NET / Python 專案裡「嵌入 LLM 能力」的工具箱。</li>
+<li>作為 Agent Framework 的一個重要組件或輔助 SDK。</li>
+</ul>
+<p><strong>優點</strong>：</p>
+<ul>
+<li>輕量、好嵌入，對 .NET 開發環境相當友善。</li>
+<li>社群成熟、文件與範例多，很多既有教學都以它為基礎。</li>
+</ul>
+<p><strong>限制</strong>：</p>
+<ul>
+<li>如果要實作複雜的多代理 workflow，會需要自己多寫一層協調邏輯，或是搭配 Microsoft Agent Framework。</li>
+</ul>
+<br>
+<h2 id="四種方案的比較與選擇建議">四種方案的比較與選擇建議</h2>
+<p>最後用一張對照表，看一下四種方案的差異：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">特性</th>
+<th style="text-align:left">Copilot Studio</th>
+<th style="text-align:left">Azure AI Foundry Agent Service</th>
+<th style="text-align:left">Microsoft Agent Framework</th>
+<th style="text-align:left">Semantic Kernel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">開發方式</td>
+<td style="text-align:left">圖形化 / 對話式</td>
+<td style="text-align:left">SDK + Portal 管理</td>
+<td style="text-align:left">Python / .NET SDK</td>
+<td style="text-align:left">.NET / Python SDK</td>
+</tr>
+<tr>
+<td style="text-align:left">多代理協作</td>
+<td style="text-align:left">有限（偏向單一 Agent）</td>
+<td style="text-align:left">支援，但由服務端協調</td>
+<td style="text-align:left">原生支援、多代理主場</td>
+<td style="text-align:left">可實作，但需自行組裝</td>
+</tr>
+<tr>
+<td style="text-align:left">MCP / 工具整合</td>
+<td style="text-align:left">以 Connector / MCP 方式整合</td>
+<td style="text-align:left">支援工具呼叫與多模型</td>
+<td style="text-align:left">原生支援 MCP / OpenAPI / A2A</td>
+<td style="text-align:left">透過 plug‑in / function 整合</td>
+</tr>
+<tr>
+<td style="text-align:left">部署 / 維運</td>
+<td style="text-align:left">由 Microsoft 全託管</td>
+<td style="text-align:left">Azure 全託管</td>
+<td style="text-align:left">本機自架或上雲</td>
+<td style="text-align:left">由應用程式自行負責</td>
+</tr>
+<tr>
+<td style="text-align:left">適用對象</td>
+<td style="text-align:left">業務、IT、一般開發者</td>
+<td style="text-align:left">有雲端經驗的開發團隊</td>
+<td style="text-align:left">進階開發者</td>
+<td style="text-align:left">想在既有程式裡加上 LLM 的開發者</td>
+</tr>
+</tbody>
+</table>
+<h3 id="什麼情境適合哪一個？">什麼情境適合哪一個？</h3>
+<ul>
+<li>
+<p><strong>「我要快速做一個會聊天、會幫忙查資料或執行流程的助理」</strong><br>
+→  先看 Copilot Studio，門檻最低、上線最快。</p>
+</li>
+<li>
+<p><strong>「我們有後端團隊，希望把 Agent 當成一個穩定的雲端服務元件」</strong><br>
+→ 可以考慮 Azure AI Foundry Agent Service，享受託管與企業級安全性。</p>
+</li>
+<li>
+<p><strong>「我們已經有一堆 .NET / Python 系統，只是想讓它們變得更聰明一點」</strong><br>
+→ 從 Semantic Kernel 下手，把 LLM 能力「嵌進去」既有應用程式。</p>
+</li>
+<li>
+<p><strong>「我們要打造一個可長期演進的多代理平台，未來可能會跟內部系統深度整合」</strong><br>
+→ 把 Microsoft Agent Framework 當成主軸，必要時再搭配其他服務。</p>
+</li>
+</ul>
+<br>
+<h3 id="先想清楚「要解決的問題」，再選工具">先想清楚「要解決的問題」，再選工具</h3>
+<p>「我要學的是 AI Agent 還是 Agentic AI？」其實兩者並不是互斥的選項，而是 <strong>不同層級的抽象</strong>：</p>
+<ul>
+<li>先理解 <strong>AI Agent</strong>：學會怎麼讓一個 Agent 聽懂需求、會用工具、能把事情做完。</li>
+<li>再往上看 <strong>Agentic AI</strong>：學會怎麼設計整個 workflow、怎麼切出不同專業 Agent、如何協調它們的合作與溝通。</li>
+</ul>
+<br>
+微軟提供的這四條路線，剛好也從「低程式碼 → 高自訂」排成一個光譜，我們可以：
+<ul>
+<li>先用 Copilot Studio 做出可以 demo 的東西，</li>
+<li>再把關鍵部分細部展開到 Microsoft Agent Framework / Semantic Kernel，</li>
+<li>或是用 Azure AI Foundry Agent Service 接手雲端託管與營運。</li>
+</ul>
+<br>
+<p>AI Agent 與 Agentic AI 是「不同層級」的設計：前者聚焦於讓單一代理能夠自主使用工具完成任務，後者則著重於多個代理之間的協作與流程編排。實務上建議採取由淺入深的策略：先用 Copilot Studio 或簡單的 Agent 快速驗證想法，確認核心流程與資料來源；接著把關鍵邏輯以 Semantic Kernel 或 Microsoft Agent Framework 封裝、進行測試與版本管理；最後視需求將成熟的元件移入 Azure AI Foundry 等託管平台以滿足安全與運維需求。選擇工具時，應以「要解決的問題、團隊技術能力與營運需求」為優先，從小型 PoC 漸進到 Production 架構，才能最小化風險並累積實作經驗。</p>
+]]></content>
+      <tags>
+        <tag>Agent AI</tag>
+        <tag>Agentic AI</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用 Azure DevOps REST API 建立專案</title>
+    <url>/post/2025/04/azure-devops-create-project/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/create-project.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>要使用 Azure DevOps 各項功能之前，首先得先建立一個專案，同時必須選擇專案的版本控制是 <strong>TFVC</strong> (Team Fundation Version Control) 還是 <strong>git</strong>，以及專案要使用的流程範本 (Process template)，預設有 <strong>Basic / Agile / Scrum / CMMI</strong> 四種，這次我們就不透過網頁介面建立專案，直接使用 API 小試身手 🎣 。</p>
+<br>
+<span id="more"></span>
+<br>
+<h2 id="前言">前言</h2>
+<p>當我們想要使用 <strong>Azure DevOps REST API</strong> 進行程式串接時，首先要確認使用情境是 <strong><code>雲端</code></strong> 還是 <strong><code>地端</code></strong>，因為兩者對於 API 的支援程度不盡相同，例如：<strong>Audit log</strong> 目前只有在雲端才能查詢、下載，地端還沒有支援，使用哪一版的 API 也要稍微留意(在<a href="/post/2024/09/azure-devops-rest-api">上一篇文章</a>有說明原因)，這些都可以在 API 說明頁面左上角透過下拉選單來快速切換檢視，以便我們確認 API 規格與差異。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/version_dropdown.png"
+                        class=""
+                 >
+<br>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/en-us/rest/api/azure/devops/?view=azure-devops-rest-7.2"  target="_blank">⁍ Azure DevOps Services REST API Reference<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<br>
+<h2 id="API-規格確認">API 規格確認</h2>
+<p>經由上面的參考連結，我們可以在 <strong>Core &gt; Projects &gt; Create</strong> 找到建立專案的 API 規格：</p>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">雲端</span><br><span class="line">POST https://dev.azure.com/&#123;organization&#125;/_apis/projects?api-version=7.2-preview.4</span><br></pre></td></tr></table></figure>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">地端</span><br><span class="line">POST https://&#123;instance&#125;/&#123;collection&#125;/_apis/projects?api-version=7.0</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/core_projects_create.png"
+                        class=""
+                 >
+<br>
+<p>在頁面上對於 Request Body 的屬性和型別宣告都會逐一說明，但唯一美中不足的是我們看不出來哪些屬性是必要項目(Required)，比較簡便的方式是可以使用 Postman 填入 PAT 驗證後進行測試，通常在 Reponse 都會告訴我們缺少什麼必要欄位值，Postman 設定步驟如下：</p>
+<br>
+<ol>
+<li>Authorization 的 Auth Type 選擇 <strong><code>Basic Auth</code></strong>，並將 PAT 填入 Password 欄位，Username 空白即可。(如何建立 PAT 可以參考：<a href="/post/2024/09/azure-devops-rest-api">上一篇文章</a>)</li>
+</ol>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/basic_auth.png"
+                        class=""
+                 >
+<br>
+<ol start="2">
+<li>Headers 的 Content-Type 設定 <strong><code>application/json</code></strong>。</li>
+</ol>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/content_type.png"
+                        class=""
+                 >
+<br>
+<ol start="3">
+<li>Body 格式選擇 <strong><code>raw</code></strong> 和 <strong><code>JSON</code></strong>，內容先輸入 <strong><code>&#123;&#125;</code></strong> 然後按下 <strong><code>Send</code></strong> 按鈕。</li>
+</ol>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/400_bad.png"
+                        class=""
+                 >
+<br>
+<p>由 message 回傳的資訊我們就可以得知，必要的屬性有：</p>
+<ul>
+<li><strong>name</strong> : 專案名稱</li>
+<li><strong>description</strong>: 專案描述說明</li>
+<li><strong>visibility</strong> : 專案可層級 (Public或Private，預設是Private)</li>
+<li><strong>capabilities</strong> : 版控方式、流程範本是必要項目。</li>
+</ul>
+<p>完整的 Request Body 內容可以參考下列內容：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;MyNewProject&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This is a new project created via API&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;capabilities&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;versioncontrol&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;sourceControlType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Git&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;processTemplate&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;templateTypeId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;6b724908-ef14-45cf-84f8-768b5384da45&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<br>
+<p>送出 Request 成功後，可以得到如下訊息：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/202_accepted.png"
+                        class=""
+                 >
+<br>
+<p>開啟 Azure DevOps 畫面確認新增的專案是否有正常出現。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/my_new_project.png"
+                        class=""
+                 >
+<h2 id="流程範本-Process-template">流程範本 (Process template)</h2>
+<p>在 Azure DevOps 預設有 <strong>Basic / Agile / Scrum / CMMI</strong> 四種流程範本，一般我本幾乎不會去關心它的 templateTypeId (GUID) 是什麼，這邊需要透過另一支查詢 Process template 列表的 API 來取得資訊：</p>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">雲端</span><br><span class="line">GET GET https://dev.azure.com/&#123;organization&#125;/_apis/process/processes?api-version=7.2-preview.1</span><br></pre></td></tr></table></figure>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">地端</span><br><span class="line">GET https://&#123;instance&#125;/&#123;collection&#125;/_apis/process/processes?api-version=7.0</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;count&quot;</span><span class="punctuation">:</span> <span class="number">4</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;adcc42ab-9882-485e-a3ed-7678f01f66bc&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is flexible and will work great for most teams using Agile planning methods, including those practicing Scrum.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/adcc42ab-9882-485e-a3ed-7678f01f66bc&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Agile&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;27450541-8e31-4150-9947-dc59f998fc01&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is for more formal projects requiring a framework for process improvement and an auditable record of decisions.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/27450541-8e31-4150-9947-dc59f998fc01&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;CMMI&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;b8a3a935-7e91-48b8-a94c-606d37c3e9f2&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is flexible for any process and great for teams getting started with Azure DevOps.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/b8a3a935-7e91-48b8-a94c-606d37c3e9f2&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Basic&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;6b724908-ef14-45cf-84f8-768b5384da45&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is for teams who follow the Scrum framework.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/6b724908-ef14-45cf-84f8-768b5384da45&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Scrum&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<h2 id="後記">後記</h2>
+<p>再回過頭來看，其實我們上面做的這些動作就是以 API 的方式送出畫面上建立專案的必要欄位而已：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-create-project/new_project.png"
+                        class=""
+                 >
+<br>
+<p>附帶一提，若是以 C# 實作，在 Header 傳遞 PAT 需要先以 <strong>Base64</strong> 編碼才行，可以參考下列完整範例呼叫範例(第31行)：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> System.Net.Http;</span><br><span class="line"><span class="keyword">using</span> System.Net.Http.Headers;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Newtonsoft.Json;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ProcessTemplate</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">public</span> <span class="built_in">string</span> Id &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">		<span class="keyword">public</span> <span class="built_in">string</span> Name &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ProcessTemplatesResponse</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">public</span> List&lt;ProcessTemplate&gt; Value &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">static</span> <span class="keyword">async</span> Task <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">string</span> pat = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">		<span class="built_in">string</span> serverName = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">		<span class="built_in">string</span> collectionName = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">		<span class="built_in">string</span> url = <span class="string">$&quot;http://<span class="subst">&#123;serverName&#125;</span>/<span class="subst">&#123;collectionName&#125;</span>/_apis/process/processes?api-version=7.0&quot;</span>;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">using</span> (HttpClient client = <span class="keyword">new</span> HttpClient())</span><br><span class="line">		&#123;</span><br><span class="line">			client.DefaultRequestHeaders.Authorization = <span class="keyword">new</span> AuthenticationHeaderValue(<span class="string">&quot;Basic&quot;</span>, Convert.ToBase64String(Encoding.ASCII.GetBytes(<span class="string">$&quot;:<span class="subst">&#123;pat&#125;</span>&quot;</span>)));</span><br><span class="line">			HttpResponseMessage response = <span class="keyword">await</span> client.GetAsync(url);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (response.IsSuccessStatusCode)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="built_in">string</span> result = <span class="keyword">await</span> response.Content.ReadAsStringAsync();</span><br><span class="line">				<span class="keyword">var</span> processTemplates = JsonConvert.DeserializeObject&lt;ProcessTemplatesResponse&gt;(result);</span><br><span class="line"></span><br><span class="line">				<span class="keyword">foreach</span> (<span class="keyword">var</span> process <span class="keyword">in</span> processTemplates.Value)</span><br><span class="line">				&#123;</span><br><span class="line">					Console.WriteLine(<span class="string">$&quot;Name: <span class="subst">&#123;process.Name&#125;</span>, ID: <span class="subst">&#123;process.Id&#125;</span>&quot;</span>);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			&#123;</span><br><span class="line">				Console.WriteLine(<span class="string">$&quot;Failed to get process templates: <span class="subst">&#123;response.StatusCode&#125;</span>&quot;</span>);</span><br><span class="line">				<span class="built_in">string</span> error = <span class="keyword">await</span> response.Content.ReadAsStringAsync();</span><br><span class="line">				Console.WriteLine(error);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<br>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/how-to/call-rest-api?view=azure-devops"  target="_blank">⁍ 開始使用 REST API
+<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>]]></content>
+      <tags>
+        <tag>Azure DevOps</tag>
+        <tag>Azure DevOps REST API</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Azure DevOps Services / Server 使用者授權</title>
     <url>/post/2025/04/azure-devops-licensing-description/</url>
     <content><![CDATA[<img    
@@ -747,6 +871,244 @@
       <tags>
         <tag>Azure DevOps</tag>
         <tag>授權</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Azure DevOps REST API 說明</title>
+    <url>/post/2025/04/azure-devops-rest-api/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-rest-api/rest_api.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>當我們要自行擴充或串接 Azure DevOps Services / Server 功能時，可以透過 Azure DevOps REST API 來進行客制開發，例如：想要寫一支程式每天發送各專案在版控儲存庫的差異紀錄，或是想要在公司內部表單系統審核後，觸發執行指定的 pipeline … 族繁不及備載，使用 REST API 透過 HTTP 呼叫的好處是可以不用侷限於特定的程式語言，也方便用 Postman 之類的工具測試，這篇整理了呼叫 Azure DevOps REST API 的前置作業與相關說明，方便大家上手😁。</p>
+<span id="more"></span>
+<br>
+<h2 id="REST-API">REST API</h2>
+<p>使用 Azure DevOps REST API 時，其 URI 規格如下：</p>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">VERB https://&#123;instance&#125;/&#123;organization&#125;/&#123;project&#125;/_apis/&#123;area&#125;/&#123;resource&#125;?api-version=&#123;version&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>VERB</strong><br>
+與一般 RESTful API 相同，在串接 Azure DevOps 各種情境時， <strong><font color='green'>GET</font></strong> / <strong><font color='brown'>POST</font></strong> / <strong><font color='red'>DELETE</font></strong> / <strong><font color='purple'>PATCH</font></strong> 都有機會用到。</li>
+<li><strong>instance</strong><br>
+如果是使用雲端的 Azure DevOps Services 指的就是 <span>dev.azure.com</span>，地端則是 Azure DevOps Server 所在的位址。</li>
+<li><strong>organization/project</strong><br>
+取決於 API 作用的範圍，在 URI 裡會有 organization 或 organization/project，例如：使用 API 建立個人權杖 (PAT)，則會是：<br>
+<strong><font color='brown'>POST</font></strong> https://vssps.dev.azure.com/<mark>{organization}</mark>/_apis/tokens/pats?api-version=7.2<br>
+或者像是用 API 建立一個工作項目，則是：<br>
+<strong><font color='brown'>POST</font></strong> https://dev.azure.com/<mark>{organization}/{project}</mark>/_apis/wit/workitems/${type}?api-version=7.2</li>
+<li><strong>{area}/{resource}</strong><br>
+從這邊大概可以看出呼叫的 API 是做哪方面的操作，以上面兩個例子 (建立 PAT、建立 Work item) 來說：<br>
+<strong><font color='brown'>POST</font></strong> https://vssps.dev.azure.com/{organization}/_apis/<mark>tokens/pats</mark>?api-version=7.2<br>
+<strong><font color='brown'>POST</font></strong> https://dev.azure.com/{organization}/{project}/_apis/<mark>wit/workitems/${type}</mark>?api-version=7.2</li>
+<li><strong>version</strong><br>
+通常我們在串接 API 時會明確指定 version，因為每個 TFS / Azure DevOps 版本對於 API 支援的 api-version 也有所不同 (如下表)，如果不指定 api-version 則會自動選用目前產品最新的穩定版本，例如：在 Azure DevOps Server 2019 它會自動取用 5.0 來執行，在不加 api-version 的情況下，若日後升級到 Azure DevOps Server 2022，則會自動取用 7.0 來執行，為維持串接程式正常運作，不會因為 API 版本差異而造成異常，一般我們都會加上指定的 api-version 版號。</li>
+</ul>
+<blockquote>
+<p>提醒大家：<br>
+如果是使用 preview 版本 (例如：<strong><code>7.2-preview.3</code></strong>)，該 preview 版本會在 <strong>12 週</strong> 後停用，被穩定的正式版本取代。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Products</th>
+<th style="text-align:center">1.0</th>
+<th style="text-align:center">2.0</th>
+<th style="text-align:center">3.0</th>
+<th style="text-align:center">4.0</th>
+<th style="text-align:center">5.0</th>
+<th style="text-align:center">6.0</th>
+<th style="text-align:center">7.0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Azure DevOps Services</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+</tr>
+<tr>
+<td>Azure DevOps Server 2022</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+</tr>
+<tr>
+<td>Azure DevOps Server 2020</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td>Azure DevOps Server 2019</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td>Team Foundation Server 2018</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td>Team Foundation Server 2017</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td>Team Foundation Server 2015</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+</tr>
+</tbody>
+</table>
+<h2 id="PAT-Personal-Access-Token">PAT (Personal Access Token)</h2>
+<p>要使用 Azure DevOps REST API 存取資源前都必需先經過驗證成功才行，建立 <strong><code>個人存取權杖 (PAT)</code></strong> 可以算是安全又簡便的方式，若想要實作 OAuth 2.0 或其他頁面驗證方式，可以參考下列連結：</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/get-started/authentication/authentication-guidance?toc=%2Fazure%2Fdevops%2Fmarketplace-extensibility%2Ftoc.json&view=azure-devops"  target="_blank">⁍ 選擇正確的驗證機制<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<p>要建立一個 PAT 可以從 Azure DevOps 畫面右上角 <strong><code>User settings</code></strong> → <strong><code>Personal access tokens</code></strong> 進入。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-rest-api/pat.png"
+                        class=""
+                 >
+<br>
+<p>點選 <strong><code>+ New Token</code></strong> 按鈕。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-rest-api/pat_1.png"
+                        class=""
+                 >
+<br>
+<p>接著就是 PAT 存取期限、授權範圍等相關設定：</p>
+<ul>
+<li><strong>Organization</strong><br>
+選擇 <strong>特定的 Organization</strong> 或 <strong>All accessible organizations</strong> (允許存取全部組織)。</li>
+<li><strong>Expiration (UTC)</strong><br>
+有效期限可以選擇 <strong>30 / 60 / 90 天</strong>，或是 <strong>Custom defined</strong> (<mark>最長只能一年</mark>)</li>
+<li><strong>Scopes</strong><br>
+可以選擇 <strong>Full access</strong> (允許存取全部範圍) 或 <strong>Custom defined</strong> 針對各個功能進一步設定，基於最低權限原則，建議大家可以有意義的命名 token 名稱，並且只勾選必要的 <strong>Scopes</strong> 授權範圍。</li>
+</ul>
+<p>建立 PAT 後，僅能 <strong><code>Revoke</code></strong> (撤銷) 或是 <strong><code>Regenerate</code></strong> (重新產生)，沒有辦法再用任何方式檢視原本產生的 token 內容，大家記得要妥善保存。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-rest-api/pat_2.png"
+                        class=""
+                 >
+<h2 id="NET-Client-Library">.NET Client Library</h2>
+<p>如果是使用 .NET 進行程式開發，還有一個選擇是從 NuGet.org 下載 Client library 使用，套件相依關係如下圖。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-rest-api/dotnet-client-libraries-dependancy-diagram.jpg"
+                        class=""
+                 >
+<br>
+<p>最新版本可以由 NuGet.org 查詢結果找到： https://www.nuget.org/packages?q=azure+devops+.net ，套件和 Azure DevOps 版本一樣有相依性， 使用前要留意一下目前環境的 TFS / Azure DevOps Server 版本，例如：Azure DevOps Server 2019 只能使用到套件 16.143.x 版。</p>
+<table>
+<thead>
+<tr>
+<th>套件版本</th>
+<th>Azure DevOps 版本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>16.205.x</td>
+<td>versions &gt;= Azure DevOps Server 2022</td>
+</tr>
+<tr>
+<td>16.170.x</td>
+<td>versions &gt;= Azure DevOps Server 2020</td>
+</tr>
+<tr>
+<td>16.153.x</td>
+<td>versions &gt;= Azure DevOps Server 2019 Update 1</td>
+</tr>
+<tr>
+<td>16.143.x</td>
+<td>versions &gt;= Azure DevOps Server 2019</td>
+</tr>
+<tr>
+<td>15.131.x</td>
+<td>versions &gt;= TFS 2018 Update 1</td>
+</tr>
+<tr>
+<td>15.112.x</td>
+<td>versions &gt;= TFS 2017 Update 1</td>
+</tr>
+<tr>
+<td>14.102.x</td>
+<td>versions &gt;= TFS 2015 Update 3</td>
+</tr>
+<tr>
+<td>14.95.x</td>
+<td>versions &gt;= TFS 2015 Update 2</td>
+</tr>
+<tr>
+<td>14.89.x</td>
+<td>versions &gt;= TFS 2015 Update 1</td>
+</tr>
+<tr>
+<td>14.83.x</td>
+<td>versions &gt;= TFS 2015</td>
+</tr>
+</tbody>
+</table>
+<p>在實務開發上還是得花些時間先瞭解套件定義了哪些 class、提供了什麼 function，這部份可以參考官方說明和 github sample code，如果有特殊需求或環境考量需要使用的話，可以參考下列連結：</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/concepts/dotnet-client-libraries?view=azure-devops&viewFallbackFrom=vsts"  target="_blank">⁍ .NET 用戶端程式庫<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/get-started/client-libraries/samples?view=azure-devops"  target="_blank">⁍ C# 用戶端連結庫範例<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://github.com/microsoft/azure-devops-dotnet-samples"  target="_blank">⁍ .NET samples for Azure DevOps<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<p>(💁 看完上面連結內容有沒有覺得還是使用 REST API 比較方便 💖)</p>
+]]></content>
+      <tags>
+        <tag>Azure DevOps</tag>
+        <tag>Azure DevOps REST API</tag>
+        <tag>PAT</tag>
+        <tag>.NET Client Library</tag>
       </tags>
   </entry>
   <entry>
@@ -1189,130 +1551,6 @@
       </tags>
   </entry>
   <entry>
-    <title>使用 Azure DevOps REST API 建立專案</title>
-    <url>/post/2025/04/azure-devops-create-project/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-create-project/create-project.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>要使用 Azure DevOps 各項功能之前，首先得先建立一個專案，同時必須選擇專案的版本控制是 <strong>TFVC</strong> (Team Fundation Version Control) 還是 <strong>git</strong>，以及專案要使用的流程範本 (Process template)，預設有 <strong>Basic / Agile / Scrum / CMMI</strong> 四種，這次我們就不透過網頁介面建立專案，直接使用 API 小試身手 🎣 。</p>
-<br>
-<span id="more"></span>
-<br>
-<h2 id="前言">前言</h2>
-<p>當我們想要使用 <strong>Azure DevOps REST API</strong> 進行程式串接時，首先要確認使用情境是 <strong><code>雲端</code></strong> 還是 <strong><code>地端</code></strong>，因為兩者對於 API 的支援程度不盡相同，例如：<strong>Audit log</strong> 目前只有在雲端才能查詢、下載，地端還沒有支援，使用哪一版的 API 也要稍微留意(在<a href="/post/2024/09/azure-devops-rest-api">上一篇文章</a>有說明原因)，這些都可以在 API 說明頁面左上角透過下拉選單來快速切換檢視，以便我們確認 API 規格與差異。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-create-project/version_dropdown.png"
-                        class=""
-                 >
-<br>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/en-us/rest/api/azure/devops/?view=azure-devops-rest-7.2"  target="_blank">⁍ Azure DevOps Services REST API Reference<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<br>
-<h2 id="API-規格確認">API 規格確認</h2>
-<p>經由上面的參考連結，我們可以在 <strong>Core &gt; Projects &gt; Create</strong> 找到建立專案的 API 規格：</p>
-<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">雲端</span><br><span class="line">POST https://dev.azure.com/&#123;organization&#125;/_apis/projects?api-version=7.2-preview.4</span><br></pre></td></tr></table></figure>
-<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">地端</span><br><span class="line">POST https://&#123;instance&#125;/&#123;collection&#125;/_apis/projects?api-version=7.0</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-create-project/core_projects_create.png"
-                        class=""
-                 >
-<br>
-<p>在頁面上對於 Request Body 的屬性和型別宣告都會逐一說明，但唯一美中不足的是我們看不出來哪些屬性是必要項目(Required)，比較簡便的方式是可以使用 Postman 填入 PAT 驗證後進行測試，通常在 Reponse 都會告訴我們缺少什麼必要欄位值，Postman 設定步驟如下：</p>
-<br>
-<ol>
-<li>Authorization 的 Auth Type 選擇 <strong><code>Basic Auth</code></strong>，並將 PAT 填入 Password 欄位，Username 空白即可。(如何建立 PAT 可以參考：<a href="/post/2024/09/azure-devops-rest-api">上一篇文章</a>)</li>
-</ol>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-create-project/basic_auth.png"
-                        class=""
-                 >
-<br>
-<ol start="2">
-<li>Headers 的 Content-Type 設定 <strong><code>application/json</code></strong>。</li>
-</ol>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-create-project/content_type.png"
-                        class=""
-                 >
-<br>
-<ol start="3">
-<li>Body 格式選擇 <strong><code>raw</code></strong> 和 <strong><code>JSON</code></strong>，內容先輸入 <strong><code>&#123;&#125;</code></strong> 然後按下 <strong><code>Send</code></strong> 按鈕。</li>
-</ol>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-create-project/400_bad.png"
-                        class=""
-                 >
-<br>
-<p>由 message 回傳的資訊我們就可以得知，必要的屬性有：</p>
-<ul>
-<li><strong>name</strong> : 專案名稱</li>
-<li><strong>description</strong>: 專案描述說明</li>
-<li><strong>visibility</strong> : 專案可層級 (Public或Private，預設是Private)</li>
-<li><strong>capabilities</strong> : 版控方式、流程範本是必要項目。</li>
-</ul>
-<p>完整的 Request Body 內容可以參考下列內容：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;MyNewProject&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This is a new project created via API&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;capabilities&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;versioncontrol&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;sourceControlType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Git&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;processTemplate&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;templateTypeId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;6b724908-ef14-45cf-84f8-768b5384da45&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-<br>
-<p>送出 Request 成功後，可以得到如下訊息：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-create-project/202_accepted.png"
-                        class=""
-                 >
-<br>
-<p>開啟 Azure DevOps 畫面確認新增的專案是否有正常出現。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-create-project/my_new_project.png"
-                        class=""
-                 >
-<h2 id="流程範本-Process-template">流程範本 (Process template)</h2>
-<p>在 Azure DevOps 預設有 <strong>Basic / Agile / Scrum / CMMI</strong> 四種流程範本，一般我本幾乎不會去關心它的 templateTypeId (GUID) 是什麼，這邊需要透過另一支查詢 Process template 列表的 API 來取得資訊：</p>
-<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">雲端</span><br><span class="line">GET GET https://dev.azure.com/&#123;organization&#125;/_apis/process/processes?api-version=7.2-preview.1</span><br></pre></td></tr></table></figure>
-<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">地端</span><br><span class="line">GET https://&#123;instance&#125;/&#123;collection&#125;/_apis/process/processes?api-version=7.0</span><br></pre></td></tr></table></figure>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;count&quot;</span><span class="punctuation">:</span> <span class="number">4</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;adcc42ab-9882-485e-a3ed-7678f01f66bc&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is flexible and will work great for most teams using Agile planning methods, including those practicing Scrum.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/adcc42ab-9882-485e-a3ed-7678f01f66bc&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Agile&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;27450541-8e31-4150-9947-dc59f998fc01&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is for more formal projects requiring a framework for process improvement and an auditable record of decisions.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/27450541-8e31-4150-9947-dc59f998fc01&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;CMMI&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;b8a3a935-7e91-48b8-a94c-606d37c3e9f2&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is flexible for any process and great for teams getting started with Azure DevOps.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/b8a3a935-7e91-48b8-a94c-606d37c3e9f2&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Basic&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;6b724908-ef14-45cf-84f8-768b5384da45&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This template is for teams who follow the Scrum framework.&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://devopssrv/DefaultCollection/_apis/process/processes/6b724908-ef14-45cf-84f8-768b5384da45&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Scrum&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-<h2 id="後記">後記</h2>
-<p>再回過頭來看，其實我們上面做的這些動作就是以 API 的方式送出畫面上建立專案的必要欄位而已：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-create-project/new_project.png"
-                        class=""
-                 >
-<br>
-<p>附帶一提，若是以 C# 實作，在 Header 傳遞 PAT 需要先以 <strong>Base64</strong> 編碼才行，可以參考下列完整範例呼叫範例(第31行)：</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> System.Net.Http;</span><br><span class="line"><span class="keyword">using</span> System.Net.Http.Headers;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Newtonsoft.Json;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ProcessTemplate</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">public</span> <span class="built_in">string</span> Id &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">		<span class="keyword">public</span> <span class="built_in">string</span> Name &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ProcessTemplatesResponse</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">public</span> List&lt;ProcessTemplate&gt; Value &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">static</span> <span class="keyword">async</span> Task <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">string</span> pat = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">		<span class="built_in">string</span> serverName = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">		<span class="built_in">string</span> collectionName = <span class="string">&quot;...&quot;</span>;</span><br><span class="line">		<span class="built_in">string</span> url = <span class="string">$&quot;http://<span class="subst">&#123;serverName&#125;</span>/<span class="subst">&#123;collectionName&#125;</span>/_apis/process/processes?api-version=7.0&quot;</span>;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">using</span> (HttpClient client = <span class="keyword">new</span> HttpClient())</span><br><span class="line">		&#123;</span><br><span class="line">			client.DefaultRequestHeaders.Authorization = <span class="keyword">new</span> AuthenticationHeaderValue(<span class="string">&quot;Basic&quot;</span>, Convert.ToBase64String(Encoding.ASCII.GetBytes(<span class="string">$&quot;:<span class="subst">&#123;pat&#125;</span>&quot;</span>)));</span><br><span class="line">			HttpResponseMessage response = <span class="keyword">await</span> client.GetAsync(url);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (response.IsSuccessStatusCode)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="built_in">string</span> result = <span class="keyword">await</span> response.Content.ReadAsStringAsync();</span><br><span class="line">				<span class="keyword">var</span> processTemplates = JsonConvert.DeserializeObject&lt;ProcessTemplatesResponse&gt;(result);</span><br><span class="line"></span><br><span class="line">				<span class="keyword">foreach</span> (<span class="keyword">var</span> process <span class="keyword">in</span> processTemplates.Value)</span><br><span class="line">				&#123;</span><br><span class="line">					Console.WriteLine(<span class="string">$&quot;Name: <span class="subst">&#123;process.Name&#125;</span>, ID: <span class="subst">&#123;process.Id&#125;</span>&quot;</span>);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			&#123;</span><br><span class="line">				Console.WriteLine(<span class="string">$&quot;Failed to get process templates: <span class="subst">&#123;response.StatusCode&#125;</span>&quot;</span>);</span><br><span class="line">				<span class="built_in">string</span> error = <span class="keyword">await</span> response.Content.ReadAsStringAsync();</span><br><span class="line">				Console.WriteLine(error);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<br>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/how-to/call-rest-api?view=azure-devops"  target="_blank">⁍ 開始使用 REST API
-<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>]]></content>
-      <tags>
-        <tag>Azure DevOps</tag>
-        <tag>Azure DevOps REST API</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Azure DevOps Server 正式版發佈</title>
     <url>/post/2025/12/azure-devops-server-ga/</url>
     <content><![CDATA[<img    
@@ -1323,6 +1561,14 @@
                  >
 <p>微軟在 2025/12/9 宣佈 Azure DevOps Server 已正式達到 GA（General Availability，正式版）狀態，這次 RTW 版本是針對企業自架環境的一次重要里程碑：除了支援 SQL Server 2025、整合 RC 階段已釋出的功能外，也彙整了多項在 Boards、Repos、Pipelines、Test Plans、Reporting、Wiki 等服務上的改進。本文說明為什麼名稱不再掛版號、GA 的發佈重點，以及各服務的新功能亮點，方便大家評估升級與導入時機 😊。</p>
 <span id="more"></span>
+<br>
+<br>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/12/azure-devops-server-ga/azure-devops-server-ga.jpg"
+                        class=""
+                 >
 <br>
 <h2 id="為什麼-Azure-DevOps-Server-不再加上版號？">為什麼 Azure DevOps Server 不再加上版號？</h2>
 <p>如果大家最近有留意微軟官方文件，會發現標題多半只有「Azure DevOps Server」，而不是像以前那種「Azure DevOps Server 2022 / 2020」清楚掛版號的寫法，主要可以從幾個方向來理解：</p>
@@ -1467,244 +1713,6 @@ Rollup 欄位會顯示最近一次成功計算的資料與時間戳記，即使 
       </tags>
   </entry>
   <entry>
-    <title>Azure DevOps REST API 說明</title>
-    <url>/post/2025/04/azure-devops-rest-api/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-rest-api/rest_api.jpg"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>當我們要自行擴充或串接 Azure DevOps Services / Server 功能時，可以透過 Azure DevOps REST API 來進行客制開發，例如：想要寫一支程式每天發送各專案在版控儲存庫的差異紀錄，或是想要在公司內部表單系統審核後，觸發執行指定的 pipeline … 族繁不及備載，使用 REST API 透過 HTTP 呼叫的好處是可以不用侷限於特定的程式語言，也方便用 Postman 之類的工具測試，這篇整理了呼叫 Azure DevOps REST API 的前置作業與相關說明，方便大家上手😁。</p>
-<span id="more"></span>
-<br>
-<h2 id="REST-API">REST API</h2>
-<p>使用 Azure DevOps REST API 時，其 URI 規格如下：</p>
-<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">VERB https://&#123;instance&#125;/&#123;organization&#125;/&#123;project&#125;/_apis/&#123;area&#125;/&#123;resource&#125;?api-version=&#123;version&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><strong>VERB</strong><br>
-與一般 RESTful API 相同，在串接 Azure DevOps 各種情境時， <strong><font color='green'>GET</font></strong> / <strong><font color='brown'>POST</font></strong> / <strong><font color='red'>DELETE</font></strong> / <strong><font color='purple'>PATCH</font></strong> 都有機會用到。</li>
-<li><strong>instance</strong><br>
-如果是使用雲端的 Azure DevOps Services 指的就是 <span>dev.azure.com</span>，地端則是 Azure DevOps Server 所在的位址。</li>
-<li><strong>organization/project</strong><br>
-取決於 API 作用的範圍，在 URI 裡會有 organization 或 organization/project，例如：使用 API 建立個人權杖 (PAT)，則會是：<br>
-<strong><font color='brown'>POST</font></strong> https://vssps.dev.azure.com/<mark>{organization}</mark>/_apis/tokens/pats?api-version=7.2<br>
-或者像是用 API 建立一個工作項目，則是：<br>
-<strong><font color='brown'>POST</font></strong> https://dev.azure.com/<mark>{organization}/{project}</mark>/_apis/wit/workitems/${type}?api-version=7.2</li>
-<li><strong>{area}/{resource}</strong><br>
-從這邊大概可以看出呼叫的 API 是做哪方面的操作，以上面兩個例子 (建立 PAT、建立 Work item) 來說：<br>
-<strong><font color='brown'>POST</font></strong> https://vssps.dev.azure.com/{organization}/_apis/<mark>tokens/pats</mark>?api-version=7.2<br>
-<strong><font color='brown'>POST</font></strong> https://dev.azure.com/{organization}/{project}/_apis/<mark>wit/workitems/${type}</mark>?api-version=7.2</li>
-<li><strong>version</strong><br>
-通常我們在串接 API 時會明確指定 version，因為每個 TFS / Azure DevOps 版本對於 API 支援的 api-version 也有所不同 (如下表)，如果不指定 api-version 則會自動選用目前產品最新的穩定版本，例如：在 Azure DevOps Server 2019 它會自動取用 5.0 來執行，在不加 api-version 的情況下，若日後升級到 Azure DevOps Server 2022，則會自動取用 7.0 來執行，為維持串接程式正常運作，不會因為 API 版本差異而造成異常，一般我們都會加上指定的 api-version 版號。</li>
-</ul>
-<blockquote>
-<p>提醒大家：<br>
-如果是使用 preview 版本 (例如：<strong><code>7.2-preview.3</code></strong>)，該 preview 版本會在 <strong>12 週</strong> 後停用，被穩定的正式版本取代。</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>Products</th>
-<th style="text-align:center">1.0</th>
-<th style="text-align:center">2.0</th>
-<th style="text-align:center">3.0</th>
-<th style="text-align:center">4.0</th>
-<th style="text-align:center">5.0</th>
-<th style="text-align:center">6.0</th>
-<th style="text-align:center">7.0</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Azure DevOps Services</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-</tr>
-<tr>
-<td>Azure DevOps Server 2022</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-</tr>
-<tr>
-<td>Azure DevOps Server 2020</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Azure DevOps Server 2019</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Team Foundation Server 2018</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Team Foundation Server 2017</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Team Foundation Server 2015</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-</tr>
-</tbody>
-</table>
-<h2 id="PAT-Personal-Access-Token">PAT (Personal Access Token)</h2>
-<p>要使用 Azure DevOps REST API 存取資源前都必需先經過驗證成功才行，建立 <strong><code>個人存取權杖 (PAT)</code></strong> 可以算是安全又簡便的方式，若想要實作 OAuth 2.0 或其他頁面驗證方式，可以參考下列連結：</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/get-started/authentication/authentication-guidance?toc=%2Fazure%2Fdevops%2Fmarketplace-extensibility%2Ftoc.json&view=azure-devops"  target="_blank">⁍ 選擇正確的驗證機制<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<p>要建立一個 PAT 可以從 Azure DevOps 畫面右上角 <strong><code>User settings</code></strong> → <strong><code>Personal access tokens</code></strong> 進入。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-rest-api/pat.png"
-                        class=""
-                 >
-<br>
-<p>點選 <strong><code>+ New Token</code></strong> 按鈕。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-rest-api/pat_1.png"
-                        class=""
-                 >
-<br>
-<p>接著就是 PAT 存取期限、授權範圍等相關設定：</p>
-<ul>
-<li><strong>Organization</strong><br>
-選擇 <strong>特定的 Organization</strong> 或 <strong>All accessible organizations</strong> (允許存取全部組織)。</li>
-<li><strong>Expiration (UTC)</strong><br>
-有效期限可以選擇 <strong>30 / 60 / 90 天</strong>，或是 <strong>Custom defined</strong> (<mark>最長只能一年</mark>)</li>
-<li><strong>Scopes</strong><br>
-可以選擇 <strong>Full access</strong> (允許存取全部範圍) 或 <strong>Custom defined</strong> 針對各個功能進一步設定，基於最低權限原則，建議大家可以有意義的命名 token 名稱，並且只勾選必要的 <strong>Scopes</strong> 授權範圍。</li>
-</ul>
-<p>建立 PAT 後，僅能 <strong><code>Revoke</code></strong> (撤銷) 或是 <strong><code>Regenerate</code></strong> (重新產生)，沒有辦法再用任何方式檢視原本產生的 token 內容，大家記得要妥善保存。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-rest-api/pat_2.png"
-                        class=""
-                 >
-<h2 id="NET-Client-Library">.NET Client Library</h2>
-<p>如果是使用 .NET 進行程式開發，還有一個選擇是從 NuGet.org 下載 Client library 使用，套件相依關係如下圖。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-rest-api/dotnet-client-libraries-dependancy-diagram.jpg"
-                        class=""
-                 >
-<br>
-<p>最新版本可以由 NuGet.org 查詢結果找到： https://www.nuget.org/packages?q=azure+devops+.net ，套件和 Azure DevOps 版本一樣有相依性， 使用前要留意一下目前環境的 TFS / Azure DevOps Server 版本，例如：Azure DevOps Server 2019 只能使用到套件 16.143.x 版。</p>
-<table>
-<thead>
-<tr>
-<th>套件版本</th>
-<th>Azure DevOps 版本</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>16.205.x</td>
-<td>versions &gt;= Azure DevOps Server 2022</td>
-</tr>
-<tr>
-<td>16.170.x</td>
-<td>versions &gt;= Azure DevOps Server 2020</td>
-</tr>
-<tr>
-<td>16.153.x</td>
-<td>versions &gt;= Azure DevOps Server 2019 Update 1</td>
-</tr>
-<tr>
-<td>16.143.x</td>
-<td>versions &gt;= Azure DevOps Server 2019</td>
-</tr>
-<tr>
-<td>15.131.x</td>
-<td>versions &gt;= TFS 2018 Update 1</td>
-</tr>
-<tr>
-<td>15.112.x</td>
-<td>versions &gt;= TFS 2017 Update 1</td>
-</tr>
-<tr>
-<td>14.102.x</td>
-<td>versions &gt;= TFS 2015 Update 3</td>
-</tr>
-<tr>
-<td>14.95.x</td>
-<td>versions &gt;= TFS 2015 Update 2</td>
-</tr>
-<tr>
-<td>14.89.x</td>
-<td>versions &gt;= TFS 2015 Update 1</td>
-</tr>
-<tr>
-<td>14.83.x</td>
-<td>versions &gt;= TFS 2015</td>
-</tr>
-</tbody>
-</table>
-<p>在實務開發上還是得花些時間先瞭解套件定義了哪些 class、提供了什麼 function，這部份可以參考官方說明和 github sample code，如果有特殊需求或環境考量需要使用的話，可以參考下列連結：</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/concepts/dotnet-client-libraries?view=azure-devops&viewFallbackFrom=vsts"  target="_blank">⁍ .NET 用戶端程式庫<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/get-started/client-libraries/samples?view=azure-devops"  target="_blank">⁍ C# 用戶端連結庫範例<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://github.com/microsoft/azure-devops-dotnet-samples"  target="_blank">⁍ .NET samples for Azure DevOps<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<p>(💁 看完上面連結內容有沒有覺得還是使用 REST API 比較方便 💖)</p>
-]]></content>
-      <tags>
-        <tag>Azure DevOps</tag>
-        <tag>Azure DevOps REST API</tag>
-        <tag>PAT</tag>
-        <tag>.NET Client Library</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Azure DevOps 的 Wiki 應用</title>
     <url>/post/2025/10/azure-devops-wiki/</url>
     <content><![CDATA[<img    
@@ -1839,561 +1847,6 @@ Rollup 欄位會顯示最近一次成功計算的資料與時間戳記，即使 
       <tags>
         <tag>Azure DevOps</tag>
         <tag>Wiki</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用 Playwright 測試框架 - 環境準備 (.NET)</title>
-    <url>/post/2025/05/how-to-use-playwright-1/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>在現代軟體開發中，自動化測試已成為確保程式碼品質的重要一環，Playwright 是一個強大的自動化測試框架，支援 Chromium / Firefox / WebKit 瀏覽器，搭配測試產生器(codegen)讓開發者能夠輕鬆撰寫可靠且高效的測試腳本。本篇文章將介紹如何在 .NET 開發環境中設置和使用 Playwright，從安裝必要的套件到撰寫基本的測試案例，幫助大家快速上手這個工具。<br>
-<br></p>
-<span id="more"></span>
-<br>
-<h2 id="使用-Visual-Studio">使用 Visual Studio</h2>
-<p>如果是慣用地表最強開發工具，打開 Visual Studio 建立一個新的 <strong><code>MSTest 測試專案</code></strong>，讓我們有一個基本測試環境可以開始撰寫 Playwright 測試。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/vs-01.png"
-                        class=""
-                 >
-<br>
-<p>要在 MSTest 使用 Playwright 必需要安裝 <strong><code>Microsoft.Playwright.MSTest</code></strong> 套件，這個套件會將 Playwright 與 MSTest 整合，使我們能夠在 MSTest 測試過程中使用 Playwright 功能。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/vs-02.png"
-                        class=""
-                 >
-<h2 id="使用-NET-CLI">使用 .NET CLI</h2>
-<p>若是使用 VSCode 開發工具，我們可以用 <strong>dotnet new</strong> 指令新增一個 PlaywrightTests 專案，預設內容會包含一個 UnitTest1.cs 檔案。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet new mstest -n PlaywrightTests</span><br><span class="line">cd PlaywrightTests</span><br></pre></td></tr></table></figure>
-<p>安裝必要的 Playwright 相依套件：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet add package Microsoft.Playwright.MSTest</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-01.png"
-                        class=""
-                 >
-<br>
-<p>建置程式碼，確認環境準備是否有異常。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet build</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-02.png"
-                        class=""
-                 >
-<br>
-<h2 id="安裝-Playwright-CLI">安裝 Playwright CLI</h2>
-<p>在 .NET 開發環境中，雖然 <strong>playwright.exe</strong> 指令沒有像 <strong>npx playwright</strong> 那麼多參數與功能，但我們在錄製網頁操作過程來產生測試程式碼 (codegen)，或是開啟追蹤檔 (show-trace) 時仍會使用到，可以透過下列指令來安裝 <strong><code>Microsoft.Playwright.CLI</code></strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool install --global Microsoft.Playwright.CLI</span><br></pre></td></tr></table></figure>
-<p>上述套件預設會被安裝到目前的使用者範圍內的 .NET 全局工具路徑中，具體安裝位置會因作業系統而異：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Windows</span><br><span class="line">C:\Users\&lt;你的用戶名&gt;\.dotnet\tools\</span><br><span class="line"></span><br><span class="line">Linux / macOS</span><br><span class="line">/home/&lt;你的用戶名&gt;/.dotnet/tools/</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-03.png"
-                        class=""
-                 >
-<p>我們可以直接開啟目錄確認工具是否安裝成功，或是使用以下指令來列出所有安裝的 .NET 工具：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool list --global</span><br></pre></td></tr></table></figure>
-<p>例：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Package Id                    Version      Commands</span><br><span class="line">-----------------------------------------------------</span><br><span class="line">dotnet-ef                     8.0.8        dotnet-ef</span><br><span class="line">microsoft.playwright.cli      1.2.3        playwright</span><br></pre></td></tr></table></figure>
-<h2 id="移除-Playwright-CLI">移除 Playwright CLI</h2>
-<p>若需要移除已安裝的套件，可以使用下列指令：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool uninstall microsoft.playwright.cli</span><br></pre></td></tr></table></figure>
-<h2 id="安裝-Playwright-支援的瀏覽器">安裝 Playwright 支援的瀏覽器</h2>
-<p>Playwright 支援 Chromium、WebKit 和 Firefox 瀏覽器，我們可以使用 <strong>playwright install</strong> 指令來安裝預設瀏覽器，這個動作會將瀏覽器安裝到 <strong><mark>%LOCALAPPDATA%\ms-playwright</mark></strong> 目錄下，若想要自訂安裝的項目，可以透過 <strong>playwright help install</strong> 來瞭解所有的選項。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright install</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-04.png"
-                        class=""
-                 >
-<br>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright help install</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/cli-05.png"
-                        class=""
-                 >
-<h2 id="小試身手">小試身手</h2>
-<p>以上 Playwright 環境設定都完成後，我們就可以直接用官網的第一個範例來小試身手：</p>
-<ul>
-<li>
-<p><code>HasTitle()</code><br>
-打開 Playwright 官方網站，檢查網站的標題是否包含特定的字串，確認網頁標題中是否包含 “Playwright” 這個字。</p>
-</li>
-<li>
-<p><code>GetStartedLink()</code><br>
-一樣是打開 Playwright 官方網站，點擊一個名為 “Get started” 的連結，然後檢查點擊後的頁面是否有一個名為 “Installation” 的標題，以確保連結正確導向到預期的頁面。</p>
-</li>
-</ul>
-<p>大家應該不難發現 Playwright 的程式碼很直覺易讀，通常也不太需要夾雜 CSS class 或 style 來尋找定位網頁上的元素，除此之外還提供了豐富的 API 來進行各種操作，如：點擊、輸入文字、截圖等，之後再陸續向大家介紹各項重點特色，希望大家也都能快速上手 Playwright，並在日常開發中提升測試效率與程式碼品質。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Text.RegularExpressions;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright.MSTest;</span><br><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">PlaywrightTests</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ExampleTest</span> : <span class="title">PageTest</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">HasTitle</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expect a title &quot;to contain&quot; a substring.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page).ToHaveTitleAsync(<span class="keyword">new</span> Regex(<span class="string">&quot;Playwright&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">GetStartedLink</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Click the get started link.</span></span><br><span class="line">        <span class="keyword">await</span> Page.GetByRole(AriaRole.Link, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Get started&quot;</span> &#125;).ClickAsync();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expects page to have a heading with the name of Installation.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page.GetByRole(AriaRole.Heading, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Installation&quot;</span> &#125;)).ToBeVisibleAsync();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>Unit Test</tag>
-        <tag>Playwright</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>整理 Context 的利器 — MarkItDown 與 Docling</title>
-    <url>/post/2025/10/docling-to-markdown/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/docling-to-markdown/logo.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>在 Agentic AI 的各式應用場景中，提供正確且良好品質的上下文來源是至關重要的環結，實務上我們可能透過 RAG 從外部檢索資料，或是從手邊的各種檔案格式轉換成 markdown 來提供 LLM 作為上下文參考資料以便展開執行後續的任務，若以輕量、快速上手為考量，可以試試 MarkItDown，但若只能在純地端環境執行，或是對於文件內容(例如：表格、版面)有更高的解析需求不妨試試 Docling，本文以實務角度比較兩者設計取向、支援格式與優缺點，以及提供不同應用場景的建議。</p>
-<span id="more"></span>
-<p>在建立知識庫、資料前處理或把企業文件提供給 LLM 時，原始文件往往可能是 PDF、各種 Office 文件格式、圖片或音訊，而真正要給 LLM 使用時，需要：</p>
-<ul>
-<li>保留語意與結構（標題、段落、表格…等）。</li>
-<li>去除雜訊並以 token 使用效率高的格式呈現（例如：Markdown）。</li>
-<li>在有需要時，保留更結構化的表示（例如：JSON）以便後續自動化處理。</li>
-</ul>
-<p>MarkItDown 與 Docling 都致力於把各種來源轉成容易被 LLM 或檢索系統消化的輸出，但設計側重與功能集合有明顯差異，下面我們直接比較。</p>
-<h2 id="MarkItDown">MarkItDown</h2>
-<ul>
-<li>出處：由 Microsoft AutoGen 團隊維護（Python）。</li>
-<li>設計取向：把各式檔案轉成「結構化 Markdown」；以 LLM 與文本分析為取向。</li>
-<li>優勢：
-<ul>
-<li>直接產生適合 LLM 的 Markdown（標題、列表、表格、內嵌程式碼等）。</li>
-<li>支援多媒體（圖片 OCR、音訊轉錄、YouTube 字幕抓取）。</li>
-<li>可用作 MCP 伺服器，利於 AI Agent／LLM 整合。</li>
-</ul>
-</li>
-<li>限制：
-<ul>
-<li>對於複雜的 PDF 版面（精細表格、多欄佈局、複雜閱讀順序），解析深度稍嫌不足。</li>
-<li>若要取得更高階 PDF 能力，可能會依賴 Azure Document Intelligence（雲端）。</li>
-</ul>
-</li>
-</ul>
-<p>若要使用 MarkItDown MCP 現在可以在 GitHub MCP Registry(https://github.com/mcp) 列表找到，也可以 docker 方式或 clone 整個專案在本地端以 STDIO 的方式執行，參考微軟官方 GitHub 說明。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://github.com/mcp"  target="_blank">⁍ GitHub MCP Registry<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://github.com/microsoft/markitdown?tab=readme-ov-file"  target="_blank">⁍ GitHub | MarkItDown<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://github.com/microsoft/markitdown/tree/main/packages/markitdown-mcp"  target="_blank">⁍ GitHub | MarkItDown MCP<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
-<h2 id="Docling">Docling</h2>
-<ul>
-<li>出處：由 Docling Project（原起始於 IBM Research Zurich，目前管於 LF AI &amp; Data）維護。</li>
-<li>設計取向：專注於文件理解，特別是進階 PDF 解析（版面、閱讀順序、表格結構、公式、程式碼、影像分類），並提供統一的 DoclingDocument 表示與多種匯出選項。</li>
-<li>優勢：
-<ul>
-<li>在複雜 PDF（掃描文件、排版、多欄表格）與表格重構上表現優異，使用自家模型（DocLayNet、TableFormer）提升解析品質。</li>
-<li>支援本地執行（適合敏感資料或隔離環境），也有 VLM / ASR 整合能力。</li>
-<li>輸出豐富：Markdown / HTML / JSON / DocTags 等，便於後續分析或顯示詳細資訊。</li>
-<li>與 LangChain、LlamaIndex、Haystack 等生態系可以直接整合，便於搭建 RAG pipeline。</li>
-</ul>
-</li>
-<li>限制：
-<ul>
-<li>因為功能較廣、選項較多，學習曲線會比 MarkItDown 高。</li>
-<li>Docling 會完全在本地環境執行，需要考量相關系統資源 (是優點也是缺點)。</li>
-</ul>
-</li>
-</ul>
-<p>如何取得並建置 Docling 環境可以參考 GitHub 專案，它一樣有支援 MCP 但要在它的官網才找得到說明，如同前面說的，它是完全在本地端執行，所以 MCP 是由 uvx 來執行啟動。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://github.com/docling-project/docling"  target="_blank">⁍ GitHub | Docling <i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://docling-project.github.io/docling/"  target="_blank">⁍ Docling<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://docling-project.github.io/docling/usage/mcp/"  target="_blank">⁍ Docling MCP<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
-<p>如果想要手動在 mcp.json 加入這兩個 MCP 工具，可以直接參考：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	<span class="attr">&quot;servers&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		<span class="attr">&quot;microsoft/markitdown&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">			<span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;stdio&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;uvx&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">				<span class="string">&quot;markitdown-mcp==0.0.1a4&quot;</span></span><br><span class="line">			<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;gallery&quot;</span><span class="punctuation">:</span> <span class="string">&quot;https://api.mcp.github.com&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1.0.0&quot;</span></span><br><span class="line">		<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">		 <span class="attr">&quot;docling&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		 <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;uvx&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">				<span class="string">&quot;--from=docling-mcp&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="string">&quot;docling-mcp-server&quot;</span></span><br><span class="line">			<span class="punctuation">]</span></span><br><span class="line">		<span class="punctuation">&#125;</span></span><br><span class="line">	<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;inputs&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-<h2 id="支援格式與各面向比較">支援格式與各面向比較</h2>
-<table>
-<thead>
-<tr>
-<th>格式</th>
-<th>MarkItDown</th>
-<th>Docling</th>
-<th>備註</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>PDF</td>
-<td>良好</td>
-<td>優秀（尤其是複雜/掃描文件）</td>
-<td>MarkItDown 對一般 PDF 處理良好；若需高保真解析或掃描 OCR 建議用 Docling</td>
-</tr>
-<tr>
-<td>DOCX / PPTX / XLSX</td>
-<td>支援</td>
-<td>支援</td>
-<td>兩者皆可處理 Office 文件</td>
-</tr>
-<tr>
-<td>Images</td>
-<td>OCR、EXIF 支援</td>
-<td>OCR + VLM（視覺語言模型）分類支援</td>
-<td>Docling 在影像分類與 VLM 整合上較強</td>
-</tr>
-<tr>
-<td>Audio (WAV / MP3)</td>
-<td>支援音訊轉錄</td>
-<td>ASR 支援</td>
-<td>兩者皆支援轉錄；可串接不同模型以改善品質</td>
-</tr>
-<tr>
-<td>HTML</td>
-<td>支援</td>
-<td>支援</td>
-<td>皆可匯入網頁內容</td>
-</tr>
-<tr>
-<td>Markdown</td>
-<td>原生支援</td>
-<td>支援匯入/匯出</td>
-<td></td>
-</tr>
-<tr>
-<td>CSV / JSON / XML</td>
-<td>文字格式支援</td>
-<td>支援</td>
-<td>適合結構化文字資料</td>
-</tr>
-<tr>
-<td>YouTube</td>
-<td>可抓取與轉錄</td>
-<td>可處理 WebVTT / 影片字幕</td>
-<td>MarkItDown 偏向抓取與轉錄；Docling 處理字幕檔更完整</td>
-</tr>
-<tr>
-<td>EPUB / ZIP</td>
-<td>支援</td>
-<td>支援</td>
-<td>支援程度依內容與封裝方式而異</td>
-</tr>
-<tr>
-<td>VTT / WebVTT</td>
-<td>支援</td>
-<td>支援</td>
-<td>若以字幕為主，Docling 支援度較好</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>
-<p>設計目標：</p>
-<ul>
-<li>MarkItDown：以「快速把各類來源轉成 LLM-friendly Markdown」為核心，偏重 token 效率與多媒體前處理。</li>
-<li>Docling：以「高保真文件理解」為核心，強調版面/表格/閱讀順序的精確還原與 lossless 結構化。</li>
-</ul>
-</li>
-<li>
-<p>解析深度與還原度：</p>
-<ul>
-<li>MarkItDown：輸出以可讀且可索引的 Markdown 為主，對一般文件足夠；遇到跨欄或複雜表格時可能會犧牲部分細節。</li>
-<li>Docling：使用版面模型與表格重建，保留更多區塊座標與結構資訊，適合需精準抽取或重現原始排版的情境。</li>
-</ul>
-</li>
-<li>
-<p>多媒體支援：</p>
-<ul>
-<li>MarkItDown：支援音訊轉錄、YouTube 字幕抓取、圖片 OCR 等，偏向 LLM 前處理工作流。</li>
-<li>Docling：也支援 OCR/ASR/VLM，但更強調影像分類、表格語意重構與公式/程式碼片段的解析。</li>
-</ul>
-</li>
-<li>
-<p>本地化 vs 雲端依賴：</p>
-<ul>
-<li>MarkItDown：可本地執行，但在某些高階 PDF 能力上會建議採用雲端 Azure Document Intelligence 作為選項。</li>
-<li>Docling：設計上強調本地端運行，適合敏感資料或離線環境。</li>
-</ul>
-</li>
-<li>
-<p>效能與資源需求：</p>
-<ul>
-<li>MarkItDown：輕量、上手快，適合大量快速預處理。</li>
-<li>Docling：依賴模型與較高運算資源，單檔處理時間較長但輸出更精確。</li>
-</ul>
-</li>
-<li>
-<p>整合生態與可擴充性：</p>
-<ul>
-<li>MarkItDown：以 plugin 與 MCP 為導向，容易接入 AI Agent / LLM pipeline。</li>
-<li>Docling：提供豐富的 JSON / Markdown / HTML 匯出，與 LangChain、LlamaIndex 等檢索生態整合良好，利於深度資料工程。</li>
-</ul>
-</li>
-<li>
-<p>可驗證性與審核：</p>
-<ul>
-<li>MarkItDown：輸出簡潔，人工檢視方便，但在表格或版面細節需抽樣驗證。</li>
-<li>Docling：提供中間結構（座標、區塊、表格邊界），便於自動化驗證與回溯修正。</li>
-</ul>
-</li>
-<li>
-<p>學習曲線與運維成本：</p>
-<ul>
-<li>MarkItDown：學習低、文件少、運維簡單。</li>
-<li>Docling：功能與選項多，需時間調校模型與處理參數，運維成本較高。</li>
-</ul>
-</li>
-</ul>
-<h2 id="總結">總結</h2>
-<p>MarkItDown 與 Docling 均可將各類原始文件轉為 LLM 友好的結構化格式，但設計取向與適用場景不同：MarkItDown 輕量且易上手，輸出以節省 token 的 Markdown 為主，適合大量快速預處理與整合至 AI Agent / LLM pipeline；Docling 則強調高保真文件理解與版面還原，擅長複雜 PDF、表格重建及本地化運行，適用於需精準解析或資安敏感的情境。實務上如果是遇到比較複雜的文件內容，例如像論文有分左右兩欄、各式表格，或是有圖片需要 OCR 辨識、流程圖想要轉換成 Mermaid，使用 Docling 產出的結果都蠻不錯的，強力推薦給大家!</p>
-  <!-- 實務上建議依文件類型、解析精度、處理量與可用資源做選擇，並透過抽樣驗證或混合流程（以 MarkItDown 做批次預處理、以 Docling 處理關鍵或需人工驗證的檔案）來兼顧效率與精確性。 -->
-<p>.xls -&gt; .md</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/docling-to-markdown/docling-excel.jpg"
-                        class=""
-                 >
-<p>.pptx -&gt; .md</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/docling-to-markdown/docling-pptx.jpg"
-                        class=""
-                 >
-<p>使用本地端資源運行 Docling</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/docling-to-markdown/docling-performance.jpg"
-                        class=""
-                 >
-]]></content>
-      <tags>
-        <tag>Docling</tag>
-        <tag>MarkItDown</tag>
-        <tag>文件處理</tag>
-        <tag>RAG</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用 Playwright 測試框架 - 執行階段 (.NET)</title>
-    <url>/post/2025/05/how-to-use-playwright-2/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p><a href="/post/2024/11/how-to-use-playwright-1">上一篇文章</a>提到了如何使用 Playwright 的測試產生器(codegen) 錄製腳本，除了可以運用在自動化測試之外，舉凡想要透過程式來自動執行的一連串行為，都可以透過 Playwright 來完成，本篇文章使用 Windows Sandbox 全新環境來執行由 .NET 8 撰寫的 Console 程式，讓大家知道建置產生執行檔後，還需要哪些必要的環境設定才可以正常讓程式運作。<br>
-<br></p>
-<span id="more"></span>
-<br>
-<h2 id="安裝-NET-Runtime">安裝 .NET Runtime</h2>
-<p>不論是以前的 .NET Framework 或是現在的 .NET Core，在執行時都需要安裝 .NET Runtime 才能順利運行開發好的程式，以下圖 Console 專案建置後的執行檔為例，畫面還會很貼心的指引我們目前的需求版本和下載路徑，完成安裝後便可順利執行 Console 程式。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/dotnet8.png"
-                        class=""
-                 >
-<br>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://dotnet.microsoft.com/download"  target="_blank">⁍ 下載 .NET<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<h2 id="安裝-PowerShell">安裝 PowerShell</h2>
-<p>如果是全新的環境，安裝完 .NET Runtime 後應該還會出現如下圖的錯誤，主要原因是：</p>
-<ul>
-<li>pwsh 找不到路徑 (或是沒有安裝 PowerShell)</li>
-<li>缺少 WebDriver (Edge/Chrome/Firefox)</li>
-</ul>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/pwsh.png"
-                        class=""
-                 >
-<br>
-若要安裝 PowerShell 可以依據自己的作業系統參考下列連結：
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5"  target="_blank">⁍ 在 Windows 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-linux?view=powershell-7.5"  target="_blank">⁍ 在 Linux 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-macos?view=powershell-7.5"  target="_blank">⁍ 在 macOS 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<h2 id="安裝-WebDriver">安裝 WebDriver</h2>
-<p>在上圖的錯誤訊息中有提到如下指令，路徑中的 <strong><mark>netX</mark></strong> 要替換為自己使用的版本路徑，而其中的 playwright.ps1 會存在於 .NET 程式建置後的 bin 目錄中，這個 .ps1 的主要用途是在 Windows 環境下執行 Playwright 測試，讓它可以正確找到 Playwright 主程式和相關驅動程式，確認 pwsh 指令可以運作後，就可以接著安裝 WebDriver 了。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pwsh bin/Debug/netX/playwright.ps1 install</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/playwright.png"
-                        class=""
-                 >
-<br>
-若在 install 之後沒有加上任何參數，則會安裝下列預設項目：
-<ul>
-<li>Chromium</li>
-<li>Chromium Headless Shell</li>
-<li>Firefox</li>
-<li>Webkit</li>
-<li>FFMPEG</li>
-</ul>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/install.png"
-                        class=""
-                 >
-<br>
-也可以依自己的需求安裝指定項目，可使用 install -h 查看相關資訊：
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/custom.png"
-                        class=""
-                 >
-<h2 id="總結">總結</h2>
-<p>本文介紹了在全新環境下，如何讓 .NET 8 撰寫的 Playwright 測試程式順利執行，包含安裝 .NET Runtime、PowerShell 及 WebDriver 等必要步驟。只要依照上述流程完成環境設定，就能避免常見的錯誤訊息，順利執行自動化測試。希望這些說明能幫助你在不同平台上快速部署與運行 Playwright 測試專案。</p>
-]]></content>
-      <tags>
-        <tag>Playwright</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Devdays Asia 2025 簡報下載</title>
-    <url>/post/2025/10/devdays-asia-2025/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/devdays-asia-2025/DevdaysAsia2025.jpg"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>今年是微軟 50 週年、DevDays 10 週年，話題大多圍繞在 Agentic AI，考量多數企業還是有 On-Premises 需求，所以這次我將主題訂在如何使用 Azure DevOps + GitHub Copilot 重新打造 SDLC，讓大家瞭解不是雲原生環境還可以有哪些應用，以及賦與 LLM 更多 Tools 後，可以讓我們的軟體開發過程產生多大的助益和改變，雖然主題是 Azure DevOps 與 GitHub Copilot，但基本上套在任何軟體開發流程概念都是一樣的，提供給大家參考，有任何想討論交流也歡迎大家留言或直接與我聯繫。</p>
-<span id="more"></span>
-<br>
-<div class="tips">
-<font color="black">
-<a href="/post/2025/10/devdays-asia-2025/0925_Track A 1330-1400_DevDaysAsia_20250925_精誠軟體.pdf" target="_blank">⁍ Azure DevOps 與 GitHub Copilot：AI 驅動的團隊協作新時代</a><br>
-<a class="link"   href="https://www.digitimes.com.tw/Seminar/DevDaysAsia2025/index.html"  target="_blank">⁍ DevDays Asia 2025 亞太技術年會 | 議程介紹<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://onedrive.live.com/?redeem=aHR0cHM6Ly8xZHJ2Lm1zL2YvYy85NmJjZGNhMWVkYWIwZmMyL0VvUncyR1ZIaVRaUG1NNW1Ib0hPeWxFQlpvSW5aOU55ckY1QVJsOU5wbGpYWXc_ZT01VlhkMXQ&id=96BCDCA1EDAB0FC2%21s65d8708489474f3698ce661e81ceca51&cid=96BCDCA1EDAB0FC2"  target="_blank">⁍ DevDays Asia 2025 亞太技術年會 | 所有簡報下載 (OneDrive)<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>]]></content>
-      <tags>
-        <tag>Azure DevOps</tag>
-        <tag>Devdays Asia 2025</tag>
-        <tag>GitHub Copilot</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>關於 MCP 的 Capability Negotiation</title>
-    <url>/post/2025/07/mcp-capability-negotiation/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/07/mcp-capability-negotiation/robot.jpg"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>在當前 AI 技術快速發展的時代，MCP (Model Context Protocol) 為大型語言模型帶來更多元且強大的擴展能力。透過 MCP 讓開發者能使 IDE 工具與語言模型自然結合，實現語意驅動的互動體驗。MCP 架構中包含 MCP Server、MCP Host 與 MCP Client 三大核心角色，彼此協同合作並透過能力協商（Capability Negotiation）機制，確保雙方能根據自身能力與需求，協調出最佳的功能組合與協作方式。本文將以<a href="/post/2025/06/azure-devops-mcp-server/">上一篇文章</a>為例，說明其背景運作流程。</p>
-<span id="more"></span>
-<br>
-<h2 id="Core-Components-核心組件">Core Components 核心組件</h2>
-<p>MCP 採用 client-host-server 的架構設計，其中一個 host 可以同時管理多個 client instance，並與 MCP Server 建立一對一的連線，藉此維持安全邊界並隔離各自的關注點。以 VSCode 安裝 GitHub Copilot Extension 並連接 Azure DevOps MCP Server 為例，VSCode 扮演 host 角色，而 GitHub Copilot 則是 client，而 Azure DevOps MCP Server 則是 server。每個 client 透過 host 啟動並與 server 進行能力協商，確保各自的功能與需求能被正確識別與協調，進而實現安全且高效的協作。</p>
-<p>正如 MCP 官方文件所示意的架構圖，我們可以在 VSCode 中透過 GitHub Copilot 與不同的模型進行互動。只要註冊並設定不同的 MCP Server，就能根據需求取得各式各樣的工具，進一步擴展大型語言模型的應用範圍與處理能力。目前要開發 MCP Server 的門檻已經大幅降低，在 Python / Node.js / Java / Kotlin / C# 都有很豐富的實作範例可以參考，可以參考下列整理連結。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/07/mcp-capability-negotiation/core_components.png"
-                        class=""
-                 >
-<br>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://modelcontextprotocol.io/quickstart/server"  target="_blank">⁍ Quickstart - For MCP Server Developers<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://github.com/modelcontextprotocol/csharp-sdk"  target="_blank">⁍ GitHub | csharp-sdk<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/ai/get-started-mcp"  target="_blank">⁍ 開始使用 .NET AI 和模型內容通訊協定<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/ai/quickstarts/build-mcp-server"  target="_blank">⁍ 使用 .NET 建立並連線到最小的 MCP 伺服器<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
-<h2 id="Capability-Negotiation-能力協商">Capability Negotiation 能力協商</h2>
-<p>在 MCP 官方說明文件裡有一張關於 Capability Negotiation 的循序圖畫得很詳細，大家想要瞭解可以參考下方連結，這邊我就以上次的情境舉例：描述使用者透過 VSCode 及 GitHub Copilot 選擇使用 gpt-4o 模型，透過 Azure DevOps MCP Server 與 Azure DevOps Services 溝通，查詢組織專案列表的完整流程。大家可以先看一下循序圖中有哪些角色，再試著由上往下依序閱讀，完整說明在圖片下面。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://modelcontextprotocol.io/specification/2025-06-18/architecture#capability-negotiation"  target="_blank">⁍ MCP - Architecture | Capacity Negotiation<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
-<br>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/07/mcp-capability-negotiation/capability_negotiation.png"
-                        class=""
-                 >
-<h3 id="角色說明">角色說明</h3>
-<ul>
-<li>User（使用者）：在 VSCode 輸入查詢指令的人。</li>
-<li>MCP Host（VSCode）：負責接收使用者指令，與其他元件溝通的 IDE 工具。</li>
-<li>MCP Client（GitHub Copilot）：協助分析指令、整合工具，並與 AI 互動的中介。</li>
-<li>gpt-4o：負責理解指令、產生工具操作建議與自然語言回應的 AI 模型。</li>
-<li>Azure DevOps MCP Server：負責與 Azure DevOps 溝通的 MCP 伺服器。</li>
-<li>Azure DevOps：實際儲存專案資料的雲端平台 (Azure DevOps Services)。</li>
-</ul>
-<h3 id="步驟流程說明">步驟流程說明</h3>
-<h4 id="1-建立工具清單（首次連線時）">1. 建立工具清單（首次連線時）</h4>
-<ul>
-<li>MCP Client 會先建立一份工具清單（例如：有哪些查詢指令可用），並把這些資訊傳給 gpt-4o。</li>
-<li>gpt-4o 準備好解析工具需求，回傳每個工具的詳細資料（名稱、參數、用途等）給 MCP Client。</li>
-<li>MCP Client 把這些工具相關資料暫存下來，方便後續使用。</li>
-</ul>
-<h4 id="2-使用者輸入查詢">2. 使用者輸入查詢</h4>
-<ul>
-<li>User 在 VSCode 輸入像「組織有哪些專案？」這樣的問題。</li>
-<li>MCP Host 把這個問題傳給 MCP Client。</li>
-</ul>
-<h4 id="3-問題分析與轉換">3. 問題分析與轉換</h4>
-<ul>
-<li>MCP Client 將指令及上下文資訊傳送給 gpt-4o。</li>
-<li>gpt-4o 解析後發現需要查詢 Azure DevOps 的資料，於是產生對應的 MCP 指令（例如 list_projects）。</li>
-</ul>
-<h4 id="4-發送查詢請求">4. 發送查詢請求</h4>
-<ul>
-<li>MCP Client 把 list_projects 的請求發送給 MCP Host。</li>
-<li>MCP Host 再把這個請求傳給 MCP Server。</li>
-</ul>
-<h4 id="5-與-Azure-DevOps-溝通">5. 與 Azure DevOps 溝通</h4>
-<ul>
-<li>MCP Server 收到請求後，轉換成 Azure DevOps 的 REST API 呼叫。</li>
-<li>Azure DevOps 回傳專案列表資料給 MCP Server。</li>
-</ul>
-<h4 id="6-結果回傳與整合">6. 結果回傳與整合</h4>
-<ul>
-<li>MCP Server 將查詢結果回傳給 MCP Host。</li>
-<li>MCP Host 把結果傳給 MCP Client。</li>
-<li>MCP Client 整合資料，並將查詢結果及相關內容傳給 gpt-4o。</li>
-</ul>
-<h4 id="7-生成自然語言回應">7. 生成自然語言回應</h4>
-<ul>
-<li>gpt-4o 把查詢到的專案資料，轉換成自然語言答案。</li>
-<li>MCP Client 將這個答案封裝好，傳回 MCP Host。</li>
-<li>MCP Host 最後把結果顯示在 VSCode 介面上，讓 User 看到。</li>
-</ul>
-<p>整個流程就是：</p>
-<p><mark>使用者發問 → VSCode 接收 → GitHub Copilot 分析 → gpt-4o 理解並產生查詢指令 → Azure DevOps 查詢 → 回傳結果 → gpt-4o 產生易懂的自然語言回應 → 顯示在 VSCode</mark><br>
-每個角色都扮演特定溝通橋樑，確保使用者的問題能被正確理解並得到回覆。</p>
-<h2 id="總結">總結</h2>
-<p>MCP 的能力協商機制讓各個元件能根據自身特性協調最佳合作方式，確保安全、彈性與高效的互動體驗。透過明確的角色分工與標準化流程，開發者能更容易串接多元工具與服務，擴展 AI 應用場景。未來隨著 MCP 生態系持續發展，將有助於推動語意驅動開發與 AI 協作的普及。</p>
-]]></content>
-      <tags>
-        <tag>MCP</tag>
       </tags>
   </entry>
   <entry>
@@ -2672,6 +2125,561 @@ Rollup 欄位會顯示最近一次成功計算的資料與時間戳記，即使 
       </tags>
   </entry>
   <entry>
+    <title>使用 Playwright 測試框架 - 執行階段 (.NET)</title>
+    <url>/post/2025/05/how-to-use-playwright-2/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p><a href="/post/2024/11/how-to-use-playwright-1">上一篇文章</a>提到了如何使用 Playwright 的測試產生器(codegen) 錄製腳本，除了可以運用在自動化測試之外，舉凡想要透過程式來自動執行的一連串行為，都可以透過 Playwright 來完成，本篇文章使用 Windows Sandbox 全新環境來執行由 .NET 8 撰寫的 Console 程式，讓大家知道建置產生執行檔後，還需要哪些必要的環境設定才可以正常讓程式運作。<br>
+<br></p>
+<span id="more"></span>
+<br>
+<h2 id="安裝-NET-Runtime">安裝 .NET Runtime</h2>
+<p>不論是以前的 .NET Framework 或是現在的 .NET Core，在執行時都需要安裝 .NET Runtime 才能順利運行開發好的程式，以下圖 Console 專案建置後的執行檔為例，畫面還會很貼心的指引我們目前的需求版本和下載路徑，完成安裝後便可順利執行 Console 程式。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/dotnet8.png"
+                        class=""
+                 >
+<br>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://dotnet.microsoft.com/download"  target="_blank">⁍ 下載 .NET<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h2 id="安裝-PowerShell">安裝 PowerShell</h2>
+<p>如果是全新的環境，安裝完 .NET Runtime 後應該還會出現如下圖的錯誤，主要原因是：</p>
+<ul>
+<li>pwsh 找不到路徑 (或是沒有安裝 PowerShell)</li>
+<li>缺少 WebDriver (Edge/Chrome/Firefox)</li>
+</ul>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/pwsh.png"
+                        class=""
+                 >
+<br>
+若要安裝 PowerShell 可以依據自己的作業系統參考下列連結：
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5"  target="_blank">⁍ 在 Windows 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-linux?view=powershell-7.5"  target="_blank">⁍ 在 Linux 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-macos?view=powershell-7.5"  target="_blank">⁍ 在 macOS 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h2 id="安裝-WebDriver">安裝 WebDriver</h2>
+<p>在上圖的錯誤訊息中有提到如下指令，路徑中的 <strong><mark>netX</mark></strong> 要替換為自己使用的版本路徑，而其中的 playwright.ps1 會存在於 .NET 程式建置後的 bin 目錄中，這個 .ps1 的主要用途是在 Windows 環境下執行 Playwright 測試，讓它可以正確找到 Playwright 主程式和相關驅動程式，確認 pwsh 指令可以運作後，就可以接著安裝 WebDriver 了。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pwsh bin/Debug/netX/playwright.ps1 install</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/playwright.png"
+                        class=""
+                 >
+<br>
+若在 install 之後沒有加上任何參數，則會安裝下列預設項目：
+<ul>
+<li>Chromium</li>
+<li>Chromium Headless Shell</li>
+<li>Firefox</li>
+<li>Webkit</li>
+<li>FFMPEG</li>
+</ul>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/install.png"
+                        class=""
+                 >
+<br>
+也可以依自己的需求安裝指定項目，可使用 install -h 查看相關資訊：
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/custom.png"
+                        class=""
+                 >
+<h2 id="總結">總結</h2>
+<p>本文介紹了在全新環境下，如何讓 .NET 8 撰寫的 Playwright 測試程式順利執行，包含安裝 .NET Runtime、PowerShell 及 WebDriver 等必要步驟。只要依照上述流程完成環境設定，就能避免常見的錯誤訊息，順利執行自動化測試。希望這些說明能幫助你在不同平台上快速部署與運行 Playwright 測試專案。</p>
+]]></content>
+      <tags>
+        <tag>Playwright</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>整理 Context 的利器 — MarkItDown 與 Docling</title>
+    <url>/post/2025/10/docling-to-markdown/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/docling-to-markdown/logo.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>在 Agentic AI 的各式應用場景中，提供正確且良好品質的上下文來源是至關重要的環結，實務上我們可能透過 RAG 從外部檢索資料，或是從手邊的各種檔案格式轉換成 markdown 來提供 LLM 作為上下文參考資料以便展開執行後續的任務，若以輕量、快速上手為考量，可以試試 MarkItDown，但若只能在純地端環境執行，或是對於文件內容(例如：表格、版面)有更高的解析需求不妨試試 Docling，本文以實務角度比較兩者設計取向、支援格式與優缺點，以及提供不同應用場景的建議。</p>
+<span id="more"></span>
+<p>在建立知識庫、資料前處理或把企業文件提供給 LLM 時，原始文件往往可能是 PDF、各種 Office 文件格式、圖片或音訊，而真正要給 LLM 使用時，需要：</p>
+<ul>
+<li>保留語意與結構（標題、段落、表格…等）。</li>
+<li>去除雜訊並以 token 使用效率高的格式呈現（例如：Markdown）。</li>
+<li>在有需要時，保留更結構化的表示（例如：JSON）以便後續自動化處理。</li>
+</ul>
+<p>MarkItDown 與 Docling 都致力於把各種來源轉成容易被 LLM 或檢索系統消化的輸出，但設計側重與功能集合有明顯差異，下面我們直接比較。</p>
+<h2 id="MarkItDown">MarkItDown</h2>
+<ul>
+<li>出處：由 Microsoft AutoGen 團隊維護（Python）。</li>
+<li>設計取向：把各式檔案轉成「結構化 Markdown」；以 LLM 與文本分析為取向。</li>
+<li>優勢：
+<ul>
+<li>直接產生適合 LLM 的 Markdown（標題、列表、表格、內嵌程式碼等）。</li>
+<li>支援多媒體（圖片 OCR、音訊轉錄、YouTube 字幕抓取）。</li>
+<li>可用作 MCP 伺服器，利於 AI Agent／LLM 整合。</li>
+</ul>
+</li>
+<li>限制：
+<ul>
+<li>對於複雜的 PDF 版面（精細表格、多欄佈局、複雜閱讀順序），解析深度稍嫌不足。</li>
+<li>若要取得更高階 PDF 能力，可能會依賴 Azure Document Intelligence（雲端）。</li>
+</ul>
+</li>
+</ul>
+<p>若要使用 MarkItDown MCP 現在可以在 GitHub MCP Registry(https://github.com/mcp) 列表找到，也可以 docker 方式或 clone 整個專案在本地端以 STDIO 的方式執行，參考微軟官方 GitHub 說明。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://github.com/mcp"  target="_blank">⁍ GitHub MCP Registry<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://github.com/microsoft/markitdown?tab=readme-ov-file"  target="_blank">⁍ GitHub | MarkItDown<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://github.com/microsoft/markitdown/tree/main/packages/markitdown-mcp"  target="_blank">⁍ GitHub | MarkItDown MCP<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+<h2 id="Docling">Docling</h2>
+<ul>
+<li>出處：由 Docling Project（原起始於 IBM Research Zurich，目前管於 LF AI &amp; Data）維護。</li>
+<li>設計取向：專注於文件理解，特別是進階 PDF 解析（版面、閱讀順序、表格結構、公式、程式碼、影像分類），並提供統一的 DoclingDocument 表示與多種匯出選項。</li>
+<li>優勢：
+<ul>
+<li>在複雜 PDF（掃描文件、排版、多欄表格）與表格重構上表現優異，使用自家模型（DocLayNet、TableFormer）提升解析品質。</li>
+<li>支援本地執行（適合敏感資料或隔離環境），也有 VLM / ASR 整合能力。</li>
+<li>輸出豐富：Markdown / HTML / JSON / DocTags 等，便於後續分析或顯示詳細資訊。</li>
+<li>與 LangChain、LlamaIndex、Haystack 等生態系可以直接整合，便於搭建 RAG pipeline。</li>
+</ul>
+</li>
+<li>限制：
+<ul>
+<li>因為功能較廣、選項較多，學習曲線會比 MarkItDown 高。</li>
+<li>Docling 會完全在本地環境執行，需要考量相關系統資源 (是優點也是缺點)。</li>
+</ul>
+</li>
+</ul>
+<p>如何取得並建置 Docling 環境可以參考 GitHub 專案，它一樣有支援 MCP 但要在它的官網才找得到說明，如同前面說的，它是完全在本地端執行，所以 MCP 是由 uvx 來執行啟動。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://github.com/docling-project/docling"  target="_blank">⁍ GitHub | Docling <i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://docling-project.github.io/docling/"  target="_blank">⁍ Docling<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://docling-project.github.io/docling/usage/mcp/"  target="_blank">⁍ Docling MCP<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+<p>如果想要手動在 mcp.json 加入這兩個 MCP 工具，可以直接參考：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	<span class="attr">&quot;servers&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		<span class="attr">&quot;microsoft/markitdown&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">			<span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;stdio&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;uvx&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">				<span class="string">&quot;markitdown-mcp==0.0.1a4&quot;</span></span><br><span class="line">			<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;gallery&quot;</span><span class="punctuation">:</span> <span class="string">&quot;https://api.mcp.github.com&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1.0.0&quot;</span></span><br><span class="line">		<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">		 <span class="attr">&quot;docling&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		 <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;uvx&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">				<span class="string">&quot;--from=docling-mcp&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="string">&quot;docling-mcp-server&quot;</span></span><br><span class="line">			<span class="punctuation">]</span></span><br><span class="line">		<span class="punctuation">&#125;</span></span><br><span class="line">	<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;inputs&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<h2 id="支援格式與各面向比較">支援格式與各面向比較</h2>
+<table>
+<thead>
+<tr>
+<th>格式</th>
+<th>MarkItDown</th>
+<th>Docling</th>
+<th>備註</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PDF</td>
+<td>良好</td>
+<td>優秀（尤其是複雜/掃描文件）</td>
+<td>MarkItDown 對一般 PDF 處理良好；若需高保真解析或掃描 OCR 建議用 Docling</td>
+</tr>
+<tr>
+<td>DOCX / PPTX / XLSX</td>
+<td>支援</td>
+<td>支援</td>
+<td>兩者皆可處理 Office 文件</td>
+</tr>
+<tr>
+<td>Images</td>
+<td>OCR、EXIF 支援</td>
+<td>OCR + VLM（視覺語言模型）分類支援</td>
+<td>Docling 在影像分類與 VLM 整合上較強</td>
+</tr>
+<tr>
+<td>Audio (WAV / MP3)</td>
+<td>支援音訊轉錄</td>
+<td>ASR 支援</td>
+<td>兩者皆支援轉錄；可串接不同模型以改善品質</td>
+</tr>
+<tr>
+<td>HTML</td>
+<td>支援</td>
+<td>支援</td>
+<td>皆可匯入網頁內容</td>
+</tr>
+<tr>
+<td>Markdown</td>
+<td>原生支援</td>
+<td>支援匯入/匯出</td>
+<td></td>
+</tr>
+<tr>
+<td>CSV / JSON / XML</td>
+<td>文字格式支援</td>
+<td>支援</td>
+<td>適合結構化文字資料</td>
+</tr>
+<tr>
+<td>YouTube</td>
+<td>可抓取與轉錄</td>
+<td>可處理 WebVTT / 影片字幕</td>
+<td>MarkItDown 偏向抓取與轉錄；Docling 處理字幕檔更完整</td>
+</tr>
+<tr>
+<td>EPUB / ZIP</td>
+<td>支援</td>
+<td>支援</td>
+<td>支援程度依內容與封裝方式而異</td>
+</tr>
+<tr>
+<td>VTT / WebVTT</td>
+<td>支援</td>
+<td>支援</td>
+<td>若以字幕為主，Docling 支援度較好</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>設計目標：</p>
+<ul>
+<li>MarkItDown：以「快速把各類來源轉成 LLM-friendly Markdown」為核心，偏重 token 效率與多媒體前處理。</li>
+<li>Docling：以「高保真文件理解」為核心，強調版面/表格/閱讀順序的精確還原與 lossless 結構化。</li>
+</ul>
+</li>
+<li>
+<p>解析深度與還原度：</p>
+<ul>
+<li>MarkItDown：輸出以可讀且可索引的 Markdown 為主，對一般文件足夠；遇到跨欄或複雜表格時可能會犧牲部分細節。</li>
+<li>Docling：使用版面模型與表格重建，保留更多區塊座標與結構資訊，適合需精準抽取或重現原始排版的情境。</li>
+</ul>
+</li>
+<li>
+<p>多媒體支援：</p>
+<ul>
+<li>MarkItDown：支援音訊轉錄、YouTube 字幕抓取、圖片 OCR 等，偏向 LLM 前處理工作流。</li>
+<li>Docling：也支援 OCR/ASR/VLM，但更強調影像分類、表格語意重構與公式/程式碼片段的解析。</li>
+</ul>
+</li>
+<li>
+<p>本地化 vs 雲端依賴：</p>
+<ul>
+<li>MarkItDown：可本地執行，但在某些高階 PDF 能力上會建議採用雲端 Azure Document Intelligence 作為選項。</li>
+<li>Docling：設計上強調本地端運行，適合敏感資料或離線環境。</li>
+</ul>
+</li>
+<li>
+<p>效能與資源需求：</p>
+<ul>
+<li>MarkItDown：輕量、上手快，適合大量快速預處理。</li>
+<li>Docling：依賴模型與較高運算資源，單檔處理時間較長但輸出更精確。</li>
+</ul>
+</li>
+<li>
+<p>整合生態與可擴充性：</p>
+<ul>
+<li>MarkItDown：以 plugin 與 MCP 為導向，容易接入 AI Agent / LLM pipeline。</li>
+<li>Docling：提供豐富的 JSON / Markdown / HTML 匯出，與 LangChain、LlamaIndex 等檢索生態整合良好，利於深度資料工程。</li>
+</ul>
+</li>
+<li>
+<p>可驗證性與審核：</p>
+<ul>
+<li>MarkItDown：輸出簡潔，人工檢視方便，但在表格或版面細節需抽樣驗證。</li>
+<li>Docling：提供中間結構（座標、區塊、表格邊界），便於自動化驗證與回溯修正。</li>
+</ul>
+</li>
+<li>
+<p>學習曲線與運維成本：</p>
+<ul>
+<li>MarkItDown：學習低、文件少、運維簡單。</li>
+<li>Docling：功能與選項多，需時間調校模型與處理參數，運維成本較高。</li>
+</ul>
+</li>
+</ul>
+<h2 id="總結">總結</h2>
+<p>MarkItDown 與 Docling 均可將各類原始文件轉為 LLM 友好的結構化格式，但設計取向與適用場景不同：MarkItDown 輕量且易上手，輸出以節省 token 的 Markdown 為主，適合大量快速預處理與整合至 AI Agent / LLM pipeline；Docling 則強調高保真文件理解與版面還原，擅長複雜 PDF、表格重建及本地化運行，適用於需精準解析或資安敏感的情境。實務上如果是遇到比較複雜的文件內容，例如像論文有分左右兩欄、各式表格，或是有圖片需要 OCR 辨識、流程圖想要轉換成 Mermaid，使用 Docling 產出的結果都蠻不錯的，強力推薦給大家!</p>
+  <!-- 實務上建議依文件類型、解析精度、處理量與可用資源做選擇，並透過抽樣驗證或混合流程（以 MarkItDown 做批次預處理、以 Docling 處理關鍵或需人工驗證的檔案）來兼顧效率與精確性。 -->
+<p>.xls -&gt; .md</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/docling-to-markdown/docling-excel.jpg"
+                        class=""
+                 >
+<p>.pptx -&gt; .md</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/docling-to-markdown/docling-pptx.jpg"
+                        class=""
+                 >
+<p>使用本地端資源運行 Docling</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/docling-to-markdown/docling-performance.jpg"
+                        class=""
+                 >
+]]></content>
+      <tags>
+        <tag>Docling</tag>
+        <tag>MarkItDown</tag>
+        <tag>文件處理</tag>
+        <tag>RAG</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Devdays Asia 2025 簡報下載</title>
+    <url>/post/2025/10/devdays-asia-2025/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/devdays-asia-2025/DevdaysAsia2025.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>今年是微軟 50 週年、DevDays 10 週年，話題大多圍繞在 Agentic AI，考量多數企業還是有 On-Premises 需求，所以這次我將主題訂在如何使用 Azure DevOps + GitHub Copilot 重新打造 SDLC，讓大家瞭解不是雲原生環境還可以有哪些應用，以及賦與 LLM 更多 Tools 後，可以讓我們的軟體開發過程產生多大的助益和改變，雖然主題是 Azure DevOps 與 GitHub Copilot，但基本上套在任何軟體開發流程概念都是一樣的，提供給大家參考，有任何想討論交流也歡迎大家留言或直接與我聯繫。</p>
+<span id="more"></span>
+<br>
+<div class="tips">
+<font color="black">
+<a href="/post/2025/10/devdays-asia-2025/0925_Track A 1330-1400_DevDaysAsia_20250925_精誠軟體.pdf" target="_blank">⁍ Azure DevOps 與 GitHub Copilot：AI 驅動的團隊協作新時代</a><br>
+<a class="link"   href="https://www.digitimes.com.tw/Seminar/DevDaysAsia2025/index.html"  target="_blank">⁍ DevDays Asia 2025 亞太技術年會 | 議程介紹<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://onedrive.live.com/?redeem=aHR0cHM6Ly8xZHJ2Lm1zL2YvYy85NmJjZGNhMWVkYWIwZmMyL0VvUncyR1ZIaVRaUG1NNW1Ib0hPeWxFQlpvSW5aOU55ckY1QVJsOU5wbGpYWXc_ZT01VlhkMXQ&id=96BCDCA1EDAB0FC2%21s65d8708489474f3698ce661e81ceca51&cid=96BCDCA1EDAB0FC2"  target="_blank">⁍ DevDays Asia 2025 亞太技術年會 | 所有簡報下載 (OneDrive)<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>]]></content>
+      <tags>
+        <tag>Azure DevOps</tag>
+        <tag>Devdays Asia 2025</tag>
+        <tag>GitHub Copilot</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用 Playwright 測試框架 - 環境準備 (.NET)</title>
+    <url>/post/2025/05/how-to-use-playwright-1/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>在現代軟體開發中，自動化測試已成為確保程式碼品質的重要一環，Playwright 是一個強大的自動化測試框架，支援 Chromium / Firefox / WebKit 瀏覽器，搭配測試產生器(codegen)讓開發者能夠輕鬆撰寫可靠且高效的測試腳本。本篇文章將介紹如何在 .NET 開發環境中設置和使用 Playwright，從安裝必要的套件到撰寫基本的測試案例，幫助大家快速上手這個工具。<br>
+<br></p>
+<span id="more"></span>
+<br>
+<h2 id="使用-Visual-Studio">使用 Visual Studio</h2>
+<p>如果是慣用地表最強開發工具，打開 Visual Studio 建立一個新的 <strong><code>MSTest 測試專案</code></strong>，讓我們有一個基本測試環境可以開始撰寫 Playwright 測試。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/vs-01.png"
+                        class=""
+                 >
+<br>
+<p>要在 MSTest 使用 Playwright 必需要安裝 <strong><code>Microsoft.Playwright.MSTest</code></strong> 套件，這個套件會將 Playwright 與 MSTest 整合，使我們能夠在 MSTest 測試過程中使用 Playwright 功能。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/vs-02.png"
+                        class=""
+                 >
+<h2 id="使用-NET-CLI">使用 .NET CLI</h2>
+<p>若是使用 VSCode 開發工具，我們可以用 <strong>dotnet new</strong> 指令新增一個 PlaywrightTests 專案，預設內容會包含一個 UnitTest1.cs 檔案。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet new mstest -n PlaywrightTests</span><br><span class="line">cd PlaywrightTests</span><br></pre></td></tr></table></figure>
+<p>安裝必要的 Playwright 相依套件：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet add package Microsoft.Playwright.MSTest</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-01.png"
+                        class=""
+                 >
+<br>
+<p>建置程式碼，確認環境準備是否有異常。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet build</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-02.png"
+                        class=""
+                 >
+<br>
+<h2 id="安裝-Playwright-CLI">安裝 Playwright CLI</h2>
+<p>在 .NET 開發環境中，雖然 <strong>playwright.exe</strong> 指令沒有像 <strong>npx playwright</strong> 那麼多參數與功能，但我們在錄製網頁操作過程來產生測試程式碼 (codegen)，或是開啟追蹤檔 (show-trace) 時仍會使用到，可以透過下列指令來安裝 <strong><code>Microsoft.Playwright.CLI</code></strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool install --global Microsoft.Playwright.CLI</span><br></pre></td></tr></table></figure>
+<p>上述套件預設會被安裝到目前的使用者範圍內的 .NET 全局工具路徑中，具體安裝位置會因作業系統而異：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Windows</span><br><span class="line">C:\Users\&lt;你的用戶名&gt;\.dotnet\tools\</span><br><span class="line"></span><br><span class="line">Linux / macOS</span><br><span class="line">/home/&lt;你的用戶名&gt;/.dotnet/tools/</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-03.png"
+                        class=""
+                 >
+<p>我們可以直接開啟目錄確認工具是否安裝成功，或是使用以下指令來列出所有安裝的 .NET 工具：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool list --global</span><br></pre></td></tr></table></figure>
+<p>例：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Package Id                    Version      Commands</span><br><span class="line">-----------------------------------------------------</span><br><span class="line">dotnet-ef                     8.0.8        dotnet-ef</span><br><span class="line">microsoft.playwright.cli      1.2.3        playwright</span><br></pre></td></tr></table></figure>
+<h2 id="移除-Playwright-CLI">移除 Playwright CLI</h2>
+<p>若需要移除已安裝的套件，可以使用下列指令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dotnet tool uninstall microsoft.playwright.cli</span><br></pre></td></tr></table></figure>
+<h2 id="安裝-Playwright-支援的瀏覽器">安裝 Playwright 支援的瀏覽器</h2>
+<p>Playwright 支援 Chromium、WebKit 和 Firefox 瀏覽器，我們可以使用 <strong>playwright install</strong> 指令來安裝預設瀏覽器，這個動作會將瀏覽器安裝到 <strong><mark>%LOCALAPPDATA%\ms-playwright</mark></strong> 目錄下，若想要自訂安裝的項目，可以透過 <strong>playwright help install</strong> 來瞭解所有的選項。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright install</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-04.png"
+                        class=""
+                 >
+<br>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">playwright help install</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-1/cli-05.png"
+                        class=""
+                 >
+<h2 id="小試身手">小試身手</h2>
+<p>以上 Playwright 環境設定都完成後，我們就可以直接用官網的第一個範例來小試身手：</p>
+<ul>
+<li>
+<p><code>HasTitle()</code><br>
+打開 Playwright 官方網站，檢查網站的標題是否包含特定的字串，確認網頁標題中是否包含 “Playwright” 這個字。</p>
+</li>
+<li>
+<p><code>GetStartedLink()</code><br>
+一樣是打開 Playwright 官方網站，點擊一個名為 “Get started” 的連結，然後檢查點擊後的頁面是否有一個名為 “Installation” 的標題，以確保連結正確導向到預期的頁面。</p>
+</li>
+</ul>
+<p>大家應該不難發現 Playwright 的程式碼很直覺易讀，通常也不太需要夾雜 CSS class 或 style 來尋找定位網頁上的元素，除此之外還提供了豐富的 API 來進行各種操作，如：點擊、輸入文字、截圖等，之後再陸續向大家介紹各項重點特色，希望大家也都能快速上手 Playwright，並在日常開發中提升測試效率與程式碼品質。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Text.RegularExpressions;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright;</span><br><span class="line"><span class="keyword">using</span> Microsoft.Playwright.MSTest;</span><br><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">PlaywrightTests</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ExampleTest</span> : <span class="title">PageTest</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">HasTitle</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expect a title &quot;to contain&quot; a substring.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page).ToHaveTitleAsync(<span class="keyword">new</span> Regex(<span class="string">&quot;Playwright&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">GetStartedLink</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> Page.GotoAsync(<span class="string">&quot;https://playwright.dev&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Click the get started link.</span></span><br><span class="line">        <span class="keyword">await</span> Page.GetByRole(AriaRole.Link, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Get started&quot;</span> &#125;).ClickAsync();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Expects page to have a heading with the name of Installation.</span></span><br><span class="line">        <span class="keyword">await</span> Expect(Page.GetByRole(AriaRole.Heading, <span class="keyword">new</span>() &#123; Name = <span class="string">&quot;Installation&quot;</span> &#125;)).ToBeVisibleAsync();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>Playwright</tag>
+        <tag>Unit Test</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>關於 MCP 的 Capability Negotiation</title>
+    <url>/post/2025/07/mcp-capability-negotiation/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/07/mcp-capability-negotiation/robot.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>在當前 AI 技術快速發展的時代，MCP (Model Context Protocol) 為大型語言模型帶來更多元且強大的擴展能力。透過 MCP 讓開發者能使 IDE 工具與語言模型自然結合，實現語意驅動的互動體驗。MCP 架構中包含 MCP Server、MCP Host 與 MCP Client 三大核心角色，彼此協同合作並透過能力協商（Capability Negotiation）機制，確保雙方能根據自身能力與需求，協調出最佳的功能組合與協作方式。本文將以<a href="/post/2025/06/azure-devops-mcp-server/">上一篇文章</a>為例，說明其背景運作流程。</p>
+<span id="more"></span>
+<br>
+<h2 id="Core-Components-核心組件">Core Components 核心組件</h2>
+<p>MCP 採用 client-host-server 的架構設計，其中一個 host 可以同時管理多個 client instance，並與 MCP Server 建立一對一的連線，藉此維持安全邊界並隔離各自的關注點。以 VSCode 安裝 GitHub Copilot Extension 並連接 Azure DevOps MCP Server 為例，VSCode 扮演 host 角色，而 GitHub Copilot 則是 client，而 Azure DevOps MCP Server 則是 server。每個 client 透過 host 啟動並與 server 進行能力協商，確保各自的功能與需求能被正確識別與協調，進而實現安全且高效的協作。</p>
+<p>正如 MCP 官方文件所示意的架構圖，我們可以在 VSCode 中透過 GitHub Copilot 與不同的模型進行互動。只要註冊並設定不同的 MCP Server，就能根據需求取得各式各樣的工具，進一步擴展大型語言模型的應用範圍與處理能力。目前要開發 MCP Server 的門檻已經大幅降低，在 Python / Node.js / Java / Kotlin / C# 都有很豐富的實作範例可以參考，可以參考下列整理連結。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/07/mcp-capability-negotiation/core_components.png"
+                        class=""
+                 >
+<br>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://modelcontextprotocol.io/quickstart/server"  target="_blank">⁍ Quickstart - For MCP Server Developers<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://github.com/modelcontextprotocol/csharp-sdk"  target="_blank">⁍ GitHub | csharp-sdk<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/ai/get-started-mcp"  target="_blank">⁍ 開始使用 .NET AI 和模型內容通訊協定<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/ai/quickstarts/build-mcp-server"  target="_blank">⁍ 使用 .NET 建立並連線到最小的 MCP 伺服器<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+<h2 id="Capability-Negotiation-能力協商">Capability Negotiation 能力協商</h2>
+<p>在 MCP 官方說明文件裡有一張關於 Capability Negotiation 的循序圖畫得很詳細，大家想要瞭解可以參考下方連結，這邊我就以上次的情境舉例：描述使用者透過 VSCode 及 GitHub Copilot 選擇使用 gpt-4o 模型，透過 Azure DevOps MCP Server 與 Azure DevOps Services 溝通，查詢組織專案列表的完整流程。大家可以先看一下循序圖中有哪些角色，再試著由上往下依序閱讀，完整說明在圖片下面。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://modelcontextprotocol.io/specification/2025-06-18/architecture#capability-negotiation"  target="_blank">⁍ MCP - Architecture | Capacity Negotiation<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+<br>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/07/mcp-capability-negotiation/capability_negotiation.png"
+                        class=""
+                 >
+<h3 id="角色說明">角色說明</h3>
+<ul>
+<li>User（使用者）：在 VSCode 輸入查詢指令的人。</li>
+<li>MCP Host（VSCode）：負責接收使用者指令，與其他元件溝通的 IDE 工具。</li>
+<li>MCP Client（GitHub Copilot）：協助分析指令、整合工具，並與 AI 互動的中介。</li>
+<li>gpt-4o：負責理解指令、產生工具操作建議與自然語言回應的 AI 模型。</li>
+<li>Azure DevOps MCP Server：負責與 Azure DevOps 溝通的 MCP 伺服器。</li>
+<li>Azure DevOps：實際儲存專案資料的雲端平台 (Azure DevOps Services)。</li>
+</ul>
+<h3 id="步驟流程說明">步驟流程說明</h3>
+<h4 id="1-建立工具清單（首次連線時）">1. 建立工具清單（首次連線時）</h4>
+<ul>
+<li>MCP Client 會先建立一份工具清單（例如：有哪些查詢指令可用），並把這些資訊傳給 gpt-4o。</li>
+<li>gpt-4o 準備好解析工具需求，回傳每個工具的詳細資料（名稱、參數、用途等）給 MCP Client。</li>
+<li>MCP Client 把這些工具相關資料暫存下來，方便後續使用。</li>
+</ul>
+<h4 id="2-使用者輸入查詢">2. 使用者輸入查詢</h4>
+<ul>
+<li>User 在 VSCode 輸入像「組織有哪些專案？」這樣的問題。</li>
+<li>MCP Host 把這個問題傳給 MCP Client。</li>
+</ul>
+<h4 id="3-問題分析與轉換">3. 問題分析與轉換</h4>
+<ul>
+<li>MCP Client 將指令及上下文資訊傳送給 gpt-4o。</li>
+<li>gpt-4o 解析後發現需要查詢 Azure DevOps 的資料，於是產生對應的 MCP 指令（例如 list_projects）。</li>
+</ul>
+<h4 id="4-發送查詢請求">4. 發送查詢請求</h4>
+<ul>
+<li>MCP Client 把 list_projects 的請求發送給 MCP Host。</li>
+<li>MCP Host 再把這個請求傳給 MCP Server。</li>
+</ul>
+<h4 id="5-與-Azure-DevOps-溝通">5. 與 Azure DevOps 溝通</h4>
+<ul>
+<li>MCP Server 收到請求後，轉換成 Azure DevOps 的 REST API 呼叫。</li>
+<li>Azure DevOps 回傳專案列表資料給 MCP Server。</li>
+</ul>
+<h4 id="6-結果回傳與整合">6. 結果回傳與整合</h4>
+<ul>
+<li>MCP Server 將查詢結果回傳給 MCP Host。</li>
+<li>MCP Host 把結果傳給 MCP Client。</li>
+<li>MCP Client 整合資料，並將查詢結果及相關內容傳給 gpt-4o。</li>
+</ul>
+<h4 id="7-生成自然語言回應">7. 生成自然語言回應</h4>
+<ul>
+<li>gpt-4o 把查詢到的專案資料，轉換成自然語言答案。</li>
+<li>MCP Client 將這個答案封裝好，傳回 MCP Host。</li>
+<li>MCP Host 最後把結果顯示在 VSCode 介面上，讓 User 看到。</li>
+</ul>
+<p>整個流程就是：</p>
+<p><mark>使用者發問 → VSCode 接收 → GitHub Copilot 分析 → gpt-4o 理解並產生查詢指令 → Azure DevOps 查詢 → 回傳結果 → gpt-4o 產生易懂的自然語言回應 → 顯示在 VSCode</mark><br>
+每個角色都扮演特定溝通橋樑，確保使用者的問題能被正確理解並得到回覆。</p>
+<h2 id="總結">總結</h2>
+<p>MCP 的能力協商機制讓各個元件能根據自身特性協調最佳合作方式，確保安全、彈性與高效的互動體驗。透過明確的角色分工與標準化流程，開發者能更容易串接多元工具與服務，擴展 AI 應用場景。未來隨著 MCP 生態系持續發展，將有助於推動語意驅動開發與 AI 協作的普及。</p>
+]]></content>
+      <tags>
+        <tag>MCP</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MSTest 生命週期與常用屬性</title>
     <url>/post/2025/04/mstest-attribute-lifecycle/</url>
     <content><![CDATA[<img    
@@ -2750,225 +2758,6 @@ Rollup 欄位會顯示最近一次成功計算的資料與時間戳記，即使 
 </div>]]></content>
       <tags>
         <tag>MSTest</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Azure Pipelines Agents 代理程式</title>
-    <url>/post/2025/06/update-azure-pipelines-agents/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/06/update-azure-pipelines-agents/azure_pipelines_agents.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>Azure Pipelines Agents 是現代 DevOps 流程中不可或缺的基礎組件。隨著企業加速數位轉型，持續整合（CI）與持續交付（CD）成為團隊自動化建置、測試與部署的重要手段。Azure Pipelines 做為 Azure DevOps 的核心服務之一，透過代理程式（Agent）來執行各式自動化工作。無論是雲端託管或自我託管，代理程式皆負責與 Azure DevOps Server 或 Azure DevOps Services 溝通，協助團隊將程式碼快速且安全地部署至各種環境。近年來，隨著代理程式版本的演進，功能與安全性也大幅提升，特別是在 3.x 與 4.x 之間有諸多關鍵差異，本文將介紹 Azure Pipelines Agents 的基本概念、版本比較、更新方式與工作目錄結構。<br>
-<br></p>
-<span id="more"></span>
-<br>
-<h2 id="什麼是-Azure-Pipelines-Agents">什麼是 Azure Pipelines Agents</h2>
-<p>Azure Pipelines Agents 代理程式是負責執行 Azure Pipelines 工作（如建置、測試、部署）的運算節點。當您在 Azure DevOps 中建立 CI/CD 流程時，實際負責操作指令、拉取程式碼、執行腳本與產生建置產物的，就是這些代理程式。</p>
-<p><strong>代理程式類型：</strong></p>
-<ul>
-<li><strong>Microsoft-Hosted</strong>：由微軟提供與維護，適合雲端開發。</li>
-<li><strong>Self-Hosted</strong>：由使用者自行安裝於 VM、實體機或容器，適合需要存取內部資源或自訂環境的需求。</li>
-<li><strong>Managed DevOps Pool</strong>：Azure 提供的完全受控虛擬機或容器資源。</li>
-<li><strong>Azure Virtual Machine Scale Sets</strong>：可自動擴展的自我託管代理程式，適合彈性需求。</li>
-</ul>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/06/update-azure-pipelines-agents/agent-topologies-tfs.png"
-                        class=""
-                 >
-<p>不論是使用 Azure DevOps Services 或是自建 Azure DevOps Server，代理程式都是使用 HTTPS(443) 來進行下載作業、回報狀態，並確保敏感資訊透過加密方式傳輸。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/managed-devops-pools/architecture-overview?view=azure-devops"  target="_blank">⁍ Microsoft受控 DevOps 集區架構概觀
-<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/virtual-machine-scale-sets/overview"  target="_blank">⁍ 什麼是虛擬機器擴展集<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/managed-devops-pools/migrate-from-scale-set-agents?view=azure-devops"  target="_blank">⁍ 比較管理的 DevOps 群組與 Azure 虛擴展集的代理<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<br>
-<h2 id="Azure-Pipelines-2-x、3-x、4-x-版本差異比較">Azure Pipelines 2.x、3.x、4.x 版本差異比較</h2>
-<p>根據官方文件，Azure Pipelines Agents 2.x、3.x 與 4.x 版本在底層平台、作業系統支援範圍、安全性、升級策略等多方面皆有顯著差異。以下整理三個版本的主要比較：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">項目</th>
-<th style="text-align:left">2.x 代理程式</th>
-<th style="text-align:left">3.x 代理程式</th>
-<th style="text-align:left">4.x 代理程式</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">核心平台</td>
-<td style="text-align:left">.NET Core 3.1</td>
-<td style="text-align:left">.NET 6</td>
-<td style="text-align:left">.NET 8</td>
-</tr>
-<tr>
-<td style="text-align:left">發行時間</td>
-<td style="text-align:left">2021 年以前</td>
-<td style="text-align:left">2023 年 3 月</td>
-<td style="text-align:left">2024 年 10 月</td>
-</tr>
-<tr>
-<td style="text-align:left">作業系統支援</td>
-<td style="text-align:left">支援較舊的作業系統</td>
-<td style="text-align:left">支援較新 OS，淘汰部分舊版</td>
-<td style="text-align:left">僅支援最新 OS，淘汰更多舊版</td>
-</tr>
-<tr>
-<td style="text-align:left">主要支援 OS</td>
-<td style="text-align:left">Windows 7/8.1、舊版 Linux</td>
-<td style="text-align:left">Windows 10/11、Ubuntu 18+</td>
-<td style="text-align:left">Windows 10/11、Ubuntu 20+</td>
-</tr>
-<tr>
-<td style="text-align:left">macOS 支援</td>
-<td style="text-align:left">macOS 10.15 及以上</td>
-<td style="text-align:left">macOS 10.15~14 (含 ARM64)</td>
-<td style="text-align:left">macOS 13~15 (含 ARM64)</td>
-</tr>
-<tr>
-<td style="text-align:left">Linux 支援</td>
-<td style="text-align:left">舊版 Linux (Debian 10 等)</td>
-<td style="text-align:left">Debian 10+、Ubuntu 16+</td>
-<td style="text-align:left">Debian 12、Ubuntu 20+</td>
-</tr>
-<tr>
-<td style="text-align:left">安全性維護</td>
-<td style="text-align:left">僅針對重大問題個案處理</td>
-<td style="text-align:left">僅針對 3.x 修補</td>
-<td style="text-align:left">僅針對 4.x 修補</td>
-</tr>
-<tr>
-<td style="text-align:left">依賴平台</td>
-<td style="text-align:left">需安裝 .NET Core 3.1</td>
-<td style="text-align:left">.NET 6 已內建於代理程式中</td>
-<td style="text-align:left">.NET 8 已內建於代理程式中</td>
-</tr>
-</tbody>
-</table>
-<h3 id="升級與相容性注意事項">升級與相容性注意事項</h3>
-<p>2.x、3.x、4.x 代理程式的主要差異在於底層 .NET 平台、支援的作業系統範圍、相容性與維護策略，若代理程式執行於不支援的作業系統，將無法升級至新版，且執行管線時會出現錯誤提示，需先升級作業系統才能繼續。每一代代理程式僅針對自身版本進行安全性修補，建議維運團隊定期檢查代理程式與作業系統版本，確保 DevOps 流程穩定且安全。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/pipelines/agents/agents?view=azure-devops-2022&tabs=yaml%2Cbrowser#can-i-update-my-agents-that-are-part-of-an-azure-devops-server-pool"  target="_blank">⁍ Azure Pipelines 代理程式<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/pipelines/agents/v3-agent?view=azure-devops"  target="_blank">⁍ 代理程式軟體第 3 版<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/pipelines/agents/v4-agent?view=azure-devops#upgrade-to-4x-agent-on-supported-operating-systems"  target="_blank">⁍ 代理程式軟體第 4 版<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<br>
-<h2 id="Azure-DevOps-Server-更新代理程式來源方式">Azure DevOps Server 更新代理程式來源方式</h2>
-<p>若您在地端環境 Azure DevOps Server 中管理 Self-Hosted Agent，除了透過網路自動更新外，也可以手動指定代理程式的安裝來源。只需將新版代理程式的壓縮檔（.zip）放置於伺服器的 <strong><code>%ProgramData%\Microsoft\Azure DevOps\Agents</code></strong> 目錄內，代理程式便會自動從該路徑取得更新檔案（如下圖 4.258.1）；若將目錄中的檔案清空，則會顯示目前 Azure DevOps Server 預設的下載版本，例如：Azure DevOps Server 2022.2 預設版本是 3.240.0。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/06/update-azure-pipelines-agents/agents_folder.png"
-                        class=""
-                 >
-<br>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/06/update-azure-pipelines-agents/get_the_agent.png"
-                        class=""
-                 >
-<blockquote>
-<p>若要更新 Azure DevOps Server 的代理程式，請將新版本壓縮檔放到 <mark><strong>%ProgramData%\Microsoft\Azure DevOps\Agents</strong></mark> 資料夾，代理程式會自動偵測並完成更新</p>
-</blockquote>
-<p>關於 Azure Pipelines Agent 發行過的所有版本都可以在 GitHub 的 Release 紀錄中找到，可以參考下列連結。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://github.com/microsoft/azure-pipelines-agent/releases"  target="_blank">⁍ GitHub | Azure Pipelines Agent 🚀<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<br>
-<h2 id="Azure-Pipelines-Agents-工作目錄結構">Azure Pipelines Agents 工作目錄結構</h2>
-<p>代理程式在執行 pipeline 作業時，會建立一套標準化的目錄結構，用於儲存原始碼、建置產物、測試結果等資料。以下為主要目錄說明：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">目錄名稱</th>
-<th style="text-align:left">說明</th>
-<th style="text-align:left">範例（Windows）</th>
-<th style="text-align:left">預設變數</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">代理主目錄</td>
-<td style="text-align:left">代理程式安裝位置</td>
-<td style="text-align:left"><strong><mark>C:\agent</mark></strong></td>
-<td style="text-align:left">Agent.HomeDirectory</td>
-</tr>
-<tr>
-<td style="text-align:left">工作目錄</td>
-<td style="text-align:left">儲存原始碼、建置產物、專案等</td>
-<td style="text-align:left">C:\agent\ <strong><mark>_work</mark></strong></td>
-<td style="text-align:left">Agent.WorkFolder</td>
-</tr>
-<tr>
-<td style="text-align:left">建置目錄/工作區</td>
-<td style="text-align:left">管線作業執行位置</td>
-<td style="text-align:left">C:\agent_work\ <strong><mark>1</mark></strong></td>
-<td style="text-align:left">Agent.BuildDirectory</td>
-</tr>
-<tr>
-<td style="text-align:left">s 目錄</td>
-<td style="text-align:left">檢出後的原始碼目錄</td>
-<td style="text-align:left">C:\agent_work\1\ <strong><mark>s</mark></strong></td>
-<td style="text-align:left">Build.SourcesDirectory</td>
-</tr>
-<tr>
-<td style="text-align:left">b 目錄</td>
-<td style="text-align:left">建置產物目錄</td>
-<td style="text-align:left">C:\agent_work\1\ <strong><mark>b</mark></strong></td>
-<td style="text-align:left">Build.BinariesDirectory</td>
-</tr>
-<tr>
-<td style="text-align:left">a 目錄</td>
-<td style="text-align:left">工件暫存目錄</td>
-<td style="text-align:left">C:\agent_work\1\ <strong><mark>a</mark></strong></td>
-<td style="text-align:left">Build.StagingDirectory</td>
-</tr>
-<tr>
-<td style="text-align:left">TestResults</td>
-<td style="text-align:left">測試結果目錄</td>
-<td style="text-align:left">C:\agent_work\1\ <strong><mark>TestResults</mark></strong></td>
-<td style="text-align:left">Common.TestResultsDirectory</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li><strong>代理主目錄</strong>：安裝代理程式的根目錄。</li>
-<li><strong>工作目錄</strong>：所有作業的儲存空間，會依每次執行建立子目錄。</li>
-<li><strong>建置/工作區目錄</strong>：每次 pipeline 執行時的專屬目錄。</li>
-<li><strong>s/b/a/TestResults</strong>：分別對應原始碼、建置產物、工件暫存與測試結果。</li>
-</ul>
-<p>在 Self-Hosted 執行環境，這些目錄會在每次執行間保留，僅暫存與測試結果目錄會自動清理；若為 Microsoft-Hosted 則每次皆為全新環境，瞭解各目錄的用途與預設變數名稱對於後續的 pipeline 撰寫有很大的助益，在 Azure Pipelines 中預先定義的變數可以參考下列連結。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml"  target="_blank">⁍ 使用預先定義的變數<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<br>
-<h2 id="結語">結語</h2>
-<p>Azure Pipelines Agents 是實現現代 DevOps 流程的關鍵，無論是雲端或地端部署，選擇合適的代理程式版本與管理方式，能大幅提升自動化流程的安全性與效率，維運團隊可以持續關注代理程式版本更新，並善用官方提供的更新機制，打造穩健且高效的 CI/CD 環境。</p>
-<h2 id="後續更新">後續更新</h2>
-<p>今天剛好有客戶詢問如何更新 Azure Pipelines Agent 版本，實務上如前文所述，只需先從 GitHub 下載所需的代理程式版本，放到 Azure DevOps Server 指定的資料夾，接著在 Web 介面點選 <strong><code>Update all agents</code></strong> 按鈕，即可批次更新指定 pool 內所有狀態為 Online 的 Agent。整個更新過程無需停機，Agent 會自動收到更新指令、下載並安裝新版本，完成後會自動重啟服務（大約僅離線 10 秒），即可輕鬆完成批次更新作業。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/06/update-azure-pipelines-agents/update_agent.png"
-                        class=""
-                 >]]></content>
-      <tags>
-        <tag>Azure DevOps</tag>
-        <tag>Azure Pipelines Agents</tag>
       </tags>
   </entry>
   <entry>
@@ -3358,6 +3147,225 @@ Rollup 欄位會顯示最近一次成功計算的資料與時間戳記，即使 
       <tags>
         <tag>GitHub Copilot</tag>
         <tag>VSCode</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Azure Pipelines Agents 代理程式</title>
+    <url>/post/2025/06/update-azure-pipelines-agents/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/06/update-azure-pipelines-agents/azure_pipelines_agents.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>Azure Pipelines Agents 是現代 DevOps 流程中不可或缺的基礎組件。隨著企業加速數位轉型，持續整合（CI）與持續交付（CD）成為團隊自動化建置、測試與部署的重要手段。Azure Pipelines 做為 Azure DevOps 的核心服務之一，透過代理程式（Agent）來執行各式自動化工作。無論是雲端託管或自我託管，代理程式皆負責與 Azure DevOps Server 或 Azure DevOps Services 溝通，協助團隊將程式碼快速且安全地部署至各種環境。近年來，隨著代理程式版本的演進，功能與安全性也大幅提升，特別是在 3.x 與 4.x 之間有諸多關鍵差異，本文將介紹 Azure Pipelines Agents 的基本概念、版本比較、更新方式與工作目錄結構。<br>
+<br></p>
+<span id="more"></span>
+<br>
+<h2 id="什麼是-Azure-Pipelines-Agents">什麼是 Azure Pipelines Agents</h2>
+<p>Azure Pipelines Agents 代理程式是負責執行 Azure Pipelines 工作（如建置、測試、部署）的運算節點。當您在 Azure DevOps 中建立 CI/CD 流程時，實際負責操作指令、拉取程式碼、執行腳本與產生建置產物的，就是這些代理程式。</p>
+<p><strong>代理程式類型：</strong></p>
+<ul>
+<li><strong>Microsoft-Hosted</strong>：由微軟提供與維護，適合雲端開發。</li>
+<li><strong>Self-Hosted</strong>：由使用者自行安裝於 VM、實體機或容器，適合需要存取內部資源或自訂環境的需求。</li>
+<li><strong>Managed DevOps Pool</strong>：Azure 提供的完全受控虛擬機或容器資源。</li>
+<li><strong>Azure Virtual Machine Scale Sets</strong>：可自動擴展的自我託管代理程式，適合彈性需求。</li>
+</ul>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/06/update-azure-pipelines-agents/agent-topologies-tfs.png"
+                        class=""
+                 >
+<p>不論是使用 Azure DevOps Services 或是自建 Azure DevOps Server，代理程式都是使用 HTTPS(443) 來進行下載作業、回報狀態，並確保敏感資訊透過加密方式傳輸。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/managed-devops-pools/architecture-overview?view=azure-devops"  target="_blank">⁍ Microsoft受控 DevOps 集區架構概觀
+<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/virtual-machine-scale-sets/overview"  target="_blank">⁍ 什麼是虛擬機器擴展集<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/managed-devops-pools/migrate-from-scale-set-agents?view=azure-devops"  target="_blank">⁍ 比較管理的 DevOps 群組與 Azure 虛擴展集的代理<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<br>
+<h2 id="Azure-Pipelines-2-x、3-x、4-x-版本差異比較">Azure Pipelines 2.x、3.x、4.x 版本差異比較</h2>
+<p>根據官方文件，Azure Pipelines Agents 2.x、3.x 與 4.x 版本在底層平台、作業系統支援範圍、安全性、升級策略等多方面皆有顯著差異。以下整理三個版本的主要比較：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">項目</th>
+<th style="text-align:left">2.x 代理程式</th>
+<th style="text-align:left">3.x 代理程式</th>
+<th style="text-align:left">4.x 代理程式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">核心平台</td>
+<td style="text-align:left">.NET Core 3.1</td>
+<td style="text-align:left">.NET 6</td>
+<td style="text-align:left">.NET 8</td>
+</tr>
+<tr>
+<td style="text-align:left">發行時間</td>
+<td style="text-align:left">2021 年以前</td>
+<td style="text-align:left">2023 年 3 月</td>
+<td style="text-align:left">2024 年 10 月</td>
+</tr>
+<tr>
+<td style="text-align:left">作業系統支援</td>
+<td style="text-align:left">支援較舊的作業系統</td>
+<td style="text-align:left">支援較新 OS，淘汰部分舊版</td>
+<td style="text-align:left">僅支援最新 OS，淘汰更多舊版</td>
+</tr>
+<tr>
+<td style="text-align:left">主要支援 OS</td>
+<td style="text-align:left">Windows 7/8.1、舊版 Linux</td>
+<td style="text-align:left">Windows 10/11、Ubuntu 18+</td>
+<td style="text-align:left">Windows 10/11、Ubuntu 20+</td>
+</tr>
+<tr>
+<td style="text-align:left">macOS 支援</td>
+<td style="text-align:left">macOS 10.15 及以上</td>
+<td style="text-align:left">macOS 10.15~14 (含 ARM64)</td>
+<td style="text-align:left">macOS 13~15 (含 ARM64)</td>
+</tr>
+<tr>
+<td style="text-align:left">Linux 支援</td>
+<td style="text-align:left">舊版 Linux (Debian 10 等)</td>
+<td style="text-align:left">Debian 10+、Ubuntu 16+</td>
+<td style="text-align:left">Debian 12、Ubuntu 20+</td>
+</tr>
+<tr>
+<td style="text-align:left">安全性維護</td>
+<td style="text-align:left">僅針對重大問題個案處理</td>
+<td style="text-align:left">僅針對 3.x 修補</td>
+<td style="text-align:left">僅針對 4.x 修補</td>
+</tr>
+<tr>
+<td style="text-align:left">依賴平台</td>
+<td style="text-align:left">需安裝 .NET Core 3.1</td>
+<td style="text-align:left">.NET 6 已內建於代理程式中</td>
+<td style="text-align:left">.NET 8 已內建於代理程式中</td>
+</tr>
+</tbody>
+</table>
+<h3 id="升級與相容性注意事項">升級與相容性注意事項</h3>
+<p>2.x、3.x、4.x 代理程式的主要差異在於底層 .NET 平台、支援的作業系統範圍、相容性與維護策略，若代理程式執行於不支援的作業系統，將無法升級至新版，且執行管線時會出現錯誤提示，需先升級作業系統才能繼續。每一代代理程式僅針對自身版本進行安全性修補，建議維運團隊定期檢查代理程式與作業系統版本，確保 DevOps 流程穩定且安全。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/pipelines/agents/agents?view=azure-devops-2022&tabs=yaml%2Cbrowser#can-i-update-my-agents-that-are-part-of-an-azure-devops-server-pool"  target="_blank">⁍ Azure Pipelines 代理程式<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/pipelines/agents/v3-agent?view=azure-devops"  target="_blank">⁍ 代理程式軟體第 3 版<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/pipelines/agents/v4-agent?view=azure-devops#upgrade-to-4x-agent-on-supported-operating-systems"  target="_blank">⁍ 代理程式軟體第 4 版<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<br>
+<h2 id="Azure-DevOps-Server-更新代理程式來源方式">Azure DevOps Server 更新代理程式來源方式</h2>
+<p>若您在地端環境 Azure DevOps Server 中管理 Self-Hosted Agent，除了透過網路自動更新外，也可以手動指定代理程式的安裝來源。只需將新版代理程式的壓縮檔（.zip）放置於伺服器的 <strong><code>%ProgramData%\Microsoft\Azure DevOps\Agents</code></strong> 目錄內，代理程式便會自動從該路徑取得更新檔案（如下圖 4.258.1）；若將目錄中的檔案清空，則會顯示目前 Azure DevOps Server 預設的下載版本，例如：Azure DevOps Server 2022.2 預設版本是 3.240.0。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/06/update-azure-pipelines-agents/agents_folder.png"
+                        class=""
+                 >
+<br>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/06/update-azure-pipelines-agents/get_the_agent.png"
+                        class=""
+                 >
+<blockquote>
+<p>若要更新 Azure DevOps Server 的代理程式，請將新版本壓縮檔放到 <mark><strong>%ProgramData%\Microsoft\Azure DevOps\Agents</strong></mark> 資料夾，代理程式會自動偵測並完成更新</p>
+</blockquote>
+<p>關於 Azure Pipelines Agent 發行過的所有版本都可以在 GitHub 的 Release 紀錄中找到，可以參考下列連結。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://github.com/microsoft/azure-pipelines-agent/releases"  target="_blank">⁍ GitHub | Azure Pipelines Agent 🚀<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<br>
+<h2 id="Azure-Pipelines-Agents-工作目錄結構">Azure Pipelines Agents 工作目錄結構</h2>
+<p>代理程式在執行 pipeline 作業時，會建立一套標準化的目錄結構，用於儲存原始碼、建置產物、測試結果等資料。以下為主要目錄說明：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">目錄名稱</th>
+<th style="text-align:left">說明</th>
+<th style="text-align:left">範例（Windows）</th>
+<th style="text-align:left">預設變數</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">代理主目錄</td>
+<td style="text-align:left">代理程式安裝位置</td>
+<td style="text-align:left"><strong><mark>C:\agent</mark></strong></td>
+<td style="text-align:left">Agent.HomeDirectory</td>
+</tr>
+<tr>
+<td style="text-align:left">工作目錄</td>
+<td style="text-align:left">儲存原始碼、建置產物、專案等</td>
+<td style="text-align:left">C:\agent\ <strong><mark>_work</mark></strong></td>
+<td style="text-align:left">Agent.WorkFolder</td>
+</tr>
+<tr>
+<td style="text-align:left">建置目錄/工作區</td>
+<td style="text-align:left">管線作業執行位置</td>
+<td style="text-align:left">C:\agent_work\ <strong><mark>1</mark></strong></td>
+<td style="text-align:left">Agent.BuildDirectory</td>
+</tr>
+<tr>
+<td style="text-align:left">s 目錄</td>
+<td style="text-align:left">檢出後的原始碼目錄</td>
+<td style="text-align:left">C:\agent_work\1\ <strong><mark>s</mark></strong></td>
+<td style="text-align:left">Build.SourcesDirectory</td>
+</tr>
+<tr>
+<td style="text-align:left">b 目錄</td>
+<td style="text-align:left">建置產物目錄</td>
+<td style="text-align:left">C:\agent_work\1\ <strong><mark>b</mark></strong></td>
+<td style="text-align:left">Build.BinariesDirectory</td>
+</tr>
+<tr>
+<td style="text-align:left">a 目錄</td>
+<td style="text-align:left">工件暫存目錄</td>
+<td style="text-align:left">C:\agent_work\1\ <strong><mark>a</mark></strong></td>
+<td style="text-align:left">Build.StagingDirectory</td>
+</tr>
+<tr>
+<td style="text-align:left">TestResults</td>
+<td style="text-align:left">測試結果目錄</td>
+<td style="text-align:left">C:\agent_work\1\ <strong><mark>TestResults</mark></strong></td>
+<td style="text-align:left">Common.TestResultsDirectory</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>代理主目錄</strong>：安裝代理程式的根目錄。</li>
+<li><strong>工作目錄</strong>：所有作業的儲存空間，會依每次執行建立子目錄。</li>
+<li><strong>建置/工作區目錄</strong>：每次 pipeline 執行時的專屬目錄。</li>
+<li><strong>s/b/a/TestResults</strong>：分別對應原始碼、建置產物、工件暫存與測試結果。</li>
+</ul>
+<p>在 Self-Hosted 執行環境，這些目錄會在每次執行間保留，僅暫存與測試結果目錄會自動清理；若為 Microsoft-Hosted 則每次皆為全新環境，瞭解各目錄的用途與預設變數名稱對於後續的 pipeline 撰寫有很大的助益，在 Azure Pipelines 中預先定義的變數可以參考下列連結。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml"  target="_blank">⁍ 使用預先定義的變數<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<br>
+<h2 id="結語">結語</h2>
+<p>Azure Pipelines Agents 是實現現代 DevOps 流程的關鍵，無論是雲端或地端部署，選擇合適的代理程式版本與管理方式，能大幅提升自動化流程的安全性與效率，維運團隊可以持續關注代理程式版本更新，並善用官方提供的更新機制，打造穩健且高效的 CI/CD 環境。</p>
+<h2 id="後續更新">後續更新</h2>
+<p>今天剛好有客戶詢問如何更新 Azure Pipelines Agent 版本，實務上如前文所述，只需先從 GitHub 下載所需的代理程式版本，放到 Azure DevOps Server 指定的資料夾，接著在 Web 介面點選 <strong><code>Update all agents</code></strong> 按鈕，即可批次更新指定 pool 內所有狀態為 Online 的 Agent。整個更新過程無需停機，Agent 會自動收到更新指令、下載並安裝新版本，完成後會自動重啟服務（大約僅離線 10 秒），即可輕鬆完成批次更新作業。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/06/update-azure-pipelines-agents/update_agent.png"
+                        class=""
+                 >]]></content>
+      <tags>
+        <tag>Azure DevOps</tag>
+        <tag>Azure Pipelines Agents</tag>
       </tags>
   </entry>
 </search>
