@@ -692,241 +692,86 @@
       </tags>
   </entry>
   <entry>
-    <title>Azure DevOps REST API 說明</title>
-    <url>/post/2025/04/azure-devops-rest-api/</url>
+    <title>Azure DevOps Services / Server 使用者授權</title>
+    <url>/post/2025/04/azure-devops-licensing-description/</url>
     <content><![CDATA[<img    
                        lazyload
                        alt="image"
-                       data-src="/post/2025/04/azure-devops-rest-api/rest_api.jpg"
+                       data-src="/post/2025/04/azure-devops-licensing-description/affliction512.jpg"
                          align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
                  > 
-<p>當我們要自行擴充或串接 Azure DevOps Services / Server 功能時，可以透過 Azure DevOps REST API 來進行客制開發，例如：想要寫一支程式每天發送各專案在版控儲存庫的差異紀錄，或是想要在公司內部表單系統審核後，觸發執行指定的 pipeline … 族繁不及備載，使用 REST API 透過 HTTP 呼叫的好處是可以不用侷限於特定的程式語言，也方便用 Postman 之類的工具測試，這篇整理了呼叫 Azure DevOps REST API 的前置作業與相關說明，方便大家上手😁。</p>
+<p>Azure DevOps 是一個可以讓我們有效管理軟體開發流程，同時維持良好團隊協作的強大平台，除了可以直接使用雲端 Azure DevOps Services，也可以在地端自建 Azure DevOps Server 讓企業內部環境也能提供相同的服務，但許多人遇到的第一個問題是如何購買授權才能讓成本效益最大化？這篇文章主要協助大家瞭解 Azure DevOps 在授權與定價上的內容。</p>
+<br>
 <span id="more"></span>
 <br>
-<h2 id="REST-API">REST API</h2>
-<p>使用 Azure DevOps REST API 時，其 URI 規格如下：</p>
-<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">VERB https://&#123;instance&#125;/&#123;organization&#125;/&#123;project&#125;/_apis/&#123;area&#125;/&#123;resource&#125;?api-version=&#123;version&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Azure-DevOps-Services">Azure DevOps Services</h2>
+<p>Azure DevOps 有五個主要功能：</p>
+<ol>
+<li><strong>Azure Boards</strong> (專案管理、看板管理、Scrum / Kanban、討論議題)</li>
+<li><strong>Azure Repos</strong> (程式碼版控 TFVC/git)</li>
+<li><strong>Azure Pipelines</strong> (自動化建置部署)</li>
+<li><strong>Azure Artifacts</strong> (套件管理、自建套件來源)</li>
+<li><strong>Azure Test Plans</strong> (建立與執行測試計劃)</li>
+</ol>
+<h3 id="Basic-Plan-與-Basic-Test-Plans">Basic Plan 與 Basic + Test Plans</h3>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-licensing-description/Basic_TestPlans.jpg"
+                        class=""
+                 >
+<p>在 Azure DevOps 定價頁面中的 <strong><code>Basic Plan</code></strong> 包含了前面四項功能，費用是 <strong>USD $6</strong> (每個人/月)，折合台幣就要看當月的匯率計算 (例如目前是 TWD <strong>$191</strong>)；一般來說，在專案團隊裡並不是每個成員都需要建立與管理測試計劃，所以 <strong>Azure Test Plans</strong> 這項功能額外被拆出來計價，若選擇 <strong><code>Basic + Test Plans</code></strong> 費用則是 <strong>USD $52</strong> (大約 TWD <strong>$1663</strong>)。</p>
+<h3 id="Stakeholder">Stakeholder</h3>
+<p>除了上述兩種存取層級(Access level)之外，還有一種是免費、可使用<mark>有限功能</mark>的 <strong><code>Stakeholder</code></strong>，比較簡單的來說，這個存取層級可以：</p>
 <ul>
-<li><strong>VERB</strong><br>
-與一般 RESTful API 相同，在串接 Azure DevOps 各種情境時， <strong><font color='green'>GET</font></strong> / <strong><font color='brown'>POST</font></strong> / <strong><font color='red'>DELETE</font></strong> / <strong><font color='purple'>PATCH</font></strong> 都有機會用到。</li>
-<li><strong>instance</strong><br>
-如果是使用雲端的 Azure DevOps Services 指的就是 <span>dev.azure.com</span>，地端則是 Azure DevOps Server 所在的位址。</li>
-<li><strong>organization/project</strong><br>
-取決於 API 作用的範圍，在 URI 裡會有 organization 或 organization/project，例如：使用 API 建立個人權杖 (PAT)，則會是：<br>
-<strong><font color='brown'>POST</font></strong> https://vssps.dev.azure.com/<mark>{organization}</mark>/_apis/tokens/pats?api-version=7.2<br>
-或者像是用 API 建立一個工作項目，則是：<br>
-<strong><font color='brown'>POST</font></strong> https://dev.azure.com/<mark>{organization}/{project}</mark>/_apis/wit/workitems/${type}?api-version=7.2</li>
-<li><strong>{area}/{resource}</strong><br>
-從這邊大概可以看出呼叫的 API 是做哪方面的操作，以上面兩個例子 (建立 PAT、建立 Work item) 來說：<br>
-<strong><font color='brown'>POST</font></strong> https://vssps.dev.azure.com/{organization}/_apis/<mark>tokens/pats</mark>?api-version=7.2<br>
-<strong><font color='brown'>POST</font></strong> https://dev.azure.com/{organization}/{project}/_apis/<mark>wit/workitems/${type}</mark>?api-version=7.2</li>
-<li><strong>version</strong><br>
-通常我們在串接 API 時會明確指定 version，因為每個 TFS / Azure DevOps 版本對於 API 支援的 api-version 也有所不同 (如下表)，如果不指定 api-version 則會自動選用目前產品最新的穩定版本，例如：在 Azure DevOps Server 2019 它會自動取用 5.0 來執行，在不加 api-version 的情況下，若日後升級到 Azure DevOps Server 2022，則會自動取用 7.0 來執行，為維持串接程式正常運作，不會因為 API 版本差異而造成異常，一般我們都會加上指定的 api-version 版號。</li>
+<li>建立 / 編輯 / 查詢工作項目</li>
+<li>檢視 / 核准 pipeline</li>
+<li>檢視測試計劃</li>
 </ul>
-<blockquote>
-<p>提醒大家：<br>
-如果是使用 preview 版本 (例如：<strong><code>7.2-preview.3</code></strong>)，該 preview 版本會在 <strong>12 週</strong> 後停用，被穩定的正式版本取代。</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>Products</th>
-<th style="text-align:center">1.0</th>
-<th style="text-align:center">2.0</th>
-<th style="text-align:center">3.0</th>
-<th style="text-align:center">4.0</th>
-<th style="text-align:center">5.0</th>
-<th style="text-align:center">6.0</th>
-<th style="text-align:center">7.0</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Azure DevOps Services</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-</tr>
-<tr>
-<td>Azure DevOps Server 2022</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-</tr>
-<tr>
-<td>Azure DevOps Server 2020</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Azure DevOps Server 2019</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Team Foundation Server 2018</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Team Foundation Server 2017</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Team Foundation Server 2015</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">V</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
-</tr>
-</tbody>
-</table>
-<h2 id="PAT-Personal-Access-Token">PAT (Personal Access Token)</h2>
-<p>要使用 Azure DevOps REST API 存取資源前都必需先經過驗證成功才行，建立 <strong><code>個人存取權杖 (PAT)</code></strong> 可以算是安全又簡便的方式，若想要實作 OAuth 2.0 或其他頁面驗證方式，可以參考下列連結：</p>
+<p>如同它的名稱一樣：想要瞭解專案資訊，但又不需要實際參與開發實作細節(例如：單位主管、使用單位…等)，就不用再額外採購授權，使用 <strong><code>Stakeholder</code></strong> 這個存取層級就行。若需要 <strong>程式碼版控</strong>、<strong>建立/編輯 pipeline</strong>、<strong>執行測試計劃</strong> 那就不用猶豫了，至少一定需要 <strong><code>Basic</code></strong> 存取層級才能使用，這些資訊可以參閱下列連結，利用頁面裡的幣別下拉選單、拖曳數量捲軸來即時檢視費用估算，頁面最後還有一個針對不同存取層級的功能比較表，方便大家查閱。</p>
 <div class="tips">
 <font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/get-started/authentication/authentication-guidance?toc=%2Fazure%2Fdevops%2Fmarketplace-extensibility%2Ftoc.json&view=azure-devops"  target="_blank">⁍ 選擇正確的驗證機制<i class="fas fa-external-link-alt"></i></a>
+<a class="link"   href="https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/"  target="_blank">⁍ Azure DevOps 定價<i class="fas fa-external-link-alt"></i></a>
+<br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/organizations/security/stakeholder-access?view=azure-devops"  target="_blank">⁍ 項目關係人存取快速參考<i class="fas fa-external-link-alt"></i></a>
 </font>
 </div>
-<p>要建立一個 PAT 可以從 Azure DevOps 畫面右上角 <strong><code>User settings</code></strong> → <strong><code>Personal access tokens</code></strong> 進入。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-rest-api/pat.png"
-                        class=""
-                 >
-<br>
-<p>點選 <strong><code>+ New Token</code></strong> 按鈕。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-rest-api/pat_1.png"
-                        class=""
-                 >
-<br>
-<p>接著就是 PAT 存取期限、授權範圍等相關設定：</p>
-<ul>
-<li><strong>Organization</strong><br>
-選擇 <strong>特定的 Organization</strong> 或 <strong>All accessible organizations</strong> (允許存取全部組織)。</li>
-<li><strong>Expiration (UTC)</strong><br>
-有效期限可以選擇 <strong>30 / 60 / 90 天</strong>，或是 <strong>Custom defined</strong> (<mark>最長只能一年</mark>)</li>
-<li><strong>Scopes</strong><br>
-可以選擇 <strong>Full access</strong> (允許存取全部範圍) 或 <strong>Custom defined</strong> 針對各個功能進一步設定，基於最低權限原則，建議大家可以有意義的命名 token 名稱，並且只勾選必要的 <strong>Scopes</strong> 授權範圍。</li>
-</ul>
-<p>建立 PAT 後，僅能 <strong><code>Revoke</code></strong> (撤銷) 或是 <strong><code>Regenerate</code></strong> (重新產生)，沒有辦法再用任何方式檢視原本產生的 token 內容，大家記得要妥善保存。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-rest-api/pat_2.png"
-                        class=""
-                 >
-<h2 id="NET-Client-Library">.NET Client Library</h2>
-<p>如果是使用 .NET 進行程式開發，還有一個選擇是從 NuGet.org 下載 Client library 使用，套件相依關係如下圖。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-rest-api/dotnet-client-libraries-dependancy-diagram.jpg"
-                        class=""
-                 >
-<br>
-<p>最新版本可以由 NuGet.org 查詢結果找到： https://www.nuget.org/packages?q=azure+devops+.net ，套件和 Azure DevOps 版本一樣有相依性， 使用前要留意一下目前環境的 TFS / Azure DevOps Server 版本，例如：Azure DevOps Server 2019 只能使用到套件 16.143.x 版。</p>
-<table>
-<thead>
-<tr>
-<th>套件版本</th>
-<th>Azure DevOps 版本</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>16.205.x</td>
-<td>versions &gt;= Azure DevOps Server 2022</td>
-</tr>
-<tr>
-<td>16.170.x</td>
-<td>versions &gt;= Azure DevOps Server 2020</td>
-</tr>
-<tr>
-<td>16.153.x</td>
-<td>versions &gt;= Azure DevOps Server 2019 Update 1</td>
-</tr>
-<tr>
-<td>16.143.x</td>
-<td>versions &gt;= Azure DevOps Server 2019</td>
-</tr>
-<tr>
-<td>15.131.x</td>
-<td>versions &gt;= TFS 2018 Update 1</td>
-</tr>
-<tr>
-<td>15.112.x</td>
-<td>versions &gt;= TFS 2017 Update 1</td>
-</tr>
-<tr>
-<td>14.102.x</td>
-<td>versions &gt;= TFS 2015 Update 3</td>
-</tr>
-<tr>
-<td>14.95.x</td>
-<td>versions &gt;= TFS 2015 Update 2</td>
-</tr>
-<tr>
-<td>14.89.x</td>
-<td>versions &gt;= TFS 2015 Update 1</td>
-</tr>
-<tr>
-<td>14.83.x</td>
-<td>versions &gt;= TFS 2015</td>
-</tr>
-</tbody>
-</table>
-<p>在實務開發上還是得花些時間先瞭解套件定義了哪些 class、提供了什麼 function，這部份可以參考官方說明和 github sample code，如果有特殊需求或環境考量需要使用的話，可以參考下列連結：</p>
+<h3 id="Visual-Studio-Subscription">Visual Studio Subscription</h3>
+<p>若目前已經具備 <strong>Visual Studio monthly subscription</strong> (注意：<mark>訂閱制</mark>才行)，它也包含了 Azure DevOps 的使用授權，基本上可以理解為：<strong>Visual Studio Professional monthly subscription</strong> 包含了 <strong><code>Basic Plan</code></strong>，而 <strong>Visual Studio Enterprise monthly subscription</strong> 包含了 <strong><code>Basic + Test Plans</code></strong>，詳細功能支援列表可以參考下列連結。</p>
 <div class="tips">
 <font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/concepts/dotnet-client-libraries?view=azure-devops&viewFallbackFrom=vsts"  target="_blank">⁍ .NET 用戶端程式庫<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/get-started/client-libraries/samples?view=azure-devops"  target="_blank">⁍ C# 用戶端連結庫範例<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://github.com/microsoft/azure-devops-dotnet-samples"  target="_blank">⁍ .NET samples for Azure DevOps<i class="fas fa-external-link-alt"></i></a>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/organizations/security/access-levels?view=azure-devops"  target="_blank">⁍ 關於存取層級<i class="fas fa-external-link-alt"></i></a>
+<br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=ms.vs-professional-monthly"  target="_blank">⁍ Visual Studio Professional monthly subscription<i class="fas fa-external-link-alt"></i></a>
+<br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=ms.vs-enterprise-monthly"  target="_blank">⁍ Visual Studio Enterprise monthly subscription<i class="fas fa-external-link-alt"></i></a>
 </font>
 </div>
-<p>(💁 看完上面連結內容有沒有覺得還是使用 REST API 比較方便 💖)</p>
+<h2 id="Azure-DevOps-Server">Azure DevOps Server</h2>
+<p>要在地端環境自建 Azure DevOps Server 則需要先準備好 SQL Server 環境，兩者在版本上有相依性，例如：Azure DevOps Server 2022 需要搭配 SQL Server 2019 以上 (不支援 Linux 上的 SQL Server)，其他版本與相關需求建議可以參考下列連結。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/server/requirements?view=azure-devops-2022"  target="_blank">⁍ Azure DevOps 內部部署的需求<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<p>以授權的概念來說，安裝幾台 Azure DevOps Server 就需要幾個 Server CAL，可以透過下列幾種方式取得合法授權：</p>
+<ul>
+<li>傳統購買 (<mark>3年SA</mark>) Azure DevOps <mark>Server</mark> CAL</li>
+<li>Visual Studio Professional / Enterprise monthly subscription (包含 Azure DevOps Server CAL)</li>
+</ul>
+<br>
+<p>地端的使用者授權可以由下列幾種方式取得合法授權：</p>
+<ul>
+<li>傳統購買 (<mark>3年SA</mark>) Azure DevOps User CAL (包含 <strong><code>Basic + Test Plans</code></strong> 所有功能)</li>
+<li>Visual Studio Professional / Enterprise monthly subscription (包含 Azure DevOps <mark>User</mark> CAL)</li>
+<li>Azure DevOps <strong><code>Basic</code></strong> 或 <strong><code>Basic + Test Plans</code></strong> (雲端的每人每月購買方式，也包含了地端的使用者授權)</li>
+</ul>
+<br>
+<p>以上是對於 Azure DevOps Services / Server 授權的整理說明，若大家還有其他不瞭解的地方，歡迎透過下方留言討論。 😃</p>
 ]]></content>
       <tags>
         <tag>Azure DevOps</tag>
-        <tag>Azure DevOps REST API</tag>
-        <tag>PAT</tag>
-        <tag>.NET Client Library</tag>
+        <tag>授權</tag>
       </tags>
   </entry>
   <entry>
@@ -1369,6 +1214,495 @@
       </tags>
   </entry>
   <entry>
+    <title>Azure DevOps Services 個別服務</title>
+    <url>/post/2025/04/azure-devops-individual-services/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-individual-services/individual_services.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p><a href="/post/2024/09/azure-devops-licensing-description">上一篇文章</a>提到了 Azure DevOps 雲端和地端的使用者授權，當我們建立私有專案 (Private project) 且成員數量在 5 個人以下時，甚至可以直接免費使用，從第 6 個人起才需要計價，並具有 1 Free Microsoft-hosted CI/CD 和 1 Free Self-hosted CI/CD 以及 Azure Artifacts 2GB 可用儲存容量。在實務使用情境較複雜時，很有可能就需要再增加個別服務的用量 (例如：Azure Pipelines 平行作業數量)，這次就帶大家瞭解這些個別服務計價的方式。</p>
+<span id="more"></span>
+<br>
+<h2 id="Azure-Pipelines">Azure Pipelines</h2>
+<p>不論我們在 Azure Pipelines 使用文字介面或是圖形介面 (classic editor) 建立 pipeline 腳本內容，其中有個 <strong><code>Agent pools</code></strong> 選項是必要設定，它是用來決定執行階段要把工作 (job) 傳遞到哪個 pool 裡，尋找閒置且符合條件的 <strong>Azure Pipelines agents</strong> 執行個體來執行腳本內容，在 Azure DevOps Services 預設有一個 Microsoft-hosted agent 每個月可以免費使用 1800 分鐘，<mark>但預設無法直接使用</mark>，需要填寫 <strong><a class="link"   href="https://aka.ms/azpipelines-parallelism-request" >Azure DevOps Parallelism Request<i class="fas fa-external-link-alt"></i></a></strong> 表單申請審核通過才行，否則在執行的時候會出現如下錯誤：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-individual-services/azpipelines-parallelism-request.jpg"
+                        class=""
+                 >
+<p>當然我們也可以自己準備機器，在上面安裝 Azure Pipelines agents 程式 (支援 Windows / Linux / macOS)，這就屬於 Self-hosted agent。由於是自己準備的執行個體，所以使用時數不受限制，但每個工作 (job) 都是經由佇列 (queue) 的方式排隊一個一個執行，若需要同時間處理一個以上的工作 (job)，則需要再增加執行個體才行 (不論是 Microsoft-hosted 或是 Self-hosted)，基於這樣的概念，以下就是我們所關心的計價標準：</p>
+<ul>
+<li>每一個 Microsoft-hosted 每個月有 1800 分鐘可以使用。</li>
+<li>每增加一個額外的 Microsoft-hosted CI/CD 每個月是 USD $40 (大約 <strong>TWD $1279</strong>)。</li>
+<li>每增加一個額外的 Self-hosted CI/CD 每個月是 USD $15 (大約 <strong>TWD $479</strong>)。</li>
+<li><mark>如果在地端自建 Azure DevOps Server 則僅能使用 Self-hosted agent，需要更多的平行作業就自己多準備幾個執行個體，不用再額外採購什麼授權。</mark></li>
+</ul>
+<h2 id="Azure-Artifacts">Azure Artifacts</h2>
+<p>在軟體專案開發過程中，多少都會用到一些公司內部自行開發，或是外部來源提供的套件，一般常見的套件來源像是：NuGet、npm、Maven、Python…等，Azure Artifacts 可以將這些外部提供來源設為上游來源 (Upstream sources)，或是自己建立一個套件提供來源 (Feeds)，讓專案團隊成員在內部環境取用，儲存容量在 2GB 以內是免費，若超過則依下列區間以量計價：</p>
+<table>
+<thead>
+<tr>
+<th>儲存容量</th>
+<th>每GB (USD)</th>
+<th>每GB (TWD)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 - 2 GB</td>
+<td>免費</td>
+<td>免費</td>
+</tr>
+<tr>
+<td>2 - 10 GB</td>
+<td>$2</td>
+<td>大約 $63.98</td>
+</tr>
+<tr>
+<td>10 - 100 GB</td>
+<td>$1</td>
+<td>大約 $31.99</td>
+</tr>
+<tr>
+<td>100 - 1000 GB</td>
+<td>$0.50</td>
+<td>大約 $16.00</td>
+</tr>
+<tr>
+<td>1000 GB 以上</td>
+<td>$0.25</td>
+<td>大約 NT$8.00</td>
+</tr>
+</tbody>
+</table>
+<h2 id="GitHub-Advanced-Security-for-Azure-DevOps">GitHub Advanced Security for Azure DevOps</h2>
+<p>以往我們想要對專案程式碼執行原碼檢測、套件掃描等作業，首先要考量的可能是產品的價錢，或是委外檢測的費用，比較克難一點還可以尋找免費的掃描檢測工具(例如只是想要出個報告 🙈 🙊)，若想要整合到 CI 流程裡，還要得額外花一番功夫，但基本上只要可以透過 command line 來執行，都是可以用 Azure Pipelines 整合起來的。而自從 <strong>GitHub Advanced Security for Azure DevOps</strong> 正式啟用後，省掉了這部份不少麻煩，除了原生的與 Azure DevOps Services 整合 <mark>(不包含地端 Azure DevOps Server)</mark>，也可以與 <strong>Microsoft Defender for Cloud</strong> 串接，它可以做到：</p>
+<ul>
+<li><strong>Code Scanning</strong>：找出原始程式碼中的漏洞並提供修復指導。</li>
+<li><strong>Secret Scanning</strong>：識別 secret 並阻止開發人員將 secret 推送到程式碼儲存庫。</li>
+<li><strong>Dependency Scanning</strong>：發現 open-source 依賴項目的漏洞，並為開發人員自動發出更新警報。</li>
+</ul>
+<p>在 Azure Pipelines 也提供了下列對應的 task 以便我們完善整個 <strong><code>DevSecOps</code></strong> 流程：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-individual-services/github_acvanced_security.jpg"
+                        class=""
+                 >
+<p>這個功能可以由每個 git 的儲存庫 (repositry) 個別設定是否啟用 (不支援 TFVC 版控)，計價的原則是：每一個活躍的提交者 (active committer) 每個月 <strong>USD $49</strong> (大約 <strong>TWD $1567</strong>)，在<mark>同一個 Azure Subscription</mark> 中，儲存庫過去 <strong><code>90天</code></strong> 的紀錄中，同一個提交者(committer)在不同專案提交程式碼只會算 1 個數量，不會被重複計價。當我們在 git 儲存庫開啟 <strong><code>Advanced Security</code></strong> 功能時，Azure DevOps 在畫面上也會先幫我們基於上述原則計算有多少使用者會被計費，確定要使用再點選 <strong><code>Begin billing</code></strong> 即可：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-individual-services/unique_committers.jpg"
+                        class=""
+                 >
+<p>如同 Azure 各種服務的計價方式，都是<strong>隨付即用 (pay-as-you-go)</strong>，啟用 <strong>GitHub Advanced Security for Azure DevOps</strong> 搭配 CI 流程可以讓我們在開發階段及早發現問題與漏洞，有效減少技術債和後期投入修改的人力成本，跟測試左移 (Shift-Left Testing) 的概念有點雷同，也可以省下大筆購入源碼檢測軟體的費用，大家可以參考看看。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/"  target="_blank">⁍ Azure DevOps 定價<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://azure.microsoft.com/zh-tw/products/devops/github-advanced-security"  target="_blank">⁍ 適用於 Azure DevOps 的 GitHub Advanced Security<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml"  target="_blank">⁍ 設定適用於 Azure DevOps 的 GitHub Advanced Security<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>]]></content>
+      <tags>
+        <tag>Azure DevOps</tag>
+        <tag>授權</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Azure DevOps Server 正式版發佈</title>
+    <url>/post/2025/12/azure-devops-server-ga/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/12/azure-devops-server-ga/ga.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 >
+<p>微軟在 2025/12/9 宣佈 Azure DevOps Server 已正式達到 GA（General Availability，正式版）狀態，這次 RTW 版本是針對企業自架環境的一次重要里程碑：除了支援 SQL Server 2025、整合 RC 階段已釋出的功能外，也彙整了多項在 Boards、Repos、Pipelines、Test Plans、Reporting、Wiki 等服務上的改進。本文說明為什麼名稱不再掛版號、GA 的發佈重點，以及各服務的新功能亮點，方便大家評估升級與導入時機 😊。</p>
+<span id="more"></span>
+<br>
+<h2 id="為什麼-Azure-DevOps-Server-不再加上版號？">為什麼 Azure DevOps Server 不再加上版號？</h2>
+<p>如果大家最近有留意微軟官方文件，會發現標題多半只有「Azure DevOps Server」，而不是像以前那種「Azure DevOps Server 2022 / 2020」清楚掛版號的寫法，主要可以從幾個方向來理解：</p>
+<ul>
+<li><strong>名稱回到「產品」本身，而不是單一年度版本</strong><br>
+微軟希望把 Azure DevOps Server 視為一個持續演進的產品，而不是每隔幾年就出一個「完全不同」的新名字。實際上底層還是有 build number 與發行批次，只是對使用者來說，重點放在「最新 Azure DevOps Server + 對應累積更新」；就像我常被客戶問到：今年都 2025 年了，Azure DevOps Server 最新版還在 2022.2，微軟是不是很久沒更新這個產品了？<s>(大誤)</s></li>
+<li><strong>以「發行批次 / 累積更新」與支援週期為主軸</strong><br>
+官方的 Release Notes 也改成「Azure DevOps Server Release Notes」這樣的形式，新的 RTW/RC、累積更新（cumulative updates）都掛在同一頁，讓大家用「目前安裝的是哪一個 release」來辨識，而不是只記年份或版號。</li>
+<li><strong>與雲端 Azure DevOps Services 的節奏對齊</strong><br>
+雲端服務本來就是持續更新、不強調版號，地端版也朝這個方向靠攏。對於有混合情境（雲端 + 地端）的團隊來說，在比較功能差異或規劃遷移時也比較直覺。</li>
+</ul>
+<p>換句話說：版本仍然存在（build number、支援週期一樣重要），只是公開溝通時不再把「年份」放在產品名稱裡，而是強調「這一個 Azure DevOps Server 發行批次」所帶來的變化與支援範圍。</p>
+<br>
+<h2 id="正式版發佈重點（GA-RTW-Highlights）">正式版發佈重點（GA / RTW Highlights）</h2>
+<p>根據官方部落格與 Release Notes，這次 Azure DevOps Server RTW 主要有幾個值得注意的重點：</p>
+<ul>
+<li><strong>從 RC 過渡到正式版，適合生產環境全面部署</strong><br>
+這次 GA 是在 RC 基礎上進一步收斂修正後的 RTW 版本，針對企業實際使用情境做了額外的穩定度與品質調整，定位上已經是可以在正式環境大規模導入的版本。</li>
+<li><strong>支援 SQL Server 2025</strong><br>
+RTW 明確標示為「支援 SQL Server 2025 的彙總發行（roll up）」；如果大家準備在資料庫層升級到 SQL Server 2025，這個版本就是官方對應的 Azure DevOps Server 搭配選項。</li>
+<li><strong>直接升級路徑清楚</strong><br>
+官方支援從 Azure DevOps Server 2019 / 2020 / 2022，或 Team Foundation Server 2015（含）之後的版本直接升級到 Azure DevOps Server。若還停在 TFS 2013 甚至更早，就需要先做中繼升級（要先升級到 2015 才能再升到目前最新的 Azure DevOps Server）。<br>
+<mark>同時也提醒：TFS 2015 已在 2025/10/14 結束延伸支援，若還停留在舊版本，這次 GA 其實是很好的「順勢升級」時機。</mark></li>
+<li><strong>品質修正與細節優化</strong><br>
+RTW 版本除了合併本地化調整外，還修正了多個實務上會遇到的問題，例如：
+<ul>
+<li>儀表板 Code Tile 在儲存庫或分支名稱太長時的顯示問題。</li>
+<li>GitHub PR 狀態透過 webhook 回寫時，已合併與未合併都被記成 Closed 的狀況，現在會依 payload 的 merged flag 正確區分。</li>
+<li>某些 Work Item Linking 情境下，Visual Studio 會因遞迴屬性造成當機的問題。</li>
+<li>Collection 設定頁中，如果 Analytics 被暫停或停用，Agent Pool 頁面會載入失敗的情形，現在已可正常顯示。</li>
+</ul>
+</li>
+<li><strong>完整的下載與文件連結</strong><br>
+官方提供 ISO、Web Install、下載頁、系統需求/相容性與安裝文件，方便 IT 做標準化佈署與維運規劃。</li>
+</ul>
+<br>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/12/azure-devops-server-ga/upgrade-azure-devops-server.png"
+                        class=""
+                 >
+<br>
+<h2 id="新功能與改進：各服務重點整理">新功能與改進：各服務重點整理</h2>
+<p>這次 GA 包含 RC 階段累積的一大串新功能與改進，底層細節很多，這裡依服務簡單抓幾個實務上比較有感的部分做摘要，方便大家快速掌握方向。</p>
+<h3 id="General">General</h3>
+<ul>
+<li><strong>Markdown 程式碼區塊一鍵複製</strong><br>
+Wiki、Repos 檔案預覽、PR 討論與 Work item 討論中的程式碼區塊，都多了一個 <strong><code>Copy to clipboard</code></strong> 按鈕，貼上範例或文件內容給團隊成員時效率更高。</li>
+<li><strong>Delivery Plans 權限更細緻</strong><br>
+新增「Manage Delivery Plans」專用權限，避免 Readers 類型的使用者不小心取得不必要的寫入權限，有助於大型組織控管誰可以建立或維護計畫視圖。</li>
+</ul>
+<h3 id="Boards">Boards</h3>
+<ul>
+<li><strong>GitHub PR 中的 AB# 連結顯示優化</strong><br>
+在 PR 描述裡用 AB#123 這種方式連結 Work item 時，現在會直接出現在 GitHub PR 的 Development 區塊，從 PR 就能快速回到對應的 Azure Boards 工作項目，追蹤性更好。</li>
+<li><strong>連結大量 GitHub Repos 的體驗改善</strong><br>
+當一個 GitHub 組織裡有成千上萬個儲存庫時，以前在 Azure Boards 裡搜尋/連結很容易 timeout，現在搜尋與載入流程經過最佳化，大型組織會感受比較明顯。</li>
+<li><strong>YAML Pipelines 的「Integrated in build」連結支援 GitHub</strong><br>
+針對放在 GitHub 的 repo，現在 YAML pipeline 也能在完成 build 後自動在相關 Work item 上顯示「已在哪個 build 中整合」，讓 YAML 與傳統 Classic pipeline 在追蹤能力上更接近。</li>
+<li><strong>GitHub 連線 REST API</strong><br>
+新增一組 API 讓我們可以程式化地查詢、新增或移除 GitHub Repositories 連結，並將單一連線可掛載的 repo 上限從 500 提升到 2,000，方便用 Script 自動化維護大規模整合。</li>
+<li><strong>刪除 Area / Iteration 更安全</strong><br>
+現在只有在沒有任何 Work item 使用該路徑時，才能刪除 Area 或 Iteration，避免一個不小心影響一大堆看板、報表與存取權限。</li>
+<li><strong>標籤與留言體驗升級</strong><br>
+刪除的 Tag 不會再出現在建議清單裡，Work item 討論也能更方便貼上來自 Teams、Email、Word 等來源的圖片，REST API 另外新增留言數量限制，避免濫用導致效能或安全問題。</li>
+<li><strong>Delivery Plans 數量上限提高</strong><br>
+每個專案可建立的 Delivery Plans 上限，從 1,000 提升到 1,500，對於有大量跨團隊規劃需求的組織比較友善。</li>
+</ul>
+<h3 id="Repos">Repos</h3>
+<ul>
+<li><strong>可選擇停用新的 TFVC 儲存庫建立</strong><br>
+Git 已經是主流，微軟也明確表示近年不再為 TFVC 加新功能。這次新增一個設定，讓我們可以關閉「建立新的 TFVC Repo」，既不影響既有 TFVC 專案，又能避免新專案再誤用 TFVC。</li>
+<li><strong>Git submodules UI 支援</strong><br>
+在檔案總管（Files hub）中，可以直接看懂並點進 submodule 指向的儲存庫與特定 commit，支援 Azure Repos、GitHub、GitLab、Bitbucket 等多種來源與 URL 格式，對有 Monorepo 或模組化拆分的團隊很實用。</li>
+<li><strong>Repository Health and usage 面板</strong><br>
+大型儲存庫會拖慢整體效能，現在 Repos 會監看儲存庫大小、commit 密度與內容結構等指標，必要時會提示 repository owner 檢查健康狀態與最佳化建議。</li>
+<li><strong>自訂 PR 目標分支建議</strong><br>
+只要在預設分支下建立 .azuredevops/pull_request_targets.yml，就可以定義常見的目標分支（例如 main、release/* 等），建立 PR 或系統自動建議 PR 時就會優先採用這些設定，減少開 PR 開錯分支的情況。</li>
+<li><strong>Markdown 支援 Mermaid 圖表與 PR 標題搜尋</strong><br>
+Repos 中的 Markdown 如果包含 mermaid 語法，現在會直接渲染成圖表；PR 列表頁也多了依標題搜尋的功能，方便在大量 PR 中快速找到目標。</li>
+<li><strong>Pipelines Checkout 支援 sparse checkout</strong><br>
+YAML 的 checkout 步驟新增 sparseCheckoutDirectories / sparseCheckoutPatterns 兩個設定，可只抓部分目錄或路徑，大型 repo 跑 CI/CD 時可以明顯縮短 checkout 時間（需要較新的 Agent 版本）。</li>
+<li><strong>其他 API 與相容性改善</strong><br>
+包含 cross-repo policy 預覽改成大小寫敏感（與實際規則一致）、TFVC check-in policy 新格式與 NuGet 套件更新、Repo 資訊 API 增加建立時間欄位、PR 查詢 API 可選擇回傳標籤（labels）等。</li>
+</ul>
+<h3 id="Pipelines">Pipelines</h3>
+<ul>
+<li><strong>TFX 與 Task Node runtime 健康檢查</strong><br>
+用 TFX 發佈 extension 時，現在會檢查 Task 是否還在使用已 EOL 的 Node.js 版本（例如 Node.js 10/12/16 等），並給出警告訊息，提醒作者儘早升級。</li>
+<li><strong>Pipeline 執行時也會對老舊 Node.js runner 發警示</strong><br>
+如果某個 Task 仍依賴已不再維護的 Node.js 版本，執行時會在 log 裡出現警告，並提供官方升級指引連結；若暫時無法調整，也可以透過環境變數關閉這個檢查（不過長期來看還是建議盡快升級）。</li>
+<li><strong>DockerCompose@0 改用 Compose v2 相容模式</strong><br>
+Hosted Agent 即將移除 Docker Compose v1，因此 DockerCompose@0 Task 會在沒有 v1 時自動改用 v2 的相容模式；若專案還沒做好 v2 相容性，官方也提供範例腳本，教大家在 Pipeline 裡自行下載 v1 執行檔暫時過渡。</li>
+<li><strong>使用 Microsoft Entra ID 存取 Azure Service Bus</strong><br>
+新版 PublishToAzureServiceBus@2 Task 可以用 Azure Service Connection 搭配 Entra ID（原 Azure AD）存取 Service Bus，支援透過 RBAC 控制權限，比直接塞連線字串安全許多，自訂 server task 也能改用 service connection。</li>
+</ul>
+<h3 id="Test-Plans">Test Plans</h3>
+<ul>
+<li><strong>Test &amp; Feedback 擴充功能升級到 Manifest V3</strong><br>
+Chrome/Edge 上的 Test &amp; Feedback 延伸模組已改用 Manifest V3，跟上瀏覽器的安全性與效能要求，功能維持不變。</li>
+<li><strong>Azure Test Runner 與 Chrome 相容性修正</strong><br>
+針對最近 Chrome 在 URL 處理上的變更，更新後的 Azure Test Runner 版本已修正啟動失敗的問題。</li>
+<li><strong>Test Plans 與 Build Pipeline 整合更順</strong><br>
+在 Test Plan 裡設定好的 Build 定義與 ID 會自動帶到 Web Runner，不需要每次手動重設，減少測試流程中的行政作業。</li>
+<li><strong>支援透過 REST API 還原刪除的 Test Plan / Suite</strong><br>
+不小心刪錯 Test Plan 或 Suite 時，現在可以用 API 查詢並還原（包含子階層），不用再倚賴客服協助，不過既有的執行結果等 artifact 並不會一併回復。</li>
+<li><strong>匯出 Test Case 到 XLSX 支援自訂欄位</strong><br>
+匯出測試案例時可以帶出自訂欄位，做報表或離線分析比較方便。</li>
+<li><strong>測試執行體驗優化</strong><br>
+包含 Test Plans 目錄支援欄位排序、Web/Desktop Runner 提供「Undo」回復步驟狀態、Publish code coverage v2 Task 支援更多格式與 PR 差異覆蓋率（diff coverage）等。</li>
+<li><strong>Test Plans 支援 YAML Pipelines</strong><br>
+除了 Classic pipeline，現在也可以選擇 YAML pipeline 來執行自動化測試，對已全面轉向 YAML 的團隊非常關鍵。</li>
+</ul>
+<h3 id="Reporting-Wiki">Reporting &amp; Wiki</h3>
+<ul>
+<li><strong>Backlog Rollup 資料顯示更清楚</strong><br>
+Rollup 欄位會顯示最近一次成功計算的資料與時間戳記，即使 Analytics 略有延遲，也比較不會誤以為是資料遺失。</li>
+<li><strong>Wiki 貼上 HTML 內容自動轉 Markdown</strong><br>
+從瀏覽器、Office、Teams 等地方複製的 HTML 內容（像是清單、表格、圖片、連結等）貼到 Wiki 時，會自動轉成對應的 Markdown 語法，編輯起來順手很多。</li>
+</ul>
+<br>
+<h2 id="什麼時候該考慮升級？">什麼時候該考慮升級？</h2>
+<p>綜合來看，這次 Azure DevOps Server GA 有幾個關鍵訊號：</p>
+<ul>
+<li>若後端環境有計畫升級到 <strong>SQL Server 2025</strong>，這是官方明確對應的 Azure DevOps Server 版本。</li>
+<li>若還在 <strong>TFS 2015 或更舊版本</strong>，這次 GA 搭配延伸支援結束，是很適合規劃「一次到位」升級的時點。</li>
+<li>如果團隊已大量使用 <strong>Git + YAML Pipelines + GitHub 整合</strong>，這一波新功能會讓追蹤性與操作體驗更接近雲端版 Azure DevOps Services。</li>
+</ul>
+<p>微軟把 Azure DevOps Server 宣布為正式版（GA），意義是地端產品已經夠穩定、可以在企業生產環境大規模使用，同時正式支援 SQL Server 2025；名稱也回歸「Azure DevOps Server」，改用發行批次與累積更新來管理版本。這個 RTW 在 RC 基礎上修正多項實務問題，並帶來對 Boards、Repos、Pipelines、Test Plans、Wiki 等功能的多項改善（像是更好的 GitHub 整合、repo 健康檢查、sparse checkout、YAML 與 Test Plans 的整合等），不論是環境打算要升到 SQL Server 2025、或還在舊版 TFS，或已大量使用 Git + YAML + GitHub，都是評估並規劃升級很好的時機。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://devblogs.microsoft.com/devops/announcing-azure-devops-server-general-availability"  target="_blank">⁍ Announcing Azure DevOps Server General Availability<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/en-us/azure/devops/server/release-notes/azuredevopsserver?view=azure-devops-server"  target="_blank">⁍ Azure DevOps Server Release Notes <i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+]]></content>
+      <tags>
+        <tag>Azure DevOps</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Azure DevOps REST API 說明</title>
+    <url>/post/2025/04/azure-devops-rest-api/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-rest-api/rest_api.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>當我們要自行擴充或串接 Azure DevOps Services / Server 功能時，可以透過 Azure DevOps REST API 來進行客制開發，例如：想要寫一支程式每天發送各專案在版控儲存庫的差異紀錄，或是想要在公司內部表單系統審核後，觸發執行指定的 pipeline … 族繁不及備載，使用 REST API 透過 HTTP 呼叫的好處是可以不用侷限於特定的程式語言，也方便用 Postman 之類的工具測試，這篇整理了呼叫 Azure DevOps REST API 的前置作業與相關說明，方便大家上手😁。</p>
+<span id="more"></span>
+<br>
+<h2 id="REST-API">REST API</h2>
+<p>使用 Azure DevOps REST API 時，其 URI 規格如下：</p>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">VERB https://&#123;instance&#125;/&#123;organization&#125;/&#123;project&#125;/_apis/&#123;area&#125;/&#123;resource&#125;?api-version=&#123;version&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>VERB</strong><br>
+與一般 RESTful API 相同，在串接 Azure DevOps 各種情境時， <strong><font color='green'>GET</font></strong> / <strong><font color='brown'>POST</font></strong> / <strong><font color='red'>DELETE</font></strong> / <strong><font color='purple'>PATCH</font></strong> 都有機會用到。</li>
+<li><strong>instance</strong><br>
+如果是使用雲端的 Azure DevOps Services 指的就是 <span>dev.azure.com</span>，地端則是 Azure DevOps Server 所在的位址。</li>
+<li><strong>organization/project</strong><br>
+取決於 API 作用的範圍，在 URI 裡會有 organization 或 organization/project，例如：使用 API 建立個人權杖 (PAT)，則會是：<br>
+<strong><font color='brown'>POST</font></strong> https://vssps.dev.azure.com/<mark>{organization}</mark>/_apis/tokens/pats?api-version=7.2<br>
+或者像是用 API 建立一個工作項目，則是：<br>
+<strong><font color='brown'>POST</font></strong> https://dev.azure.com/<mark>{organization}/{project}</mark>/_apis/wit/workitems/${type}?api-version=7.2</li>
+<li><strong>{area}/{resource}</strong><br>
+從這邊大概可以看出呼叫的 API 是做哪方面的操作，以上面兩個例子 (建立 PAT、建立 Work item) 來說：<br>
+<strong><font color='brown'>POST</font></strong> https://vssps.dev.azure.com/{organization}/_apis/<mark>tokens/pats</mark>?api-version=7.2<br>
+<strong><font color='brown'>POST</font></strong> https://dev.azure.com/{organization}/{project}/_apis/<mark>wit/workitems/${type}</mark>?api-version=7.2</li>
+<li><strong>version</strong><br>
+通常我們在串接 API 時會明確指定 version，因為每個 TFS / Azure DevOps 版本對於 API 支援的 api-version 也有所不同 (如下表)，如果不指定 api-version 則會自動選用目前產品最新的穩定版本，例如：在 Azure DevOps Server 2019 它會自動取用 5.0 來執行，在不加 api-version 的情況下，若日後升級到 Azure DevOps Server 2022，則會自動取用 7.0 來執行，為維持串接程式正常運作，不會因為 API 版本差異而造成異常，一般我們都會加上指定的 api-version 版號。</li>
+</ul>
+<blockquote>
+<p>提醒大家：<br>
+如果是使用 preview 版本 (例如：<strong><code>7.2-preview.3</code></strong>)，該 preview 版本會在 <strong>12 週</strong> 後停用，被穩定的正式版本取代。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Products</th>
+<th style="text-align:center">1.0</th>
+<th style="text-align:center">2.0</th>
+<th style="text-align:center">3.0</th>
+<th style="text-align:center">4.0</th>
+<th style="text-align:center">5.0</th>
+<th style="text-align:center">6.0</th>
+<th style="text-align:center">7.0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Azure DevOps Services</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+</tr>
+<tr>
+<td>Azure DevOps Server 2022</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+</tr>
+<tr>
+<td>Azure DevOps Server 2020</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td>Azure DevOps Server 2019</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td>Team Foundation Server 2018</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td>Team Foundation Server 2017</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td>Team Foundation Server 2015</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">V</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+</tr>
+</tbody>
+</table>
+<h2 id="PAT-Personal-Access-Token">PAT (Personal Access Token)</h2>
+<p>要使用 Azure DevOps REST API 存取資源前都必需先經過驗證成功才行，建立 <strong><code>個人存取權杖 (PAT)</code></strong> 可以算是安全又簡便的方式，若想要實作 OAuth 2.0 或其他頁面驗證方式，可以參考下列連結：</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/get-started/authentication/authentication-guidance?toc=%2Fazure%2Fdevops%2Fmarketplace-extensibility%2Ftoc.json&view=azure-devops"  target="_blank">⁍ 選擇正確的驗證機制<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<p>要建立一個 PAT 可以從 Azure DevOps 畫面右上角 <strong><code>User settings</code></strong> → <strong><code>Personal access tokens</code></strong> 進入。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-rest-api/pat.png"
+                        class=""
+                 >
+<br>
+<p>點選 <strong><code>+ New Token</code></strong> 按鈕。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-rest-api/pat_1.png"
+                        class=""
+                 >
+<br>
+<p>接著就是 PAT 存取期限、授權範圍等相關設定：</p>
+<ul>
+<li><strong>Organization</strong><br>
+選擇 <strong>特定的 Organization</strong> 或 <strong>All accessible organizations</strong> (允許存取全部組織)。</li>
+<li><strong>Expiration (UTC)</strong><br>
+有效期限可以選擇 <strong>30 / 60 / 90 天</strong>，或是 <strong>Custom defined</strong> (<mark>最長只能一年</mark>)</li>
+<li><strong>Scopes</strong><br>
+可以選擇 <strong>Full access</strong> (允許存取全部範圍) 或 <strong>Custom defined</strong> 針對各個功能進一步設定，基於最低權限原則，建議大家可以有意義的命名 token 名稱，並且只勾選必要的 <strong>Scopes</strong> 授權範圍。</li>
+</ul>
+<p>建立 PAT 後，僅能 <strong><code>Revoke</code></strong> (撤銷) 或是 <strong><code>Regenerate</code></strong> (重新產生)，沒有辦法再用任何方式檢視原本產生的 token 內容，大家記得要妥善保存。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-rest-api/pat_2.png"
+                        class=""
+                 >
+<h2 id="NET-Client-Library">.NET Client Library</h2>
+<p>如果是使用 .NET 進行程式開發，還有一個選擇是從 NuGet.org 下載 Client library 使用，套件相依關係如下圖。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-rest-api/dotnet-client-libraries-dependancy-diagram.jpg"
+                        class=""
+                 >
+<br>
+<p>最新版本可以由 NuGet.org 查詢結果找到： https://www.nuget.org/packages?q=azure+devops+.net ，套件和 Azure DevOps 版本一樣有相依性， 使用前要留意一下目前環境的 TFS / Azure DevOps Server 版本，例如：Azure DevOps Server 2019 只能使用到套件 16.143.x 版。</p>
+<table>
+<thead>
+<tr>
+<th>套件版本</th>
+<th>Azure DevOps 版本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>16.205.x</td>
+<td>versions &gt;= Azure DevOps Server 2022</td>
+</tr>
+<tr>
+<td>16.170.x</td>
+<td>versions &gt;= Azure DevOps Server 2020</td>
+</tr>
+<tr>
+<td>16.153.x</td>
+<td>versions &gt;= Azure DevOps Server 2019 Update 1</td>
+</tr>
+<tr>
+<td>16.143.x</td>
+<td>versions &gt;= Azure DevOps Server 2019</td>
+</tr>
+<tr>
+<td>15.131.x</td>
+<td>versions &gt;= TFS 2018 Update 1</td>
+</tr>
+<tr>
+<td>15.112.x</td>
+<td>versions &gt;= TFS 2017 Update 1</td>
+</tr>
+<tr>
+<td>14.102.x</td>
+<td>versions &gt;= TFS 2015 Update 3</td>
+</tr>
+<tr>
+<td>14.95.x</td>
+<td>versions &gt;= TFS 2015 Update 2</td>
+</tr>
+<tr>
+<td>14.89.x</td>
+<td>versions &gt;= TFS 2015 Update 1</td>
+</tr>
+<tr>
+<td>14.83.x</td>
+<td>versions &gt;= TFS 2015</td>
+</tr>
+</tbody>
+</table>
+<p>在實務開發上還是得花些時間先瞭解套件定義了哪些 class、提供了什麼 function，這部份可以參考官方說明和 github sample code，如果有特殊需求或環境考量需要使用的話，可以參考下列連結：</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/concepts/dotnet-client-libraries?view=azure-devops&viewFallbackFrom=vsts"  target="_blank">⁍ .NET 用戶端程式庫<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/integrate/get-started/client-libraries/samples?view=azure-devops"  target="_blank">⁍ C# 用戶端連結庫範例<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://github.com/microsoft/azure-devops-dotnet-samples"  target="_blank">⁍ .NET samples for Azure DevOps<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<p>(💁 看完上面連結內容有沒有覺得還是使用 REST API 比較方便 💖)</p>
+]]></content>
+      <tags>
+        <tag>Azure DevOps</tag>
+        <tag>Azure DevOps REST API</tag>
+        <tag>PAT</tag>
+        <tag>.NET Client Library</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Azure DevOps 的 Wiki 應用</title>
     <url>/post/2025/10/azure-devops-wiki/</url>
     <content><![CDATA[<img    
@@ -1528,493 +1862,6 @@
         <tag>Azure DevOps</tag>
         <tag>Devdays Asia 2025</tag>
         <tag>GitHub Copilot</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>整理 Context 的利器 — MarkItDown 與 Docling</title>
-    <url>/post/2025/10/docling-to-markdown/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/docling-to-markdown/logo.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>在 Agentic AI 的各式應用場景中，提供正確且良好品質的上下文來源是至關重要的環結，實務上我們可能透過 RAG 從外部檢索資料，或是從手邊的各種檔案格式轉換成 markdown 來提供 LLM 作為上下文參考資料以便展開執行後續的任務，若以輕量、快速上手為考量，可以試試 MarkItDown，但若只能在純地端環境執行，或是對於文件內容(例如：表格、版面)有更高的解析需求不妨試試 Docling，本文以實務角度比較兩者設計取向、支援格式與優缺點，以及提供不同應用場景的建議。</p>
-<span id="more"></span>
-<p>在建立知識庫、資料前處理或把企業文件提供給 LLM 時，原始文件往往可能是 PDF、各種 Office 文件格式、圖片或音訊，而真正要給 LLM 使用時，需要：</p>
-<ul>
-<li>保留語意與結構（標題、段落、表格…等）。</li>
-<li>去除雜訊並以 token 使用效率高的格式呈現（例如：Markdown）。</li>
-<li>在有需要時，保留更結構化的表示（例如：JSON）以便後續自動化處理。</li>
-</ul>
-<p>MarkItDown 與 Docling 都致力於把各種來源轉成容易被 LLM 或檢索系統消化的輸出，但設計側重與功能集合有明顯差異，下面我們直接比較。</p>
-<h2 id="MarkItDown">MarkItDown</h2>
-<ul>
-<li>出處：由 Microsoft AutoGen 團隊維護（Python）。</li>
-<li>設計取向：把各式檔案轉成「結構化 Markdown」；以 LLM 與文本分析為取向。</li>
-<li>優勢：
-<ul>
-<li>直接產生適合 LLM 的 Markdown（標題、列表、表格、內嵌程式碼等）。</li>
-<li>支援多媒體（圖片 OCR、音訊轉錄、YouTube 字幕抓取）。</li>
-<li>可用作 MCP 伺服器，利於 AI Agent／LLM 整合。</li>
-</ul>
-</li>
-<li>限制：
-<ul>
-<li>對於複雜的 PDF 版面（精細表格、多欄佈局、複雜閱讀順序），解析深度稍嫌不足。</li>
-<li>若要取得更高階 PDF 能力，可能會依賴 Azure Document Intelligence（雲端）。</li>
-</ul>
-</li>
-</ul>
-<p>若要使用 MarkItDown MCP 現在可以在 GitHub MCP Registry(https://github.com/mcp) 列表找到，也可以 docker 方式或 clone 整個專案在本地端以 STDIO 的方式執行，參考微軟官方 GitHub 說明。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://github.com/mcp"  target="_blank">⁍ GitHub MCP Registry<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://github.com/microsoft/markitdown?tab=readme-ov-file"  target="_blank">⁍ GitHub | MarkItDown<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://github.com/microsoft/markitdown/tree/main/packages/markitdown-mcp"  target="_blank">⁍ GitHub | MarkItDown MCP<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
-<h2 id="Docling">Docling</h2>
-<ul>
-<li>出處：由 Docling Project（原起始於 IBM Research Zurich，目前管於 LF AI &amp; Data）維護。</li>
-<li>設計取向：專注於文件理解，特別是進階 PDF 解析（版面、閱讀順序、表格結構、公式、程式碼、影像分類），並提供統一的 DoclingDocument 表示與多種匯出選項。</li>
-<li>優勢：
-<ul>
-<li>在複雜 PDF（掃描文件、排版、多欄表格）與表格重構上表現優異，使用自家模型（DocLayNet、TableFormer）提升解析品質。</li>
-<li>支援本地執行（適合敏感資料或隔離環境），也有 VLM / ASR 整合能力。</li>
-<li>輸出豐富：Markdown / HTML / JSON / DocTags 等，便於後續分析或顯示詳細資訊。</li>
-<li>與 LangChain、LlamaIndex、Haystack 等生態系可以直接整合，便於搭建 RAG pipeline。</li>
-</ul>
-</li>
-<li>限制：
-<ul>
-<li>因為功能較廣、選項較多，學習曲線會比 MarkItDown 高。</li>
-<li>Docling 會完全在本地環境執行，需要考量相關系統資源 (是優點也是缺點)。</li>
-</ul>
-</li>
-</ul>
-<p>如何取得並建置 Docling 環境可以參考 GitHub 專案，它一樣有支援 MCP 但要在它的官網才找得到說明，如同前面說的，它是完全在本地端執行，所以 MCP 是由 uvx 來執行啟動。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://github.com/docling-project/docling"  target="_blank">⁍ GitHub | Docling <i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://docling-project.github.io/docling/"  target="_blank">⁍ Docling<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://docling-project.github.io/docling/usage/mcp/"  target="_blank">⁍ Docling MCP<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
-<p>如果想要手動在 mcp.json 加入這兩個 MCP 工具，可以直接參考：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	<span class="attr">&quot;servers&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		<span class="attr">&quot;microsoft/markitdown&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">			<span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;stdio&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;uvx&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">				<span class="string">&quot;markitdown-mcp==0.0.1a4&quot;</span></span><br><span class="line">			<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;gallery&quot;</span><span class="punctuation">:</span> <span class="string">&quot;https://api.mcp.github.com&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1.0.0&quot;</span></span><br><span class="line">		<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">		 <span class="attr">&quot;docling&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		 <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;uvx&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">				<span class="string">&quot;--from=docling-mcp&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="string">&quot;docling-mcp-server&quot;</span></span><br><span class="line">			<span class="punctuation">]</span></span><br><span class="line">		<span class="punctuation">&#125;</span></span><br><span class="line">	<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;inputs&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-<h2 id="支援格式與各面向比較">支援格式與各面向比較</h2>
-<table>
-<thead>
-<tr>
-<th>格式</th>
-<th>MarkItDown</th>
-<th>Docling</th>
-<th>備註</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>PDF</td>
-<td>良好</td>
-<td>優秀（尤其是複雜/掃描文件）</td>
-<td>MarkItDown 對一般 PDF 處理良好；若需高保真解析或掃描 OCR 建議用 Docling</td>
-</tr>
-<tr>
-<td>DOCX / PPTX / XLSX</td>
-<td>支援</td>
-<td>支援</td>
-<td>兩者皆可處理 Office 文件</td>
-</tr>
-<tr>
-<td>Images</td>
-<td>OCR、EXIF 支援</td>
-<td>OCR + VLM（視覺語言模型）分類支援</td>
-<td>Docling 在影像分類與 VLM 整合上較強</td>
-</tr>
-<tr>
-<td>Audio (WAV / MP3)</td>
-<td>支援音訊轉錄</td>
-<td>ASR 支援</td>
-<td>兩者皆支援轉錄；可串接不同模型以改善品質</td>
-</tr>
-<tr>
-<td>HTML</td>
-<td>支援</td>
-<td>支援</td>
-<td>皆可匯入網頁內容</td>
-</tr>
-<tr>
-<td>Markdown</td>
-<td>原生支援</td>
-<td>支援匯入/匯出</td>
-<td></td>
-</tr>
-<tr>
-<td>CSV / JSON / XML</td>
-<td>文字格式支援</td>
-<td>支援</td>
-<td>適合結構化文字資料</td>
-</tr>
-<tr>
-<td>YouTube</td>
-<td>可抓取與轉錄</td>
-<td>可處理 WebVTT / 影片字幕</td>
-<td>MarkItDown 偏向抓取與轉錄；Docling 處理字幕檔更完整</td>
-</tr>
-<tr>
-<td>EPUB / ZIP</td>
-<td>支援</td>
-<td>支援</td>
-<td>支援程度依內容與封裝方式而異</td>
-</tr>
-<tr>
-<td>VTT / WebVTT</td>
-<td>支援</td>
-<td>支援</td>
-<td>若以字幕為主，Docling 支援度較好</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>
-<p>設計目標：</p>
-<ul>
-<li>MarkItDown：以「快速把各類來源轉成 LLM-friendly Markdown」為核心，偏重 token 效率與多媒體前處理。</li>
-<li>Docling：以「高保真文件理解」為核心，強調版面/表格/閱讀順序的精確還原與 lossless 結構化。</li>
-</ul>
-</li>
-<li>
-<p>解析深度與還原度：</p>
-<ul>
-<li>MarkItDown：輸出以可讀且可索引的 Markdown 為主，對一般文件足夠；遇到跨欄或複雜表格時可能會犧牲部分細節。</li>
-<li>Docling：使用版面模型與表格重建，保留更多區塊座標與結構資訊，適合需精準抽取或重現原始排版的情境。</li>
-</ul>
-</li>
-<li>
-<p>多媒體支援：</p>
-<ul>
-<li>MarkItDown：支援音訊轉錄、YouTube 字幕抓取、圖片 OCR 等，偏向 LLM 前處理工作流。</li>
-<li>Docling：也支援 OCR/ASR/VLM，但更強調影像分類、表格語意重構與公式/程式碼片段的解析。</li>
-</ul>
-</li>
-<li>
-<p>本地化 vs 雲端依賴：</p>
-<ul>
-<li>MarkItDown：可本地執行，但在某些高階 PDF 能力上會建議採用雲端 Azure Document Intelligence 作為選項。</li>
-<li>Docling：設計上強調本地端運行，適合敏感資料或離線環境。</li>
-</ul>
-</li>
-<li>
-<p>效能與資源需求：</p>
-<ul>
-<li>MarkItDown：輕量、上手快，適合大量快速預處理。</li>
-<li>Docling：依賴模型與較高運算資源，單檔處理時間較長但輸出更精確。</li>
-</ul>
-</li>
-<li>
-<p>整合生態與可擴充性：</p>
-<ul>
-<li>MarkItDown：以 plugin 與 MCP 為導向，容易接入 AI Agent / LLM pipeline。</li>
-<li>Docling：提供豐富的 JSON / Markdown / HTML 匯出，與 LangChain、LlamaIndex 等檢索生態整合良好，利於深度資料工程。</li>
-</ul>
-</li>
-<li>
-<p>可驗證性與審核：</p>
-<ul>
-<li>MarkItDown：輸出簡潔，人工檢視方便，但在表格或版面細節需抽樣驗證。</li>
-<li>Docling：提供中間結構（座標、區塊、表格邊界），便於自動化驗證與回溯修正。</li>
-</ul>
-</li>
-<li>
-<p>學習曲線與運維成本：</p>
-<ul>
-<li>MarkItDown：學習低、文件少、運維簡單。</li>
-<li>Docling：功能與選項多，需時間調校模型與處理參數，運維成本較高。</li>
-</ul>
-</li>
-</ul>
-<h2 id="總結">總結</h2>
-<p>MarkItDown 與 Docling 均可將各類原始文件轉為 LLM 友好的結構化格式，但設計取向與適用場景不同：MarkItDown 輕量且易上手，輸出以節省 token 的 Markdown 為主，適合大量快速預處理與整合至 AI Agent / LLM pipeline；Docling 則強調高保真文件理解與版面還原，擅長複雜 PDF、表格重建及本地化運行，適用於需精準解析或資安敏感的情境。實務上如果是遇到比較複雜的文件內容，例如像論文有分左右兩欄、各式表格，或是有圖片需要 OCR 辨識、流程圖想要轉換成 Mermaid，使用 Docling 產出的結果都蠻不錯的，強力推薦給大家!</p>
-  <!-- 實務上建議依文件類型、解析精度、處理量與可用資源做選擇，並透過抽樣驗證或混合流程（以 MarkItDown 做批次預處理、以 Docling 處理關鍵或需人工驗證的檔案）來兼顧效率與精確性。 -->
-<p>.xls -&gt; .md</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/docling-to-markdown/docling-excel.jpg"
-                        class=""
-                 >
-<p>.pptx -&gt; .md</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/docling-to-markdown/docling-pptx.jpg"
-                        class=""
-                 >
-<p>使用本地端資源運行 Docling</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/docling-to-markdown/docling-performance.jpg"
-                        class=""
-                 >
-]]></content>
-      <tags>
-        <tag>Docling</tag>
-        <tag>MarkItDown</tag>
-        <tag>文件處理</tag>
-        <tag>RAG</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Azure DevOps Server 正式版發佈</title>
-    <url>/post/2025/12/azure-devops-server-ga/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/12/azure-devops-server-ga/GA.jpg"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 >
-<p>微軟在 2025/12/9 宣佈 Azure DevOps Server 已正式達到 GA（General Availability，正式版）狀態，這次 RTW 版本是針對企業自架環境的一次重要里程碑：除了支援 SQL Server 2025、整合 RC 階段已釋出的功能外，也彙整了多項在 Boards、Repos、Pipelines、Test Plans、Reporting、Wiki 等服務上的改進。本文說明為什麼名稱不再掛版號、GA 的發佈重點，以及各服務的新功能亮點，方便大家評估升級與導入時機 😊。</p>
-<span id="more"></span>
-<br>
-<h2 id="為什麼-Azure-DevOps-Server-不再加上版號？">為什麼 Azure DevOps Server 不再加上版號？</h2>
-<p>如果大家最近有留意微軟官方文件，會發現標題多半只有「Azure DevOps Server」，而不是像以前那種「Azure DevOps Server 2022 / 2020」清楚掛版號的寫法，主要可以從幾個方向來理解：</p>
-<ul>
-<li><strong>名稱回到「產品」本身，而不是單一年度版本</strong><br>
-微軟希望把 Azure DevOps Server 視為一個持續演進的產品，而不是每隔幾年就出一個「完全不同」的新名字。實際上底層還是有 build number 與發行批次，只是對使用者來說，重點放在「最新 Azure DevOps Server + 對應累積更新」；就像我常被客戶問到：今年都 2025 年了，Azure DevOps Server 最新版還在 2022.2，微軟是不是很久沒更新這個產品了？<s>(大誤)</s></li>
-<li><strong>以「發行批次 / 累積更新」與支援週期為主軸</strong><br>
-官方的 Release Notes 也改成「Azure DevOps Server Release Notes」這樣的形式，新的 RTW/RC、累積更新（cumulative updates）都掛在同一頁，讓大家用「目前安裝的是哪一個 release」來辨識，而不是只記年份或版號。</li>
-<li><strong>與雲端 Azure DevOps Services 的節奏對齊</strong><br>
-雲端服務本來就是持續更新、不強調版號，地端版也朝這個方向靠攏。對於有混合情境（雲端 + 地端）的團隊來說，在比較功能差異或規劃遷移時也比較直覺。</li>
-</ul>
-<p>換句話說：版本仍然存在（build number、支援週期一樣重要），只是公開溝通時不再把「年份」放在產品名稱裡，而是強調「這一個 Azure DevOps Server 發行批次」所帶來的變化與支援範圍。</p>
-<br>
-<h2 id="正式版發佈重點（GA-RTW-Highlights）">正式版發佈重點（GA / RTW Highlights）</h2>
-<p>根據官方部落格與 Release Notes，這次 Azure DevOps Server RTW 主要有幾個值得注意的重點：</p>
-<ul>
-<li><strong>從 RC 過渡到正式版，適合生產環境全面部署</strong><br>
-這次 GA 是在 RC 基礎上進一步收斂修正後的 RTW 版本，針對企業實際使用情境做了額外的穩定度與品質調整，定位上已經是可以在正式環境大規模導入的版本。</li>
-<li><strong>支援 SQL Server 2025</strong><br>
-RTW 明確標示為「支援 SQL Server 2025 的彙總發行（roll up）」；如果大家準備在資料庫層升級到 SQL Server 2025，這個版本就是官方對應的 Azure DevOps Server 搭配選項。</li>
-<li><strong>直接升級路徑清楚</strong><br>
-官方支援從 Azure DevOps Server 2019 / 2020 / 2022，或 Team Foundation Server 2015（含）之後的版本直接升級到 Azure DevOps Server。若還停在 TFS 2013 甚至更早，就需要先做中繼升級（要先升級到 2015 才能再升到目前最新的 Azure DevOps Server）。<br>
-<mark>同時也提醒：TFS 2015 已在 2025/10/14 結束延伸支援，若還停留在舊版本，這次 GA 其實是很好的「順勢升級」時機。</mark></li>
-<li><strong>品質修正與細節優化</strong><br>
-RTW 版本除了合併本地化調整外，還修正了多個實務上會遇到的問題，例如：
-<ul>
-<li>儀表板 Code Tile 在儲存庫或分支名稱太長時的顯示問題。</li>
-<li>GitHub PR 狀態透過 webhook 回寫時，已合併與未合併都被記成 Closed 的狀況，現在會依 payload 的 merged flag 正確區分。</li>
-<li>某些 Work Item Linking 情境下，Visual Studio 會因遞迴屬性造成當機的問題。</li>
-<li>Collection 設定頁中，如果 Analytics 被暫停或停用，Agent Pool 頁面會載入失敗的情形，現在已可正常顯示。</li>
-</ul>
-</li>
-<li><strong>完整的下載與文件連結</strong><br>
-官方提供 ISO、Web Install、下載頁、系統需求/相容性與安裝文件，方便 IT 做標準化佈署與維運規劃。</li>
-</ul>
-<br>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/12/azure-devops-server-ga/upgrade-azure-devops-server.png"
-                        class=""
-                 >
-<br>
-<h2 id="新功能與改進：各服務重點整理">新功能與改進：各服務重點整理</h2>
-<p>這次 GA 包含 RC 階段累積的一大串新功能與改進，底層細節很多，這裡依服務簡單抓幾個實務上比較有感的部分做摘要，方便大家快速掌握方向。</p>
-<h3 id="General">General</h3>
-<ul>
-<li><strong>Markdown 程式碼區塊一鍵複製</strong><br>
-Wiki、Repos 檔案預覽、PR 討論與 Work item 討論中的程式碼區塊，都多了一個 <strong><code>Copy to clipboard</code></strong> 按鈕，貼上範例或文件內容給團隊成員時效率更高。</li>
-<li><strong>Delivery Plans 權限更細緻</strong><br>
-新增「Manage Delivery Plans」專用權限，避免 Readers 類型的使用者不小心取得不必要的寫入權限，有助於大型組織控管誰可以建立或維護計畫視圖。</li>
-</ul>
-<h3 id="Boards">Boards</h3>
-<ul>
-<li><strong>GitHub PR 中的 AB# 連結顯示優化</strong><br>
-在 PR 描述裡用 AB#123 這種方式連結 Work item 時，現在會直接出現在 GitHub PR 的 Development 區塊，從 PR 就能快速回到對應的 Azure Boards 工作項目，追蹤性更好。</li>
-<li><strong>連結大量 GitHub Repos 的體驗改善</strong><br>
-當一個 GitHub 組織裡有成千上萬個儲存庫時，以前在 Azure Boards 裡搜尋/連結很容易 timeout，現在搜尋與載入流程經過最佳化，大型組織會感受比較明顯。</li>
-<li><strong>YAML Pipelines 的「Integrated in build」連結支援 GitHub</strong><br>
-針對放在 GitHub 的 repo，現在 YAML pipeline 也能在完成 build 後自動在相關 Work item 上顯示「已在哪個 build 中整合」，讓 YAML 與傳統 Classic pipeline 在追蹤能力上更接近。</li>
-<li><strong>GitHub 連線 REST API</strong><br>
-新增一組 API 讓我們可以程式化地查詢、新增或移除 GitHub Repositories 連結，並將單一連線可掛載的 repo 上限從 500 提升到 2,000，方便用 Script 自動化維護大規模整合。</li>
-<li><strong>刪除 Area / Iteration 更安全</strong><br>
-現在只有在沒有任何 Work item 使用該路徑時，才能刪除 Area 或 Iteration，避免一個不小心影響一大堆看板、報表與存取權限。</li>
-<li><strong>標籤與留言體驗升級</strong><br>
-刪除的 Tag 不會再出現在建議清單裡，Work item 討論也能更方便貼上來自 Teams、Email、Word 等來源的圖片，REST API 另外新增留言數量限制，避免濫用導致效能或安全問題。</li>
-<li><strong>Delivery Plans 數量上限提高</strong><br>
-每個專案可建立的 Delivery Plans 上限，從 1,000 提升到 1,500，對於有大量跨團隊規劃需求的組織比較友善。</li>
-</ul>
-<h3 id="Repos">Repos</h3>
-<ul>
-<li><strong>可選擇停用新的 TFVC 儲存庫建立</strong><br>
-Git 已經是主流，微軟也明確表示近年不再為 TFVC 加新功能。這次新增一個設定，讓我們可以關閉「建立新的 TFVC Repo」，既不影響既有 TFVC 專案，又能避免新專案再誤用 TFVC。</li>
-<li><strong>Git submodules UI 支援</strong><br>
-在檔案總管（Files hub）中，可以直接看懂並點進 submodule 指向的儲存庫與特定 commit，支援 Azure Repos、GitHub、GitLab、Bitbucket 等多種來源與 URL 格式，對有 Monorepo 或模組化拆分的團隊很實用。</li>
-<li><strong>Repository Health and usage 面板</strong><br>
-大型儲存庫會拖慢整體效能，現在 Repos 會監看儲存庫大小、commit 密度與內容結構等指標，必要時會提示 repository owner 檢查健康狀態與最佳化建議。</li>
-<li><strong>自訂 PR 目標分支建議</strong><br>
-只要在預設分支下建立 .azuredevops/pull_request_targets.yml，就可以定義常見的目標分支（例如 main、release/* 等），建立 PR 或系統自動建議 PR 時就會優先採用這些設定，減少開 PR 開錯分支的情況。</li>
-<li><strong>Markdown 支援 Mermaid 圖表與 PR 標題搜尋</strong><br>
-Repos 中的 Markdown 如果包含 mermaid 語法，現在會直接渲染成圖表；PR 列表頁也多了依標題搜尋的功能，方便在大量 PR 中快速找到目標。</li>
-<li><strong>Pipelines Checkout 支援 sparse checkout</strong><br>
-YAML 的 checkout 步驟新增 sparseCheckoutDirectories / sparseCheckoutPatterns 兩個設定，可只抓部分目錄或路徑，大型 repo 跑 CI/CD 時可以明顯縮短 checkout 時間（需要較新的 Agent 版本）。</li>
-<li><strong>其他 API 與相容性改善</strong><br>
-包含 cross-repo policy 預覽改成大小寫敏感（與實際規則一致）、TFVC check-in policy 新格式與 NuGet 套件更新、Repo 資訊 API 增加建立時間欄位、PR 查詢 API 可選擇回傳標籤（labels）等。</li>
-</ul>
-<h3 id="Pipelines">Pipelines</h3>
-<ul>
-<li><strong>TFX 與 Task Node runtime 健康檢查</strong><br>
-用 TFX 發佈 extension 時，現在會檢查 Task 是否還在使用已 EOL 的 Node.js 版本（例如 Node.js 10/12/16 等），並給出警告訊息，提醒作者儘早升級。</li>
-<li><strong>Pipeline 執行時也會對老舊 Node.js runner 發警示</strong><br>
-如果某個 Task 仍依賴已不再維護的 Node.js 版本，執行時會在 log 裡出現警告，並提供官方升級指引連結；若暫時無法調整，也可以透過環境變數關閉這個檢查（不過長期來看還是建議盡快升級）。</li>
-<li><strong>DockerCompose@0 改用 Compose v2 相容模式</strong><br>
-Hosted Agent 即將移除 Docker Compose v1，因此 DockerCompose@0 Task 會在沒有 v1 時自動改用 v2 的相容模式；若專案還沒做好 v2 相容性，官方也提供範例腳本，教大家在 Pipeline 裡自行下載 v1 執行檔暫時過渡。</li>
-<li><strong>使用 Microsoft Entra ID 存取 Azure Service Bus</strong><br>
-新版 PublishToAzureServiceBus@2 Task 可以用 Azure Service Connection 搭配 Entra ID（原 Azure AD）存取 Service Bus，支援透過 RBAC 控制權限，比直接塞連線字串安全許多，自訂 server task 也能改用 service connection。</li>
-</ul>
-<h3 id="Test-Plans">Test Plans</h3>
-<ul>
-<li><strong>Test &amp; Feedback 擴充功能升級到 Manifest V3</strong><br>
-Chrome/Edge 上的 Test &amp; Feedback 延伸模組已改用 Manifest V3，跟上瀏覽器的安全性與效能要求，功能維持不變。</li>
-<li><strong>Azure Test Runner 與 Chrome 相容性修正</strong><br>
-針對最近 Chrome 在 URL 處理上的變更，更新後的 Azure Test Runner 版本已修正啟動失敗的問題。</li>
-<li><strong>Test Plans 與 Build Pipeline 整合更順</strong><br>
-在 Test Plan 裡設定好的 Build 定義與 ID 會自動帶到 Web Runner，不需要每次手動重設，減少測試流程中的行政作業。</li>
-<li><strong>支援透過 REST API 還原刪除的 Test Plan / Suite</strong><br>
-不小心刪錯 Test Plan 或 Suite 時，現在可以用 API 查詢並還原（包含子階層），不用再倚賴客服協助，不過既有的執行結果等 artifact 並不會一併回復。</li>
-<li><strong>匯出 Test Case 到 XLSX 支援自訂欄位</strong><br>
-匯出測試案例時可以帶出自訂欄位，做報表或離線分析比較方便。</li>
-<li><strong>測試執行體驗優化</strong><br>
-包含 Test Plans 目錄支援欄位排序、Web/Desktop Runner 提供「Undo」回復步驟狀態、Publish code coverage v2 Task 支援更多格式與 PR 差異覆蓋率（diff coverage）等。</li>
-<li><strong>Test Plans 支援 YAML Pipelines</strong><br>
-除了 Classic pipeline，現在也可以選擇 YAML pipeline 來執行自動化測試，對已全面轉向 YAML 的團隊非常關鍵。</li>
-</ul>
-<h3 id="Reporting-Wiki">Reporting &amp; Wiki</h3>
-<ul>
-<li><strong>Backlog Rollup 資料顯示更清楚</strong><br>
-Rollup 欄位會顯示最近一次成功計算的資料與時間戳記，即使 Analytics 略有延遲，也比較不會誤以為是資料遺失。</li>
-<li><strong>Wiki 貼上 HTML 內容自動轉 Markdown</strong><br>
-從瀏覽器、Office、Teams 等地方複製的 HTML 內容（像是清單、表格、圖片、連結等）貼到 Wiki 時，會自動轉成對應的 Markdown 語法，編輯起來順手很多。</li>
-</ul>
-<br>
-<h2 id="什麼時候該考慮升級？">什麼時候該考慮升級？</h2>
-<p>綜合來看，這次 Azure DevOps Server GA 有幾個關鍵訊號：</p>
-<ul>
-<li>若後端環境有計畫升級到 <strong>SQL Server 2025</strong>，這是官方明確對應的 Azure DevOps Server 版本。</li>
-<li>若還在 <strong>TFS 2015 或更舊版本</strong>，這次 GA 搭配延伸支援結束，是很適合規劃「一次到位」升級的時點。</li>
-<li>如果團隊已大量使用 <strong>Git + YAML Pipelines + GitHub 整合</strong>，這一波新功能會讓追蹤性與操作體驗更接近雲端版 Azure DevOps Services。</li>
-</ul>
-<p>微軟把 Azure DevOps Server 宣布為正式版（GA），意義是地端產品已經夠穩定、可以在企業生產環境大規模使用，同時正式支援 SQL Server 2025；名稱也回歸「Azure DevOps Server」，改用發行批次與累積更新來管理版本。這個 RTW 在 RC 基礎上修正多項實務問題，並帶來對 Boards、Repos、Pipelines、Test Plans、Wiki 等功能的多項改善（像是更好的 GitHub 整合、repo 健康檢查、sparse checkout、YAML 與 Test Plans 的整合等），不論是環境打算要升到 SQL Server 2025、或還在舊版 TFS，或已大量使用 Git + YAML + GitHub，都是評估並規劃升級很好的時機。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://devblogs.microsoft.com/devops/announcing-azure-devops-server-general-availability"  target="_blank">⁍ Announcing Azure DevOps Server General Availability<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/en-us/azure/devops/server/release-notes/azuredevopsserver?view=azure-devops-server"  target="_blank">⁍ Azure DevOps Server Release Notes <i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-]]></content>
-      <tags>
-        <tag>Azure DevOps</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Azure DevOps Services 個別服務</title>
-    <url>/post/2025/04/azure-devops-individual-services/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-individual-services/individual_services.jpg"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p><a href="/post/2024/09/azure-devops-licensing-description">上一篇文章</a>提到了 Azure DevOps 雲端和地端的使用者授權，當我們建立私有專案 (Private project) 且成員數量在 5 個人以下時，甚至可以直接免費使用，從第 6 個人起才需要計價，並具有 1 Free Microsoft-hosted CI/CD 和 1 Free Self-hosted CI/CD 以及 Azure Artifacts 2GB 可用儲存容量。在實務使用情境較複雜時，很有可能就需要再增加個別服務的用量 (例如：Azure Pipelines 平行作業數量)，這次就帶大家瞭解這些個別服務計價的方式。</p>
-<span id="more"></span>
-<br>
-<h2 id="Azure-Pipelines">Azure Pipelines</h2>
-<p>不論我們在 Azure Pipelines 使用文字介面或是圖形介面 (classic editor) 建立 pipeline 腳本內容，其中有個 <strong><code>Agent pools</code></strong> 選項是必要設定，它是用來決定執行階段要把工作 (job) 傳遞到哪個 pool 裡，尋找閒置且符合條件的 <strong>Azure Pipelines agents</strong> 執行個體來執行腳本內容，在 Azure DevOps Services 預設有一個 Microsoft-hosted agent 每個月可以免費使用 1800 分鐘，<mark>但預設無法直接使用</mark>，需要填寫 <strong><a class="link"   href="https://aka.ms/azpipelines-parallelism-request" >Azure DevOps Parallelism Request<i class="fas fa-external-link-alt"></i></a></strong> 表單申請審核通過才行，否則在執行的時候會出現如下錯誤：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-individual-services/azpipelines-parallelism-request.jpg"
-                        class=""
-                 >
-<p>當然我們也可以自己準備機器，在上面安裝 Azure Pipelines agents 程式 (支援 Windows / Linux / macOS)，這就屬於 Self-hosted agent。由於是自己準備的執行個體，所以使用時數不受限制，但每個工作 (job) 都是經由佇列 (queue) 的方式排隊一個一個執行，若需要同時間處理一個以上的工作 (job)，則需要再增加執行個體才行 (不論是 Microsoft-hosted 或是 Self-hosted)，基於這樣的概念，以下就是我們所關心的計價標準：</p>
-<ul>
-<li>每一個 Microsoft-hosted 每個月有 1800 分鐘可以使用。</li>
-<li>每增加一個額外的 Microsoft-hosted CI/CD 每個月是 USD $40 (大約 <strong>TWD $1279</strong>)。</li>
-<li>每增加一個額外的 Self-hosted CI/CD 每個月是 USD $15 (大約 <strong>TWD $479</strong>)。</li>
-<li><mark>如果在地端自建 Azure DevOps Server 則僅能使用 Self-hosted agent，需要更多的平行作業就自己多準備幾個執行個體，不用再額外採購什麼授權。</mark></li>
-</ul>
-<h2 id="Azure-Artifacts">Azure Artifacts</h2>
-<p>在軟體專案開發過程中，多少都會用到一些公司內部自行開發，或是外部來源提供的套件，一般常見的套件來源像是：NuGet、npm、Maven、Python…等，Azure Artifacts 可以將這些外部提供來源設為上游來源 (Upstream sources)，或是自己建立一個套件提供來源 (Feeds)，讓專案團隊成員在內部環境取用，儲存容量在 2GB 以內是免費，若超過則依下列區間以量計價：</p>
-<table>
-<thead>
-<tr>
-<th>儲存容量</th>
-<th>每GB (USD)</th>
-<th>每GB (TWD)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0 - 2 GB</td>
-<td>免費</td>
-<td>免費</td>
-</tr>
-<tr>
-<td>2 - 10 GB</td>
-<td>$2</td>
-<td>大約 $63.98</td>
-</tr>
-<tr>
-<td>10 - 100 GB</td>
-<td>$1</td>
-<td>大約 $31.99</td>
-</tr>
-<tr>
-<td>100 - 1000 GB</td>
-<td>$0.50</td>
-<td>大約 $16.00</td>
-</tr>
-<tr>
-<td>1000 GB 以上</td>
-<td>$0.25</td>
-<td>大約 NT$8.00</td>
-</tr>
-</tbody>
-</table>
-<h2 id="GitHub-Advanced-Security-for-Azure-DevOps">GitHub Advanced Security for Azure DevOps</h2>
-<p>以往我們想要對專案程式碼執行原碼檢測、套件掃描等作業，首先要考量的可能是產品的價錢，或是委外檢測的費用，比較克難一點還可以尋找免費的掃描檢測工具(例如只是想要出個報告 🙈 🙊)，若想要整合到 CI 流程裡，還要得額外花一番功夫，但基本上只要可以透過 command line 來執行，都是可以用 Azure Pipelines 整合起來的。而自從 <strong>GitHub Advanced Security for Azure DevOps</strong> 正式啟用後，省掉了這部份不少麻煩，除了原生的與 Azure DevOps Services 整合 <mark>(不包含地端 Azure DevOps Server)</mark>，也可以與 <strong>Microsoft Defender for Cloud</strong> 串接，它可以做到：</p>
-<ul>
-<li><strong>Code Scanning</strong>：找出原始程式碼中的漏洞並提供修復指導。</li>
-<li><strong>Secret Scanning</strong>：識別 secret 並阻止開發人員將 secret 推送到程式碼儲存庫。</li>
-<li><strong>Dependency Scanning</strong>：發現 open-source 依賴項目的漏洞，並為開發人員自動發出更新警報。</li>
-</ul>
-<p>在 Azure Pipelines 也提供了下列對應的 task 以便我們完善整個 <strong><code>DevSecOps</code></strong> 流程：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-individual-services/github_acvanced_security.jpg"
-                        class=""
-                 >
-<p>這個功能可以由每個 git 的儲存庫 (repositry) 個別設定是否啟用 (不支援 TFVC 版控)，計價的原則是：每一個活躍的提交者 (active committer) 每個月 <strong>USD $49</strong> (大約 <strong>TWD $1567</strong>)，在<mark>同一個 Azure Subscription</mark> 中，儲存庫過去 <strong><code>90天</code></strong> 的紀錄中，同一個提交者(committer)在不同專案提交程式碼只會算 1 個數量，不會被重複計價。當我們在 git 儲存庫開啟 <strong><code>Advanced Security</code></strong> 功能時，Azure DevOps 在畫面上也會先幫我們基於上述原則計算有多少使用者會被計費，確定要使用再點選 <strong><code>Begin billing</code></strong> 即可：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-individual-services/unique_committers.jpg"
-                        class=""
-                 >
-<p>如同 Azure 各種服務的計價方式，都是<strong>隨付即用 (pay-as-you-go)</strong>，啟用 <strong>GitHub Advanced Security for Azure DevOps</strong> 搭配 CI 流程可以讓我們在開發階段及早發現問題與漏洞，有效減少技術債和後期投入修改的人力成本，跟測試左移 (Shift-Left Testing) 的概念有點雷同，也可以省下大筆購入源碼檢測軟體的費用，大家可以參考看看。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/"  target="_blank">⁍ Azure DevOps 定價<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://azure.microsoft.com/zh-tw/products/devops/github-advanced-security"  target="_blank">⁍ 適用於 Azure DevOps 的 GitHub Advanced Security<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml"  target="_blank">⁍ 設定適用於 Azure DevOps 的 GitHub Advanced Security<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>]]></content>
-      <tags>
-        <tag>Azure DevOps</tag>
-        <tag>授權</tag>
       </tags>
   </entry>
   <entry>
@@ -2398,86 +2245,422 @@ Rollup 欄位會顯示最近一次成功計算的資料與時間戳記，即使 
       </tags>
   </entry>
   <entry>
-    <title>Azure DevOps Services / Server 使用者授權</title>
-    <url>/post/2025/04/azure-devops-licensing-description/</url>
+    <title>整理 Context 的利器 — MarkItDown 與 Docling</title>
+    <url>/post/2025/10/docling-to-markdown/</url>
     <content><![CDATA[<img    
                        lazyload
                        alt="image"
-                       data-src="/post/2025/04/azure-devops-licensing-description/affliction512.jpg"
+                       data-src="/post/2025/10/docling-to-markdown/logo.png"
                          align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
                  > 
-<p>Azure DevOps 是一個可以讓我們有效管理軟體開發流程，同時維持良好團隊協作的強大平台，除了可以直接使用雲端 Azure DevOps Services，也可以在地端自建 Azure DevOps Server 讓企業內部環境也能提供相同的服務，但許多人遇到的第一個問題是如何購買授權才能讓成本效益最大化？這篇文章主要協助大家瞭解 Azure DevOps 在授權與定價上的內容。</p>
-<br>
+<p>在 Agentic AI 的各式應用場景中，提供正確且良好品質的上下文來源是至關重要的環結，實務上我們可能透過 RAG 從外部檢索資料，或是從手邊的各種檔案格式轉換成 markdown 來提供 LLM 作為上下文參考資料以便展開執行後續的任務，若以輕量、快速上手為考量，可以試試 MarkItDown，但若只能在純地端環境執行，或是對於文件內容(例如：表格、版面)有更高的解析需求不妨試試 Docling，本文以實務角度比較兩者設計取向、支援格式與優缺點，以及提供不同應用場景的建議。</p>
 <span id="more"></span>
-<br>
-<h2 id="Azure-DevOps-Services">Azure DevOps Services</h2>
-<p>Azure DevOps 有五個主要功能：</p>
-<ol>
-<li><strong>Azure Boards</strong> (專案管理、看板管理、Scrum / Kanban、討論議題)</li>
-<li><strong>Azure Repos</strong> (程式碼版控 TFVC/git)</li>
-<li><strong>Azure Pipelines</strong> (自動化建置部署)</li>
-<li><strong>Azure Artifacts</strong> (套件管理、自建套件來源)</li>
-<li><strong>Azure Test Plans</strong> (建立與執行測試計劃)</li>
-</ol>
-<h3 id="Basic-Plan-與-Basic-Test-Plans">Basic Plan 與 Basic + Test Plans</h3>
+<p>在建立知識庫、資料前處理或把企業文件提供給 LLM 時，原始文件往往可能是 PDF、各種 Office 文件格式、圖片或音訊，而真正要給 LLM 使用時，需要：</p>
+<ul>
+<li>保留語意與結構（標題、段落、表格…等）。</li>
+<li>去除雜訊並以 token 使用效率高的格式呈現（例如：Markdown）。</li>
+<li>在有需要時，保留更結構化的表示（例如：JSON）以便後續自動化處理。</li>
+</ul>
+<p>MarkItDown 與 Docling 都致力於把各種來源轉成容易被 LLM 或檢索系統消化的輸出，但設計側重與功能集合有明顯差異，下面我們直接比較。</p>
+<h2 id="MarkItDown">MarkItDown</h2>
+<ul>
+<li>出處：由 Microsoft AutoGen 團隊維護（Python）。</li>
+<li>設計取向：把各式檔案轉成「結構化 Markdown」；以 LLM 與文本分析為取向。</li>
+<li>優勢：
+<ul>
+<li>直接產生適合 LLM 的 Markdown（標題、列表、表格、內嵌程式碼等）。</li>
+<li>支援多媒體（圖片 OCR、音訊轉錄、YouTube 字幕抓取）。</li>
+<li>可用作 MCP 伺服器，利於 AI Agent／LLM 整合。</li>
+</ul>
+</li>
+<li>限制：
+<ul>
+<li>對於複雜的 PDF 版面（精細表格、多欄佈局、複雜閱讀順序），解析深度稍嫌不足。</li>
+<li>若要取得更高階 PDF 能力，可能會依賴 Azure Document Intelligence（雲端）。</li>
+</ul>
+</li>
+</ul>
+<p>若要使用 MarkItDown MCP 現在可以在 GitHub MCP Registry(https://github.com/mcp) 列表找到，也可以 docker 方式或 clone 整個專案在本地端以 STDIO 的方式執行，參考微軟官方 GitHub 說明。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://github.com/mcp"  target="_blank">⁍ GitHub MCP Registry<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://github.com/microsoft/markitdown?tab=readme-ov-file"  target="_blank">⁍ GitHub | MarkItDown<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://github.com/microsoft/markitdown/tree/main/packages/markitdown-mcp"  target="_blank">⁍ GitHub | MarkItDown MCP<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+<h2 id="Docling">Docling</h2>
+<ul>
+<li>出處：由 Docling Project（原起始於 IBM Research Zurich，目前管於 LF AI &amp; Data）維護。</li>
+<li>設計取向：專注於文件理解，特別是進階 PDF 解析（版面、閱讀順序、表格結構、公式、程式碼、影像分類），並提供統一的 DoclingDocument 表示與多種匯出選項。</li>
+<li>優勢：
+<ul>
+<li>在複雜 PDF（掃描文件、排版、多欄表格）與表格重構上表現優異，使用自家模型（DocLayNet、TableFormer）提升解析品質。</li>
+<li>支援本地執行（適合敏感資料或隔離環境），也有 VLM / ASR 整合能力。</li>
+<li>輸出豐富：Markdown / HTML / JSON / DocTags 等，便於後續分析或顯示詳細資訊。</li>
+<li>與 LangChain、LlamaIndex、Haystack 等生態系可以直接整合，便於搭建 RAG pipeline。</li>
+</ul>
+</li>
+<li>限制：
+<ul>
+<li>因為功能較廣、選項較多，學習曲線會比 MarkItDown 高。</li>
+<li>Docling 會完全在本地環境執行，需要考量相關系統資源 (是優點也是缺點)。</li>
+</ul>
+</li>
+</ul>
+<p>如何取得並建置 Docling 環境可以參考 GitHub 專案，它一樣有支援 MCP 但要在它的官網才找得到說明，如同前面說的，它是完全在本地端執行，所以 MCP 是由 uvx 來執行啟動。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://github.com/docling-project/docling"  target="_blank">⁍ GitHub | Docling <i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://docling-project.github.io/docling/"  target="_blank">⁍ Docling<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://docling-project.github.io/docling/usage/mcp/"  target="_blank">⁍ Docling MCP<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+<p>如果想要手動在 mcp.json 加入這兩個 MCP 工具，可以直接參考：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	<span class="attr">&quot;servers&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		<span class="attr">&quot;microsoft/markitdown&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">			<span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;stdio&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;uvx&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">				<span class="string">&quot;markitdown-mcp==0.0.1a4&quot;</span></span><br><span class="line">			<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;gallery&quot;</span><span class="punctuation">:</span> <span class="string">&quot;https://api.mcp.github.com&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1.0.0&quot;</span></span><br><span class="line">		<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">		 <span class="attr">&quot;docling&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		 <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;uvx&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">				<span class="string">&quot;--from=docling-mcp&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="string">&quot;docling-mcp-server&quot;</span></span><br><span class="line">			<span class="punctuation">]</span></span><br><span class="line">		<span class="punctuation">&#125;</span></span><br><span class="line">	<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;inputs&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<h2 id="支援格式與各面向比較">支援格式與各面向比較</h2>
+<table>
+<thead>
+<tr>
+<th>格式</th>
+<th>MarkItDown</th>
+<th>Docling</th>
+<th>備註</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PDF</td>
+<td>良好</td>
+<td>優秀（尤其是複雜/掃描文件）</td>
+<td>MarkItDown 對一般 PDF 處理良好；若需高保真解析或掃描 OCR 建議用 Docling</td>
+</tr>
+<tr>
+<td>DOCX / PPTX / XLSX</td>
+<td>支援</td>
+<td>支援</td>
+<td>兩者皆可處理 Office 文件</td>
+</tr>
+<tr>
+<td>Images</td>
+<td>OCR、EXIF 支援</td>
+<td>OCR + VLM（視覺語言模型）分類支援</td>
+<td>Docling 在影像分類與 VLM 整合上較強</td>
+</tr>
+<tr>
+<td>Audio (WAV / MP3)</td>
+<td>支援音訊轉錄</td>
+<td>ASR 支援</td>
+<td>兩者皆支援轉錄；可串接不同模型以改善品質</td>
+</tr>
+<tr>
+<td>HTML</td>
+<td>支援</td>
+<td>支援</td>
+<td>皆可匯入網頁內容</td>
+</tr>
+<tr>
+<td>Markdown</td>
+<td>原生支援</td>
+<td>支援匯入/匯出</td>
+<td></td>
+</tr>
+<tr>
+<td>CSV / JSON / XML</td>
+<td>文字格式支援</td>
+<td>支援</td>
+<td>適合結構化文字資料</td>
+</tr>
+<tr>
+<td>YouTube</td>
+<td>可抓取與轉錄</td>
+<td>可處理 WebVTT / 影片字幕</td>
+<td>MarkItDown 偏向抓取與轉錄；Docling 處理字幕檔更完整</td>
+</tr>
+<tr>
+<td>EPUB / ZIP</td>
+<td>支援</td>
+<td>支援</td>
+<td>支援程度依內容與封裝方式而異</td>
+</tr>
+<tr>
+<td>VTT / WebVTT</td>
+<td>支援</td>
+<td>支援</td>
+<td>若以字幕為主，Docling 支援度較好</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>設計目標：</p>
+<ul>
+<li>MarkItDown：以「快速把各類來源轉成 LLM-friendly Markdown」為核心，偏重 token 效率與多媒體前處理。</li>
+<li>Docling：以「高保真文件理解」為核心，強調版面/表格/閱讀順序的精確還原與 lossless 結構化。</li>
+</ul>
+</li>
+<li>
+<p>解析深度與還原度：</p>
+<ul>
+<li>MarkItDown：輸出以可讀且可索引的 Markdown 為主，對一般文件足夠；遇到跨欄或複雜表格時可能會犧牲部分細節。</li>
+<li>Docling：使用版面模型與表格重建，保留更多區塊座標與結構資訊，適合需精準抽取或重現原始排版的情境。</li>
+</ul>
+</li>
+<li>
+<p>多媒體支援：</p>
+<ul>
+<li>MarkItDown：支援音訊轉錄、YouTube 字幕抓取、圖片 OCR 等，偏向 LLM 前處理工作流。</li>
+<li>Docling：也支援 OCR/ASR/VLM，但更強調影像分類、表格語意重構與公式/程式碼片段的解析。</li>
+</ul>
+</li>
+<li>
+<p>本地化 vs 雲端依賴：</p>
+<ul>
+<li>MarkItDown：可本地執行，但在某些高階 PDF 能力上會建議採用雲端 Azure Document Intelligence 作為選項。</li>
+<li>Docling：設計上強調本地端運行，適合敏感資料或離線環境。</li>
+</ul>
+</li>
+<li>
+<p>效能與資源需求：</p>
+<ul>
+<li>MarkItDown：輕量、上手快，適合大量快速預處理。</li>
+<li>Docling：依賴模型與較高運算資源，單檔處理時間較長但輸出更精確。</li>
+</ul>
+</li>
+<li>
+<p>整合生態與可擴充性：</p>
+<ul>
+<li>MarkItDown：以 plugin 與 MCP 為導向，容易接入 AI Agent / LLM pipeline。</li>
+<li>Docling：提供豐富的 JSON / Markdown / HTML 匯出，與 LangChain、LlamaIndex 等檢索生態整合良好，利於深度資料工程。</li>
+</ul>
+</li>
+<li>
+<p>可驗證性與審核：</p>
+<ul>
+<li>MarkItDown：輸出簡潔，人工檢視方便，但在表格或版面細節需抽樣驗證。</li>
+<li>Docling：提供中間結構（座標、區塊、表格邊界），便於自動化驗證與回溯修正。</li>
+</ul>
+</li>
+<li>
+<p>學習曲線與運維成本：</p>
+<ul>
+<li>MarkItDown：學習低、文件少、運維簡單。</li>
+<li>Docling：功能與選項多，需時間調校模型與處理參數，運維成本較高。</li>
+</ul>
+</li>
+</ul>
+<h2 id="總結">總結</h2>
+<p>MarkItDown 與 Docling 均可將各類原始文件轉為 LLM 友好的結構化格式，但設計取向與適用場景不同：MarkItDown 輕量且易上手，輸出以節省 token 的 Markdown 為主，適合大量快速預處理與整合至 AI Agent / LLM pipeline；Docling 則強調高保真文件理解與版面還原，擅長複雜 PDF、表格重建及本地化運行，適用於需精準解析或資安敏感的情境。實務上如果是遇到比較複雜的文件內容，例如像論文有分左右兩欄、各式表格，或是有圖片需要 OCR 辨識、流程圖想要轉換成 Mermaid，使用 Docling 產出的結果都蠻不錯的，強力推薦給大家!</p>
+  <!-- 實務上建議依文件類型、解析精度、處理量與可用資源做選擇，並透過抽樣驗證或混合流程（以 MarkItDown 做批次預處理、以 Docling 處理關鍵或需人工驗證的檔案）來兼顧效率與精確性。 -->
+<p>.xls -&gt; .md</p>
 <img  
                        lazyload
                        alt="image"
-                       data-src="/post/2025/04/azure-devops-licensing-description/Basic_TestPlans.jpg"
+                       data-src="/post/2025/10/docling-to-markdown/docling-excel.jpg"
                         class=""
                  >
-<p>在 Azure DevOps 定價頁面中的 <strong><code>Basic Plan</code></strong> 包含了前面四項功能，費用是 <strong>USD $6</strong> (每個人/月)，折合台幣就要看當月的匯率計算 (例如目前是 TWD <strong>$191</strong>)；一般來說，在專案團隊裡並不是每個成員都需要建立與管理測試計劃，所以 <strong>Azure Test Plans</strong> 這項功能額外被拆出來計價，若選擇 <strong><code>Basic + Test Plans</code></strong> 費用則是 <strong>USD $52</strong> (大約 TWD <strong>$1663</strong>)。</p>
-<h3 id="Stakeholder">Stakeholder</h3>
-<p>除了上述兩種存取層級(Access level)之外，還有一種是免費、可使用<mark>有限功能</mark>的 <strong><code>Stakeholder</code></strong>，比較簡單的來說，這個存取層級可以：</p>
-<ul>
-<li>建立 / 編輯 / 查詢工作項目</li>
-<li>檢視 / 核准 pipeline</li>
-<li>檢視測試計劃</li>
-</ul>
-<p>如同它的名稱一樣：想要瞭解專案資訊，但又不需要實際參與開發實作細節(例如：單位主管、使用單位…等)，就不用再額外採購授權，使用 <strong><code>Stakeholder</code></strong> 這個存取層級就行。若需要 <strong>程式碼版控</strong>、<strong>建立/編輯 pipeline</strong>、<strong>執行測試計劃</strong> 那就不用猶豫了，至少一定需要 <strong><code>Basic</code></strong> 存取層級才能使用，這些資訊可以參閱下列連結，利用頁面裡的幣別下拉選單、拖曳數量捲軸來即時檢視費用估算，頁面最後還有一個針對不同存取層級的功能比較表，方便大家查閱。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/"  target="_blank">⁍ Azure DevOps 定價<i class="fas fa-external-link-alt"></i></a>
-<br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/organizations/security/stakeholder-access?view=azure-devops"  target="_blank">⁍ 項目關係人存取快速參考<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<h3 id="Visual-Studio-Subscription">Visual Studio Subscription</h3>
-<p>若目前已經具備 <strong>Visual Studio monthly subscription</strong> (注意：<mark>訂閱制</mark>才行)，它也包含了 Azure DevOps 的使用授權，基本上可以理解為：<strong>Visual Studio Professional monthly subscription</strong> 包含了 <strong><code>Basic Plan</code></strong>，而 <strong>Visual Studio Enterprise monthly subscription</strong> 包含了 <strong><code>Basic + Test Plans</code></strong>，詳細功能支援列表可以參考下列連結。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/organizations/security/access-levels?view=azure-devops"  target="_blank">⁍ 關於存取層級<i class="fas fa-external-link-alt"></i></a>
-<br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=ms.vs-professional-monthly"  target="_blank">⁍ Visual Studio Professional monthly subscription<i class="fas fa-external-link-alt"></i></a>
-<br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=ms.vs-enterprise-monthly"  target="_blank">⁍ Visual Studio Enterprise monthly subscription<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<h2 id="Azure-DevOps-Server">Azure DevOps Server</h2>
-<p>要在地端環境自建 Azure DevOps Server 則需要先準備好 SQL Server 環境，兩者在版本上有相依性，例如：Azure DevOps Server 2022 需要搭配 SQL Server 2019 以上 (不支援 Linux 上的 SQL Server)，其他版本與相關需求建議可以參考下列連結。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/server/requirements?view=azure-devops-2022"  target="_blank">⁍ Azure DevOps 內部部署的需求<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-<p>以授權的概念來說，安裝幾台 Azure DevOps Server 就需要幾個 Server CAL，可以透過下列幾種方式取得合法授權：</p>
-<ul>
-<li>傳統購買 (<mark>3年SA</mark>) Azure DevOps <mark>Server</mark> CAL</li>
-<li>Visual Studio Professional / Enterprise monthly subscription (包含 Azure DevOps Server CAL)</li>
-</ul>
-<br>
-<p>地端的使用者授權可以由下列幾種方式取得合法授權：</p>
-<ul>
-<li>傳統購買 (<mark>3年SA</mark>) Azure DevOps User CAL (包含 <strong><code>Basic + Test Plans</code></strong> 所有功能)</li>
-<li>Visual Studio Professional / Enterprise monthly subscription (包含 Azure DevOps <mark>User</mark> CAL)</li>
-<li>Azure DevOps <strong><code>Basic</code></strong> 或 <strong><code>Basic + Test Plans</code></strong> (雲端的每人每月購買方式，也包含了地端的使用者授權)</li>
-</ul>
-<br>
-<p>以上是對於 Azure DevOps Services / Server 授權的整理說明，若大家還有其他不瞭解的地方，歡迎透過下方留言討論。 😃</p>
+<p>.pptx -&gt; .md</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/docling-to-markdown/docling-pptx.jpg"
+                        class=""
+                 >
+<p>使用本地端資源運行 Docling</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/docling-to-markdown/docling-performance.jpg"
+                        class=""
+                 >
 ]]></content>
       <tags>
-        <tag>Azure DevOps</tag>
-        <tag>授權</tag>
+        <tag>Docling</tag>
+        <tag>MarkItDown</tag>
+        <tag>文件處理</tag>
+        <tag>RAG</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>關於 MCP 的 Capability Negotiation</title>
+    <url>/post/2025/07/mcp-capability-negotiation/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/07/mcp-capability-negotiation/robot.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>在當前 AI 技術快速發展的時代，MCP (Model Context Protocol) 為大型語言模型帶來更多元且強大的擴展能力。透過 MCP 讓開發者能使 IDE 工具與語言模型自然結合，實現語意驅動的互動體驗。MCP 架構中包含 MCP Server、MCP Host 與 MCP Client 三大核心角色，彼此協同合作並透過能力協商（Capability Negotiation）機制，確保雙方能根據自身能力與需求，協調出最佳的功能組合與協作方式。本文將以<a href="/post/2025/06/azure-devops-mcp-server/">上一篇文章</a>為例，說明其背景運作流程。</p>
+<span id="more"></span>
+<br>
+<h2 id="Core-Components-核心組件">Core Components 核心組件</h2>
+<p>MCP 採用 client-host-server 的架構設計，其中一個 host 可以同時管理多個 client instance，並與 MCP Server 建立一對一的連線，藉此維持安全邊界並隔離各自的關注點。以 VSCode 安裝 GitHub Copilot Extension 並連接 Azure DevOps MCP Server 為例，VSCode 扮演 host 角色，而 GitHub Copilot 則是 client，而 Azure DevOps MCP Server 則是 server。每個 client 透過 host 啟動並與 server 進行能力協商，確保各自的功能與需求能被正確識別與協調，進而實現安全且高效的協作。</p>
+<p>正如 MCP 官方文件所示意的架構圖，我們可以在 VSCode 中透過 GitHub Copilot 與不同的模型進行互動。只要註冊並設定不同的 MCP Server，就能根據需求取得各式各樣的工具，進一步擴展大型語言模型的應用範圍與處理能力。目前要開發 MCP Server 的門檻已經大幅降低，在 Python / Node.js / Java / Kotlin / C# 都有很豐富的實作範例可以參考，可以參考下列整理連結。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/07/mcp-capability-negotiation/core_components.png"
+                        class=""
+                 >
+<br>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://modelcontextprotocol.io/quickstart/server"  target="_blank">⁍ Quickstart - For MCP Server Developers<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://github.com/modelcontextprotocol/csharp-sdk"  target="_blank">⁍ GitHub | csharp-sdk<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/ai/get-started-mcp"  target="_blank">⁍ 開始使用 .NET AI 和模型內容通訊協定<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/ai/quickstarts/build-mcp-server"  target="_blank">⁍ 使用 .NET 建立並連線到最小的 MCP 伺服器<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+<h2 id="Capability-Negotiation-能力協商">Capability Negotiation 能力協商</h2>
+<p>在 MCP 官方說明文件裡有一張關於 Capability Negotiation 的循序圖畫得很詳細，大家想要瞭解可以參考下方連結，這邊我就以上次的情境舉例：描述使用者透過 VSCode 及 GitHub Copilot 選擇使用 gpt-4o 模型，透過 Azure DevOps MCP Server 與 Azure DevOps Services 溝通，查詢組織專案列表的完整流程。大家可以先看一下循序圖中有哪些角色，再試著由上往下依序閱讀，完整說明在圖片下面。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://modelcontextprotocol.io/specification/2025-06-18/architecture#capability-negotiation"  target="_blank">⁍ MCP - Architecture | Capacity Negotiation<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+<br>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/07/mcp-capability-negotiation/capability_negotiation.png"
+                        class=""
+                 >
+<h3 id="角色說明">角色說明</h3>
+<ul>
+<li>User（使用者）：在 VSCode 輸入查詢指令的人。</li>
+<li>MCP Host（VSCode）：負責接收使用者指令，與其他元件溝通的 IDE 工具。</li>
+<li>MCP Client（GitHub Copilot）：協助分析指令、整合工具，並與 AI 互動的中介。</li>
+<li>gpt-4o：負責理解指令、產生工具操作建議與自然語言回應的 AI 模型。</li>
+<li>Azure DevOps MCP Server：負責與 Azure DevOps 溝通的 MCP 伺服器。</li>
+<li>Azure DevOps：實際儲存專案資料的雲端平台 (Azure DevOps Services)。</li>
+</ul>
+<h3 id="步驟流程說明">步驟流程說明</h3>
+<h4 id="1-建立工具清單（首次連線時）">1. 建立工具清單（首次連線時）</h4>
+<ul>
+<li>MCP Client 會先建立一份工具清單（例如：有哪些查詢指令可用），並把這些資訊傳給 gpt-4o。</li>
+<li>gpt-4o 準備好解析工具需求，回傳每個工具的詳細資料（名稱、參數、用途等）給 MCP Client。</li>
+<li>MCP Client 把這些工具相關資料暫存下來，方便後續使用。</li>
+</ul>
+<h4 id="2-使用者輸入查詢">2. 使用者輸入查詢</h4>
+<ul>
+<li>User 在 VSCode 輸入像「組織有哪些專案？」這樣的問題。</li>
+<li>MCP Host 把這個問題傳給 MCP Client。</li>
+</ul>
+<h4 id="3-問題分析與轉換">3. 問題分析與轉換</h4>
+<ul>
+<li>MCP Client 將指令及上下文資訊傳送給 gpt-4o。</li>
+<li>gpt-4o 解析後發現需要查詢 Azure DevOps 的資料，於是產生對應的 MCP 指令（例如 list_projects）。</li>
+</ul>
+<h4 id="4-發送查詢請求">4. 發送查詢請求</h4>
+<ul>
+<li>MCP Client 把 list_projects 的請求發送給 MCP Host。</li>
+<li>MCP Host 再把這個請求傳給 MCP Server。</li>
+</ul>
+<h4 id="5-與-Azure-DevOps-溝通">5. 與 Azure DevOps 溝通</h4>
+<ul>
+<li>MCP Server 收到請求後，轉換成 Azure DevOps 的 REST API 呼叫。</li>
+<li>Azure DevOps 回傳專案列表資料給 MCP Server。</li>
+</ul>
+<h4 id="6-結果回傳與整合">6. 結果回傳與整合</h4>
+<ul>
+<li>MCP Server 將查詢結果回傳給 MCP Host。</li>
+<li>MCP Host 把結果傳給 MCP Client。</li>
+<li>MCP Client 整合資料，並將查詢結果及相關內容傳給 gpt-4o。</li>
+</ul>
+<h4 id="7-生成自然語言回應">7. 生成自然語言回應</h4>
+<ul>
+<li>gpt-4o 把查詢到的專案資料，轉換成自然語言答案。</li>
+<li>MCP Client 將這個答案封裝好，傳回 MCP Host。</li>
+<li>MCP Host 最後把結果顯示在 VSCode 介面上，讓 User 看到。</li>
+</ul>
+<p>整個流程就是：</p>
+<p><mark>使用者發問 → VSCode 接收 → GitHub Copilot 分析 → gpt-4o 理解並產生查詢指令 → Azure DevOps 查詢 → 回傳結果 → gpt-4o 產生易懂的自然語言回應 → 顯示在 VSCode</mark><br>
+每個角色都扮演特定溝通橋樑，確保使用者的問題能被正確理解並得到回覆。</p>
+<h2 id="總結">總結</h2>
+<p>MCP 的能力協商機制讓各個元件能根據自身特性協調最佳合作方式，確保安全、彈性與高效的互動體驗。透過明確的角色分工與標準化流程，開發者能更容易串接多元工具與服務，擴展 AI 應用場景。未來隨著 MCP 生態系持續發展，將有助於推動語意驅動開發與 AI 協作的普及。</p>
+]]></content>
+      <tags>
+        <tag>MCP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MSTest 生命週期與常用屬性</title>
+    <url>/post/2025/04/mstest-attribute-lifecycle/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/mstest-attribute-lifecycle/MSTest.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>在軟體開發過程中，妥善進行測試可以協助我們確保程式碼的功能性與可靠性，不論是最小範圍的<strong>單元測試 (Unit Tests)</strong> 或是模擬實際用戶的<strong>端對端測試(E2E Tests)</strong>，都是品質把關的重要防線，而 MSTest 除了被整合在 Visual Studio 中，簡化了 .NET 應用程式建立和執行單元測試的過程，也可以透過 Azure Pipelines 將既有的測試專案整合到 CI 流程裡，這篇主要帶大家瞭解 MSTest 生命週期以及常用屬性，以便大家更能掌握自己的測試流程。</p>
+<span id="more"></span>
+<br>
+<h2 id="前言">前言</h2>
+<p><strong>測試類別(TestClass)</strong> 和 <strong>測試方法(TestMethod)</strong> 是 MSTest 核心要素，一個 TestClass 可以包含一個或多個 TestMethod，而我們實際要執行測試的內容就是寫在每個 TestMethod 裡，一般大家比較熟知的 3A Principle (<strong>A</strong>rrange-<strong>A</strong>ct-<strong>A</strong>ssert) 可以幫助我們快速聚焦測試方法裡面該撰寫的內容，簡單範例如下：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyTestClass</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod1</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Arrange: 初始化測試過程中所需要的變數、物件或其他設定。</span></span><br><span class="line">        <span class="built_in">int</span> a = <span class="number">1</span>;</span><br><span class="line">        <span class="built_in">int</span> b = <span class="number">2</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// Act: 實際測試操作、內容。</span></span><br><span class="line">        <span class="built_in">int</span> ans = a + b;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Assert: 驗證操作是否產生預期結果。</span></span><br><span class="line">        <span class="built_in">int</span> excepted = <span class="number">3</span>;</span><br><span class="line">        Assert.AreEqual(expected, actual);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="測試組件">測試組件</h2>
+<p>一個 MSTest 專案建置完成後會產生一個組件(Assembly)，白話來說就是 bin 目錄的 dll 檔案，其中可以包含多個 TestClass，而一個 TestClass 裡可以有各自的 TestMethod (層級如下圖)，此外，我們會使用 <strong><code>[TestClass]</code></strong> 和 <strong><code>[TestMethod]</code></strong> 屬性項目在 MSTest 專案標記程式碼中哪些是測試類別與測試方法，下列四種寫法都代表相同的意思：</p>
+<ul>
+<li>[TestClass()]</li>
+<li>[TestClassAttribute()]</li>
+<li>[TestClass]</li>
+<li>[TestClassAttribute]</li>
+</ul>
+<div style="max-width: 800px; text-align:center;">
+<pre class="mermaid">flowchart LR
+  subgraph 測試組件 Assembly 
+    subgraph 測試類別 TestClass 
+        subgraph 測試方法 TestMethod 
+            Test1 --> Test2 --> TestN
+        end
+    end    
+  end</pre>
+</div>
+<h2 id="生命週期">生命週期</h2>
+<p>當我們實際在撰寫或執行多個測試時，經常需要在不同情境時初始化或清除測試資料，而上述提到的 <strong>組件層級</strong> / <strong>類別層級</strong> / <strong>測試層級</strong> 都提供了 <mark>Initialize</mark> 和 <mark>Cleanup</mark> 屬性讓我們可以在適當的時機會處理對應的邏輯。在下列範例程式中：TestProject1 組件中包含了兩個類別：Calculator(加法、減法運算)，CaculatorTests(測試類別)，在測試類別中撰寫了兩個 TestMethod (Test_AddMethod 和 Test_SubtractMethod)，同時也加上了 Constructor / Dispose、AssemblyInit / AssemblyCleanup、ClassInit / Cleanup、TestInit / TestCleanup，大家應該不難發現，這些函式都是成對的，可以直接參考下列範例程式碼與執行結果，瞭解一個測試組件從開始執行到結束歷經了哪些階段。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Diagnostics;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Calculator</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Add</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> a + b;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Subtract</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> a - b;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">CalculatorTests</span> : <span class="title">IDisposable</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> Calculator calculator;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">CalculatorTests</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;CalculatorTests - Constructor&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在整個測試程序集開始時執行一次</span></span><br><span class="line">        [<span class="meta">AssemblyInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">AssemblyInit</span>(<span class="params">TestContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;AssemblyInitialize: 測試程序集初始化。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在所有測試執行前初始化，只執行一次</span></span><br><span class="line">        [<span class="meta">ClassInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ClassInit</span>(<span class="params">TestContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;ClassInitialize: 初始化 Calculator 類別實例。&quot;</span>);</span><br><span class="line">            calculator = <span class="keyword">new</span> Calculator();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在每個測試方法執行前調用</span></span><br><span class="line">        [<span class="meta">TestInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestInit</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;TestInitialize: 開始執行新的測試。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 測試加法功能</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">TestCategory(<span class="string">&quot;CalculatorTests&quot;</span>)</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Test_AddMethod</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;Test_AddMethod: 測試加法運算。&quot;</span>);</span><br><span class="line">            <span class="built_in">int</span> result = calculator.Add(<span class="number">5</span>, <span class="number">3</span>);</span><br><span class="line">            Assert.AreEqual(<span class="number">8</span>, result, <span class="string">&quot;加法結果不正確&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 測試減法功能</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">TestCategory(<span class="string">&quot;CalculatorTests&quot;</span>)</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Test_SubtractMethod</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;Test_SubtractMethod: 測試減法運算。&quot;</span>);</span><br><span class="line">            <span class="built_in">int</span> result = calculator.Subtract(<span class="number">10</span>, <span class="number">5</span>);</span><br><span class="line">            Assert.AreEqual(<span class="number">5</span>, result, <span class="string">&quot;減法結果不正確&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在每個測試方法執行後調用</span></span><br><span class="line">        [<span class="meta">TestCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;TestCleanup: 測試完成，清理測試上下文。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在所有測試執行完畢後清理，只執行一次</span></span><br><span class="line">        [<span class="meta">ClassCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ClassCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;ClassCleanup: 清理 Calculator 類別實例。&quot;</span>);</span><br><span class="line">            <span class="comment">//calculator = null;</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在整個測試程序集結束時執行一次</span></span><br><span class="line">        [<span class="meta">AssemblyCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">AssemblyCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;AssemblyCleanup: 測試程序集清理。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Dispose</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;CalculatorTests - Dispose&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/mstest-attribute-lifecycle/console-run-test.png"
+                        class=""
+                 >
+<h2 id="常用屬性">常用屬性</h2>
+<h3 id="逾時設定-TimeoutAttribute">逾時設定 TimeoutAttribute</h3>
+<p><strong><code>TimeoutAttribute</code></strong> 用於設定測試方法的最大執行時間（以<strong>毫秒</strong>為單位）。如果執行測試超過指定的時間限制，測試則會失敗，這個屬性可以讓我們避免測試執行時間過長，或是為某些測試情境設定一個逾時期限，如下範例：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"><span class="keyword">using</span> System.Threading;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">TimeoutExampleTests</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 這個測試會在 500 毫秒內完成，所以它會通過</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">Timeout(1000)</span>]  <span class="comment">// 設置 1 秒的超時</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod_WithSufficientTime</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">500</span>);  <span class="comment">// 模擬較短的處理時間</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);  <span class="comment">// 假設這是測試邏輯</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 這個測試會因為超時而失敗</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">Timeout(1000)</span>]  <span class="comment">// 設置 1 秒的超時</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod_WithTimeout</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1500</span>);  <span class="comment">// 模擬超過1秒的處理時間</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);  <span class="comment">// 假設這是測試邏輯</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="平行測試-ParallelizeAttribute">平行測試 ParallelizeAttribute</h3>
+<p>自 MSTest v2 起，提供了兩個關於平行測試的屬性：</p>
+<ul>
+<li><strong><code>ParallelizeAttribute</code></strong>：可以應用於類別或測試集來啟用平行測試。</li>
+<li><strong><code>DoNotParallelizeAttribute</code></strong>：可以應用於個別測試方法來<mark>禁止</mark>它與其他測試並行執行。</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"><span class="keyword">using</span> System.Threading;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    [<span class="meta">Parallelize(Workers = 2, Scope = ExecutionScope.MethodLevel)</span>]  <span class="comment">// 啟用並行，指定最多兩個工作線程</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ParallelTests</span></span><br><span class="line">    &#123;</span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod1</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod2</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">9</span>, <span class="number">3</span> * <span class="number">3</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 禁止這個方法與其他測試並行執行</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">DoNotParallelize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod3_DoNotParallelize</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">15</span>, <span class="number">5</span> * <span class="number">3</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong><code>[Parallelize(Workers = 2, Scope = ExecutionScope.MethodLevel)]</code></strong>：
+<ul>
+<li>Workers = 2 表示最多使用 2 個執行緒來執行平行測試。</li>
+<li>Scope = ExecutionScope.MethodLevel 表示在方法層級平行測試，代表每個測試方法可以平行執行；如果想要在類別層級，可以設定為 ExecutionScope.ClassLevel。</li>
+</ul>
+</li>
+<li>TestMethod1 和 TestMethod2：<br>
+因為類別層級已經使用 Parallelize 屬性，並且設定 Workers = 2 表示這兩個測試方法會在執行緒池裡平行執行。</li>
+<li>TestMethod3_DoNotParallelize：<br>
+這個方法加了 <strong><code>[DoNotParallelize]</code></strong>，所以它<mark>不會</mark>與其他方法同時執行，當 TestMethod3_DoNotParallelize 執行時，其他平行測試會暫停，直到這個測試完成。</li>
+</ul>
+<h2 id="後記">後記</h2>
+<p>MSTest 從推出至今已經來到了 v3，從一開始只能在 Windows 平台上運作，隨著 .NET Framework 的演進，也逐步支援跨平台運行，特別是在 .NET Core 和 .NET 5 之後，MSTest 成為了 .NET 生態系中一個可靠且簡單易用的測試框架。它不僅適合快速撰寫單元測試，還能與多種持續整合和部署工具無縫結合，例如：Azure DevOps 和 GitHub Actions。</p>
+<p>由於應用程式複雜度日益提高，MSTest 從 v2 開始也提供了平行測試，允許多個測試同時執行，這不僅加快了測試速度，也提高了 CI/CD 的效能。平行測試使開發人員能夠在不影響測試完整性的前提下，顯著縮短測試週期，對大型專案尤為重要。此外，MSTest 也包含：數據驅動測試、生命週期管理、異常處理測試等，這讓我們能夠更全面地驗證應用程式的功能和效能。</p>
+<p>MSTest 的易用性使得它適合不同規模的專案，加上 Visual Studio 開發工具與 Azure DevOps Services 的支援，不論是小型開發團隊或是大型企業應用，都能輕鬆採用，為軟體開發專案品質把關，也讓整個 DevOps 流程更加完善。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://github.com/microsoft/testfx"  target="_blank">⁍ Microsoft Test Framework<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/core/testing/unit-testing-with-mstest?source=recommendations"  target="_blank">⁍ 使用 MSTest 和 .NET 進行 C# 單元測試<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/core/testing/unit-testing-mstest-writing-tests-attributes"  target="_blank">⁍ MSTest 屬性<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://www.meziantou.net/mstest-v2-setup-a-test-project-and-run-tests.htm"  target="_blank">⁍ MSTest v2: Setup a test project and run tests<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>]]></content>
+      <tags>
+        <tag>MSTest</tag>
       </tags>
   </entry>
   <entry>
@@ -2565,6 +2748,72 @@ Rollup 欄位會顯示最近一次成功計算的資料與時間戳記，即使 
 ]]></content>
       <tags>
         <tag>Playwright</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用 VB5/VB6 連線至 Azure DevOps Server 2022 (TFVC)</title>
+    <url>/post/2025/04/vb-connect-to-azure-devops/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/vb-connect-to-azure-devops/VS_TFS.png"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>Visual Studio 從 97 發展到現在的 2022 號稱地表最強開發工具，能夠與 TFS 或 Git 版控連線自然不是問題，最近剛好遇到客戶還有許多 VB5/VB6 開發的 Winform 程式需要維護，而且版控伺服器也從 TFS 2013 升級至 Azure DevOps Server 2022，藉此機會向大家整理說明 Visual Studio 各版本與 TFS / Azure DevOps 連線的需求與設定。<br>
+<br></p>
+<span id="more"></span>
+<br>
+<h2 id="前言">前言</h2>
+<p>我們使用 Visual Studio 開發工具能夠與 TFS 連線是因為它的功能包含了 <strong><code>Team Explorer</code></strong>，明確來說是從 Visual Studio 2005 首次引入 TFS (Team Foundation Server) 起才開始包含此功能，在這個版本之前則需要額外安裝 <strong>Team Explorer</strong> 和 <strong>MSSCCI Provider</strong> (Microsoft Source Code Control Integration) 才能夠在開發工具中與 TFS 進行整合。</p>
+<h2 id="版本相依性">版本相依性</h2>
+<p>作業系統、開發工具與版控伺服器彼此間有一定的版本相依性，Windows XP 無法安裝 Team Explorer 2013，只能安裝 Team Explorer 2010，搭配 MSSCCI Provider 2010 可以連線的版本有：TFS 2005 ~ 2018 和 Azure DevOps Server 2019/2020 <mark>(不包含2022)</mark>，若舊開發環境 (Visual Studio 2013 以前) 想要與 Azure DevOps Server 2022 連線，必要最低門檻可以參考下列配置：</p>
+<ul>
+<li><strong>Windows 7 以上</strong></li>
+<li><strong>Team Explorer 2013</strong></li>
+<li><strong>MSSCCI Provider 2013</strong></li>
+</ul>
+<p>Visual Studio 97/6/2003~2008 搭配 Team Explorer 2010 + MSSCCI Provider 2010 可以從開發工具連線至 TFS 2010~2017 和 Azure DevOps Server 2019/2020，若要連線至 Azure DevOps Server 2022 則需要搭配 Team Explorer 2013 + MSSCCI Provider 2013 才行，各版本 MSSCCI Provider 可以自 Visual Studio | Marketplace 取得：</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2010MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2010 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.TeamFoundationServerMSSCCIProvider201064-bit"  target="_blank">⁍ Team Foundation Server MSSCCI Provider 2010 64-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC-9956"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M-11387"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+<h2 id="VB5-VB6">VB5/VB6</h2>
+<p>在 VB5/VB6 的工具列需要額外安裝上述提到的 MSSCCI Provider 2010/2013 才會出現 <strong>Team Foundation</strong> 選項，讓我們在開發工具中將程式碼與版控伺服器整合。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/vb-connect-to-azure-devops/create-project-from-tfs.png"
+                        class=""
+                 >
+<p>若出現下列錯誤訊息，就是 MSSCCI Provider 版本太舊了，無法連線到新的版控伺服器，例如：安裝 MSSCCI Provider 2010 但想要與 Azure DevOps Server 2022 連線，唯一解法就是安裝 Team Explorer 2013 + MSSCCI Provider 2013。</p>
+<blockquote>
+<p>TF14045: The identity 主機名稱\2ffd15ae-91e4-4df8-a346-e5be57e1340e is not a recognized identity.</p>
+</blockquote>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/vb-connect-to-azure-devops/not-a-recognized-identity.png"
+                        class=""
+                 >
+<p>在實務情境可能還會遇到其他各種版本組合，經此次嘗試後，確認 VB5/VB6 都還可以與 Azure DevOps Server 2022 的 TFVC 版控進行整合，這邊有篇文章將各種組合條列得很詳盡，也提供大家參考。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://jessehouwing.net/azure-devops-connect-any-visual-studio-version/"  target="_blank">⁍ Connect any version of Visual Studio to Azure DevOps or Azure DevOps Server<i class="fas fa-external-link-alt"></i></a><br>
+</font>
+</div>
+]]></content>
+      <tags>
+        <tag>VB5</tag>
+        <tag>VB6</tag>
+        <tag>TFS</tag>
+        <tag>Team Explorer</tag>
+        <tag>MSSCCI Provider</tag>
       </tags>
   </entry>
   <entry>
@@ -2784,255 +3033,6 @@ Rollup 欄位會顯示最近一次成功計算的資料與時間戳記，即使 
       <tags>
         <tag>Azure DevOps</tag>
         <tag>Azure Pipelines Agents</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>關於 MCP 的 Capability Negotiation</title>
-    <url>/post/2025/07/mcp-capability-negotiation/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/07/mcp-capability-negotiation/robot.jpg"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>在當前 AI 技術快速發展的時代，MCP (Model Context Protocol) 為大型語言模型帶來更多元且強大的擴展能力。透過 MCP 讓開發者能使 IDE 工具與語言模型自然結合，實現語意驅動的互動體驗。MCP 架構中包含 MCP Server、MCP Host 與 MCP Client 三大核心角色，彼此協同合作並透過能力協商（Capability Negotiation）機制，確保雙方能根據自身能力與需求，協調出最佳的功能組合與協作方式。本文將以<a href="/post/2025/06/azure-devops-mcp-server/">上一篇文章</a>為例，說明其背景運作流程。</p>
-<span id="more"></span>
-<br>
-<h2 id="Core-Components-核心組件">Core Components 核心組件</h2>
-<p>MCP 採用 client-host-server 的架構設計，其中一個 host 可以同時管理多個 client instance，並與 MCP Server 建立一對一的連線，藉此維持安全邊界並隔離各自的關注點。以 VSCode 安裝 GitHub Copilot Extension 並連接 Azure DevOps MCP Server 為例，VSCode 扮演 host 角色，而 GitHub Copilot 則是 client，而 Azure DevOps MCP Server 則是 server。每個 client 透過 host 啟動並與 server 進行能力協商，確保各自的功能與需求能被正確識別與協調，進而實現安全且高效的協作。</p>
-<p>正如 MCP 官方文件所示意的架構圖，我們可以在 VSCode 中透過 GitHub Copilot 與不同的模型進行互動。只要註冊並設定不同的 MCP Server，就能根據需求取得各式各樣的工具，進一步擴展大型語言模型的應用範圍與處理能力。目前要開發 MCP Server 的門檻已經大幅降低，在 Python / Node.js / Java / Kotlin / C# 都有很豐富的實作範例可以參考，可以參考下列整理連結。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/07/mcp-capability-negotiation/core_components.png"
-                        class=""
-                 >
-<br>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://modelcontextprotocol.io/quickstart/server"  target="_blank">⁍ Quickstart - For MCP Server Developers<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://github.com/modelcontextprotocol/csharp-sdk"  target="_blank">⁍ GitHub | csharp-sdk<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/ai/get-started-mcp"  target="_blank">⁍ 開始使用 .NET AI 和模型內容通訊協定<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/ai/quickstarts/build-mcp-server"  target="_blank">⁍ 使用 .NET 建立並連線到最小的 MCP 伺服器<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
-<h2 id="Capability-Negotiation-能力協商">Capability Negotiation 能力協商</h2>
-<p>在 MCP 官方說明文件裡有一張關於 Capability Negotiation 的循序圖畫得很詳細，大家想要瞭解可以參考下方連結，這邊我就以上次的情境舉例：描述使用者透過 VSCode 及 GitHub Copilot 選擇使用 gpt-4o 模型，透過 Azure DevOps MCP Server 與 Azure DevOps Services 溝通，查詢組織專案列表的完整流程。大家可以先看一下循序圖中有哪些角色，再試著由上往下依序閱讀，完整說明在圖片下面。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://modelcontextprotocol.io/specification/2025-06-18/architecture#capability-negotiation"  target="_blank">⁍ MCP - Architecture | Capacity Negotiation<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
-<br>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/07/mcp-capability-negotiation/capability_negotiation.png"
-                        class=""
-                 >
-<h3 id="角色說明">角色說明</h3>
-<ul>
-<li>User（使用者）：在 VSCode 輸入查詢指令的人。</li>
-<li>MCP Host（VSCode）：負責接收使用者指令，與其他元件溝通的 IDE 工具。</li>
-<li>MCP Client（GitHub Copilot）：協助分析指令、整合工具，並與 AI 互動的中介。</li>
-<li>gpt-4o：負責理解指令、產生工具操作建議與自然語言回應的 AI 模型。</li>
-<li>Azure DevOps MCP Server：負責與 Azure DevOps 溝通的 MCP 伺服器。</li>
-<li>Azure DevOps：實際儲存專案資料的雲端平台 (Azure DevOps Services)。</li>
-</ul>
-<h3 id="步驟流程說明">步驟流程說明</h3>
-<h4 id="1-建立工具清單（首次連線時）">1. 建立工具清單（首次連線時）</h4>
-<ul>
-<li>MCP Client 會先建立一份工具清單（例如：有哪些查詢指令可用），並把這些資訊傳給 gpt-4o。</li>
-<li>gpt-4o 準備好解析工具需求，回傳每個工具的詳細資料（名稱、參數、用途等）給 MCP Client。</li>
-<li>MCP Client 把這些工具相關資料暫存下來，方便後續使用。</li>
-</ul>
-<h4 id="2-使用者輸入查詢">2. 使用者輸入查詢</h4>
-<ul>
-<li>User 在 VSCode 輸入像「組織有哪些專案？」這樣的問題。</li>
-<li>MCP Host 把這個問題傳給 MCP Client。</li>
-</ul>
-<h4 id="3-問題分析與轉換">3. 問題分析與轉換</h4>
-<ul>
-<li>MCP Client 將指令及上下文資訊傳送給 gpt-4o。</li>
-<li>gpt-4o 解析後發現需要查詢 Azure DevOps 的資料，於是產生對應的 MCP 指令（例如 list_projects）。</li>
-</ul>
-<h4 id="4-發送查詢請求">4. 發送查詢請求</h4>
-<ul>
-<li>MCP Client 把 list_projects 的請求發送給 MCP Host。</li>
-<li>MCP Host 再把這個請求傳給 MCP Server。</li>
-</ul>
-<h4 id="5-與-Azure-DevOps-溝通">5. 與 Azure DevOps 溝通</h4>
-<ul>
-<li>MCP Server 收到請求後，轉換成 Azure DevOps 的 REST API 呼叫。</li>
-<li>Azure DevOps 回傳專案列表資料給 MCP Server。</li>
-</ul>
-<h4 id="6-結果回傳與整合">6. 結果回傳與整合</h4>
-<ul>
-<li>MCP Server 將查詢結果回傳給 MCP Host。</li>
-<li>MCP Host 把結果傳給 MCP Client。</li>
-<li>MCP Client 整合資料，並將查詢結果及相關內容傳給 gpt-4o。</li>
-</ul>
-<h4 id="7-生成自然語言回應">7. 生成自然語言回應</h4>
-<ul>
-<li>gpt-4o 把查詢到的專案資料，轉換成自然語言答案。</li>
-<li>MCP Client 將這個答案封裝好，傳回 MCP Host。</li>
-<li>MCP Host 最後把結果顯示在 VSCode 介面上，讓 User 看到。</li>
-</ul>
-<p>整個流程就是：</p>
-<p><mark>使用者發問 → VSCode 接收 → GitHub Copilot 分析 → gpt-4o 理解並產生查詢指令 → Azure DevOps 查詢 → 回傳結果 → gpt-4o 產生易懂的自然語言回應 → 顯示在 VSCode</mark><br>
-每個角色都扮演特定溝通橋樑，確保使用者的問題能被正確理解並得到回覆。</p>
-<h2 id="總結">總結</h2>
-<p>MCP 的能力協商機制讓各個元件能根據自身特性協調最佳合作方式，確保安全、彈性與高效的互動體驗。透過明確的角色分工與標準化流程，開發者能更容易串接多元工具與服務，擴展 AI 應用場景。未來隨著 MCP 生態系持續發展，將有助於推動語意驅動開發與 AI 協作的普及。</p>
-]]></content>
-      <tags>
-        <tag>MCP</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MSTest 生命週期與常用屬性</title>
-    <url>/post/2025/04/mstest-attribute-lifecycle/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/mstest-attribute-lifecycle/MSTest.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>在軟體開發過程中，妥善進行測試可以協助我們確保程式碼的功能性與可靠性，不論是最小範圍的<strong>單元測試 (Unit Tests)</strong> 或是模擬實際用戶的<strong>端對端測試(E2E Tests)</strong>，都是品質把關的重要防線，而 MSTest 除了被整合在 Visual Studio 中，簡化了 .NET 應用程式建立和執行單元測試的過程，也可以透過 Azure Pipelines 將既有的測試專案整合到 CI 流程裡，這篇主要帶大家瞭解 MSTest 生命週期以及常用屬性，以便大家更能掌握自己的測試流程。</p>
-<span id="more"></span>
-<br>
-<h2 id="前言">前言</h2>
-<p><strong>測試類別(TestClass)</strong> 和 <strong>測試方法(TestMethod)</strong> 是 MSTest 核心要素，一個 TestClass 可以包含一個或多個 TestMethod，而我們實際要執行測試的內容就是寫在每個 TestMethod 裡，一般大家比較熟知的 3A Principle (<strong>A</strong>rrange-<strong>A</strong>ct-<strong>A</strong>ssert) 可以幫助我們快速聚焦測試方法裡面該撰寫的內容，簡單範例如下：</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">[<span class="meta">TestClass</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyTestClass</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestMethod</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod1</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Arrange: 初始化測試過程中所需要的變數、物件或其他設定。</span></span><br><span class="line">        <span class="built_in">int</span> a = <span class="number">1</span>;</span><br><span class="line">        <span class="built_in">int</span> b = <span class="number">2</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// Act: 實際測試操作、內容。</span></span><br><span class="line">        <span class="built_in">int</span> ans = a + b;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Assert: 驗證操作是否產生預期結果。</span></span><br><span class="line">        <span class="built_in">int</span> excepted = <span class="number">3</span>;</span><br><span class="line">        Assert.AreEqual(expected, actual);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="測試組件">測試組件</h2>
-<p>一個 MSTest 專案建置完成後會產生一個組件(Assembly)，白話來說就是 bin 目錄的 dll 檔案，其中可以包含多個 TestClass，而一個 TestClass 裡可以有各自的 TestMethod (層級如下圖)，此外，我們會使用 <strong><code>[TestClass]</code></strong> 和 <strong><code>[TestMethod]</code></strong> 屬性項目在 MSTest 專案標記程式碼中哪些是測試類別與測試方法，下列四種寫法都代表相同的意思：</p>
-<ul>
-<li>[TestClass()]</li>
-<li>[TestClassAttribute()]</li>
-<li>[TestClass]</li>
-<li>[TestClassAttribute]</li>
-</ul>
-<div style="max-width: 800px; text-align:center;">
-<pre class="mermaid">flowchart LR
-  subgraph 測試組件 Assembly 
-    subgraph 測試類別 TestClass 
-        subgraph 測試方法 TestMethod 
-            Test1 --> Test2 --> TestN
-        end
-    end    
-  end</pre>
-</div>
-<h2 id="生命週期">生命週期</h2>
-<p>當我們實際在撰寫或執行多個測試時，經常需要在不同情境時初始化或清除測試資料，而上述提到的 <strong>組件層級</strong> / <strong>類別層級</strong> / <strong>測試層級</strong> 都提供了 <mark>Initialize</mark> 和 <mark>Cleanup</mark> 屬性讓我們可以在適當的時機會處理對應的邏輯。在下列範例程式中：TestProject1 組件中包含了兩個類別：Calculator(加法、減法運算)，CaculatorTests(測試類別)，在測試類別中撰寫了兩個 TestMethod (Test_AddMethod 和 Test_SubtractMethod)，同時也加上了 Constructor / Dispose、AssemblyInit / AssemblyCleanup、ClassInit / Cleanup、TestInit / TestCleanup，大家應該不難發現，這些函式都是成對的，可以直接參考下列範例程式碼與執行結果，瞭解一個測試組件從開始執行到結束歷經了哪些階段。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Diagnostics;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Calculator</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Add</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> a + b;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Subtract</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> a - b;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">CalculatorTests</span> : <span class="title">IDisposable</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> Calculator calculator;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">CalculatorTests</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;CalculatorTests - Constructor&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在整個測試程序集開始時執行一次</span></span><br><span class="line">        [<span class="meta">AssemblyInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">AssemblyInit</span>(<span class="params">TestContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;AssemblyInitialize: 測試程序集初始化。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在所有測試執行前初始化，只執行一次</span></span><br><span class="line">        [<span class="meta">ClassInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ClassInit</span>(<span class="params">TestContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;ClassInitialize: 初始化 Calculator 類別實例。&quot;</span>);</span><br><span class="line">            calculator = <span class="keyword">new</span> Calculator();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在每個測試方法執行前調用</span></span><br><span class="line">        [<span class="meta">TestInitialize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestInit</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;TestInitialize: 開始執行新的測試。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 測試加法功能</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">TestCategory(<span class="string">&quot;CalculatorTests&quot;</span>)</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Test_AddMethod</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;Test_AddMethod: 測試加法運算。&quot;</span>);</span><br><span class="line">            <span class="built_in">int</span> result = calculator.Add(<span class="number">5</span>, <span class="number">3</span>);</span><br><span class="line">            Assert.AreEqual(<span class="number">8</span>, result, <span class="string">&quot;加法結果不正確&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 測試減法功能</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">TestCategory(<span class="string">&quot;CalculatorTests&quot;</span>)</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Test_SubtractMethod</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;Test_SubtractMethod: 測試減法運算。&quot;</span>);</span><br><span class="line">            <span class="built_in">int</span> result = calculator.Subtract(<span class="number">10</span>, <span class="number">5</span>);</span><br><span class="line">            Assert.AreEqual(<span class="number">5</span>, result, <span class="string">&quot;減法結果不正確&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在每個測試方法執行後調用</span></span><br><span class="line">        [<span class="meta">TestCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;TestCleanup: 測試完成，清理測試上下文。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在所有測試執行完畢後清理，只執行一次</span></span><br><span class="line">        [<span class="meta">ClassCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ClassCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;ClassCleanup: 清理 Calculator 類別實例。&quot;</span>);</span><br><span class="line">            <span class="comment">//calculator = null;</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在整個測試程序集結束時執行一次</span></span><br><span class="line">        [<span class="meta">AssemblyCleanup</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">AssemblyCleanup</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;AssemblyCleanup: 測試程序集清理。&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Dispose</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.WriteLine(<span class="string">&quot;CalculatorTests - Dispose&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/mstest-attribute-lifecycle/console-run-test.png"
-                        class=""
-                 >
-<h2 id="常用屬性">常用屬性</h2>
-<h3 id="逾時設定-TimeoutAttribute">逾時設定 TimeoutAttribute</h3>
-<p><strong><code>TimeoutAttribute</code></strong> 用於設定測試方法的最大執行時間（以<strong>毫秒</strong>為單位）。如果執行測試超過指定的時間限制，測試則會失敗，這個屬性可以讓我們避免測試執行時間過長，或是為某些測試情境設定一個逾時期限，如下範例：</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"><span class="keyword">using</span> System.Threading;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">TimeoutExampleTests</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 這個測試會在 500 毫秒內完成，所以它會通過</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">Timeout(1000)</span>]  <span class="comment">// 設置 1 秒的超時</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod_WithSufficientTime</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">500</span>);  <span class="comment">// 模擬較短的處理時間</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);  <span class="comment">// 假設這是測試邏輯</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 這個測試會因為超時而失敗</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">Timeout(1000)</span>]  <span class="comment">// 設置 1 秒的超時</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod_WithTimeout</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1500</span>);  <span class="comment">// 模擬超過1秒的處理時間</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);  <span class="comment">// 假設這是測試邏輯</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="平行測試-ParallelizeAttribute">平行測試 ParallelizeAttribute</h3>
-<p>自 MSTest v2 起，提供了兩個關於平行測試的屬性：</p>
-<ul>
-<li><strong><code>ParallelizeAttribute</code></strong>：可以應用於類別或測試集來啟用平行測試。</li>
-<li><strong><code>DoNotParallelizeAttribute</code></strong>：可以應用於個別測試方法來<mark>禁止</mark>它與其他測試並行執行。</li>
-</ul>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> Microsoft.VisualStudio.TestTools.UnitTesting;</span><br><span class="line"><span class="keyword">using</span> System.Threading;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TestProject1</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestClass</span>]</span><br><span class="line">    [<span class="meta">Parallelize(Workers = 2, Scope = ExecutionScope.MethodLevel)</span>]  <span class="comment">// 啟用並行，指定最多兩個工作線程</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ParallelTests</span></span><br><span class="line">    &#123;</span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod1</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">4</span>, <span class="number">2</span> + <span class="number">2</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod2</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">9</span>, <span class="number">3</span> * <span class="number">3</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 禁止這個方法與其他測試並行執行</span></span><br><span class="line">        [<span class="meta">TestMethod</span>]</span><br><span class="line">        [<span class="meta">DoNotParallelize</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod3_DoNotParallelize</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Thread.Sleep(<span class="number">1000</span>);  <span class="comment">// 模擬工作</span></span><br><span class="line">            Assert.AreEqual(<span class="number">15</span>, <span class="number">5</span> * <span class="number">3</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><strong><code>[Parallelize(Workers = 2, Scope = ExecutionScope.MethodLevel)]</code></strong>：
-<ul>
-<li>Workers = 2 表示最多使用 2 個執行緒來執行平行測試。</li>
-<li>Scope = ExecutionScope.MethodLevel 表示在方法層級平行測試，代表每個測試方法可以平行執行；如果想要在類別層級，可以設定為 ExecutionScope.ClassLevel。</li>
-</ul>
-</li>
-<li>TestMethod1 和 TestMethod2：<br>
-因為類別層級已經使用 Parallelize 屬性，並且設定 Workers = 2 表示這兩個測試方法會在執行緒池裡平行執行。</li>
-<li>TestMethod3_DoNotParallelize：<br>
-這個方法加了 <strong><code>[DoNotParallelize]</code></strong>，所以它<mark>不會</mark>與其他方法同時執行，當 TestMethod3_DoNotParallelize 執行時，其他平行測試會暫停，直到這個測試完成。</li>
-</ul>
-<h2 id="後記">後記</h2>
-<p>MSTest 從推出至今已經來到了 v3，從一開始只能在 Windows 平台上運作，隨著 .NET Framework 的演進，也逐步支援跨平台運行，特別是在 .NET Core 和 .NET 5 之後，MSTest 成為了 .NET 生態系中一個可靠且簡單易用的測試框架。它不僅適合快速撰寫單元測試，還能與多種持續整合和部署工具無縫結合，例如：Azure DevOps 和 GitHub Actions。</p>
-<p>由於應用程式複雜度日益提高，MSTest 從 v2 開始也提供了平行測試，允許多個測試同時執行，這不僅加快了測試速度，也提高了 CI/CD 的效能。平行測試使開發人員能夠在不影響測試完整性的前提下，顯著縮短測試週期，對大型專案尤為重要。此外，MSTest 也包含：數據驅動測試、生命週期管理、異常處理測試等，這讓我們能夠更全面地驗證應用程式的功能和效能。</p>
-<p>MSTest 的易用性使得它適合不同規模的專案，加上 Visual Studio 開發工具與 Azure DevOps Services 的支援，不論是小型開發團隊或是大型企業應用，都能輕鬆採用，為軟體開發專案品質把關，也讓整個 DevOps 流程更加完善。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://github.com/microsoft/testfx"  target="_blank">⁍ Microsoft Test Framework<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/core/testing/unit-testing-with-mstest?source=recommendations"  target="_blank">⁍ 使用 MSTest 和 .NET 進行 C# 單元測試<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/dotnet/core/testing/unit-testing-mstest-writing-tests-attributes"  target="_blank">⁍ MSTest 屬性<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://www.meziantou.net/mstest-v2-setup-a-test-project-and-run-tests.htm"  target="_blank">⁍ MSTest v2: Setup a test project and run tests<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>]]></content>
-      <tags>
-        <tag>MSTest</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用 VB5/VB6 連線至 Azure DevOps Server 2022 (TFVC)</title>
-    <url>/post/2025/04/vb-connect-to-azure-devops/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/vb-connect-to-azure-devops/VS_TFS.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>Visual Studio 從 97 發展到現在的 2022 號稱地表最強開發工具，能夠與 TFS 或 Git 版控連線自然不是問題，最近剛好遇到客戶還有許多 VB5/VB6 開發的 Winform 程式需要維護，而且版控伺服器也從 TFS 2013 升級至 Azure DevOps Server 2022，藉此機會向大家整理說明 Visual Studio 各版本與 TFS / Azure DevOps 連線的需求與設定。<br>
-<br></p>
-<span id="more"></span>
-<br>
-<h2 id="前言">前言</h2>
-<p>我們使用 Visual Studio 開發工具能夠與 TFS 連線是因為它的功能包含了 <strong><code>Team Explorer</code></strong>，明確來說是從 Visual Studio 2005 首次引入 TFS (Team Foundation Server) 起才開始包含此功能，在這個版本之前則需要額外安裝 <strong>Team Explorer</strong> 和 <strong>MSSCCI Provider</strong> (Microsoft Source Code Control Integration) 才能夠在開發工具中與 TFS 進行整合。</p>
-<h2 id="版本相依性">版本相依性</h2>
-<p>作業系統、開發工具與版控伺服器彼此間有一定的版本相依性，Windows XP 無法安裝 Team Explorer 2013，只能安裝 Team Explorer 2010，搭配 MSSCCI Provider 2010 可以連線的版本有：TFS 2005 ~ 2018 和 Azure DevOps Server 2019/2020 <mark>(不包含2022)</mark>，若舊開發環境 (Visual Studio 2013 以前) 想要與 Azure DevOps Server 2022 連線，必要最低門檻可以參考下列配置：</p>
-<ul>
-<li><strong>Windows 7 以上</strong></li>
-<li><strong>Team Explorer 2013</strong></li>
-<li><strong>MSSCCI Provider 2013</strong></li>
-</ul>
-<p>Visual Studio 97/6/2003~2008 搭配 Team Explorer 2010 + MSSCCI Provider 2010 可以從開發工具連線至 TFS 2010~2017 和 Azure DevOps Server 2019/2020，若要連線至 Azure DevOps Server 2022 則需要搭配 Team Explorer 2013 + MSSCCI Provider 2013 才行，各版本 MSSCCI Provider 可以自 Visual Studio | Marketplace 取得：</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2010MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2010 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 32-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.TeamFoundationServerMSSCCIProvider201064-bit"  target="_blank">⁍ Team Foundation Server MSSCCI Provider 2010 64-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer2012MSSCC-9956"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2012 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://marketplace.visualstudio.com/items?itemName=TFSPowerToolsTeam.MicrosoftVisualStudioTeamFoundationServer20132015M-11387"  target="_blank">⁍ Microsoft Visual Studio Team Foundation Server 2013&2015 MSSCCI Provider 64-bit<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
-<h2 id="VB5-VB6">VB5/VB6</h2>
-<p>在 VB5/VB6 的工具列需要額外安裝上述提到的 MSSCCI Provider 2010/2013 才會出現 <strong>Team Foundation</strong> 選項，讓我們在開發工具中將程式碼與版控伺服器整合。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/vb-connect-to-azure-devops/create-project-from-tfs.png"
-                        class=""
-                 >
-<p>若出現下列錯誤訊息，就是 MSSCCI Provider 版本太舊了，無法連線到新的版控伺服器，例如：安裝 MSSCCI Provider 2010 但想要與 Azure DevOps Server 2022 連線，唯一解法就是安裝 Team Explorer 2013 + MSSCCI Provider 2013。</p>
-<blockquote>
-<p>TF14045: The identity 主機名稱\2ffd15ae-91e4-4df8-a346-e5be57e1340e is not a recognized identity.</p>
-</blockquote>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/vb-connect-to-azure-devops/not-a-recognized-identity.png"
-                        class=""
-                 >
-<p>在實務情境可能還會遇到其他各種版本組合，經此次嘗試後，確認 VB5/VB6 都還可以與 Azure DevOps Server 2022 的 TFVC 版控進行整合，這邊有篇文章將各種組合條列得很詳盡，也提供大家參考。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://jessehouwing.net/azure-devops-connect-any-visual-studio-version/"  target="_blank">⁍ Connect any version of Visual Studio to Azure DevOps or Azure DevOps Server<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
-]]></content>
-      <tags>
-        <tag>VB5</tag>
-        <tag>VB6</tag>
-        <tag>TFS</tag>
-        <tag>Team Explorer</tag>
-        <tag>MSSCCI Provider</tag>
       </tags>
   </entry>
   <entry>
