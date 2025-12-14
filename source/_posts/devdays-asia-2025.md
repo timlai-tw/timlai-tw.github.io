@@ -5,6 +5,7 @@ tags:
  - Devdays Asia 2025
  - Azure DevOps
  - GitHub Copilot
+sticky: 99 
 ---
 
 <img src="/post/2025/10/devdays-asia-2025/DevdaysAsia2025.jpg" align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"/> 
