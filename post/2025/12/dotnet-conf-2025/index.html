@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Azure, DevOps, Azure DevOps, Scrum, Kanban, Azure APIM, 敏捷開發, 雲端技術, 開發心得, 開發筆記">
+    <meta name="description" content="分享 Azure 雲端技術應用與開發心得，也包含 Azure DevOps 實戰經驗與其他日常開發筆記。">
+    <meta name="author" content="Tim Lai">
+    
+    <title>
+        
+            .NET Conf 2025 - 碼農出擊 ! GitHub Copilot 帶你飛 |
+        
+        漫步在雲端
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/logoT.png">
+    
+    
+<link rel="stylesheet" href="/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/brands.min.css">
+
+    
+        
+            
+        
+            
+                
+<link rel="stylesheet" href="/css/markdown.css">
+
+            
+        
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"timlai.dev","root":"/","language":"zh-TW","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"漫步在雲端","author":"Tim Lai","avatar":"/images/angu100.jpg","logo":"/images/logoT.png","favicon":"/images/logoT.png"},"menu":{"home":"/                         || fa-solid fa-home","archives":"/archives             || fa-solid fa-box-archive","tags":"/tags                     || fa-solid fa-tags","links":"/links                   || fa-solid fa-link","about":"/about                   || fa-solid fa-address-card"},"first_screen":{"enable":false,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"If something is difficult or painful, do it more often.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":null,"weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":"https://www.facebook.com/yutai.lai.91","email":"yutai.lai@gmail.com"}},"scroll":{"progress_bar":true,"percent":false,"hide_header":true},"home":{"announcement":null,"category":true,"tag":true,"post_datetime":"updated"},"post":{"author_badge":{"enable":false,"level_badge":false,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":false,"min2read":false},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":true,"share":false,"reward":{"enable":false,"img_link":null,"text":null,"icon":null}},"code_block":{"tools":{"enable":true,"style":"default"},"highlight_theme":"default"},"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true,"layout":"left"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":true}},"local_search":{"enable":true,"preload":true},"comment":{"enable":true,"use":"disqus","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":"timlai-tw","github_admins":"timlai-tw","repository":"hexo-site-comments","client_id":"Ov23liXKo7rRoe2CP8fx","client_secret":"206bafbd0af7bfbc4489392884591ac53c68b63c","proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.36"},"waline":{"server_url":null,"reaction":false,"version":"3.2.1"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":"yutailai"}},"rss":{"enable":true},"lazyload":{"enable":true},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":true},"footer":{"since":2023,"word_count":false,"site_deploy":{"enable":true,"provider":"github","url":null},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":true,"css":[null,"/css/markdown.css"],"js":[null]},"root":"","source_data":{"links":[{"title":"訂閱授權與定價"},{"name":"Visual Studio","link":"https://visualstudio.microsoft.com/zh-hant/subscriptions/#%e5%b7%a5%e5%85%b7?cat=visual-studio-enterprise-subscription-with-github-enterprise-zh-hant","description":"Visual Studio 訂閱與權益","avatar":"/images/icon/microsoft.png"},{"name":"Microsoft Licensing","link":"https://www.microsoft.com/licensing/terms/zh-TW/productoffering/AzureDevOpsServer/OL","description":"Microsoft 產品條款","avatar":"/images/icon/microsoft.png"},{"name":"Azure DevOps","link":"https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/","description":"Azure DevOps Services 定價","avatar":"/images/icon/azure-devops.svg"},{"name":"Azure 定價計算機","link":"https://azure.microsoft.com/zh-tw/pricing/calculator/","description":"計算使用 Azure 的預估每小時或每月成本。","avatar":"/images/icon/calculator.png"},{"title":"常用下載"},{"name":"Visual Studio","link":"https://visualstudio.microsoft.com/zh-hant/downloads/","description":"Visual Studio / VS Code 與其他工具、架構和可轉散發套件","avatar":"/images/icon/visual-studio-product-icon.svg"},{"name":"Azure DevOps Office® Integration 2019","link":"https://visualstudio.microsoft.com/zh-hant/downloads/#azure-devops-office-integration-2019","description":"Azure DevOps 與 Office 整合工具","avatar":"/images/icon/excel.webp"},{"name":"Microsoft Power BI Desktop","link":"https://www.microsoft.com/zh-tw/download/details.aspx?id=58494","description":"結合了先進的互動式視覺效果，並內建領先業界的資料查詢與模型。","avatar":"/images/icon/power-bi-icon-384x512-bujnuaon.png"},{"name":"Visual Studio Marketplace","link":"https://marketplace.visualstudio.com/","description":"尋找、安裝及管理 Visual Studio 的延伸模組","avatar":"/images/icon/azure-marketplace.png"},{"name":"Microsoft Source Code Control Interface (MSSCCI) Provider","link":"https://marketplace.visualstudio.com/search?term=msscci&target=VS&category=Tools&vsVersion=&subCategory=All&sortBy=Relevance","description":"MSSCCI Provider 2010~2015 32/64 位元","avatar":"/images/icon/msscci.jpg"}]},"version":"4.2.2"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分鐘前","hour":"%s 小時前","day":"%s 天前","week":"%s 周前","month":"%s 個月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"複製程式碼","copied":"已複製","fold":"折疊程式碼區塊","folded":"已折疊"}
+    KEEP.language_copy_copyright = {"copy":"複製版權資訊","copied":"已複製","title":"原文標題","author":"原文作者","link":"原文連結"}
+  </script>
+    
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2LZYYGR2Y3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2LZYYGR2Y3');
+</script>
+
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="漫步在雲端" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left flex-start border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="/images/logoT.png">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               漫步在雲端
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc border-box">
+                <ul class="menu-list border-box">
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-home"></i>
+                                
+                                <!-- 首頁 -->
+                                首頁
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/archives">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                
+                                <!-- 檔案室 -->
+                                檔案室
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/tags">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-tags"></i>
+                                
+                                <!-- 標籤 -->
+                                標籤
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/links">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-link"></i>
+                                
+                                <!-- 連結 -->
+                                連結
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/about">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-address-card"></i>
+                                
+                                <!-- 關於 -->
+                                關於
+                                
+                            </a>
+                            
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="menu-text-color fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile border-box flex-start">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list border-box">
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-home"></i>
+                                </span>
+                            
+                            <!-- 首頁 -->
+                            首頁
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/archives">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                </span>
+                            
+                            <!-- 檔案室 -->
+                            檔案室
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/tags">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-tags"></i>
+                                </span>
+                            
+                            <!-- 標籤 -->
+                            標籤
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/links">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-link"></i>
+                                </span>
+                            
+                            <!-- 連結 -->
+                            連結
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/about">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-address-card"></i>
+                                </span>
+                            
+                            <!-- 關於 -->
+                            關於
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        .NET Conf 2025 - 碼農出擊 ! GitHub Copilot 帶你飛
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/angu100.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Tim Lai</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+
+    <div class="post-meta-info-container border-box post">
+
+
+
+<!-- <div class="post-meta-info-container border-box post"> -->
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2025-12-14 12:20:09</span>
+            </span>
+
+            <span class="meta-info-item post-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="datetime" data-updated="Sun Dec 14 2025 13:40:24 GMT+0800">2025-12-14 13:40:24</span>
+            </span>
+        
+
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/GitHub-Copilot/">GitHub Copilot</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/NET-Conf-2025/">.NET Conf 2025</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item post-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body ">
+                    
+
+                    
+                         <img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/12/dotnet-conf-2025/dotnet-conf-2025.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>很開心受邀在 <strong>.NET Conf 2025 Taiwan</strong> 擔任講者，這場活動由 STUDY4 社群主辦，是全球 .NET Conf 的台灣在地場，今年主軸放在 <strong>.NET 10</strong> 與 <strong>AI 驅動的應用開發</strong>。我的議程主要聚焦在：當企業想要導入 GitHub Copilot，不只是單純「幫工程師補程式碼」，而是思考如何有計畫地將 GitHub Copilot 融入 SDLC 既有流程之中。</p>
+<span id="more"></span>
+<br>
+<br>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/12/dotnet-conf-2025/presentation.jpg"
+                        class=""
+                 >
+<br>
+<h2 id="從-DevDays-Asia-2025-延伸而來">從 DevDays Asia 2025 延伸而來</h2>
+<p>9月我在 <strong>DevDays Asia 2025</strong> 分享的是「Azure DevOps 與 GitHub Copilot：AI 驅動的團隊協作新時代」，比較像是從高空俯瞰：</p>
+<ul>
+<li>怎麼用 Azure DevOps + GitHub Copilot 重新包裝 SDLC</li>
+<li>就算還在 On-Premises 或混合環境，也一樣可以享受 AI 輔助開發</li>
+<li>讓 LLM 透過 Tools / MCP 介接既有系統，把「會聊天」變成「會做事」</li>
+</ul>
+<p>這次在 .NET Conf 2025，則是把鏡頭拉近到 <strong>「GitHub Copilot 本身該怎麼在企業裡落地」</strong>，特別是：</p>
+<ol>
+<li>從哪幾個層次開始導入比較務實？</li>
+<li>怎麼跟 SDLC 的每一個階段對得上？</li>
+<li>除了 IDE 內的 Chat / Completions 之外，團隊層級還能玩到多深？</li>
+</ol>
+<br>
+<h2 id="四層次的-GitHub-Copilot-客製化思維">四層次的 GitHub Copilot 客製化思維</h2>
+<p>簡報裡我用了一個「<strong>AI 客製化四層次架構</strong>」來整理 Copilot 在企業導入時可以怎麼分階段思考：</p>
+<ol>
+<li>
+<p><strong>模型與提示詞（Models &amp; Prompting）</strong><br>
+先搞清楚目前 Copilot 內建提供哪些模型、哪些是 0x 乘數（不額外計費）、哪些是進階付費模型，依照團隊的情境選擇適合的組合，再搭配基本的 Prompt 寫法，讓開發者在 Chat / Inline Chat 裡可以比較穩定地拿到想要的答案。</p>
+</li>
+<li>
+<p><strong>自訂指令與提示詞（Custom Instructions &amp; Prompts）</strong><br>
+把「每次都會重複說的那些話」抽出來，例如：命名規則、例外處理策略、錯誤訊息語氣、專案的架構慣例等，寫進：</p>
+<ul>
+<li><strong><code>/.github/copilot-instructions.md</code></strong>（工作區全域規則）</li>
+<li><strong><code>/.github/instructions/*.instructions.md</code></strong>（依語言 / 任務做條件式套用）<br>
+讓 Copilot 自動帶著這些背景知識工作，而不是每次對話都從零開始重新交代。</li>
+<li><strong><code>/.github/prompts/*.prompt.md</code></strong> (會重複使用的 prompt)</li>
+</ul>
+</li>
+<li>
+<p><strong>自訂代理人（Custom Agents）</strong><br>
+把「角色」概念正式化，為不同開發階段建立專屬 Agent，例如：</p>
+<ul>
+<li>專門負責需求拆解與規劃的 PLANNER</li>
+<li>專心寫程式碼與重構的 IMPLEMENTER</li>
+<li>聚焦測試與驗證的 TESTER</li>
+<li>做 Code Review 與安全檢查的 REVIEWER<br>
+然後用 <strong><code>/agents/*.agent.md</code></strong> 定義好他們各自的行為模式與可用工具，讓團隊在 Copilot Chat 或 Copilot CLI 裡可以一鍵切換角色工作。</li>
+</ul>
+</li>
+<li>
+<p><strong>整合應用（Integration）</strong><br>
+最後一層就是把 Copilot 拉進既有的工具鏈：</p>
+<ul>
+<li>在 CI/CD Pipeline 裡呼叫 Copilot CLI 做自動化 Code Review 或文件生成</li>
+<li>搭配 Pull Request Flow，讓 Copilot 先幫忙整理變更摘要、找出可疑區塊</li>
+<li>用 Prompt Files 把常用工作（例如：「幫我重寫這份 README」）標準化，讓團隊成員都能重複使用同一套流程</li>
+</ul>
+</li>
+</ol>
+<p>這四個層次並不是一次到位，而是可以循序漸進、視團隊成熟度慢慢往上疊。</p>
+<br>
+<h2 id="GitHub-Copilot-與-SDLC-的結合">GitHub Copilot 與 SDLC 的結合</h2>
+<p>在 SDLC 的觀點，我會把 Copilot 放進這樣一個簡化版流程裡看（更多的應用可以參考前幾天提到的 <a class="link"   target="_blank" rel="noopener" href="https://sdlc.timlai.dev" >https://sdlc.timlai.dev<i class="fas fa-external-link-alt"></i></a>）：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Plan (規劃)</span><br><span class="line">  ↓</span><br><span class="line">  └─ Copilot Chat：輔助需求釐清、工作拆解、規格草稿</span><br><span class="line"></span><br><span class="line">Code (程式編寫)</span><br><span class="line">  ↓</span><br><span class="line">  ├─ Code Completions：自動補全樣板程式碼與重複片段</span><br><span class="line">  └─ Copilot Chat：在 IDE 裡協助除錯、重構、產生單元測試</span><br><span class="line"></span><br><span class="line">Review (程式碼審查)</span><br><span class="line">  ↓</span><br><span class="line">  └─ Copilot CLI / Agents：自動化 Code Review、風險掃描與文件補強</span><br><span class="line"></span><br><span class="line">Deploy (部署)</span><br><span class="line">  ↓</span><br><span class="line">  └─ Coding Agent / Pipeline 整合：協助修改設定、產生部署腳本、建立 PR</span><br></pre></td></tr></table></figure>
+<p>對企業來說，重點不是「多一個會寫程式的 AI」，而是：</p>
+<ul>
+<li>在每一個階段都有明確、可度量的應用場景</li>
+<li>知道哪些事情適合交給 Copilot，哪些仍然要由人類工程師把關</li>
+<li>把規則寫進 Custom Instructions、流程寫進 Prompt Files 或 Agents，讓團隊可以<strong>穩定地複製成功經驗</strong></li>
+</ul>
+<br>
+<h2 id="從個人到團隊的導入建議">從個人到團隊的導入建議</h2>
+<p>簡報裡我也分享了一個比較務實的導入路線，給正在觀望是否要導入 Copilot 的團隊參考：</p>
+<ol>
+<li>
+<p><strong>先從開發者個人開始體驗</strong><br>
+讓團隊成員先在 VS Code / Visual Studio 裡熟悉 Chat、Completions、Inline Chat 等基本能力，累積最直覺的「效率感」。</p>
+</li>
+<li>
+<p><strong>很快地補上團隊層級的規範</strong><br>
+不要讓每個人用 Copilot 的方式完全長得不一樣，建議盡早建立：</p>
+<ul>
+<li>共同的 <strong><code>copilot-instructions.md</code></strong></li>
+<li>基本的安全與隱私原則（哪些程式碼 / 資料不能貼上雲端）</li>
+<li>簡單的「好 Prompt 範例庫」</li>
+</ul>
+</li>
+<li>
+<p><strong>針對關鍵流程做深度整合</strong><br>
+找出團隊最痛的幾個流程（例如：Code Review 太花時間、文件總是寫不完、重複的樣板專案很難維護），優先用 Copilot CLI、Custom Agents 或 CI/CD 整合來做自動化，讓大家看到「不只是省幾行程式碼」的價值。</p>
+</li>
+<li>
+<p><strong>持續迭代與量化成果</strong><br>
+導入一段時間後，回頭檢視：</p>
+<ul>
+<li>PR 週期、缺陷率、上線前修正量是否有改善？</li>
+<li>開發者的主觀感受是「變快」還是「變亂」？</li>
+<li>有沒有新的反模式需要在指令或流程上修正？</li>
+</ul>
+</li>
+</ol>
+<p>這次的簡報放在下方參考連結，也非常歡迎有參加活動、或正在思考 <strong>GitHub Copilot 如何在自己團隊落地</strong> 的朋友留言交流，一起把 AI 真正變成開發流程的一部分，而不是只停留在「玩玩看」的階段。</p>
+<div class="tips">
+<font color="black">
+<a href="/post/2025/12/dotnet-conf-2025/碼農出擊 ! GitHub Copilot 帶你飛_20251129.pdf" target="_blank">⁍ 簡報下載 - 碼農出擊 ! GitHub Copilot 帶你飛</a><br>
+<a class="link"   href="https://dotnetconf.study4.tw"  target="_blank">⁍ .NET Conf 2025 Taiwan 官方網站<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+                    
+                </div>
+
+                
+                        
+<div class="post-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="copyright-post-title border-box text-ellipsis">
+                .NET Conf 2025 - 碼農出擊 ! GitHub Copilot 帶你飛
+            </div>
+
+            <div class="copyright-post-link border-box text-ellipsis">
+                post/2025/12/dotnet-conf-2025/
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="copyright-post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">Tim Lai</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    發布於
+                </div>
+                <div class="content">2025-12-14 12:20</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    版權
+                </div>
+                <div class="content tooltip" data-tooltip-content="CC BY-NC-SA 4.0">
+                    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant" target="_blank">
+                        
+                            <i class="fa-brands fa-creative-commons"></i>
+                            <i class="fa-brands fa-creative-commons-by"></i>
+                            <i class="fa-brands fa-creative-commons-nc"></i>
+                            <i class="fa-brands fa-creative-commons-sa"></i>
+                        
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-tooltip-content="複製版權資訊" data-tooltip-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/GitHub-Copilot/">GitHub Copilot</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/NET-Conf-2025/">.NET Conf 2025</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/post/2025/12/azure-devops-server-ga/"
+                                   title="Azure DevOps Server 正式版發佈"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">Azure DevOps Server 正式版發佈</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;留言
+        </div>
+        <div class="comment-plugin-fail border-box">
+    <span class="fail-tip">留言插件載入失敗</span>
+    <button class="reload keep-button">點擊重新載入</button>
+</div>
+<div class="comment-plugin-loading flex-center border-box">
+    <i class="loading-icon fa-solid fa-spinner fa-spin"></i>
+    <span class="load-tip">正在載入留言套件</span>
+</div>
+<script data-pjax>
+  window.KeepCommentPlugin = {}
+  window.KeepCommentPlugin.hideLoading = () => {
+    const cplDom = document.querySelector('.comments-container .comment-plugin-loading')
+    cplDom.style.display = 'none'
+  }
+  window.KeepCommentPlugin.loadFailHandle = () => {
+    window.KeepCommentPlugin.hideLoading()
+    const cpfDom = document.querySelector('.comments-container .comment-plugin-fail')
+    cpfDom.style.display = 'flex'
+    cpfDom.querySelector('.reload').addEventListener('click', () => {
+      window.location.reload()
+    })
+  }
+</script>
+
+        
+            
+
+    <div class="disqus-comments-container">
+        <div id="disqus_thread"></div>
+        <script data-pjax
+                onerror="window.KeepCommentPlugin.loadFailHandle()"
+        >
+          if (!window.KeepCommentPlugin?.initDisqus) {
+            window.KeepCommentPlugin.initDisqus = () => {
+              const script = document.createElement('script')
+              script.async = true
+              script.src = '//yutailai.disqus.com/embed.js'
+              script.setAttribute('data-timestamp', `${Date.now()}`)
+              document.querySelector('.disqus-comments-container').appendChild(script)
+              script.onerror = () => {
+                window.KeepCommentPlugin.loadFailHandle()
+              }
+              script.onload = () => {
+                window.KeepCommentPlugin.hideLoading()
+              }
+            }
+          }
+
+          if ('true' === "true") {
+            setTimeout(() => {
+              window.KeepCommentPlugin.initDisqus()
+            }, 1000)
+          } else {
+            window.addEventListener("DOMContentLoaded", window.KeepCommentPlugin.initDisqus)
+          }
+        </script>
+        <script id="dsq-count-scr" src="//yutailai.disqus.com/count.js" async></script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc left-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%9E-DevDays-Asia-2025-%E5%BB%B6%E4%BC%B8%E8%80%8C%E4%BE%86"><span class="nav-text">從 DevDays Asia 2025 延伸而來</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E5%B1%A4%E6%AC%A1%E7%9A%84-GitHub-Copilot-%E5%AE%A2%E8%A3%BD%E5%8C%96%E6%80%9D%E7%B6%AD"><span class="nav-text">四層次的 GitHub Copilot 客製化思維</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GitHub-Copilot-%E8%88%87-SDLC-%E7%9A%84%E7%B5%90%E5%90%88"><span class="nav-text">GitHub Copilot 與 SDLC 的結合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%9E%E5%80%8B%E4%BA%BA%E5%88%B0%E5%9C%98%E9%9A%8A%E7%9A%84%E5%B0%8E%E5%85%A5%E5%BB%BA%E8%AD%B0"><span class="nav-text">從個人到團隊的導入建議</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+
+<footer class="footer border-box">
+    <div class="copyright-info info-item">
+        &copy;&nbsp;<span>2023</span>&nbsp;-&nbsp;2025
+        
+            &nbsp;<i class="fas fa-heart icon-animate" style="color:red"></i>&nbsp;&nbsp;<a href="/">Tim Lai</a>
+        
+    </div>
+
+    <!-- <div class="theme-info info-item">
+        <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;框架&nbsp;&&nbsp;主題&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+    </div> -->
+
+    
+        
+        <div class="deploy-info info-item">
+            
+            本站由 <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/images/brands/github.png"></span> 提供部署服務
+            
+        </div>
+    
+
+    
+        <div class="count-info info-item">
+            
+
+            
+                <span class="count-item border-box uv">
+                    <span class="item-type border-box">訪問人數</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+                <span class="count-item border-box pv">
+                    <span class="item-type border-box">頁面瀏覽數</span>
+                    <span class="item-value border-box pv" id="busuanzi_value_site_pv"></span>
+                </span>
+            
+        </div>
+    
+
+    
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools left-toc">
+            <div class="post-tools-container border-box">
+    <ul class="post-tools-list border-box">
+        <!-- PC encrypt again -->
+        
+
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <!-- toggle mode -->
+        
+            <li class="tools-item tool-toggle-theme-mode flex-center">
+                <i class="fas fa-moon"></i>
+            </li>
+        
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        <!-- to bottom -->
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜尋..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%9E-DevDays-Asia-2025-%E5%BB%B6%E4%BC%B8%E8%80%8C%E4%BE%86"><span class="nav-text">從 DevDays Asia 2025 延伸而來</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E5%B1%A4%E6%AC%A1%E7%9A%84-GitHub-Copilot-%E5%AE%A2%E8%A3%BD%E5%8C%96%E6%80%9D%E7%B6%AD"><span class="nav-text">四層次的 GitHub Copilot 客製化思維</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GitHub-Copilot-%E8%88%87-SDLC-%E7%9A%84%E7%B5%90%E5%90%88"><span class="nav-text">GitHub Copilot 與 SDLC 的結合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%9E%E5%80%8B%E4%BA%BA%E5%88%B0%E5%9C%98%E9%9A%8A%E7%9A%84%E5%B0%8E%E5%85%A5%E5%BB%BA%E8%AD%B0"><span class="nav-text">從個人到團隊的導入建議</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+
+
+<!-- common js -->
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/toggle-theme.js"></script>
+
+<script src="/js/code-block.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+
+<!-- local search -->
+
+    
+<script src="/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+    
+<script src="/js/lazyload.js"></script>
+
+
+
+<div class="pjax">
+    <!-- home page -->
+    
+
+    <!-- post page -->
+    
+        <!-- post-helper -->
+        
+<script src="/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+            
+<script src="/js/post/copyright-info.js"></script>
+
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+    
+<script src="//cdn.jsdelivr.net/npm/mermaid@11.2.1/dist/mermaid.min.js"></script>
+
+    <script data-pjax>
+      if (window.mermaid) {
+        mermaid.init()
+      }
+    </script>
+
+
+
+
+
+
+<!-- pjax -->
+
+    
+<script src="/js/libs/pjax.min.js"></script>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart()
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd()
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'))
+            KEEP.initExecute()
+        });
+    });
+</script>
+
+
+
+
+    
+        
+    
+
+</body>
+</html>
