@@ -337,7 +337,7 @@
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Sun Dec 14 2025 21:50:17 GMT+0800">2025-12-14 21:50:17</span>
+                <span class="datetime" data-updated="Sun Dec 14 2025 23:41:11 GMT+0800">2025-12-14 23:41:11</span>
             </span>
         
 
@@ -409,23 +409,23 @@
 <ol>
 <li>Client 把要執行的遠端指令封裝成 SOAP 訊息，送到 WinRM Listener。</li>
 <li>WinRM 收到訊息後，根據 Endpoint 設定，啟動對應的提供者 (Provider)。</li>
-<li>對 PowerShell 而言，WinRM 會啟動像 <code>wsmprovhost.exe</code> 這類的處理程序，負責實際執行 PowerShell 指令。</li>
+<li>對 PowerShell 而言，WinRM 會啟動像 <strong><code>wsmprovhost.exe</code></strong> 這類的處理程序，負責實際執行 PowerShell 指令。</li>
 </ol>
 <p>也因為 WinRM 是通用的管理通道，所以除了 PowerShell 之外，其他管理應用程式也可以透過 WinRM 來接收與處理遠端要求。</p>
 <h2 id="什麼是-PSSession？">什麼是 PSSession？</h2>
 <p><strong>PSSession</strong> 則是 PowerShell 提供的「遠端工作階段物件」，你可以把它想成是在遠端主機上開了一個持續存在的 PowerShell 視窗，只是畫面沒有顯示在你前面而已。</p>
 <p>幾個常見的 cmdlet：</p>
 <ul>
-<li><code>New-PSSession</code>：建立遠端工作階段物件。</li>
-<li><code>Enter-PSSession</code>：進入互動式遠端 Shell。</li>
-<li><code>Invoke-Command -Session</code>：在既有的 PSSession 裡執行指令或 ScriptBlock。</li>
-<li><code>Remove-PSSession</code>：關閉遠端工作階段，釋放資源。</li>
+<li><strong><code>New-PSSession</code></strong>：建立遠端工作階段物件。</li>
+<li><strong><code>Enter-PSSession</code></strong>：進入互動式遠端 Shell。</li>
+<li><strong><code>Invoke-Command -Session</code></strong>：在既有的 PSSession 裡執行指令或 ScriptBlock。</li>
+<li><strong><code>Remove-PSSession</code></strong>：關閉遠端工作階段，釋放資源。</li>
 </ul>
 <p>使用 PSSession 的好處：</p>
 <ul>
 <li>同一個 Session 中可以連續執行多個指令，重複利用連線與驗證結果。</li>
-<li>可以在 Session 內保留變數、載入好的模組、目前路徑等狀態。</li>
-<li>在大量部署或需要多次互動的情境下，效率會比一次性 <code>Invoke-Command -ComputerName</code> 好很多。</li>
+<li>可以在 Session 內保留變數、已載入的模組、目前路徑等狀態。</li>
+<li>在大量部署或需要多次互動的情境下，效率會比一次性的 <strong><code>Invoke-Command -ComputerName</code></strong> 好很多。</li>
 </ul>
 <h2 id="WinRM-與-PSSession-之間的關係">WinRM 與 PSSession 之間的關係</h2>
 <p>在典型的 Windows 環境中，<strong>PowerShell Remoting 預設是透過 WinRM 當作傳輸層</strong> 來建立 PSSession，也就是說：</p>
@@ -433,27 +433,27 @@
 <li>WinRM：負責「如何把封包從 Client 送到 Server」。</li>
 <li>PSSession：負責「在 Server 上開一個 PowerShell 遠端工作階段」。</li>
 </ul>
-<p>所以可以這麼理解：</p>
+<p>所以大家可以這麼理解：</p>
 <blockquote>
 <p>WinRM 提供管道，PSSession 就是在這條管道上跑 PowerShell 的列車。</p>
 </blockquote>
-<p>如果 WinRM 沒有啟用或設定有問題（例如防火牆沒開、Listener 沒建立、憑證或 TrustedHosts 沒設好），那 <code>New-PSSession</code>、<code>Enter-PSSession</code> 這類指令就會直接報錯，常見錯誤訊息像是：「<strong>WinRM 用戶端無法處理該要求</strong>」。</p>
+<p>如果 WinRM 沒有啟用或設定有問題（例如：防火牆沒開、Listener 沒建立、憑證或 TrustedHosts 沒設好），那 <strong><code>New-PSSession</code></strong> 或 <strong><code>Enter-PSSession</code></strong> 這類指令就會直接報錯，常見錯誤訊息像是：「<strong>WinRM 用戶端無法處理該要求</strong>」。</p>
 <p>從協定層次來看，WinRM 是一個通用的遠端管理協定，而 PowerShell Remoting（包含 PSSession）只是跑在其上的其中一種應用層實作。在較新的 PowerShell 版本中，也可以改用 SSH 當作傳輸層，不過在多數 Windows AD 企業環境裡，WinRM 仍然是最常見、整合度也最高的選項。</p>
 <h2 id="WinRM-PSSession-架構概念">WinRM / PSSession 架構概念</h2>
 <p>從 Client 發出一個遠端 PowerShell 指令，到 Server 端執行完成，中間大致會經過這幾個步驟：</p>
 <ol>
-<li>使用者在 Client 上執行 <code>New-PSSession</code> 或 <code>Enter-PSSession</code>。</li>
+<li>使用者在 Client 上執行 <strong><code>New-PSSession</code></strong> 或 <strong><code>Enter-PSSession</code></strong>。</li>
 <li>PowerShell 呼叫 WinRM Client，將 ScriptBlock / 指令內容包成 SOAP 訊息。</li>
 <li>SOAP 訊息透過 TCP 5985/5986 穿過防火牆，送到遠端主機上的 WinRM Listener。</li>
 <li>WinRM Listener 驗證身分、檢查授權後，將要求派送給對應的 Endpoint（例如 PowerShell）。</li>
-<li>PowerShell Provider 啟動處理程序（例如 <code>wsmprovhost.exe</code>），在遠端建立 / 維護 PSSession。</li>
+<li>PowerShell Provider 啟動處理程序（例如 <strong><code>wsmprovhost.exe</code></strong>），在遠端建立 / 維護 PSSession。</li>
 <li>遠端 PowerShell 執行完指令後，把結果再透過同一條通道包成 SOAP 回傳給 Client。</li>
 </ol>
-<p>如果你有看過常見的 WinRM 示意圖，可以把中間那個「Firewll + WS-Management 協定」想成一座橋，橋兩端分別是執行 PowerShell 的 Client 和 Server，WinRM 就是在橋上來回搬運 SOAP 訊息的工人，而 PSSession 則是工人幫你在對岸搭好的工作站。</p>
+<p>就像文章最上面的 WinRM 示意圖，可以把中間那個「Firewll + WS-Management 協定」想成一座橋，橋兩端分別是執行 PowerShell 的 Client 和 Server，WinRM 就是在橋上來回搬運 SOAP 訊息的工人，而 PSSession 則是工人幫你在對岸搭好的工作站。</p>
 <h2 id="實作：在兩台電腦之間建立-PSSession">實作：在兩台電腦之間建立 PSSession</h2>
 <p>以下假設情境：</p>
 <ul>
-<li>Client：開發機 / Build Agent，一般使用者帳號 <code>DOMAIN\deployuser</code>。</li>
+<li>Client：本地開發環境 / Build Agent，一般使用者帳號 <code>DOMAIN\deployuser</code>。</li>
 <li>Server：IIS Web Server，主機名稱 <code>WEB01</code>。</li>
 <li>兩台機器在同一個 AD 網域，網路上互通，防火牆允許 5985（或 5986）。</li>
 </ul>
@@ -541,12 +541,12 @@
 <li>
 <p>如果 Client 與 Server 不在同一個 AD 網域，或是 Workgroup 環境，就要在 Client 上把 Server 加到 TrustedHosts，允許連線：</p>
  <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 將單一主機加入 TrustedHosts</span></span><br><span class="line"><span class="built_in">Set-Item</span> WSMan:\localhost\Client\TrustedHosts <span class="literal">-Value</span> <span class="string">&#x27;WEB01&#x27;</span> <span class="literal">-Force</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果有多台，可以用逗號分隔</span></span><br><span class="line"><span class="built_in">Set-Item</span> WSMan:\localhost\Client\TrustedHosts <span class="literal">-Value</span> <span class="string">&#x27;WEB01,WEB02&#x27;</span> <span class="literal">-Force</span></span><br></pre></td></tr></table></figure>
-<p>也可以用 <code>*</code> 允許所有主機，但風險較高，通常只在實驗環境使用。</p>
+<p>也可以用 <code>*</code> 允許所有主機，但風險較高，通常建議只在測試環境使用。</p>
 </li>
 <li>
 <p>最後用下列指令檢查目前的 Client 端設定：</p>
  <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">winrm get winrm/config/client</span><br></pre></td></tr></table></figure>
-<p>確認 <code>TrustedHosts</code> 是否包含目標主機名稱，以及是否有符合安全政策的驗證方式（例如只啟用 Kerberos，不開 Basic + AllowUnencrypted）。</p>
+<p>確認 <code>TrustedHosts</code> 是否包含目標主機名稱，以及是否有符合安全政策的驗證方式（例如：只啟用 Kerberos，不開 Basic + AllowUnencrypted）。</p>
 </li>
 </ol>
 <h3 id="3-測試從-Client-建立-PSSession">3. 測試從 Client 建立 PSSession</h3>
@@ -576,17 +576,17 @@
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">task:</span> <span class="string">PowerShell@2</span></span><br><span class="line">	<span class="attr">displayName:</span> <span class="string">部署到</span> <span class="string">WEB01</span> <span class="string">(WinRM</span> <span class="string">+</span> <span class="string">PSSession)</span></span><br><span class="line">	<span class="attr">inputs:</span></span><br><span class="line">		<span class="attr">targetType:</span> <span class="string">&#x27;inline&#x27;</span></span><br><span class="line">		<span class="attr">pwsh:</span> <span class="literal">true</span></span><br><span class="line">		<span class="attr">script:</span> <span class="string">|</span></span><br><span class="line">			<span class="string">$serverName</span>   <span class="string">=</span> <span class="string">&#x27;WEB01&#x27;</span></span><br><span class="line">			<span class="string">$remotePath</span>   <span class="string">=</span> <span class="string">&#x27;C:\\inetpub\\wwwroot&#x27;</span></span><br><span class="line">			<span class="string">$localPackage</span> <span class="string">=</span> <span class="string">&#x27;$(Pipeline.Workspace)/drop/drop.zip&#x27;</span></span><br><span class="line"></span><br><span class="line">			<span class="comment"># 建構認證物件，密碼建議存放在 Variable / Variable group 或 Key Vault</span></span><br><span class="line">			<span class="string">$securePassword</span> <span class="string">=</span> <span class="string">ConvertTo-SecureString</span> <span class="string">&#x27;$(deployPassword)&#x27;</span> <span class="string">-AsPlainText</span> <span class="string">-Force</span></span><br><span class="line">			<span class="string">$cred</span> <span class="string">=</span> <span class="string">New-Object</span> <span class="string">System.Management.Automation.PSCredential(&#x27;DOMAIN\\deployuser&#x27;,</span> <span class="string">$securePassword)</span></span><br><span class="line"></span><br><span class="line">			<span class="string">Write-Host</span> <span class="string">&quot;[INFO] 建立到 $serverName 的 PSSession…&quot;</span></span><br><span class="line">			<span class="string">$session</span> <span class="string">=</span> <span class="string">New-PSSession</span> <span class="string">-ComputerName</span> <span class="string">$serverName</span> <span class="string">-Credential</span> <span class="string">$cred</span></span><br><span class="line"></span><br><span class="line">			<span class="string">try</span> &#123;</span><br><span class="line">				<span class="string">Write-Host</span> <span class="string">&quot;[INFO] 複製 drop.zip 到遠端 $remotePath…&quot;</span></span><br><span class="line">				<span class="string">Copy-Item</span> <span class="string">-Path</span> <span class="string">$localPackage</span> <span class="string">-Destination</span> <span class="string">$remotePath</span> <span class="string">-ToSession</span> <span class="string">$session</span> <span class="string">-Force</span></span><br><span class="line"></span><br><span class="line">				<span class="string">Write-Host</span> <span class="string">&quot;[INFO] 在遠端解壓縮並整理部署目錄…&quot;</span></span><br><span class="line">				<span class="string">Invoke-Command</span> <span class="string">-Session</span> <span class="string">$session</span> <span class="string">-ScriptBlock</span> &#123;</span><br><span class="line">					<span class="string">param($zipPath</span>, <span class="string">$siteRoot)</span></span><br><span class="line"></span><br><span class="line">					<span class="string">$expandPath</span> <span class="string">=</span> <span class="string">Join-Path</span> <span class="string">$siteRoot</span> <span class="string">&#x27;_deploy_tmp&#x27;</span></span><br><span class="line"></span><br><span class="line">					<span class="string">if</span> <span class="string">(Test-Path</span> <span class="string">$expandPath)</span> &#123; <span class="string">Remove-Item</span> <span class="string">$expandPath</span> <span class="string">-Recurse</span> <span class="string">-Force</span> &#125;</span><br><span class="line">					<span class="string">New-Item</span> <span class="string">-ItemType</span> <span class="string">Directory</span> <span class="string">-Path</span> <span class="string">$expandPath</span> <span class="string">|</span> <span class="string">Out-Null</span></span><br><span class="line"></span><br><span class="line">					<span class="string">Add-Type</span> <span class="string">-AssemblyName</span> <span class="string">System.IO.Compression.FileSystem</span></span><br><span class="line">					[<span class="string">System.IO.Compression.ZipFile</span>]<span class="string">::ExtractToDirectory($zipPath</span>, <span class="string">$expandPath)</span></span><br><span class="line"></span><br><span class="line">					<span class="comment"># 視專案需要，可以先備份舊站台內容</span></span><br><span class="line">					<span class="string">$backupPath</span> <span class="string">=</span> <span class="string">Join-Path</span> <span class="string">$siteRoot</span> <span class="string">(&quot;backup_&quot;</span> <span class="string">+</span> <span class="string">(Get-Date</span> <span class="string">-Format</span> <span class="string">&#x27;yyyyMMddHHmmss&#x27;</span><span class="string">))</span></span><br><span class="line">					<span class="string">if</span> <span class="string">(Test-Path</span> <span class="string">$siteRoot)</span> &#123;</span><br><span class="line">						<span class="string">New-Item</span> <span class="string">-ItemType</span> <span class="string">Directory</span> <span class="string">-Path</span> <span class="string">$backupPath</span> <span class="string">|</span> <span class="string">Out-Null</span></span><br><span class="line">						<span class="string">Get-ChildItem</span> <span class="string">$siteRoot</span> <span class="string">-Exclude</span> <span class="string">&#x27;backup_*&#x27;</span> <span class="string">|</span> <span class="string">Move-Item</span> <span class="string">-Destination</span> <span class="string">$backupPath</span></span><br><span class="line">					&#125;</span><br><span class="line"></span><br><span class="line">					<span class="string">Get-ChildItem</span> <span class="string">$expandPath</span> <span class="string">|</span> <span class="string">Move-Item</span> <span class="string">-Destination</span> <span class="string">$siteRoot</span></span><br><span class="line">					<span class="string">Remove-Item</span> <span class="string">$expandPath</span> <span class="string">-Recurse</span> <span class="string">-Force</span></span><br><span class="line">				&#125; <span class="string">-ArgumentList</span> <span class="string">&quot;$(Join-Path &#x27;C:\\inetpub\\wwwroot&#x27; &#x27;drop.zip&#x27;)&quot;</span>, <span class="string">&#x27;C:\\inetpub\\wwwroot&#x27;</span></span><br><span class="line"></span><br><span class="line">				<span class="string">Write-Host</span> <span class="string">&quot;[INFO] 部署完成。&quot;</span></span><br><span class="line">			&#125;</span><br><span class="line">			<span class="string">finally</span> &#123;</span><br><span class="line">				<span class="string">if</span> <span class="string">($session)</span> &#123; <span class="string">Remove-PSSession</span> <span class="string">$session</span> &#125;</span><br><span class="line">			&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>上面示範的流程概要是：</p>
 <ol>
-<li>在 Agent 上下載 <code>drop.zip</code>。</li>
-<li>透過 <code>New-PSSession</code> 連線到 WEB01。</li>
-<li>使用 <code>Copy-Item -ToSession</code> 把 <code>drop.zip</code> 複製到 <code>C:\inetpub\wwwroot</code>。</li>
-<li>在遠端透過 <code>Invoke-Command -Session</code> 解壓縮 zip、備份舊版網站、覆蓋成新版內容。</li>
+<li>在 Agent 上下載 <strong><code>drop.zip</code></strong>。</li>
+<li>透過 <strong><code>New-PSSession</code></strong> 連線到 WEB01。</li>
+<li>使用 <strong><code>Copy-Item -ToSession</code></strong> 把 <strong><code>drop.zip</code></strong> 複製到 <strong><code>C:\inetpub\wwwroot</code></strong>。</li>
+<li>在遠端透過 <strong><code>Invoke-Command -Session</code></strong> 解壓縮 zip、備份舊版網站、覆蓋成新版內容。</li>
 <li>最後關閉 PSSession，釋放資源。</li>
 </ol>
 <p>實務上建議再搭配：</p>
 <ul>
 <li>把部署帳號與密碼改存放在 <strong>Secret Variable / Variable Group / Key Vault</strong>，避免出現在 YAML 明文。</li>
 <li>加上更多錯誤處理與 Log，方便日後在 Pipeline 失敗時快速排查。</li>
-<li>若需要同時部署到多台 Web Server，可以使用多個 PSSession，搭配 <code>Invoke-Command -Session</code> 的陣列呼叫方式一次下達指令。</li>
+<li>若需要同時部署到多台 Web Server，可以使用多個 PSSession，搭配 <strong><code>Invoke-Command -Session</code></strong> 的陣列呼叫方式一次下達指令。</li>
 </ul>
 <h2 id="小結">小結</h2>
 <p>如果把部署流程拆解，會發現 WinRM 和 PSSession 負責的其實就是最關鍵的那一段：</p>
