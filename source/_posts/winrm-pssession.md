@@ -82,8 +82,8 @@ WinRM 的角色可以想像成「遠端管理郵局」：
 
 以下假設情境：
 
-- Client：本地開發環境 / Build Agent，一般使用者帳號 `DOMAIN\deployuser`。
-- Server：IIS Web Server，主機名稱 `WEB01`。
+- Client：本地開發環境 / Build Agent，一般使用者帳號 **`DOMAIN\deployuser`**。
+- Server：IIS Web Server，主機名稱 **`WEB01`**。
 - 兩台機器在同一個 AD 網域，網路上互通，防火牆允許 5985（或 5986）。
 
 ### 1. 在 Server 上啟用與設定 WinRM
@@ -98,13 +98,13 @@ winrm quickconfig
 Enable-PSRemoting -Force
 ```
 
-如果是第一次執行 `winrm quickconfig`，系統會詢問是否：
+如果是第一次執行 **`winrm quickconfig`**，系統會詢問是否：
 
 - 啟用 WinRM 服務並設為自動啟動。
 - 建立預設 Listener。
 - 開啟對應的防火牆規則。
 
-依照提示輸入 `Y` 即可完成基本設定。接著可以用下列指令確認目前的 Listener 狀態：
+依照提示輸入 **`Y`** 即可完成基本設定。接著可以用下列指令確認目前的 Listener 狀態：
 
 ```powershell
 winrm e winrm/config/listener
@@ -118,11 +118,11 @@ winrm e winrm/config/listener
 {% asset_img error.jpg %}
 <br>
 
-有時候在執行 `Enable-PSRemoting -Force` 會看到類似下列錯誤訊息：
+有時候在執行 **`Enable-PSRemoting -Force`** 會看到類似下列錯誤訊息：
 
 > WinRM 防火牆例外無法啟用，因為此機器上的某個網路連線其網路類型是 Public，請先改成 Domain 或 Private 再重試。
 
-這是因為 `Enable-PSRemoting` 內部會呼叫 `Set-WSManQuickConfig`，預設只會在 **Domain / Private 網路** 上自動開啟 WinRM 的防火牆規則；只要偵測到有任何一張網卡被標成 Public，就會視為不安全環境而中止。常見情境包括：
+這是因為 **`Enable-PSRemoting`** 內部會呼叫 **`Set-WSManQuickConfig`**，預設只會在 **Domain / Private 網路** 上自動開啟 WinRM 的防火牆規則；只要偵測到有任何一張網卡被標成 Public，就會視為不安全環境而中止。常見情境包括：
 
 - 除了實體網卡之外，還有 Wi‑Fi、VPN、虛擬機器 vSwitch 等虛擬介面。
 - 其中至少一個連線的 NetworkCategory 是 Public。
@@ -136,7 +136,7 @@ winrm e winrm/config/listener
 	```powershell
 	Get-NetConnectionProfile
 	```
-	找出 `NetworkCategory` 為 `Public` 的介面（通常會看到 InterfaceIndex）。
+	找出 **`NetworkCategory`** 為 **`Public`** 的介面（通常會看到 InterfaceIndex）。
 
 <br>
 {% asset_img step1.jpg %}
@@ -199,7 +199,7 @@ Set-WSManQuickConfig -SkipNetworkProfileCheck -Force
 	Set-Item WSMan:\localhost\Client\TrustedHosts -Value 'WEB01,WEB02' -Force
 	```
 
-	也可以用 `*` 允許所有主機，但風險較高，通常建議只在測試環境使用。
+	也可以用 **`*`** 允許所有主機，但風險較高，通常建議只在測試環境使用。
 
 3. 最後用下列指令檢查目前的 Client 端設定：
 
@@ -207,7 +207,7 @@ Set-WSManQuickConfig -SkipNetworkProfileCheck -Force
 	winrm get winrm/config/client
 	```
 
-	確認 `TrustedHosts` 是否包含目標主機名稱，以及是否有符合安全政策的驗證方式（例如：只啟用 Kerberos，不開 Basic + AllowUnencrypted）。
+	確認 **`TrustedHosts`** 是否包含目標主機名稱，以及是否有符合安全政策的驗證方式（例如：只啟用 Kerberos，不開 Basic + AllowUnencrypted）。
 
 ### 3. 測試從 Client 建立 PSSession
 
@@ -234,12 +234,12 @@ $session = New-PSSession -ComputerName WEB01 -Credential $cred
 
 前面都在講觀念，接下來用一個實際情境來說明：
 
-> 使用 Azure Pipelines CD，把 .NET 10 應用程式建置完成的 `drop.zip` 部署到 `WEB01` 伺服器的 `C:\inetpub\wwwroot` 目錄。
+> 使用 Azure Pipelines CD，把 .NET 10 應用程式建置完成的 **`drop.zip`** 部署到 **`WEB01`** 伺服器的 **`C:\inetpub\wwwroot`** 目錄。
 
 ### 前置條件
 
-- 已經有一條 Build Pipeline，產出 `drop.zip` 並發佈成 Artifacts。
-- CD 使用的是 **Self-hosted agent**，且這台 Agent 機器可以透過 WinRM 連到 `WEB01`。
+- 已經有一條 Build Pipeline，產出 **`drop.zip`** 並發佈成 Artifacts。
+- CD 使用的是 **Self-hosted agent**，且這台 Agent 機器可以透過 WinRM 連到 **`WEB01`**。
 - WEB01 已依前面步驟啟用並設定好 WinRM。
 
 ### 1. 在 Release/CD 階段下載 Artifacts
@@ -254,11 +254,11 @@ steps:
 		path: '$(Pipeline.Workspace)/drop'
 ```
 
-假設 `drop.zip` 會出現在 `$(Pipeline.Workspace)/drop/drop.zip`。
+假設 **`drop.zip`** 會出現在 **`$(Pipeline.Workspace)/drop/drop.zip`**。
 
 ### 2. 使用 PowerShell Task 建立 PSSession 並複製檔案
 
-接著新增一個 PowerShell@2 工作，在裡面用 WinRM / PSSession 把 `drop.zip` 複製到 WEB01：
+接著新增一個 PowerShell@2 工作，在裡面用 WinRM / PSSession 把 **`drop.zip`** 複製到 WEB01：
 
 ```yaml
 - task: PowerShell@2
