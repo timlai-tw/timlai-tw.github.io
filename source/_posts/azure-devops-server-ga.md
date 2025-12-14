@@ -147,7 +147,7 @@ tags:
 - 若還在 **TFS 2015 或更舊版本**，這次 GA 搭配延伸支援結束，是很適合規劃「一次到位」升級的時點。
 - 如果團隊已大量使用 **Git + YAML Pipelines + GitHub 整合**，這一波新功能會讓追蹤性與操作體驗更接近雲端版 Azure DevOps Services。
 
-以上資訊整理給大家參考 :sunglasses:
+在官方的 Release Notes 頁面中有相關功能的截圖，有需要可以再參考下列參考連結。 :sunglasses:
 
 <div class="tips">
 <font color="black">
