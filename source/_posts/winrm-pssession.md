@@ -9,7 +9,7 @@ tags:
 
 <img src="/post/2025/12/winrm-pssession/winrm-pssession.jpg" align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"/> 
 
-在 Windows 世界裡，只要談到「遠端執行 PowerShell 指令」或是「從 CI/CD Pipeline 自動把程式丟到伺服器」，幾乎都會遇到兩個名詞：**WinRM** 跟 **PSSession**。這兩個其實不是競爭關係，而是分層合作：WinRM 負責提供底層遠端通訊通道，PSSession 則是在這個通道上建立起來的 PowerShell 遠端工作階段。本篇先說明兩者的概念與關係，再示範如何在 Azure Pipelines 的 CD 階段，透過 WinRM/PSSession 把 .NET 10 應用程式的部署包複製到目標主機。
+在 Windows 世界裡，只要談到「遠端執行 PowerShell 指令」或是「從 CI/CD Pipeline 自動把程式丟到伺服器」，幾乎都會遇到兩個名詞：**WinRM** 跟 **PSSession**。這兩個其實不是競爭關係，而是分層合作：WinRM 負責提供底層遠端通訊通道，PSSession 則是在這個通道上建立起來的 PowerShell 遠端工作階段。本篇先說明兩者的概念與關係，再示範如何在 Azure Pipelines 的 CD 階段，透過 WinRM/PSSession 把 .NET 10 應用程式的建置成品複製到目標主機進行部署。
 
 <!-- more -->
 
@@ -234,7 +234,7 @@ $session = New-PSSession -ComputerName WEB01 -Credential $cred
 
 前面都在講觀念，接下來用一個實際情境來說明：
 
-> 使用 Azure Pipelines CD，把 .NET 10 應用程式建置完成的 **`drop.zip`** 部署到 **`WEB01`** 伺服器的 **`C:\inetpub\wwwroot`** 目錄。
+> 使用 Azure Pipelines 將 .NET 10 應用程式建置完成的 **`drop.zip`** 部署到 **`WEB01`** 伺服器的 **`C:\inetpub\wwwroot`** 目錄。
 
 ### 前置條件
 
