@@ -1,6 +1,429 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Agent AI 與 Agentic AI 的差別</title>
+    <url>/post/2025/12/agent-ai-and-agentic-ai/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/12/agent-ai-and-agentic-ai/agentic-ai.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 >
+<p>今年大家應該蠻常聽到 <strong>Agent AI</strong> 和 <strong>Agentic AI</strong> 這兩個詞，名稱看起來很像、都有「Agent」，但實際上指的東西不太一樣：一個是「單一代理」的能力，另一個則是「多代理系統」的整體架構。本篇文章以比較白話的比喻來整理兩者的差異，以及 Microsoft 在 Agentic AI 上目前提供的幾種主要解決方案：<strong>Copilot Studio / Azure AI Foundry Agent Service / Microsoft Agent Framework / Semantic Kernel</strong>，方便大家選擇適合自己的開發路線。</p>
+<span id="more"></span>
+<br>
+<h2 id="什麼是-AI-Agent？什麼是-Agentic-AI？">什麼是 AI Agent？什麼是 Agentic AI？</h2>
+<p>先用一句話來區分：</p>
+<ul>
+<li><strong>AI Agent</strong> 比較像是一位「可以自己想辦法完成任務的助手」。</li>
+<li><strong>Agentic AI</strong> 則是一個「由很多專業助手組成的團隊」，可以協調分工、一起完成一個複雜目標。</li>
+</ul>
+<br>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/12/agent-ai-and-agentic-ai/AI-Agent-vs-Agentic-AI.jpg"
+                        class=""
+                 >
+<br>
+<h3 id="AI-Agent：會自己用工具的智慧助手">AI Agent：會自己用工具的智慧助手</h3>
+<p>一般我們說的 <strong>AI Agent（AI 代理）</strong>，指的是一個以 LLM 為核心、能夠：</p>
+<ul>
+<li>讀懂使用者的目標。</li>
+<li>規劃完成任務需要的步驟。</li>
+<li>在過程中主動呼叫工具。</li>
+<li>根據工具回傳結果調整接下來要做什麼。</li>
+</ul>
+<p>也就是說，它不再只是單純回覆文字，而是會「自己動手做事」，例如：</p>
+<ul>
+<li>我們請它「幫我彙整一份這週專案進度並寄信給主管」，它會：
+<ol>
+<li>先去查專案系統的狀態（例如：Azure DevOps MCP）。</li>
+<li>整理成文字報告。</li>
+<li>呼叫工具寄信送出（例如：API 或 Microsoft Team Webhook)。</li>
+</ol>
+</li>
+</ul>
+<p>這整個流程都是由一個 Agent 自己掌握、自己決定何時呼叫哪一個工具。</p>
+<h3 id="Agentic-AI：多代理協作的系統">Agentic AI：多代理協作的系統</h3>
+<p><strong>Agentic AI（代理式 AI）</strong> 則是把「多個 Agent」組織成一個協作系統，讓它們可以彼此溝通、分工合作，來處理一個單一 Agent 很難搞定的複雜任務。例如：</p>
+<ul>
+<li>從一段 1 小時的 YouTube 影片，自動產生：逐字稿整理、重點大綱、教學文章、社群貼文。</li>
+</ul>
+<p>在 Agentic AI 的架構下，我們可能會看到這樣的分工：</p>
+<ul>
+<li><strong>影片分析 Agent</strong>：負責從影片拿到逐字稿、拆段、標註重點。</li>
+<li><strong>內容整理 Agent</strong>：把資料整理成易讀的大綱、章節結構。</li>
+<li><strong>寫作 Agent</strong>：依照不同輸出格式（部落格、教學、社群貼文）產生內容。</li>
+<li><strong>審稿 / 品質控管 Agent</strong>：檢查語氣、品牌一致性、避免重複內容。</li>
+</ul>
+<p>中間會有一個「協調者」負責安排工作流程、把上一個 Agent 的輸出當成下一個 Agent 的輸入，這就是所謂的 <strong>Agentic workflow</strong>。</p>
+<h3 id="差異重點整理">差異重點整理</h3>
+<p>用表格簡單整理一下兩者差異：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">特性</th>
+<th style="text-align:left">AI Agent</th>
+<th style="text-align:left">Agentic AI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">任務範圍</td>
+<td style="text-align:left">一次專注在一個明確任務</td>
+<td style="text-align:left">處理跨多步驟、多角色的大目標</td>
+</tr>
+<tr>
+<td style="text-align:left">架構組成</td>
+<td style="text-align:left">以單一 LLM + 工具為主</td>
+<td style="text-align:left">多個 Agent + 協調流程</td>
+</tr>
+<tr>
+<td style="text-align:left">互動模式</td>
+<td style="text-align:left">使用者 → 單一 Agent → 工具</td>
+<td style="text-align:left">使用者 → 協調層 → 多個 Agent 協作</td>
+</tr>
+<tr>
+<td style="text-align:left">自主程度</td>
+<td style="text-align:left">中等：可以自己決定如何用工具</td>
+<td style="text-align:left">較高：可以自己規劃、分派、調整流程</td>
+</tr>
+<tr>
+<td style="text-align:left">資訊流向</td>
+<td style="text-align:left">Input → Agent → Tools → Output</td>
+<td style="text-align:left">Input → Agent1 → Agent2 → … → Output</td>
+</tr>
+</tbody>
+</table>
+<p>如果把 AI Agent 比喻成一位「超強助理」，那 Agentic AI 就比較像是「一個專案團隊」，裡面有 PM、工程師、設計、測試，各司其職又互相協作。</p>
+<br>
+<h2 id="Microsoft-在-Agentic-AI-上的解決方案版圖">Microsoft 在 Agentic AI 上的解決方案版圖</h2>
+<p>談完概念之後，回到實務選型：<strong>如果我想在 Microsoft 生態系裡做 Agent / Agentic AI，手上有哪些工具可以選？</strong></p>
+<p>目前大致可以分成四條路線，從「幾乎不用寫程式」到「完全程式碼主導」都有：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">解決方案</th>
+<th style="text-align:left">定位</th>
+<th style="text-align:left">適用對象</th>
+<th style="text-align:left">程式碼需求</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Copilot Studio</strong></td>
+<td style="text-align:left">低程式碼 AI Agent 平台</td>
+<td style="text-align:left">業務部門、一般開發者</td>
+<td style="text-align:left">幾乎不用寫程式</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Azure AI Foundry Agent Service</strong></td>
+<td style="text-align:left">雲端託管 Agent 服務</td>
+<td style="text-align:left">企業 IT / 後端工程師</td>
+<td style="text-align:left">中等程式碼量</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Microsoft Agent Framework</strong></td>
+<td style="text-align:left">開源 Agent / 多代理框架 SDK</td>
+<td style="text-align:left">進階開發者、架構師</td>
+<td style="text-align:left">高度程式碼客製</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Semantic Kernel</strong></td>
+<td style="text-align:left">輕量級協調 SDK</td>
+<td style="text-align:left">.NET / Python 開發者</td>
+<td style="text-align:left">中高程式碼量</td>
+</tr>
+</tbody>
+</table>
+<br>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/12/agent-ai-and-agentic-ai/Microsoft-Agentic-AI-Comparison.jpg"
+                        class=""
+                 >
+<br>
+<h3 id="Copilot-Studio：從「聊天機器人」長大的-Agent-平台">Copilot Studio：從「聊天機器人」長大的 Agent 平台</h3>
+<p><strong>Copilot Studio</strong> 可以把它想成是「做聊天機器人、做工作流程型 Copilot」的低程式碼平台，很多情境其實已經很接近單一 Agent：</p>
+<ul>
+<li>透過圖形化介面定義對話流程、條件分支。</li>
+<li>連接各種資料來源（SharePoint、OneDrive、Dynamics、外部 API…）。</li>
+<li>透過 <strong>Connector / Plug‑in / MCP</strong> 把外部系統當成工具來使用。</li>
+<li>不需要自己處理 Prompt、記憶體、狀態儲存等細節。</li>
+</ul>
+<p><strong>優點</strong>：</p>
+<ul>
+<li>幾乎不用寫程式，適合業務單位或一般開發者。</li>
+<li>內建大量連接器，串接常見 SaaS / Microsoft 365 生態非常方便。</li>
+<li>可以快速發佈到 Teams、Web、LINE 等多種通路。</li>
+</ul>
+<p><strong>限制 / 缺點</strong>：</p>
+<ul>
+<li>複雜的 Agentic workflow（多代理協作、細緻的狀態機）比較難完全用圖形化介面表達。</li>
+<li>對於版本控管、CI/CD、程式碼共用等軟體工程議題，彈性不如純程式碼框架。</li>
+</ul>
+<p>如果你的需求是：「想要先做一個可以用的智慧助理，重點是快、好維護」，那 Copilot Studio 是個蠻好的起點。</p>
+<br>
+<h3 id="Azure-AI-Foundry-Agent-Service：雲端託管的-Agent-平台">Azure AI Foundry Agent Service：雲端託管的 Agent 平台</h3>
+<p><strong>Azure AI Foundry Agent Service</strong> 可以視為「由雲端幫你托管 Agent」，我們透過 SDK 或 Portal 定義好下列項目：</p>
+<ul>
+<li>使用哪個模型（例如 Azure OpenAI GPT‑4o 或其他大語言模型）。</li>
+<li>這個 Agent 可以用哪些工具（Function / API / 檔案 / 搜尋等）。</li>
+<li>一些系統層的參數（如安全性、網路、儲存體、Log 等）。</li>
+</ul>
+<p>優點是：</p>
+<ul>
+<li><strong>雲端全託管</strong>：不需要自己維運負責推理的工作節點、負載平衡、監控、Log 儲存。</li>
+<li><strong>企業級安全性</strong>：支援 VNet、Private Endpoint、BYO Storage 等企業需求。</li>
+<li><strong>多模型支援</strong>：可以選用不同家族的模型（例如：GPT、Llama、GROK-4）依場景搭配。</li>
+</ul>
+<p>相對的：</p>
+<ul>
+<li>必須部署在 Azure，成本與規模需要事前評估。</li>
+<li>仍然需要一定程度的程式碼與架構設計。</li>
+</ul>
+<p>如果已經有開發團隊，希望把 Agent 當成一種「雲端服務元件」，又不想自己維護整套推理基礎架構，那 Azure AI Foundry Agent Service 會是一個折衷但穩健的選擇。</p>
+<br>
+<h3 id="Microsoft-Agent-Framework：多代理與-A2A-的核心-SDK">Microsoft Agent Framework：多代理與 A2A 的核心 SDK</h3>
+<p><strong>Microsoft Agent Framework</strong> 是最近 (2025/10/1) 才開源的 <strong>Agent / Agentic AI 專用 SDK</strong>，同時支援 <strong>Python</strong> 和 <strong>.NET</strong>，可以視為把原本的 <strong>Semantic Kernel</strong> 與 <strong>AutoGen</strong> 整併、提升後的新一代框架。</p>
+<p>它的設計大致有下列幾項重點：</p>
+<ul>
+<li><strong>多代理協調</strong>：原生支援 Agent 之間互相對話、協作，適合實作複雜工作流程。</li>
+<li><strong>A2A（Agent‑to‑Agent）協定</strong>：讓不同執行環境、甚至不同平台上的 Agent 也能互通。</li>
+<li><strong>MCP / OpenAPI 工具整合</strong>：可以很方便地把 API、外部系統包裝成 Agent 的工具。</li>
+<li><strong>生產環境就緒</strong>：有錯誤處理、重試、持久化與觀測性等機制，方便從 PoC 走到 Production。</li>
+</ul>
+<p><strong>優點</strong>：</p>
+<ul>
+<li>架構上就是為「Agentic AI」設計，很適合把多個專業 Agent 組合成工作流程。</li>
+<li>與 Azure AI Foundry、Microsoft 365 Copilot、Copilot Studio 等平台都可以互相整合。</li>
+<li>開源、可行自架設，也可以搭配雲端服務一起使用。</li>
+</ul>
+<p><strong>缺點 / 挑戰</strong>：</p>
+<ul>
+<li>技術門檻相對高，需要熟悉 LLM + 分散式系統 + 軟體架構設計。</li>
+<li>功能很多，設計彈性也高，前期會需要花時間建立團隊內部的 best practices。</li>
+</ul>
+<p>從定位來看，它比較像是：</p>
+<blockquote>
+<p>「如果你想打造一個可以長期演進、支援多代理協作的 AI 應用平台，Agent Framework 就是那個核心 SDK。」</p>
+</blockquote>
+<br>
+<h3 id="Semantic-Kernel：輕量、模組化的協調-SDK">Semantic Kernel：輕量、模組化的協調 SDK</h3>
+<p><strong>Semantic Kernel</strong> 則是比較早期推出的 LLM 協調 SDK，一樣支援 .NET / Python，主要幫我們處理：</p>
+<ul>
+<li>Prompt 組合與模板化。</li>
+<li>指令 Function、工具呼叫（例如：把 C# method 變成可被模型呼叫的 function）。</li>
+<li>記憶體 (Memory)、Planner 等常見 Agent 開發場景。</li>
+</ul>
+<p>它本身也可以用來做「單一 Agent」、或是簡單的多 Agent 情境，不過 <strong>多代理協作這一塊，目前的主角已經漸漸交棒給 Microsoft Agent Framework</strong>，Semantic Kernel 則偏向：</p>
+<ul>
+<li>在既有 .NET / Python 專案裡「嵌入 LLM 能力」的工具箱。</li>
+<li>作為 Agent Framework 的一個重要組件或輔助 SDK。</li>
+</ul>
+<p><strong>優點</strong>：</p>
+<ul>
+<li>輕量、好嵌入，對 .NET 開發環境相當友善。</li>
+<li>社群成熟、文件與範例多，很多既有教學都以它為基礎。</li>
+</ul>
+<p><strong>限制</strong>：</p>
+<ul>
+<li>如果要實作複雜的多代理 workflow，會需要自己多寫一層協調邏輯，或是搭配 Microsoft Agent Framework。</li>
+</ul>
+<br>
+<h2 id="四種方案的比較與選擇建議">四種方案的比較與選擇建議</h2>
+<p>最後用一張對照表，看一下四種方案的差異：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">特性</th>
+<th style="text-align:left">Copilot Studio</th>
+<th style="text-align:left">Azure AI Foundry Agent Service</th>
+<th style="text-align:left">Microsoft Agent Framework</th>
+<th style="text-align:left">Semantic Kernel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">開發方式</td>
+<td style="text-align:left">圖形化 / 對話式</td>
+<td style="text-align:left">SDK + Portal 管理</td>
+<td style="text-align:left">Python / .NET SDK</td>
+<td style="text-align:left">.NET / Python SDK</td>
+</tr>
+<tr>
+<td style="text-align:left">多代理協作</td>
+<td style="text-align:left">有限（偏向單一 Agent）</td>
+<td style="text-align:left">支援，但由服務端協調</td>
+<td style="text-align:left">原生支援、多代理主場</td>
+<td style="text-align:left">可實作，但需自行組裝</td>
+</tr>
+<tr>
+<td style="text-align:left">MCP / 工具整合</td>
+<td style="text-align:left">以 Connector / MCP 方式整合</td>
+<td style="text-align:left">支援工具呼叫與多模型</td>
+<td style="text-align:left">原生支援 MCP / OpenAPI / A2A</td>
+<td style="text-align:left">透過 plug‑in / function 整合</td>
+</tr>
+<tr>
+<td style="text-align:left">部署 / 維運</td>
+<td style="text-align:left">由 Microsoft 全託管</td>
+<td style="text-align:left">Azure 全託管</td>
+<td style="text-align:left">本機自架或上雲</td>
+<td style="text-align:left">由應用程式自行負責</td>
+</tr>
+<tr>
+<td style="text-align:left">適用對象</td>
+<td style="text-align:left">業務、IT、一般開發者</td>
+<td style="text-align:left">有雲端經驗的開發團隊</td>
+<td style="text-align:left">進階開發者</td>
+<td style="text-align:left">想在既有程式裡加上 LLM 的開發者</td>
+</tr>
+</tbody>
+</table>
+<h3 id="什麼情境適合哪一個？">什麼情境適合哪一個？</h3>
+<ul>
+<li>
+<p><strong>「我要快速做一個會聊天、會幫忙查資料或執行流程的助理」</strong><br>
+→  先看 Copilot Studio，門檻最低、上線最快。</p>
+</li>
+<li>
+<p><strong>「我們有後端團隊，希望把 Agent 當成一個穩定的雲端服務元件」</strong><br>
+→ 可以考慮 Azure AI Foundry Agent Service，享受託管與企業級安全性。</p>
+</li>
+<li>
+<p><strong>「我們已經有一堆 .NET / Python 系統，只是想讓它們變得更聰明一點」</strong><br>
+→ 從 Semantic Kernel 下手，把 LLM 能力「嵌進去」既有應用程式。</p>
+</li>
+<li>
+<p><strong>「我們要打造一個可長期演進的多代理平台，未來可能會跟內部系統深度整合」</strong><br>
+→ 把 Microsoft Agent Framework 當成主軸，必要時再搭配其他服務。</p>
+</li>
+</ul>
+<br>
+<h3 id="先想清楚「要解決的問題」，再選工具">先想清楚「要解決的問題」，再選工具</h3>
+<p>「我要學的是 AI Agent 還是 Agentic AI？」其實兩者並不是互斥的選項，而是 <strong>不同層級的抽象</strong>：</p>
+<ul>
+<li>先理解 <strong>AI Agent</strong>：學會怎麼讓一個 Agent 聽懂需求、會用工具、能把事情做完。</li>
+<li>再往上看 <strong>Agentic AI</strong>：學會怎麼設計整個 workflow、怎麼切出不同專業 Agent、如何協調它們的合作與溝通。</li>
+</ul>
+<br>
+微軟提供的這四條路線，剛好也從「低程式碼 → 高自訂」排成一個光譜，我們可以：
+<ul>
+<li>先用 Copilot Studio 做出可以 demo 的東西，</li>
+<li>再把關鍵部分細部展開到 Microsoft Agent Framework / Semantic Kernel，</li>
+<li>或是用 Azure AI Foundry Agent Service 接手雲端託管與營運。</li>
+</ul>
+<br>
+<p>AI Agent 與 Agentic AI 是「不同層級」的設計：前者聚焦於讓單一代理能夠自主使用工具完成任務，後者則著重於多個代理之間的協作與流程編排。實務上建議採取由淺入深的策略：先用 Copilot Studio 或簡單的 Agent 快速驗證想法，確認核心流程與資料來源；接著把關鍵邏輯以 Semantic Kernel 或 Microsoft Agent Framework 封裝、進行測試與版本管理；最後視需求將成熟的元件移入 Azure AI Foundry 等託管平台以滿足安全與運維需求。選擇工具時，應以「要解決的問題、團隊技術能力與營運需求」為優先，從小型 PoC 漸進到 Production 架構，才能最小化風險並累積實作經驗。</p>
+]]></content>
+      <tags>
+        <tag>Agent AI</tag>
+        <tag>Agentic AI</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Azure DevOps Services 個別服務</title>
+    <url>/post/2025/04/azure-devops-individual-services/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-individual-services/individual_services.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p><a href="/post/2024/09/azure-devops-licensing-description">上一篇文章</a>提到了 Azure DevOps 雲端和地端的使用者授權，當我們建立私有專案 (Private project) 且成員數量在 5 個人以下時，甚至可以直接免費使用，從第 6 個人起才需要計價，並具有 1 Free Microsoft-hosted CI/CD 和 1 Free Self-hosted CI/CD 以及 Azure Artifacts 2GB 可用儲存容量。在實務使用情境較複雜時，很有可能就需要再增加個別服務的用量 (例如：Azure Pipelines 平行作業數量)，這次就帶大家瞭解這些個別服務計價的方式。</p>
+<span id="more"></span>
+<br>
+<h2 id="Azure-Pipelines">Azure Pipelines</h2>
+<p>不論我們在 Azure Pipelines 使用文字介面或是圖形介面 (classic editor) 建立 pipeline 腳本內容，其中有個 <strong><code>Agent pools</code></strong> 選項是必要設定，它是用來決定執行階段要把工作 (job) 傳遞到哪個 pool 裡，尋找閒置且符合條件的 <strong>Azure Pipelines agents</strong> 執行個體來執行腳本內容，在 Azure DevOps Services 預設有一個 Microsoft-hosted agent 每個月可以免費使用 1800 分鐘，<mark>但預設無法直接使用</mark>，需要填寫 <strong><a class="link"   href="https://aka.ms/azpipelines-parallelism-request" >Azure DevOps Parallelism Request<i class="fas fa-external-link-alt"></i></a></strong> 表單申請審核通過才行，否則在執行的時候會出現如下錯誤：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-individual-services/azpipelines-parallelism-request.jpg"
+                        class=""
+                 >
+<p>當然我們也可以自己準備機器，在上面安裝 Azure Pipelines agents 程式 (支援 Windows / Linux / macOS)，這就屬於 Self-hosted agent。由於是自己準備的執行個體，所以使用時數不受限制，但每個工作 (job) 都是經由佇列 (queue) 的方式排隊一個一個執行，若需要同時間處理一個以上的工作 (job)，則需要再增加執行個體才行 (不論是 Microsoft-hosted 或是 Self-hosted)，基於這樣的概念，以下就是我們所關心的計價標準：</p>
+<ul>
+<li>每一個 Microsoft-hosted 每個月有 1800 分鐘可以使用。</li>
+<li>每增加一個額外的 Microsoft-hosted CI/CD 每個月是 USD $40 (大約 <strong>TWD $1279</strong>)。</li>
+<li>每增加一個額外的 Self-hosted CI/CD 每個月是 USD $15 (大約 <strong>TWD $479</strong>)。</li>
+<li><mark>如果在地端自建 Azure DevOps Server 則僅能使用 Self-hosted agent，需要更多的平行作業就自己多準備幾個執行個體，不用再額外採購什麼授權。</mark></li>
+</ul>
+<h2 id="Azure-Artifacts">Azure Artifacts</h2>
+<p>在軟體專案開發過程中，多少都會用到一些公司內部自行開發，或是外部來源提供的套件，一般常見的套件來源像是：NuGet、npm、Maven、Python…等，Azure Artifacts 可以將這些外部提供來源設為上游來源 (Upstream sources)，或是自己建立一個套件提供來源 (Feeds)，讓專案團隊成員在內部環境取用，儲存容量在 2GB 以內是免費，若超過則依下列區間以量計價：</p>
+<table>
+<thead>
+<tr>
+<th>儲存容量</th>
+<th>每GB (USD)</th>
+<th>每GB (TWD)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 - 2 GB</td>
+<td>免費</td>
+<td>免費</td>
+</tr>
+<tr>
+<td>2 - 10 GB</td>
+<td>$2</td>
+<td>大約 $63.98</td>
+</tr>
+<tr>
+<td>10 - 100 GB</td>
+<td>$1</td>
+<td>大約 $31.99</td>
+</tr>
+<tr>
+<td>100 - 1000 GB</td>
+<td>$0.50</td>
+<td>大約 $16.00</td>
+</tr>
+<tr>
+<td>1000 GB 以上</td>
+<td>$0.25</td>
+<td>大約 NT$8.00</td>
+</tr>
+</tbody>
+</table>
+<h2 id="GitHub-Advanced-Security-for-Azure-DevOps">GitHub Advanced Security for Azure DevOps</h2>
+<p>以往我們想要對專案程式碼執行原碼檢測、套件掃描等作業，首先要考量的可能是產品的價錢，或是委外檢測的費用，比較克難一點還可以尋找免費的掃描檢測工具(例如只是想要出個報告 🙈 🙊)，若想要整合到 CI 流程裡，還要得額外花一番功夫，但基本上只要可以透過 command line 來執行，都是可以用 Azure Pipelines 整合起來的。而自從 <strong>GitHub Advanced Security for Azure DevOps</strong> 正式啟用後，省掉了這部份不少麻煩，除了原生的與 Azure DevOps Services 整合 <mark>(不包含地端 Azure DevOps Server)</mark>，也可以與 <strong>Microsoft Defender for Cloud</strong> 串接，它可以做到：</p>
+<ul>
+<li><strong>Code Scanning</strong>：找出原始程式碼中的漏洞並提供修復指導。</li>
+<li><strong>Secret Scanning</strong>：識別 secret 並阻止開發人員將 secret 推送到程式碼儲存庫。</li>
+<li><strong>Dependency Scanning</strong>：發現 open-source 依賴項目的漏洞，並為開發人員自動發出更新警報。</li>
+</ul>
+<p>在 Azure Pipelines 也提供了下列對應的 task 以便我們完善整個 <strong><code>DevSecOps</code></strong> 流程：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-individual-services/github_acvanced_security.jpg"
+                        class=""
+                 >
+<p>這個功能可以由每個 git 的儲存庫 (repositry) 個別設定是否啟用 (不支援 TFVC 版控)，計價的原則是：每一個活躍的提交者 (active committer) 每個月 <strong>USD $49</strong> (大約 <strong>TWD $1567</strong>)，在<mark>同一個 Azure Subscription</mark> 中，儲存庫過去 <strong><code>90天</code></strong> 的紀錄中，同一個提交者(committer)在不同專案提交程式碼只會算 1 個數量，不會被重複計價。當我們在 git 儲存庫開啟 <strong><code>Advanced Security</code></strong> 功能時，Azure DevOps 在畫面上也會先幫我們基於上述原則計算有多少使用者會被計費，確定要使用再點選 <strong><code>Begin billing</code></strong> 即可：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/04/azure-devops-individual-services/unique_committers.jpg"
+                        class=""
+                 >
+<p>如同 Azure 各種服務的計價方式，都是<strong>隨付即用 (pay-as-you-go)</strong>，啟用 <strong>GitHub Advanced Security for Azure DevOps</strong> 搭配 CI 流程可以讓我們在開發階段及早發現問題與漏洞，有效減少技術債和後期投入修改的人力成本，跟測試左移 (Shift-Left Testing) 的概念有點雷同，也可以省下大筆購入源碼檢測軟體的費用，大家可以參考看看。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/"  target="_blank">⁍ Azure DevOps 定價<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://azure.microsoft.com/zh-tw/products/devops/github-advanced-security"  target="_blank">⁍ 適用於 Azure DevOps 的 GitHub Advanced Security<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml"  target="_blank">⁍ 設定適用於 Azure DevOps 的 GitHub Advanced Security<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>]]></content>
+      <tags>
+        <tag>Azure DevOps</tag>
+        <tag>授權</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>使用 Azure DevOps REST API 建立專案</title>
     <url>/post/2025/04/azure-devops-create-project/</url>
     <content><![CDATA[<img    
@@ -368,429 +791,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Azure DevOps Services 個別服務</title>
-    <url>/post/2025/04/azure-devops-individual-services/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-individual-services/individual_services.jpg"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p><a href="/post/2024/09/azure-devops-licensing-description">上一篇文章</a>提到了 Azure DevOps 雲端和地端的使用者授權，當我們建立私有專案 (Private project) 且成員數量在 5 個人以下時，甚至可以直接免費使用，從第 6 個人起才需要計價，並具有 1 Free Microsoft-hosted CI/CD 和 1 Free Self-hosted CI/CD 以及 Azure Artifacts 2GB 可用儲存容量。在實務使用情境較複雜時，很有可能就需要再增加個別服務的用量 (例如：Azure Pipelines 平行作業數量)，這次就帶大家瞭解這些個別服務計價的方式。</p>
-<span id="more"></span>
-<br>
-<h2 id="Azure-Pipelines">Azure Pipelines</h2>
-<p>不論我們在 Azure Pipelines 使用文字介面或是圖形介面 (classic editor) 建立 pipeline 腳本內容，其中有個 <strong><code>Agent pools</code></strong> 選項是必要設定，它是用來決定執行階段要把工作 (job) 傳遞到哪個 pool 裡，尋找閒置且符合條件的 <strong>Azure Pipelines agents</strong> 執行個體來執行腳本內容，在 Azure DevOps Services 預設有一個 Microsoft-hosted agent 每個月可以免費使用 1800 分鐘，<mark>但預設無法直接使用</mark>，需要填寫 <strong><a class="link"   href="https://aka.ms/azpipelines-parallelism-request" >Azure DevOps Parallelism Request<i class="fas fa-external-link-alt"></i></a></strong> 表單申請審核通過才行，否則在執行的時候會出現如下錯誤：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-individual-services/azpipelines-parallelism-request.jpg"
-                        class=""
-                 >
-<p>當然我們也可以自己準備機器，在上面安裝 Azure Pipelines agents 程式 (支援 Windows / Linux / macOS)，這就屬於 Self-hosted agent。由於是自己準備的執行個體，所以使用時數不受限制，但每個工作 (job) 都是經由佇列 (queue) 的方式排隊一個一個執行，若需要同時間處理一個以上的工作 (job)，則需要再增加執行個體才行 (不論是 Microsoft-hosted 或是 Self-hosted)，基於這樣的概念，以下就是我們所關心的計價標準：</p>
-<ul>
-<li>每一個 Microsoft-hosted 每個月有 1800 分鐘可以使用。</li>
-<li>每增加一個額外的 Microsoft-hosted CI/CD 每個月是 USD $40 (大約 <strong>TWD $1279</strong>)。</li>
-<li>每增加一個額外的 Self-hosted CI/CD 每個月是 USD $15 (大約 <strong>TWD $479</strong>)。</li>
-<li><mark>如果在地端自建 Azure DevOps Server 則僅能使用 Self-hosted agent，需要更多的平行作業就自己多準備幾個執行個體，不用再額外採購什麼授權。</mark></li>
-</ul>
-<h2 id="Azure-Artifacts">Azure Artifacts</h2>
-<p>在軟體專案開發過程中，多少都會用到一些公司內部自行開發，或是外部來源提供的套件，一般常見的套件來源像是：NuGet、npm、Maven、Python…等，Azure Artifacts 可以將這些外部提供來源設為上游來源 (Upstream sources)，或是自己建立一個套件提供來源 (Feeds)，讓專案團隊成員在內部環境取用，儲存容量在 2GB 以內是免費，若超過則依下列區間以量計價：</p>
-<table>
-<thead>
-<tr>
-<th>儲存容量</th>
-<th>每GB (USD)</th>
-<th>每GB (TWD)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0 - 2 GB</td>
-<td>免費</td>
-<td>免費</td>
-</tr>
-<tr>
-<td>2 - 10 GB</td>
-<td>$2</td>
-<td>大約 $63.98</td>
-</tr>
-<tr>
-<td>10 - 100 GB</td>
-<td>$1</td>
-<td>大約 $31.99</td>
-</tr>
-<tr>
-<td>100 - 1000 GB</td>
-<td>$0.50</td>
-<td>大約 $16.00</td>
-</tr>
-<tr>
-<td>1000 GB 以上</td>
-<td>$0.25</td>
-<td>大約 NT$8.00</td>
-</tr>
-</tbody>
-</table>
-<h2 id="GitHub-Advanced-Security-for-Azure-DevOps">GitHub Advanced Security for Azure DevOps</h2>
-<p>以往我們想要對專案程式碼執行原碼檢測、套件掃描等作業，首先要考量的可能是產品的價錢，或是委外檢測的費用，比較克難一點還可以尋找免費的掃描檢測工具(例如只是想要出個報告 🙈 🙊)，若想要整合到 CI 流程裡，還要得額外花一番功夫，但基本上只要可以透過 command line 來執行，都是可以用 Azure Pipelines 整合起來的。而自從 <strong>GitHub Advanced Security for Azure DevOps</strong> 正式啟用後，省掉了這部份不少麻煩，除了原生的與 Azure DevOps Services 整合 <mark>(不包含地端 Azure DevOps Server)</mark>，也可以與 <strong>Microsoft Defender for Cloud</strong> 串接，它可以做到：</p>
-<ul>
-<li><strong>Code Scanning</strong>：找出原始程式碼中的漏洞並提供修復指導。</li>
-<li><strong>Secret Scanning</strong>：識別 secret 並阻止開發人員將 secret 推送到程式碼儲存庫。</li>
-<li><strong>Dependency Scanning</strong>：發現 open-source 依賴項目的漏洞，並為開發人員自動發出更新警報。</li>
-</ul>
-<p>在 Azure Pipelines 也提供了下列對應的 task 以便我們完善整個 <strong><code>DevSecOps</code></strong> 流程：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-individual-services/github_acvanced_security.jpg"
-                        class=""
-                 >
-<p>這個功能可以由每個 git 的儲存庫 (repositry) 個別設定是否啟用 (不支援 TFVC 版控)，計價的原則是：每一個活躍的提交者 (active committer) 每個月 <strong>USD $49</strong> (大約 <strong>TWD $1567</strong>)，在<mark>同一個 Azure Subscription</mark> 中，儲存庫過去 <strong><code>90天</code></strong> 的紀錄中，同一個提交者(committer)在不同專案提交程式碼只會算 1 個數量，不會被重複計價。當我們在 git 儲存庫開啟 <strong><code>Advanced Security</code></strong> 功能時，Azure DevOps 在畫面上也會先幫我們基於上述原則計算有多少使用者會被計費，確定要使用再點選 <strong><code>Begin billing</code></strong> 即可：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/04/azure-devops-individual-services/unique_committers.jpg"
-                        class=""
-                 >
-<p>如同 Azure 各種服務的計價方式，都是<strong>隨付即用 (pay-as-you-go)</strong>，啟用 <strong>GitHub Advanced Security for Azure DevOps</strong> 搭配 CI 流程可以讓我們在開發階段及早發現問題與漏洞，有效減少技術債和後期投入修改的人力成本，跟測試左移 (Shift-Left Testing) 的概念有點雷同，也可以省下大筆購入源碼檢測軟體的費用，大家可以參考看看。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://azure.microsoft.com/zh-tw/pricing/details/devops/azure-devops-services/"  target="_blank">⁍ Azure DevOps 定價<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://azure.microsoft.com/zh-tw/products/devops/github-advanced-security"  target="_blank">⁍ 適用於 Azure DevOps 的 GitHub Advanced Security<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml"  target="_blank">⁍ 設定適用於 Azure DevOps 的 GitHub Advanced Security<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>]]></content>
-      <tags>
-        <tag>Azure DevOps</tag>
-        <tag>授權</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Agent AI 與 Agentic AI 的差別</title>
-    <url>/post/2025/12/agent-ai-and-agentic-ai/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/12/agent-ai-and-agentic-ai/agentic-ai.jpg"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 >
-<p>今年大家應該蠻常聽到 <strong>Agent AI</strong> 和 <strong>Agentic AI</strong> 這兩個詞，名稱看起來很像、都有「Agent」，但實際上指的東西不太一樣：一個是「單一代理」的能力，另一個則是「多代理系統」的整體架構。本篇文章以比較白話的比喻來整理兩者的差異，以及 Microsoft 在 Agentic AI 上目前提供的幾種主要解決方案：<strong>Copilot Studio / Azure AI Foundry Agent Service / Microsoft Agent Framework / Semantic Kernel</strong>，方便大家選擇適合自己的開發路線。</p>
-<span id="more"></span>
-<br>
-<h2 id="什麼是-AI-Agent？什麼是-Agentic-AI？">什麼是 AI Agent？什麼是 Agentic AI？</h2>
-<p>先用一句話來區分：</p>
-<ul>
-<li><strong>AI Agent</strong> 比較像是一位「可以自己想辦法完成任務的助手」。</li>
-<li><strong>Agentic AI</strong> 則是一個「由很多專業助手組成的團隊」，可以協調分工、一起完成一個複雜目標。</li>
-</ul>
-<br>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/12/agent-ai-and-agentic-ai/AI-Agent-vs-Agentic-AI.jpg"
-                        class=""
-                 >
-<br>
-<h3 id="AI-Agent：會自己用工具的智慧助手">AI Agent：會自己用工具的智慧助手</h3>
-<p>一般我們說的 <strong>AI Agent（AI 代理）</strong>，指的是一個以 LLM 為核心、能夠：</p>
-<ul>
-<li>讀懂使用者的目標。</li>
-<li>規劃完成任務需要的步驟。</li>
-<li>在過程中主動呼叫工具。</li>
-<li>根據工具回傳結果調整接下來要做什麼。</li>
-</ul>
-<p>也就是說，它不再只是單純回覆文字，而是會「自己動手做事」，例如：</p>
-<ul>
-<li>我們請它「幫我彙整一份這週專案進度並寄信給主管」，它會：
-<ol>
-<li>先去查專案系統的狀態（例如：Azure DevOps MCP）。</li>
-<li>整理成文字報告。</li>
-<li>呼叫工具寄信送出（例如：API 或 Microsoft Team Webhook)。</li>
-</ol>
-</li>
-</ul>
-<p>這整個流程都是由一個 Agent 自己掌握、自己決定何時呼叫哪一個工具。</p>
-<h3 id="Agentic-AI：多代理協作的系統">Agentic AI：多代理協作的系統</h3>
-<p><strong>Agentic AI（代理式 AI）</strong> 則是把「多個 Agent」組織成一個協作系統，讓它們可以彼此溝通、分工合作，來處理一個單一 Agent 很難搞定的複雜任務。例如：</p>
-<ul>
-<li>從一段 1 小時的 YouTube 影片，自動產生：逐字稿整理、重點大綱、教學文章、社群貼文。</li>
-</ul>
-<p>在 Agentic AI 的架構下，我們可能會看到這樣的分工：</p>
-<ul>
-<li><strong>影片分析 Agent</strong>：負責從影片拿到逐字稿、拆段、標註重點。</li>
-<li><strong>內容整理 Agent</strong>：把資料整理成易讀的大綱、章節結構。</li>
-<li><strong>寫作 Agent</strong>：依照不同輸出格式（部落格、教學、社群貼文）產生內容。</li>
-<li><strong>審稿 / 品質控管 Agent</strong>：檢查語氣、品牌一致性、避免重複內容。</li>
-</ul>
-<p>中間會有一個「協調者」負責安排工作流程、把上一個 Agent 的輸出當成下一個 Agent 的輸入，這就是所謂的 <strong>Agentic workflow</strong>。</p>
-<h3 id="差異重點整理">差異重點整理</h3>
-<p>用表格簡單整理一下兩者差異：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">特性</th>
-<th style="text-align:left">AI Agent</th>
-<th style="text-align:left">Agentic AI</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">任務範圍</td>
-<td style="text-align:left">一次專注在一個明確任務</td>
-<td style="text-align:left">處理跨多步驟、多角色的大目標</td>
-</tr>
-<tr>
-<td style="text-align:left">架構組成</td>
-<td style="text-align:left">以單一 LLM + 工具為主</td>
-<td style="text-align:left">多個 Agent + 協調流程</td>
-</tr>
-<tr>
-<td style="text-align:left">互動模式</td>
-<td style="text-align:left">使用者 → 單一 Agent → 工具</td>
-<td style="text-align:left">使用者 → 協調層 → 多個 Agent 協作</td>
-</tr>
-<tr>
-<td style="text-align:left">自主程度</td>
-<td style="text-align:left">中等：可以自己決定如何用工具</td>
-<td style="text-align:left">較高：可以自己規劃、分派、調整流程</td>
-</tr>
-<tr>
-<td style="text-align:left">資訊流向</td>
-<td style="text-align:left">Input → Agent → Tools → Output</td>
-<td style="text-align:left">Input → Agent1 → Agent2 → … → Output</td>
-</tr>
-</tbody>
-</table>
-<p>如果把 AI Agent 比喻成一位「超強助理」，那 Agentic AI 就比較像是「一個專案團隊」，裡面有 PM、工程師、設計、測試，各司其職又互相協作。</p>
-<br>
-<h2 id="Microsoft-在-Agentic-AI-上的解決方案版圖">Microsoft 在 Agentic AI 上的解決方案版圖</h2>
-<p>談完概念之後，回到實務選型：<strong>如果我想在 Microsoft 生態系裡做 Agent / Agentic AI，手上有哪些工具可以選？</strong></p>
-<p>目前大致可以分成四條路線，從「幾乎不用寫程式」到「完全程式碼主導」都有：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">解決方案</th>
-<th style="text-align:left">定位</th>
-<th style="text-align:left">適用對象</th>
-<th style="text-align:left">程式碼需求</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left"><strong>Copilot Studio</strong></td>
-<td style="text-align:left">低程式碼 AI Agent 平台</td>
-<td style="text-align:left">業務部門、一般開發者</td>
-<td style="text-align:left">幾乎不用寫程式</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>Azure AI Foundry Agent Service</strong></td>
-<td style="text-align:left">雲端託管 Agent 服務</td>
-<td style="text-align:left">企業 IT / 後端工程師</td>
-<td style="text-align:left">中等程式碼量</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>Microsoft Agent Framework</strong></td>
-<td style="text-align:left">開源 Agent / 多代理框架 SDK</td>
-<td style="text-align:left">進階開發者、架構師</td>
-<td style="text-align:left">高度程式碼客製</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>Semantic Kernel</strong></td>
-<td style="text-align:left">輕量級協調 SDK</td>
-<td style="text-align:left">.NET / Python 開發者</td>
-<td style="text-align:left">中高程式碼量</td>
-</tr>
-</tbody>
-</table>
-<br>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/12/agent-ai-and-agentic-ai/Microsoft-Agentic-AI-Comparison.jpg"
-                        class=""
-                 >
-<br>
-<h3 id="Copilot-Studio：從「聊天機器人」長大的-Agent-平台">Copilot Studio：從「聊天機器人」長大的 Agent 平台</h3>
-<p><strong>Copilot Studio</strong> 可以把它想成是「做聊天機器人、做工作流程型 Copilot」的低程式碼平台，很多情境其實已經很接近單一 Agent：</p>
-<ul>
-<li>透過圖形化介面定義對話流程、條件分支。</li>
-<li>連接各種資料來源（SharePoint、OneDrive、Dynamics、外部 API…）。</li>
-<li>透過 <strong>Connector / Plug‑in / MCP</strong> 把外部系統當成工具來使用。</li>
-<li>不需要自己處理 Prompt、記憶體、狀態儲存等細節。</li>
-</ul>
-<p><strong>優點</strong>：</p>
-<ul>
-<li>幾乎不用寫程式，適合業務單位或一般開發者。</li>
-<li>內建大量連接器，串接常見 SaaS / Microsoft 365 生態非常方便。</li>
-<li>可以快速發佈到 Teams、Web、LINE 等多種通路。</li>
-</ul>
-<p><strong>限制 / 缺點</strong>：</p>
-<ul>
-<li>複雜的 Agentic workflow（多代理協作、細緻的狀態機）比較難完全用圖形化介面表達。</li>
-<li>對於版本控管、CI/CD、程式碼共用等軟體工程議題，彈性不如純程式碼框架。</li>
-</ul>
-<p>如果你的需求是：「想要先做一個可以用的智慧助理，重點是快、好維護」，那 Copilot Studio 是個蠻好的起點。</p>
-<br>
-<h3 id="Azure-AI-Foundry-Agent-Service：雲端託管的-Agent-平台">Azure AI Foundry Agent Service：雲端託管的 Agent 平台</h3>
-<p><strong>Azure AI Foundry Agent Service</strong> 可以視為「由雲端幫你托管 Agent」，我們透過 SDK 或 Portal 定義好下列項目：</p>
-<ul>
-<li>使用哪個模型（例如 Azure OpenAI GPT‑4o 或其他大語言模型）。</li>
-<li>這個 Agent 可以用哪些工具（Function / API / 檔案 / 搜尋等）。</li>
-<li>一些系統層的參數（如安全性、網路、儲存體、Log 等）。</li>
-</ul>
-<p>優點是：</p>
-<ul>
-<li><strong>雲端全託管</strong>：不需要自己維運負責推理的工作節點、負載平衡、監控、Log 儲存。</li>
-<li><strong>企業級安全性</strong>：支援 VNet、Private Endpoint、BYO Storage 等企業需求。</li>
-<li><strong>多模型支援</strong>：可以選用不同家族的模型（例如：GPT、Llama、GROK-4）依場景搭配。</li>
-</ul>
-<p>相對的：</p>
-<ul>
-<li>必須部署在 Azure，成本與規模需要事前評估。</li>
-<li>仍然需要一定程度的程式碼與架構設計。</li>
-</ul>
-<p>如果已經有開發團隊，希望把 Agent 當成一種「雲端服務元件」，又不想自己維護整套推理基礎架構，那 Azure AI Foundry Agent Service 會是一個折衷但穩健的選擇。</p>
-<br>
-<h3 id="Microsoft-Agent-Framework：多代理與-A2A-的核心-SDK">Microsoft Agent Framework：多代理與 A2A 的核心 SDK</h3>
-<p><strong>Microsoft Agent Framework</strong> 是最近 (2025/10/1) 才開源的 <strong>Agent / Agentic AI 專用 SDK</strong>，同時支援 <strong>Python</strong> 和 <strong>.NET</strong>，可以視為把原本的 <strong>Semantic Kernel</strong> 與 <strong>AutoGen</strong> 整併、提升後的新一代框架。</p>
-<p>它的設計大致有下列幾項重點：</p>
-<ul>
-<li><strong>多代理協調</strong>：原生支援 Agent 之間互相對話、協作，適合實作複雜工作流程。</li>
-<li><strong>A2A（Agent‑to‑Agent）協定</strong>：讓不同執行環境、甚至不同平台上的 Agent 也能互通。</li>
-<li><strong>MCP / OpenAPI 工具整合</strong>：可以很方便地把 API、外部系統包裝成 Agent 的工具。</li>
-<li><strong>生產環境就緒</strong>：有錯誤處理、重試、持久化與觀測性等機制，方便從 PoC 走到 Production。</li>
-</ul>
-<p><strong>優點</strong>：</p>
-<ul>
-<li>架構上就是為「Agentic AI」設計，很適合把多個專業 Agent 組合成工作流程。</li>
-<li>與 Azure AI Foundry、Microsoft 365 Copilot、Copilot Studio 等平台都可以互相整合。</li>
-<li>開源、可行自架設，也可以搭配雲端服務一起使用。</li>
-</ul>
-<p><strong>缺點 / 挑戰</strong>：</p>
-<ul>
-<li>技術門檻相對高，需要熟悉 LLM + 分散式系統 + 軟體架構設計。</li>
-<li>功能很多，設計彈性也高，前期會需要花時間建立團隊內部的 best practices。</li>
-</ul>
-<p>從定位來看，它比較像是：</p>
-<blockquote>
-<p>「如果你想打造一個可以長期演進、支援多代理協作的 AI 應用平台，Agent Framework 就是那個核心 SDK。」</p>
-</blockquote>
-<br>
-<h3 id="Semantic-Kernel：輕量、模組化的協調-SDK">Semantic Kernel：輕量、模組化的協調 SDK</h3>
-<p><strong>Semantic Kernel</strong> 則是比較早期推出的 LLM 協調 SDK，一樣支援 .NET / Python，主要幫我們處理：</p>
-<ul>
-<li>Prompt 組合與模板化。</li>
-<li>指令 Function、工具呼叫（例如：把 C# method 變成可被模型呼叫的 function）。</li>
-<li>記憶體 (Memory)、Planner 等常見 Agent 開發場景。</li>
-</ul>
-<p>它本身也可以用來做「單一 Agent」、或是簡單的多 Agent 情境，不過 <strong>多代理協作這一塊，目前的主角已經漸漸交棒給 Microsoft Agent Framework</strong>，Semantic Kernel 則偏向：</p>
-<ul>
-<li>在既有 .NET / Python 專案裡「嵌入 LLM 能力」的工具箱。</li>
-<li>作為 Agent Framework 的一個重要組件或輔助 SDK。</li>
-</ul>
-<p><strong>優點</strong>：</p>
-<ul>
-<li>輕量、好嵌入，對 .NET 開發環境相當友善。</li>
-<li>社群成熟、文件與範例多，很多既有教學都以它為基礎。</li>
-</ul>
-<p><strong>限制</strong>：</p>
-<ul>
-<li>如果要實作複雜的多代理 workflow，會需要自己多寫一層協調邏輯，或是搭配 Microsoft Agent Framework。</li>
-</ul>
-<br>
-<h2 id="四種方案的比較與選擇建議">四種方案的比較與選擇建議</h2>
-<p>最後用一張對照表，看一下四種方案的差異：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">特性</th>
-<th style="text-align:left">Copilot Studio</th>
-<th style="text-align:left">Azure AI Foundry Agent Service</th>
-<th style="text-align:left">Microsoft Agent Framework</th>
-<th style="text-align:left">Semantic Kernel</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">開發方式</td>
-<td style="text-align:left">圖形化 / 對話式</td>
-<td style="text-align:left">SDK + Portal 管理</td>
-<td style="text-align:left">Python / .NET SDK</td>
-<td style="text-align:left">.NET / Python SDK</td>
-</tr>
-<tr>
-<td style="text-align:left">多代理協作</td>
-<td style="text-align:left">有限（偏向單一 Agent）</td>
-<td style="text-align:left">支援，但由服務端協調</td>
-<td style="text-align:left">原生支援、多代理主場</td>
-<td style="text-align:left">可實作，但需自行組裝</td>
-</tr>
-<tr>
-<td style="text-align:left">MCP / 工具整合</td>
-<td style="text-align:left">以 Connector / MCP 方式整合</td>
-<td style="text-align:left">支援工具呼叫與多模型</td>
-<td style="text-align:left">原生支援 MCP / OpenAPI / A2A</td>
-<td style="text-align:left">透過 plug‑in / function 整合</td>
-</tr>
-<tr>
-<td style="text-align:left">部署 / 維運</td>
-<td style="text-align:left">由 Microsoft 全託管</td>
-<td style="text-align:left">Azure 全託管</td>
-<td style="text-align:left">本機自架或上雲</td>
-<td style="text-align:left">由應用程式自行負責</td>
-</tr>
-<tr>
-<td style="text-align:left">適用對象</td>
-<td style="text-align:left">業務、IT、一般開發者</td>
-<td style="text-align:left">有雲端經驗的開發團隊</td>
-<td style="text-align:left">進階開發者</td>
-<td style="text-align:left">想在既有程式裡加上 LLM 的開發者</td>
-</tr>
-</tbody>
-</table>
-<h3 id="什麼情境適合哪一個？">什麼情境適合哪一個？</h3>
-<ul>
-<li>
-<p><strong>「我要快速做一個會聊天、會幫忙查資料或執行流程的助理」</strong><br>
-→  先看 Copilot Studio，門檻最低、上線最快。</p>
-</li>
-<li>
-<p><strong>「我們有後端團隊，希望把 Agent 當成一個穩定的雲端服務元件」</strong><br>
-→ 可以考慮 Azure AI Foundry Agent Service，享受託管與企業級安全性。</p>
-</li>
-<li>
-<p><strong>「我們已經有一堆 .NET / Python 系統，只是想讓它們變得更聰明一點」</strong><br>
-→ 從 Semantic Kernel 下手，把 LLM 能力「嵌進去」既有應用程式。</p>
-</li>
-<li>
-<p><strong>「我們要打造一個可長期演進的多代理平台，未來可能會跟內部系統深度整合」</strong><br>
-→ 把 Microsoft Agent Framework 當成主軸，必要時再搭配其他服務。</p>
-</li>
-</ul>
-<br>
-<h3 id="先想清楚「要解決的問題」，再選工具">先想清楚「要解決的問題」，再選工具</h3>
-<p>「我要學的是 AI Agent 還是 Agentic AI？」其實兩者並不是互斥的選項，而是 <strong>不同層級的抽象</strong>：</p>
-<ul>
-<li>先理解 <strong>AI Agent</strong>：學會怎麼讓一個 Agent 聽懂需求、會用工具、能把事情做完。</li>
-<li>再往上看 <strong>Agentic AI</strong>：學會怎麼設計整個 workflow、怎麼切出不同專業 Agent、如何協調它們的合作與溝通。</li>
-</ul>
-<br>
-微軟提供的這四條路線，剛好也從「低程式碼 → 高自訂」排成一個光譜，我們可以：
-<ul>
-<li>先用 Copilot Studio 做出可以 demo 的東西，</li>
-<li>再把關鍵部分細部展開到 Microsoft Agent Framework / Semantic Kernel，</li>
-<li>或是用 Azure AI Foundry Agent Service 接手雲端託管與營運。</li>
-</ul>
-<br>
-<p>AI Agent 與 Agentic AI 是「不同層級」的設計：前者聚焦於讓單一代理能夠自主使用工具完成任務，後者則著重於多個代理之間的協作與流程編排。實務上建議採取由淺入深的策略：先用 Copilot Studio 或簡單的 Agent 快速驗證想法，確認核心流程與資料來源；接著把關鍵邏輯以 Semantic Kernel 或 Microsoft Agent Framework 封裝、進行測試與版本管理；最後視需求將成熟的元件移入 Azure AI Foundry 等託管平台以滿足安全與運維需求。選擇工具時，應以「要解決的問題、團隊技術能力與營運需求」為優先，從小型 PoC 漸進到 Production 架構，才能最小化風險並累積實作經驗。</p>
-]]></content>
-      <tags>
-        <tag>Agent AI</tag>
-        <tag>Agentic AI</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Azure DevOps Services / Server 使用者授權</title>
     <url>/post/2025/04/azure-devops-licensing-description/</url>
     <content><![CDATA[<img    
@@ -1109,6 +1109,305 @@
         <tag>Azure DevOps REST API</tag>
         <tag>PAT</tag>
         <tag>.NET Client Library</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Azure DevOps 的 Wiki 應用</title>
+    <url>/post/2025/10/azure-devops-wiki/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/azure-devops-wiki/wiki.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>在軟體開發專案中，文件管理與知識分享一直是團隊協作的重要環節。Azure DevOps 提供了強大的 Wiki 功能，讓團隊能夠在專案中建立、編輯和組織文件。無論是產品規格、技術文件、FAQ 還是操作手冊，Wiki 都能協助團隊將知識系統化地保存下來。更重要的是，Azure DevOps 的 Wiki 是建立在 Git 儲存庫之上，這代表我們也可以用管理程式碼的方式來管理文件，可以進行版本控制、分支管理等優勢。本文將介紹 Azure DevOps Wiki 的核心概念，包括 Wiki 在儲存庫中的連線位置、.order 檔案的用途，以及如何將資料夾升階為 Wiki 頁面。</p>
+<br>
+<span id="more"></span>
+<br>
+<h2 id="Wiki-的兩種類型">Wiki 的兩種類型</h2>
+<p>Azure DevOps 提供兩種類型的 Wiki：</p>
+<h3 id="1-佈建的-Wiki-Provisioned-Wiki">1. 佈建的 Wiki (Provisioned Wiki)</h3>
+<p>當我們為專案建立 Wiki 時，Azure DevOps 會自動建立一個獨立的 Git 儲存庫來存放 Wiki 內容。這個儲存庫的命名慣例是 <strong><mark>專案名稱.wiki</mark></strong>，例如：專案名稱是 <strong><code>Contoso</code></strong>，則 Wiki 儲存庫名稱就是 <strong><code>Contoso.wiki</code></strong>。<strong><mark>這個 Wiki 儲存庫不會出現在專案的 Repos 或 Code 區段的儲存庫下拉選單中，也不會列在專案設定的儲存庫頁面中</mark></strong>。</p>
+<h3 id="2-發佈的-Wiki-Published-Wiki">2. 發佈的 Wiki (Published Wiki)</h3>
+<p>我們也可以將現有 Git 儲存庫中的 Markdown 檔案發佈為 Wiki。這種方式適合已經在儲存庫中維護技術文件或產品說明的團隊。透過發佈程式碼為 Wiki 可以：</p>
+<ul>
+<li>將內容組織成受控的頁面順序結構。</li>
+<li>瀏覽和篩選目錄。</li>
+<li>發佈新版本的內容。</li>
+<li>以管理程式碼的方式管理內容。</li>
+<li>使用 Wiki 搜尋功能輕鬆地搜尋 Wiki。</li>
+</ul>
+<p>每個專案可以發佈多個 Wiki，每個發佈的 Wiki 最多可以發佈 <strong><mark>10 個分支</mark></strong>。</p>
+<h2 id="Wiki-在-Repo-的連線位置">Wiki 在 Repo 的連線位置</h2>
+<h3 id="佈建的-Wiki-儲存庫結構">佈建的 Wiki 儲存庫結構</h3>
+<p>Wiki 的 Git 儲存庫有以下特性：</p>
+<ul>
+<li>儲存庫名稱：<code>專案名稱.wiki</code></li>
+<li>主分支名稱：<code>wikiMain</code></li>
+</ul>
+<p>我們可以透過在 wikiMain 分支上定義分支原則來管理 Wiki 儲存庫，也可以直接修改本機 wikiMain 分支內容，將它們直接推送至遠端分支。</p>
+<h3 id="存取-Wiki-儲存庫的方法">存取 Wiki 儲存庫的方法</h3>
+<p>由於 Wiki 儲存庫不會顯示在一般的儲存庫清單中，但我們可以透過特定方式來存取：</p>
+<ol>
+<li>
+<p>建立存取 URL：將以下 URL 中的 &lt;Organization&gt;、&lt;ProjectName&gt; 和 &lt;WikiName&gt; 替換為實際值：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://dev.azure.com/&lt;Organization&gt;/&lt;ProjectName&gt;/_git/&lt;WikiName&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>從 Wiki 頁面存取：在 Wiki 頁面的「更多選項」(…)，選取「複製」(Clone wiki) 選項，即可取得 Wiki 儲存庫的 URL。</p>
+</li>
+</ol>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/azure-devops-wiki/clone_wiki.jpg"
+                        class=""
+                 >
+<h2 id="order-檔案的用途">.order 檔案的用途</h2>
+<p>在 Wiki 中的 .order 檔案扮演著關鍵角色，它定義了 Wiki 頁面在目錄中的顯示順序，當資料夾沒有 .order 檔案時，Git 會使用預設的字母順序（A 到 Z）來排列頁面。</p>
+<h2 id="order-檔案的結構">.order 檔案的結構</h2>
+<p>.order 檔案是一個純文字檔案，每一行對應一個 Markdown 檔案的名稱（不含 .md 副檔名），例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Wiki-Welcome</span><br><span class="line">Project-Overview</span><br><span class="line">Get-Started</span><br><span class="line">Submit-a-pull-request</span><br><span class="line">team-contacts</span><br><span class="line">readme-version-9</span><br></pre></td></tr></table></figure>
+<h3 id="重要注意事項">重要注意事項</h3>
+<ol>
+<li><strong>大小寫敏感</strong>：頁面標題區有分大小寫，每行所條列的項目應與頁面標題和檔名中使用的大小寫一致。</li>
+<li><strong>階層結構</strong>：Wiki 根目錄的 .order 檔案指定根層級頁面的顯示順序，每個子資料夾也可以有自己的 .order 檔案來定義該資料夾的頁面順序。</li>
+<li><strong>未列出的檔案</strong>：.order 檔案中未列出的檔案會呈現在頁面順序中的最後。</li>
+<li><strong>設定首頁</strong>：<strong><mark>將首頁名稱放在根目錄 .order 檔案的第一行，即可指定 Wiki 的首頁。</mark></strong></li>
+</ol>
+<h3 id="還原為字母順序">還原為字母順序</h3>
+<p>如果想要將自訂順序還原為字母順序，只需刪除 .order 檔案即可，刪除後 Git 會自動建立新的 .order 檔案，使用預設的字母順序。</p>
+<h3 id="資料夾注意事項">資料夾注意事項</h3>
+<p>當我們透過 Git 將資料夾 push 到 Wiki 時，若資料夾內完全沒有任何檔案但是有其他資料夾，整個資料夾的顯示會是空白的。如下圖，在 Wiki 介面中只會看到 folder1 空目錄，並無法正確呈現 subfolder1 及其內容 file1.md 和 file2.md。</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">|- folder1</span><br><span class="line">|-- subfolder1</span><br><span class="line">|   |-- file1.md</span><br><span class="line">|   |-- file2.md</span><br></pre></td></tr></table></figure>
+<p>Wiki 呈現的結構</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/azure-devops-wiki/folder1-nofile.jpg"
+                        class=""
+                 >
+<p>若要讓資料夾結構正常顯示，記得在每個資料夾內至少保持任一個有內容的檔案，如下圖在 folder1 目錄中新增 123.md。</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">|- folder1</span><br><span class="line">|- 123.md</span><br><span class="line">|-- subfolder1</span><br><span class="line">|   |-- file1.md</span><br><span class="line">|   |-- file2.md</span><br></pre></td></tr></table></figure>
+<p>Wiki 呈現的結構</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/azure-devops-wiki/folder1-hasfile.jpg"
+                        class=""
+                 >
+<h2 id="如何將目錄升階至頁面">如何將目錄升階至頁面</h2>
+<p>在 Azure DevOps Wiki 中，我們可以將儲存庫中的資料夾顯示為 Wiki 中的頁面，這個過程稱為「將資料夾升階至頁面」(Promote folder to page)，要將資料夾升階為頁面，需要滿足以下條件：</p>
+<ol>
+<li>同名的 Markdown 檔案：Wiki 中必須有一個 Markdown (.md) 檔案，其名稱與資料夾相同。</li>
+<li>位於相同位置：Markdown 檔案和資料夾必須是 Wiki 檔案清單中相同位置的對等項目（peers）。</li>
+</ol>
+<br>
+<p>延續上面提到的目錄結構，在下圖這樣的結構中，點選 folder1 並不會顯示任何內容，也沒有選項可以進行編輯。</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">|- folder1</span><br><span class="line">|- 123.md</span><br><span class="line">|-- subfolder1</span><br><span class="line">|   |-- file1.md</span><br><span class="line">|   |-- file2.md</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/azure-devops-wiki/folder1-noContent.jpg"
+                        class=""
+                 >
+<p><strong><mark>若想要編輯 folder1 資料夾的頁面，必需在同一層路徑中新增一個和目錄名稱相同的 .md (folder1.md)，這個檔案並不會顯示在 Wiki 列表中，而是會直接呈現在 folder1 資料夾的頁面。</mark></strong></p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">|- folder1</span><br><span class="line">|- 123.md</span><br><span class="line">|-- subfolder1</span><br><span class="line">|   |-- file1.md</span><br><span class="line">|   |-- file2.md</span><br><span class="line">|- folder1.md</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/azure-devops-wiki/folder1-hasContent.jpg"
+                        class=""
+                 >
+<h2 id="Wiki-版本管理">Wiki 版本管理</h2>
+<p>發佈的 Wiki 可以有多個版本，預設會顯示最新版本，我們可以從分支下拉式選單中選取要顯示的版本，由於 Wiki 是儲存在 Git 儲存庫，所有的變更都需要透過 commit 來完成，我們可以：</p>
+<ul>
+<li>直接在 Azure DevOps Web 介面編輯 Wiki 頁面內容。</li>
+<li>使用 Git 在本機編輯後 commit &amp; push。</li>
+<li>透過 Pull Request 的方式進行審核後再合併變更。</li>
+</ul>
+<br>
+<p>如果希望對 Wiki 進行更嚴格的控制，也可以在 Wiki 分支上定義分支原則，例如：</p>
+<ul>
+<li>要求 Pull Request 審核。</li>
+<li>要求建置驗證（Build Validation）。</li>
+<li>自動連結工作項目。</li>
+</ul>
+<h2 id="結語">結語</h2>
+<p>Azure DevOps 的 Wiki 功能為團隊提供了一個強大且靈活的知識管理平台。透過 Git 儲存庫的支援，Wiki 不僅能夠進行版本控制，還能整合到現有的開發工作流程中。.order 檔案讓我們可以自由地組織頁面結構，而資料夾升階功能則讓文件的層級關係更加清晰。無論選擇建立佈建的 Wiki 還是將現有的 Markdown 檔案發佈為 Wiki，Azure DevOps 都能滿足團隊在不同情境下的需求。善用這些功能，可以大幅提升團隊的知識分享效率和文件品質。</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/project/wiki/wiki-create-repo?view=azure-devops&tabs=browser"  target="_blank">⁍ 為您的專案建立 Wiki<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/project/wiki/publish-repo-to-wiki?view=azure-devops&tabs=browser"  target="_blank">⁍ 將 Git 存放庫發佈至 Wiki<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/project/wiki/wiki-file-structure?view=azure-devops"  target="_blank">⁍ Git 中的 Wiki 檔案和資料夾結構<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+]]></content>
+      <tags>
+        <tag>Azure DevOps</tag>
+        <tag>Wiki</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Azure DevOps Server 正式版發佈</title>
+    <url>/post/2025/12/azure-devops-server-ga/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/12/azure-devops-server-ga/ga.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 >
+<p>微軟在 2025/12/9 宣佈 Azure DevOps Server 已正式達到 GA（General Availability，正式版）狀態，這次 RTW 版本是針對企業自架環境的一次重要里程碑：除了支援 SQL Server 2025、整合 RC 階段已釋出的功能外，也彙整了多項在 Boards、Repos、Pipelines、Test Plans、Reporting、Wiki 等服務上的改進。本文說明為什麼名稱不再掛版號、GA 的發佈重點，以及各服務的新功能亮點，方便大家評估升級與導入時機 😊。</p>
+<span id="more"></span>
+<br>
+<br>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/12/azure-devops-server-ga/azure-devops-server-ga.jpg"
+                        class=""
+                 >
+<br>
+<h2 id="為什麼-Azure-DevOps-Server-不再加上版號？">為什麼 Azure DevOps Server 不再加上版號？</h2>
+<p>如果大家最近有留意微軟官方文件，會發現標題多半只有「Azure DevOps Server」，而不是像以前那種「Azure DevOps Server 2022 / 2020」清楚掛版號的寫法，主要可以從幾個方向來理解：</p>
+<ul>
+<li><strong>名稱回到「產品」本身，而不是單一年度版本</strong><br>
+微軟希望把 Azure DevOps Server 視為一個持續演進的產品，而不是每隔幾年就出一個「完全不同」的新名字。實際上底層還是有 build number 與發行批次，只是對使用者來說，重點放在「最新 Azure DevOps Server + 對應累積更新」；就像我常被客戶問到：今年都 2025 年了，Azure DevOps Server 最新版還在 2022.2，微軟是不是很久沒更新這個產品了？<s>(大誤)</s></li>
+<li><strong>以「發行批次 / 累積更新」與支援週期為主軸</strong><br>
+官方的 Release Notes 也改成「Azure DevOps Server Release Notes」這樣的形式，新的 RTW/RC、累積更新（cumulative updates）都掛在同一頁，讓大家用「目前安裝的是哪一個 release」來辨識，而不是只記年份或版號。</li>
+<li><strong>與雲端 Azure DevOps Services 的節奏對齊</strong><br>
+雲端服務本來就是持續更新、不強調版號，地端版也朝這個方向靠攏。對於有混合情境（雲端 + 地端）的團隊來說，在比較功能差異或規劃遷移時也比較直覺。</li>
+</ul>
+<p>換句話說：版本仍然存在（build number、支援週期一樣重要），只是公開溝通時不再把「年份」放在產品名稱裡，而是強調「這一個 Azure DevOps Server 發行批次」所帶來的變化與支援範圍。</p>
+<br>
+<h2 id="正式版發佈重點（GA-RTW-Highlights）">正式版發佈重點（GA / RTW Highlights）</h2>
+<p>根據官方部落格與 Release Notes，這次 Azure DevOps Server RTW 主要有幾個值得注意的重點：</p>
+<ul>
+<li><strong>從 RC 過渡到正式版，適合生產環境全面部署</strong><br>
+這次 GA 是在 RC 基礎上進一步收斂修正後的 RTW 版本，針對企業實際使用情境做了額外的穩定度與品質調整，定位上已經是可以在正式環境大規模導入的版本。</li>
+<li><strong>支援 SQL Server 2025</strong><br>
+RTW 明確標示為「支援 SQL Server 2025 的彙總發行（roll up）」；如果大家準備在資料庫層升級到 SQL Server 2025，這個版本就是官方對應的 Azure DevOps Server 搭配選項。</li>
+<li><strong>直接升級路徑清楚</strong><br>
+官方支援從 Azure DevOps Server 2019 / 2020 / 2022，或 Team Foundation Server 2015（含）之後的版本直接升級到 Azure DevOps Server。若還停在 TFS 2013 甚至更早，就需要先做中繼升級（要先升級到 2015 才能再升到目前最新的 Azure DevOps Server）。<br>
+<mark>同時也提醒：TFS 2015 已在 2025/10/14 結束延伸支援，若還停留在舊版本，這次 GA 其實是很好的「順勢升級」時機。</mark></li>
+<li><strong>品質修正與細節優化</strong><br>
+RTW 版本除了合併本地化調整外，還修正了多個實務上會遇到的問題，例如：
+<ul>
+<li>儀表板 Code Tile 在儲存庫或分支名稱太長時的顯示問題。</li>
+<li>GitHub PR 狀態透過 webhook 回寫時，已合併與未合併都被記成 Closed 的狀況，現在會依 payload 的 merged flag 正確區分。</li>
+<li>某些 Work Item Linking 情境下，Visual Studio 會因遞迴屬性造成當機的問題。</li>
+<li>Collection 設定頁中，如果 Analytics 被暫停或停用，Agent Pool 頁面會載入失敗的情形，現在已可正常顯示。</li>
+</ul>
+</li>
+<li><strong>完整的下載與文件連結</strong><br>
+官方提供 ISO、Web Install、下載頁、系統需求/相容性與安裝文件，方便 IT 做標準化佈署與維運規劃。</li>
+</ul>
+<br>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/12/azure-devops-server-ga/upgrade-azure-devops-server.png"
+                        class=""
+                 >
+<br>
+<h2 id="新功能與改進：各服務重點整理">新功能與改進：各服務重點整理</h2>
+<p>這次 GA 包含 RC 階段累積的一大串新功能與改進，底層細節很多，這裡依服務簡單抓幾個實務上比較有感的部分做摘要，方便大家快速掌握方向。</p>
+<h3 id="General">General</h3>
+<ul>
+<li><strong>Markdown 程式碼區塊一鍵複製</strong><br>
+Wiki、Repos 檔案預覽、PR 討論與 Work item 討論中的程式碼區塊，都多了一個 <strong><code>Copy to clipboard</code></strong> 按鈕，貼上範例或文件內容給團隊成員時效率更高。</li>
+<li><strong>Delivery Plans 權限更細緻</strong><br>
+新增「Manage Delivery Plans」專用權限，避免 Readers 類型的使用者不小心取得不必要的寫入權限，有助於大型組織控管誰可以建立或維護計畫視圖。</li>
+</ul>
+<h3 id="Boards">Boards</h3>
+<ul>
+<li><strong>GitHub PR 中的 AB# 連結顯示優化</strong><br>
+在 PR 描述裡用 AB#123 這種方式連結 Work item 時，現在會直接出現在 GitHub PR 的 Development 區塊，從 PR 就能快速回到對應的 Azure Boards 工作項目，追蹤性更好。</li>
+<li><strong>連結大量 GitHub Repos 的體驗改善</strong><br>
+當一個 GitHub 組織裡有成千上萬個儲存庫時，以前在 Azure Boards 裡搜尋/連結很容易 timeout，現在搜尋與載入流程經過最佳化，大型組織會感受比較明顯。</li>
+<li><strong>YAML Pipelines 的「Integrated in build」連結支援 GitHub</strong><br>
+針對放在 GitHub 的 repo，現在 YAML pipeline 也能在完成 build 後自動在相關 Work item 上顯示「已在哪個 build 中整合」，讓 YAML 與傳統 Classic pipeline 在追蹤能力上更接近。</li>
+<li><strong>GitHub 連線 REST API</strong><br>
+新增一組 API 讓我們可以程式化地查詢、新增或移除 GitHub Repositories 連結，並將單一連線可掛載的 repo 上限從 500 提升到 2,000，方便用 Script 自動化維護大規模整合。</li>
+<li><strong>刪除 Area / Iteration 更安全</strong><br>
+現在只有在沒有任何 Work item 使用該路徑時，才能刪除 Area 或 Iteration，避免一個不小心影響一大堆看板、報表與存取權限。</li>
+<li><strong>標籤與留言體驗升級</strong><br>
+刪除的 Tag 不會再出現在建議清單裡，Work item 討論也能更方便貼上來自 Teams、Email、Word 等來源的圖片，REST API 另外新增留言數量限制，避免濫用導致效能或安全問題。</li>
+<li><strong>Delivery Plans 數量上限提高</strong><br>
+每個專案可建立的 Delivery Plans 上限，從 1,000 提升到 1,500，對於有大量跨團隊規劃需求的組織比較友善。</li>
+</ul>
+<h3 id="Repos">Repos</h3>
+<ul>
+<li><strong>可選擇停用新的 TFVC 儲存庫建立</strong><br>
+Git 已經是主流，微軟也明確表示近年不再為 TFVC 加新功能。這次新增一個設定，讓我們可以關閉「建立新的 TFVC Repo」，既不影響既有 TFVC 專案，又能避免新專案再誤用 TFVC。</li>
+<li><strong>Git submodules UI 支援</strong><br>
+在檔案總管（Files hub）中，可以直接看懂並點進 submodule 指向的儲存庫與特定 commit，支援 Azure Repos、GitHub、GitLab、Bitbucket 等多種來源與 URL 格式，對有 Monorepo 或模組化拆分的團隊很實用。</li>
+<li><strong>Repository Health and usage 面板</strong><br>
+大型儲存庫會拖慢整體效能，現在 Repos 會監看儲存庫大小、commit 密度與內容結構等指標，必要時會提示 repository owner 檢查健康狀態與最佳化建議。</li>
+<li><strong>自訂 PR 目標分支建議</strong><br>
+只要在預設分支下建立 .azuredevops/pull_request_targets.yml，就可以定義常見的目標分支（例如 main、release/* 等），建立 PR 或系統自動建議 PR 時就會優先採用這些設定，減少開 PR 開錯分支的情況。</li>
+<li><strong>Markdown 支援 Mermaid 圖表與 PR 標題搜尋</strong><br>
+Repos 中的 Markdown 如果包含 mermaid 語法，現在會直接渲染成圖表；PR 列表頁也多了依標題搜尋的功能，方便在大量 PR 中快速找到目標。</li>
+<li><strong>Pipelines Checkout 支援 sparse checkout</strong><br>
+YAML 的 checkout 步驟新增 sparseCheckoutDirectories / sparseCheckoutPatterns 兩個設定，可只抓部分目錄或路徑，大型 repo 跑 CI/CD 時可以明顯縮短 checkout 時間（需要較新的 Agent 版本）。</li>
+<li><strong>其他 API 與相容性改善</strong><br>
+包含 cross-repo policy 預覽改成大小寫敏感（與實際規則一致）、TFVC check-in policy 新格式與 NuGet 套件更新、Repo 資訊 API 增加建立時間欄位、PR 查詢 API 可選擇回傳標籤（labels）等。</li>
+</ul>
+<h3 id="Pipelines">Pipelines</h3>
+<ul>
+<li><strong>TFX 與 Task Node runtime 健康檢查</strong><br>
+用 TFX 發佈 extension 時，現在會檢查 Task 是否還在使用已 EOL 的 Node.js 版本（例如 Node.js 10/12/16 等），並給出警告訊息，提醒作者儘早升級。</li>
+<li><strong>Pipeline 執行時也會對老舊 Node.js runner 發警示</strong><br>
+如果某個 Task 仍依賴已不再維護的 Node.js 版本，執行時會在 log 裡出現警告，並提供官方升級指引連結；若暫時無法調整，也可以透過環境變數關閉這個檢查（不過長期來看還是建議盡快升級）。</li>
+<li><strong>DockerCompose@0 改用 Compose v2 相容模式</strong><br>
+Hosted Agent 即將移除 Docker Compose v1，因此 DockerCompose@0 Task 會在沒有 v1 時自動改用 v2 的相容模式；若專案還沒做好 v2 相容性，官方也提供範例腳本，教大家在 Pipeline 裡自行下載 v1 執行檔暫時過渡。</li>
+<li><strong>使用 Microsoft Entra ID 存取 Azure Service Bus</strong><br>
+新版 PublishToAzureServiceBus@2 Task 可以用 Azure Service Connection 搭配 Entra ID（原 Azure AD）存取 Service Bus，支援透過 RBAC 控制權限，比直接塞連線字串安全許多，自訂 server task 也能改用 service connection。</li>
+</ul>
+<h3 id="Test-Plans">Test Plans</h3>
+<ul>
+<li><strong>Test &amp; Feedback 擴充功能升級到 Manifest V3</strong><br>
+Chrome/Edge 上的 Test &amp; Feedback 延伸模組已改用 Manifest V3，跟上瀏覽器的安全性與效能要求，功能維持不變。</li>
+<li><strong>Azure Test Runner 與 Chrome 相容性修正</strong><br>
+針對最近 Chrome 在 URL 處理上的變更，更新後的 Azure Test Runner 版本已修正啟動失敗的問題。</li>
+<li><strong>Test Plans 與 Build Pipeline 整合更順</strong><br>
+在 Test Plan 裡設定好的 Build 定義與 ID 會自動帶到 Web Runner，不需要每次手動重設，減少測試流程中的行政作業。</li>
+<li><strong>支援透過 REST API 還原刪除的 Test Plan / Suite</strong><br>
+不小心刪錯 Test Plan 或 Suite 時，現在可以用 API 查詢並還原（包含子階層），不用再倚賴客服協助，不過既有的執行結果等 artifact 並不會一併回復。</li>
+<li><strong>匯出 Test Case 到 XLSX 支援自訂欄位</strong><br>
+匯出測試案例時可以帶出自訂欄位，做報表或離線分析比較方便。</li>
+<li><strong>測試執行體驗優化</strong><br>
+包含 Test Plans 目錄支援欄位排序、Web/Desktop Runner 提供「Undo」回復步驟狀態、Publish code coverage v2 Task 支援更多格式與 PR 差異覆蓋率（diff coverage）等。</li>
+<li><strong>Test Plans 支援 YAML Pipelines</strong><br>
+除了 Classic pipeline，現在也可以選擇 YAML pipeline 來執行自動化測試，對已全面轉向 YAML 的團隊非常關鍵。</li>
+</ul>
+<h3 id="Reporting-Wiki">Reporting &amp; Wiki</h3>
+<ul>
+<li><strong>Backlog Rollup 資料顯示更清楚</strong><br>
+Rollup 欄位會顯示最近一次成功計算的資料與時間戳記，即使 Analytics 略有延遲，也比較不會誤以為是資料遺失。</li>
+<li><strong>Wiki 貼上 HTML 內容自動轉 Markdown</strong><br>
+從瀏覽器、Office、Teams 等地方複製的 HTML 內容（像是清單、表格、圖片、連結等）貼到 Wiki 時，會自動轉成對應的 Markdown 語法，編輯起來順手很多。</li>
+</ul>
+<br>
+<h2 id="什麼時候該考慮升級？">什麼時候該考慮升級？</h2>
+<p>微軟於 2025/12/9 將 Azure DevOps Server 正式宣布為 GA，代表地端版本已足夠穩定可在企業生產環境部署，並帶來多項來自 RC 階段的修正與功能強化（例如更好的 GitHub 整合、Repos 健康檢查、sparse checkout、YAML 與 Test Plans 的整合等），對準備升級到 SQL Server 2025 或仍使用舊版 TFS 的團隊來說是很好的升級時機，但在規劃導入時記得也要留意安裝的最低需求 — Windows Server 2022 與 SQL Server 2022，詳細說明可以參考文末的連結。</p>
+<p>綜合來看，這次 Azure DevOps Server GA 有幾個關鍵訊號：</p>
+<ul>
+<li>若後端環境有計畫升級到 <strong>SQL Server 2025</strong>，這是官方明確對應的 Azure DevOps Server 版本。</li>
+<li>若還在 <strong>TFS 2015 或更舊版本</strong>，這次 GA 搭配延伸支援結束，是很適合規劃「一次到位」升級的時點。</li>
+<li>如果團隊已大量使用 <strong>Git + YAML Pipelines + GitHub 整合</strong>，這一波新功能會讓追蹤性與操作體驗更接近雲端版 Azure DevOps Services。</li>
+</ul>
+<p>在官方的 Release Notes 頁面中有相關功能的截圖，有需要可以再參考下列參考連結。 😎</p>
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://devblogs.microsoft.com/devops/announcing-azure-devops-server-general-availability"  target="_blank">⁍ Announcing Azure DevOps Server General Availability<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/en-us/azure/devops/server/release-notes/azuredevopsserver?view=azure-devops-server"  target="_blank">⁍ Azure DevOps Server Release Notes <i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/en-us/azure/devops/server/requirements?view=azure-devops-server&branch=releasenotes%2FAzureDevOpsServer2020"  target="_blank">⁍ Requirements for Azure DevOps on-premises <i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+]]></content>
+      <tags>
+        <tag>Azure DevOps</tag>
       </tags>
   </entry>
   <entry>
@@ -1551,140 +1850,137 @@
       </tags>
   </entry>
   <entry>
-    <title>Azure DevOps 的 Wiki 應用</title>
-    <url>/post/2025/10/azure-devops-wiki/</url>
+    <title>.NET Conf 2025 - 碼農出擊 ! GitHub Copilot 帶你飛</title>
+    <url>/post/2025/12/dotnet-conf-2025/</url>
     <content><![CDATA[<img    
                        lazyload
                        alt="image"
-                       data-src="/post/2025/10/azure-devops-wiki/wiki.jpg"
+                       data-src="/post/2025/12/dotnet-conf-2025/dotNet-conf-2025.jpg"
                          align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
                  > 
-<p>在軟體開發專案中，文件管理與知識分享一直是團隊協作的重要環節。Azure DevOps 提供了強大的 Wiki 功能，讓團隊能夠在專案中建立、編輯和組織文件。無論是產品規格、技術文件、FAQ 還是操作手冊，Wiki 都能協助團隊將知識系統化地保存下來。更重要的是，Azure DevOps 的 Wiki 是建立在 Git 儲存庫之上，這代表我們也可以用管理程式碼的方式來管理文件，可以進行版本控制、分支管理等優勢。本文將介紹 Azure DevOps Wiki 的核心概念，包括 Wiki 在儲存庫中的連線位置、.order 檔案的用途，以及如何將資料夾升階為 Wiki 頁面。</p>
-<br>
+<p>很開心受邀在 <strong>.NET Conf 2025 Taiwan</strong> 擔任講者，這場活動由 STUDY4 社群主辦，是全球 .NET Conf 的台灣在地場，今年主軸放在 <strong>.NET 10</strong> 與 <strong>AI 驅動的應用開發</strong>。我的議程主要聚焦在：當企業想要導入 GitHub Copilot，不只是單純「幫工程師補程式碼」，而是思考如何有計畫地將 GitHub Copilot 融入 SDLC 既有流程之中。<br></p>
 <span id="more"></span>
 <br>
-<h2 id="Wiki-的兩種類型">Wiki 的兩種類型</h2>
-<p>Azure DevOps 提供兩種類型的 Wiki：</p>
-<h3 id="1-佈建的-Wiki-Provisioned-Wiki">1. 佈建的 Wiki (Provisioned Wiki)</h3>
-<p>當我們為專案建立 Wiki 時，Azure DevOps 會自動建立一個獨立的 Git 儲存庫來存放 Wiki 內容。這個儲存庫的命名慣例是 <strong><mark>專案名稱.wiki</mark></strong>，例如：專案名稱是 <strong><code>Contoso</code></strong>，則 Wiki 儲存庫名稱就是 <strong><code>Contoso.wiki</code></strong>。<strong><mark>這個 Wiki 儲存庫不會出現在專案的 Repos 或 Code 區段的儲存庫下拉選單中，也不會列在專案設定的儲存庫頁面中</mark></strong>。</p>
-<h3 id="2-發佈的-Wiki-Published-Wiki">2. 發佈的 Wiki (Published Wiki)</h3>
-<p>我們也可以將現有 Git 儲存庫中的 Markdown 檔案發佈為 Wiki。這種方式適合已經在儲存庫中維護技術文件或產品說明的團隊。透過發佈程式碼為 Wiki 可以：</p>
+<br>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/12/dotnet-conf-2025/presentation.jpg"
+                        class=""
+                 >
+<br>
+<h2 id="從-DevDays-Asia-2025-延伸而來">從 DevDays Asia 2025 延伸而來</h2>
+<p>9月我在 <strong>DevDays Asia 2025</strong> 分享的是「Azure DevOps 與 GitHub Copilot：AI 驅動的團隊協作新時代」，比較像是從高空俯瞰：</p>
 <ul>
-<li>將內容組織成受控的頁面順序結構。</li>
-<li>瀏覽和篩選目錄。</li>
-<li>發佈新版本的內容。</li>
-<li>以管理程式碼的方式管理內容。</li>
-<li>使用 Wiki 搜尋功能輕鬆地搜尋 Wiki。</li>
+<li>怎麼用 Azure DevOps + GitHub Copilot 重新包裝 SDLC</li>
+<li>就算還在 On-Premises 或混合環境，也一樣可以享受 AI 輔助開發</li>
+<li>讓 LLM 透過 Tools / MCP 介接既有系統，把「會聊天」變成「會做事」</li>
 </ul>
-<p>每個專案可以發佈多個 Wiki，每個發佈的 Wiki 最多可以發佈 <strong><mark>10 個分支</mark></strong>。</p>
-<h2 id="Wiki-在-Repo-的連線位置">Wiki 在 Repo 的連線位置</h2>
-<h3 id="佈建的-Wiki-儲存庫結構">佈建的 Wiki 儲存庫結構</h3>
-<p>Wiki 的 Git 儲存庫有以下特性：</p>
-<ul>
-<li>儲存庫名稱：<code>專案名稱.wiki</code></li>
-<li>主分支名稱：<code>wikiMain</code></li>
-</ul>
-<p>我們可以透過在 wikiMain 分支上定義分支原則來管理 Wiki 儲存庫，也可以直接修改本機 wikiMain 分支內容，將它們直接推送至遠端分支。</p>
-<h3 id="存取-Wiki-儲存庫的方法">存取 Wiki 儲存庫的方法</h3>
-<p>由於 Wiki 儲存庫不會顯示在一般的儲存庫清單中，但我們可以透過特定方式來存取：</p>
+<p>這次在 .NET Conf 2025，則是把鏡頭拉近到 <strong>「GitHub Copilot 本身該怎麼在企業裡落地」</strong>，特別是：</p>
 <ol>
-<li>
-<p>建立存取 URL：將以下 URL 中的 &lt;Organization&gt;、&lt;ProjectName&gt; 和 &lt;WikiName&gt; 替換為實際值：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://dev.azure.com/&lt;Organization&gt;/&lt;ProjectName&gt;/_git/&lt;WikiName&gt;</span><br></pre></td></tr></table></figure>
-</li>
-<li>
-<p>從 Wiki 頁面存取：在 Wiki 頁面的「更多選項」(…)，選取「複製」(Clone wiki) 選項，即可取得 Wiki 儲存庫的 URL。</p>
-</li>
-</ol>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/azure-devops-wiki/clone_wiki.jpg"
-                        class=""
-                 >
-<h2 id="order-檔案的用途">.order 檔案的用途</h2>
-<p>在 Wiki 中的 .order 檔案扮演著關鍵角色，它定義了 Wiki 頁面在目錄中的顯示順序，當資料夾沒有 .order 檔案時，Git 會使用預設的字母順序（A 到 Z）來排列頁面。</p>
-<h2 id="order-檔案的結構">.order 檔案的結構</h2>
-<p>.order 檔案是一個純文字檔案，每一行對應一個 Markdown 檔案的名稱（不含 .md 副檔名），例如：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Wiki-Welcome</span><br><span class="line">Project-Overview</span><br><span class="line">Get-Started</span><br><span class="line">Submit-a-pull-request</span><br><span class="line">team-contacts</span><br><span class="line">readme-version-9</span><br></pre></td></tr></table></figure>
-<h3 id="重要注意事項">重要注意事項</h3>
-<ol>
-<li><strong>大小寫敏感</strong>：頁面標題區有分大小寫，每行所條列的項目應與頁面標題和檔名中使用的大小寫一致。</li>
-<li><strong>階層結構</strong>：Wiki 根目錄的 .order 檔案指定根層級頁面的顯示順序，每個子資料夾也可以有自己的 .order 檔案來定義該資料夾的頁面順序。</li>
-<li><strong>未列出的檔案</strong>：.order 檔案中未列出的檔案會呈現在頁面順序中的最後。</li>
-<li><strong>設定首頁</strong>：<strong><mark>將首頁名稱放在根目錄 .order 檔案的第一行，即可指定 Wiki 的首頁。</mark></strong></li>
-</ol>
-<h3 id="還原為字母順序">還原為字母順序</h3>
-<p>如果想要將自訂順序還原為字母順序，只需刪除 .order 檔案即可，刪除後 Git 會自動建立新的 .order 檔案，使用預設的字母順序。</p>
-<h3 id="資料夾注意事項">資料夾注意事項</h3>
-<p>當我們透過 Git 將資料夾 push 到 Wiki 時，若資料夾內完全沒有任何檔案但是有其他資料夾，整個資料夾的顯示會是空白的。如下圖，在 Wiki 介面中只會看到 folder1 空目錄，並無法正確呈現 subfolder1 及其內容 file1.md 和 file2.md。</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">|- folder1</span><br><span class="line">|-- subfolder1</span><br><span class="line">|   |-- file1.md</span><br><span class="line">|   |-- file2.md</span><br></pre></td></tr></table></figure>
-<p>Wiki 呈現的結構</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/azure-devops-wiki/folder1-nofile.jpg"
-                        class=""
-                 >
-<p>若要讓資料夾結構正常顯示，記得在每個資料夾內至少保持任一個有內容的檔案，如下圖在 folder1 目錄中新增 123.md。</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">|- folder1</span><br><span class="line">|- 123.md</span><br><span class="line">|-- subfolder1</span><br><span class="line">|   |-- file1.md</span><br><span class="line">|   |-- file2.md</span><br></pre></td></tr></table></figure>
-<p>Wiki 呈現的結構</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/azure-devops-wiki/folder1-hasfile.jpg"
-                        class=""
-                 >
-<h2 id="如何將目錄升階至頁面">如何將目錄升階至頁面</h2>
-<p>在 Azure DevOps Wiki 中，我們可以將儲存庫中的資料夾顯示為 Wiki 中的頁面，這個過程稱為「將資料夾升階至頁面」(Promote folder to page)，要將資料夾升階為頁面，需要滿足以下條件：</p>
-<ol>
-<li>同名的 Markdown 檔案：Wiki 中必須有一個 Markdown (.md) 檔案，其名稱與資料夾相同。</li>
-<li>位於相同位置：Markdown 檔案和資料夾必須是 Wiki 檔案清單中相同位置的對等項目（peers）。</li>
+<li>從哪幾個層次開始導入比較務實？</li>
+<li>怎麼跟 SDLC 的每一個階段對得上？</li>
+<li>除了 IDE 內的 Chat / Completions 之外，團隊層級還能玩到多深？</li>
 </ol>
 <br>
-<p>延續上面提到的目錄結構，在下圖這樣的結構中，點選 folder1 並不會顯示任何內容，也沒有選項可以進行編輯。</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">|- folder1</span><br><span class="line">|- 123.md</span><br><span class="line">|-- subfolder1</span><br><span class="line">|   |-- file1.md</span><br><span class="line">|   |-- file2.md</span><br></pre></td></tr></table></figure>
+<h2 id="四層次的-GitHub-Copilot-客製化思維">四層次的 GitHub Copilot 客製化思維</h2>
+<p>簡報裡我用了一個「<strong>AI 客製化四層次架構</strong>」來整理 Copilot 在企業導入時可以怎麼分階段思考：</p>
+<br>
 <img  
                        lazyload
                        alt="image"
-                       data-src="/post/2025/10/azure-devops-wiki/folder1-noContent.jpg"
+                       data-src="/post/2025/12/dotnet-conf-2025/levels.jpg"
                         class=""
                  >
-<p><strong><mark>若想要編輯 folder1 資料夾的頁面，必需在同一層路徑中新增一個和目錄名稱相同的 .md (folder1.md)，這個檔案並不會顯示在 Wiki 列表中，而是會直接呈現在 folder1 資料夾的頁面。</mark></strong></p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">|- folder1</span><br><span class="line">|- 123.md</span><br><span class="line">|-- subfolder1</span><br><span class="line">|   |-- file1.md</span><br><span class="line">|   |-- file2.md</span><br><span class="line">|- folder1.md</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/azure-devops-wiki/folder1-hasContent.jpg"
-                        class=""
-                 >
-<h2 id="Wiki-版本管理">Wiki 版本管理</h2>
-<p>發佈的 Wiki 可以有多個版本，預設會顯示最新版本，我們可以從分支下拉式選單中選取要顯示的版本，由於 Wiki 是儲存在 Git 儲存庫，所有的變更都需要透過 commit 來完成，我們可以：</p>
+<br>
+<ol>
+<li>
+<p><strong>模型與提示詞（Models &amp; Prompting）</strong><br>
+先搞清楚目前 Copilot 內建提供哪些模型、哪些是 0x 乘數（不額外計費）、哪些是進階付費模型，依照團隊的情境選擇適合的組合，再搭配基本的 Prompt 寫法，讓開發者在 Chat / Inline Chat 裡可以比較穩定地拿到想要的答案。</p>
+</li>
+<li>
+<p><strong>自訂指令與提示詞（Custom Instructions &amp; Prompts）</strong><br>
+把「每次都會重複說的那些話」抽出來，例如：命名規則、例外處理策略、錯誤訊息語氣、專案的架構慣例等，寫進：</p>
 <ul>
-<li>直接在 Azure DevOps Web 介面編輯 Wiki 頁面內容。</li>
-<li>使用 Git 在本機編輯後 commit &amp; push。</li>
-<li>透過 Pull Request 的方式進行審核後再合併變更。</li>
+<li><strong><code>/.github/copilot-instructions.md</code></strong>（工作區全域規則）</li>
+<li><strong><code>/.github/instructions/*.instructions.md</code></strong>（依語言 / 任務做條件式套用）<br>
+讓 Copilot 自動帶著這些背景知識工作，而不是每次對話都從零開始重新交代。</li>
+<li><strong><code>/.github/prompts/*.prompt.md</code></strong> (會重複使用的 prompt)</li>
+</ul>
+</li>
+<li>
+<p><strong>自訂代理人（Custom Agents）</strong><br>
+把「角色」概念正式化，為不同開發階段建立專屬 Agent，例如：</p>
+<ul>
+<li>專門負責需求拆解與規劃的 PLANNER</li>
+<li>專心寫程式碼與重構的 IMPLEMENTER</li>
+<li>聚焦測試與驗證的 TESTER</li>
+<li>做 Code Review 與安全檢查的 REVIEWER<br>
+然後用 <strong><code>/agents/*.agent.md</code></strong> 定義好他們各自的行為模式與可用工具，讓團隊在 Copilot Chat 或 Copilot CLI 裡可以一鍵切換角色工作。</li>
+</ul>
+</li>
+<li>
+<p><strong>整合應用（Integration）</strong><br>
+最後一層就是把 Copilot 拉進既有的工具鏈：</p>
+<ul>
+<li>在 CI/CD Pipeline 裡呼叫 Copilot CLI 做自動化 Code Review 或文件生成</li>
+<li>搭配 Pull Request Flow，讓 Copilot 先幫忙整理變更摘要、找出可疑區塊</li>
+<li>用 Prompt Files 把常用工作（例如：「幫我重寫這份 README」）標準化，讓團隊成員都能重複使用同一套流程</li>
+</ul>
+</li>
+</ol>
+<p>這四個層次並不是一次到位，而是可以循序漸進、視團隊成熟度慢慢往上疊。</p>
+<br>
+<h2 id="GitHub-Copilot-與-SDLC-的結合">GitHub Copilot 與 SDLC 的結合</h2>
+<p>在 SDLC 的觀點，我會把 Copilot 放進這樣一個簡化版流程裡看（更多的應用可以參考前幾天提到的 <a class="link"   href="https://sdlc.timlai.dev" >https://sdlc.timlai.dev<i class="fas fa-external-link-alt"></i></a>）：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">Plan (規劃)</span><br><span class="line">  ↓</span><br><span class="line">  └─ Copilot Chat：輔助需求釐清、工作拆解、規格草稿</span><br><span class="line"></span><br><span class="line">Code (程式編寫)</span><br><span class="line">  ↓</span><br><span class="line">  ├─ Code Completions：自動補全樣板程式碼與重複片段</span><br><span class="line">  └─ Copilot Chat：在 IDE 裡協助除錯、重構、產生單元測試</span><br><span class="line"></span><br><span class="line">Review (程式碼審查)</span><br><span class="line">  ↓</span><br><span class="line">  └─ Copilot CLI / Agents：自動化 Code Review、風險掃描與文件補強</span><br><span class="line"></span><br><span class="line">Deploy (部署)</span><br><span class="line">  ↓</span><br><span class="line">  └─ Coding Agent / Pipeline 整合：協助修改設定、產生部署腳本、建立 PR</span><br></pre></td></tr></table></figure>
+<p>對企業來說，重點不是「多一個會寫程式的 AI」，而是：</p>
+<ul>
+<li>在每一個階段都有明確、可度量的應用場景</li>
+<li>知道哪些事情適合交給 Copilot，哪些仍然要由人類工程師把關</li>
+<li>把規則寫進 Custom Instructions、流程寫進 Prompt Files 或 Agents，讓團隊可以<strong>穩定地複製成功經驗</strong></li>
 </ul>
 <br>
-<p>如果希望對 Wiki 進行更嚴格的控制，也可以在 Wiki 分支上定義分支原則，例如：</p>
+<h2 id="從個人到團隊的導入建議">從個人到團隊的導入建議</h2>
+<p>簡報裡我也分享了一個比較務實的導入路線，給正在觀望是否要導入 Copilot 的團隊參考：</p>
+<ol>
+<li>
+<p><strong>先從開發者個人開始體驗</strong><br>
+讓團隊成員先在 VS Code / Visual Studio 裡熟悉 Chat、Completions、Inline Chat 等基本能力，累積最直覺的「效率感」。</p>
+</li>
+<li>
+<p><strong>很快地補上團隊層級的規範</strong><br>
+不要讓每個人用 Copilot 的方式完全長得不一樣，建議盡早建立：</p>
 <ul>
-<li>要求 Pull Request 審核。</li>
-<li>要求建置驗證（Build Validation）。</li>
-<li>自動連結工作項目。</li>
+<li>共同的 <strong><code>copilot-instructions.md</code></strong></li>
+<li>基本的安全與隱私原則（哪些程式碼 / 資料不能貼上雲端）</li>
+<li>簡單的「好 Prompt 範例庫」</li>
 </ul>
-<h2 id="結語">結語</h2>
-<p>Azure DevOps 的 Wiki 功能為團隊提供了一個強大且靈活的知識管理平台。透過 Git 儲存庫的支援，Wiki 不僅能夠進行版本控制，還能整合到現有的開發工作流程中。.order 檔案讓我們可以自由地組織頁面結構，而資料夾升階功能則讓文件的層級關係更加清晰。無論選擇建立佈建的 Wiki 還是將現有的 Markdown 檔案發佈為 Wiki，Azure DevOps 都能滿足團隊在不同情境下的需求。善用這些功能，可以大幅提升團隊的知識分享效率和文件品質。</p>
+</li>
+<li>
+<p><strong>針對關鍵流程做深度整合</strong><br>
+找出團隊最痛的幾個流程（例如：Code Review 太花時間、文件總是寫不完、重複的樣板專案很難維護），優先用 Copilot CLI、Custom Agents 或 CI/CD 整合來做自動化，讓大家看到「不只是省幾行程式碼」的價值。</p>
+</li>
+<li>
+<p><strong>持續迭代與量化成果</strong><br>
+導入一段時間後，回頭檢視：</p>
+<ul>
+<li>PR 週期、缺陷率、上線前修正量是否有改善？</li>
+<li>開發者的主觀感受是「變快」還是「變亂」？</li>
+<li>有沒有新的反模式需要在指令或流程上修正？</li>
+</ul>
+</li>
+</ol>
+<p>這次的簡報放在下方參考連結，也非常歡迎有參加活動、或正在思考 <strong>GitHub Copilot 如何在自己團隊落地</strong> 的朋友留言交流，一起把 AI 真正變成開發流程的一部分，而不是只停留在「玩玩看」的階段。</p>
 <div class="tips">
 <font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/project/wiki/wiki-create-repo?view=azure-devops&tabs=browser"  target="_blank">⁍ 為您的專案建立 Wiki<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/project/wiki/publish-repo-to-wiki?view=azure-devops&tabs=browser"  target="_blank">⁍ 將 Git 存放庫發佈至 Wiki<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/azure/devops/project/wiki/wiki-file-structure?view=azure-devops"  target="_blank">⁍ Git 中的 Wiki 檔案和資料夾結構<i class="fas fa-external-link-alt"></i></a>
+<a href="/post/2025/12/dotnet-conf-2025/碼農出擊 ! GitHub Copilot 帶你飛_20251129.pdf" target="_blank">⁍ 簡報下載 - 碼農出擊 ! GitHub Copilot 帶你飛</a><br>
+<a class="link"   href="https://dotnetconf.study4.tw"  target="_blank">⁍ .NET Conf 2025 Taiwan 官方網站<i class="fas fa-external-link-alt"></i></a>
 </font>
-</div>
-]]></content>
+</div>]]></content>
       <tags>
-        <tag>Azure DevOps</tag>
-        <tag>Wiki</tag>
+        <tag>.NET Conf 2025</tag>
+        <tag>GitHub Copilot</tag>
       </tags>
   </entry>
   <entry>
@@ -1963,538 +2259,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Azure DevOps Server 正式版發佈</title>
-    <url>/post/2025/12/azure-devops-server-ga/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/12/azure-devops-server-ga/ga.jpg"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 >
-<p>微軟在 2025/12/9 宣佈 Azure DevOps Server 已正式達到 GA（General Availability，正式版）狀態，這次 RTW 版本是針對企業自架環境的一次重要里程碑：除了支援 SQL Server 2025、整合 RC 階段已釋出的功能外，也彙整了多項在 Boards、Repos、Pipelines、Test Plans、Reporting、Wiki 等服務上的改進。本文說明為什麼名稱不再掛版號、GA 的發佈重點，以及各服務的新功能亮點，方便大家評估升級與導入時機 😊。</p>
-<span id="more"></span>
-<br>
-<br>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/12/azure-devops-server-ga/azure-devops-server-ga.jpg"
-                        class=""
-                 >
-<br>
-<h2 id="為什麼-Azure-DevOps-Server-不再加上版號？">為什麼 Azure DevOps Server 不再加上版號？</h2>
-<p>如果大家最近有留意微軟官方文件，會發現標題多半只有「Azure DevOps Server」，而不是像以前那種「Azure DevOps Server 2022 / 2020」清楚掛版號的寫法，主要可以從幾個方向來理解：</p>
-<ul>
-<li><strong>名稱回到「產品」本身，而不是單一年度版本</strong><br>
-微軟希望把 Azure DevOps Server 視為一個持續演進的產品，而不是每隔幾年就出一個「完全不同」的新名字。實際上底層還是有 build number 與發行批次，只是對使用者來說，重點放在「最新 Azure DevOps Server + 對應累積更新」；就像我常被客戶問到：今年都 2025 年了，Azure DevOps Server 最新版還在 2022.2，微軟是不是很久沒更新這個產品了？<s>(大誤)</s></li>
-<li><strong>以「發行批次 / 累積更新」與支援週期為主軸</strong><br>
-官方的 Release Notes 也改成「Azure DevOps Server Release Notes」這樣的形式，新的 RTW/RC、累積更新（cumulative updates）都掛在同一頁，讓大家用「目前安裝的是哪一個 release」來辨識，而不是只記年份或版號。</li>
-<li><strong>與雲端 Azure DevOps Services 的節奏對齊</strong><br>
-雲端服務本來就是持續更新、不強調版號，地端版也朝這個方向靠攏。對於有混合情境（雲端 + 地端）的團隊來說，在比較功能差異或規劃遷移時也比較直覺。</li>
-</ul>
-<p>換句話說：版本仍然存在（build number、支援週期一樣重要），只是公開溝通時不再把「年份」放在產品名稱裡，而是強調「這一個 Azure DevOps Server 發行批次」所帶來的變化與支援範圍。</p>
-<br>
-<h2 id="正式版發佈重點（GA-RTW-Highlights）">正式版發佈重點（GA / RTW Highlights）</h2>
-<p>根據官方部落格與 Release Notes，這次 Azure DevOps Server RTW 主要有幾個值得注意的重點：</p>
-<ul>
-<li><strong>從 RC 過渡到正式版，適合生產環境全面部署</strong><br>
-這次 GA 是在 RC 基礎上進一步收斂修正後的 RTW 版本，針對企業實際使用情境做了額外的穩定度與品質調整，定位上已經是可以在正式環境大規模導入的版本。</li>
-<li><strong>支援 SQL Server 2025</strong><br>
-RTW 明確標示為「支援 SQL Server 2025 的彙總發行（roll up）」；如果大家準備在資料庫層升級到 SQL Server 2025，這個版本就是官方對應的 Azure DevOps Server 搭配選項。</li>
-<li><strong>直接升級路徑清楚</strong><br>
-官方支援從 Azure DevOps Server 2019 / 2020 / 2022，或 Team Foundation Server 2015（含）之後的版本直接升級到 Azure DevOps Server。若還停在 TFS 2013 甚至更早，就需要先做中繼升級（要先升級到 2015 才能再升到目前最新的 Azure DevOps Server）。<br>
-<mark>同時也提醒：TFS 2015 已在 2025/10/14 結束延伸支援，若還停留在舊版本，這次 GA 其實是很好的「順勢升級」時機。</mark></li>
-<li><strong>品質修正與細節優化</strong><br>
-RTW 版本除了合併本地化調整外，還修正了多個實務上會遇到的問題，例如：
-<ul>
-<li>儀表板 Code Tile 在儲存庫或分支名稱太長時的顯示問題。</li>
-<li>GitHub PR 狀態透過 webhook 回寫時，已合併與未合併都被記成 Closed 的狀況，現在會依 payload 的 merged flag 正確區分。</li>
-<li>某些 Work Item Linking 情境下，Visual Studio 會因遞迴屬性造成當機的問題。</li>
-<li>Collection 設定頁中，如果 Analytics 被暫停或停用，Agent Pool 頁面會載入失敗的情形，現在已可正常顯示。</li>
-</ul>
-</li>
-<li><strong>完整的下載與文件連結</strong><br>
-官方提供 ISO、Web Install、下載頁、系統需求/相容性與安裝文件，方便 IT 做標準化佈署與維運規劃。</li>
-</ul>
-<br>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/12/azure-devops-server-ga/upgrade-azure-devops-server.png"
-                        class=""
-                 >
-<br>
-<h2 id="新功能與改進：各服務重點整理">新功能與改進：各服務重點整理</h2>
-<p>這次 GA 包含 RC 階段累積的一大串新功能與改進，底層細節很多，這裡依服務簡單抓幾個實務上比較有感的部分做摘要，方便大家快速掌握方向。</p>
-<h3 id="General">General</h3>
-<ul>
-<li><strong>Markdown 程式碼區塊一鍵複製</strong><br>
-Wiki、Repos 檔案預覽、PR 討論與 Work item 討論中的程式碼區塊，都多了一個 <strong><code>Copy to clipboard</code></strong> 按鈕，貼上範例或文件內容給團隊成員時效率更高。</li>
-<li><strong>Delivery Plans 權限更細緻</strong><br>
-新增「Manage Delivery Plans」專用權限，避免 Readers 類型的使用者不小心取得不必要的寫入權限，有助於大型組織控管誰可以建立或維護計畫視圖。</li>
-</ul>
-<h3 id="Boards">Boards</h3>
-<ul>
-<li><strong>GitHub PR 中的 AB# 連結顯示優化</strong><br>
-在 PR 描述裡用 AB#123 這種方式連結 Work item 時，現在會直接出現在 GitHub PR 的 Development 區塊，從 PR 就能快速回到對應的 Azure Boards 工作項目，追蹤性更好。</li>
-<li><strong>連結大量 GitHub Repos 的體驗改善</strong><br>
-當一個 GitHub 組織裡有成千上萬個儲存庫時，以前在 Azure Boards 裡搜尋/連結很容易 timeout，現在搜尋與載入流程經過最佳化，大型組織會感受比較明顯。</li>
-<li><strong>YAML Pipelines 的「Integrated in build」連結支援 GitHub</strong><br>
-針對放在 GitHub 的 repo，現在 YAML pipeline 也能在完成 build 後自動在相關 Work item 上顯示「已在哪個 build 中整合」，讓 YAML 與傳統 Classic pipeline 在追蹤能力上更接近。</li>
-<li><strong>GitHub 連線 REST API</strong><br>
-新增一組 API 讓我們可以程式化地查詢、新增或移除 GitHub Repositories 連結，並將單一連線可掛載的 repo 上限從 500 提升到 2,000，方便用 Script 自動化維護大規模整合。</li>
-<li><strong>刪除 Area / Iteration 更安全</strong><br>
-現在只有在沒有任何 Work item 使用該路徑時，才能刪除 Area 或 Iteration，避免一個不小心影響一大堆看板、報表與存取權限。</li>
-<li><strong>標籤與留言體驗升級</strong><br>
-刪除的 Tag 不會再出現在建議清單裡，Work item 討論也能更方便貼上來自 Teams、Email、Word 等來源的圖片，REST API 另外新增留言數量限制，避免濫用導致效能或安全問題。</li>
-<li><strong>Delivery Plans 數量上限提高</strong><br>
-每個專案可建立的 Delivery Plans 上限，從 1,000 提升到 1,500，對於有大量跨團隊規劃需求的組織比較友善。</li>
-</ul>
-<h3 id="Repos">Repos</h3>
-<ul>
-<li><strong>可選擇停用新的 TFVC 儲存庫建立</strong><br>
-Git 已經是主流，微軟也明確表示近年不再為 TFVC 加新功能。這次新增一個設定，讓我們可以關閉「建立新的 TFVC Repo」，既不影響既有 TFVC 專案，又能避免新專案再誤用 TFVC。</li>
-<li><strong>Git submodules UI 支援</strong><br>
-在檔案總管（Files hub）中，可以直接看懂並點進 submodule 指向的儲存庫與特定 commit，支援 Azure Repos、GitHub、GitLab、Bitbucket 等多種來源與 URL 格式，對有 Monorepo 或模組化拆分的團隊很實用。</li>
-<li><strong>Repository Health and usage 面板</strong><br>
-大型儲存庫會拖慢整體效能，現在 Repos 會監看儲存庫大小、commit 密度與內容結構等指標，必要時會提示 repository owner 檢查健康狀態與最佳化建議。</li>
-<li><strong>自訂 PR 目標分支建議</strong><br>
-只要在預設分支下建立 .azuredevops/pull_request_targets.yml，就可以定義常見的目標分支（例如 main、release/* 等），建立 PR 或系統自動建議 PR 時就會優先採用這些設定，減少開 PR 開錯分支的情況。</li>
-<li><strong>Markdown 支援 Mermaid 圖表與 PR 標題搜尋</strong><br>
-Repos 中的 Markdown 如果包含 mermaid 語法，現在會直接渲染成圖表；PR 列表頁也多了依標題搜尋的功能，方便在大量 PR 中快速找到目標。</li>
-<li><strong>Pipelines Checkout 支援 sparse checkout</strong><br>
-YAML 的 checkout 步驟新增 sparseCheckoutDirectories / sparseCheckoutPatterns 兩個設定，可只抓部分目錄或路徑，大型 repo 跑 CI/CD 時可以明顯縮短 checkout 時間（需要較新的 Agent 版本）。</li>
-<li><strong>其他 API 與相容性改善</strong><br>
-包含 cross-repo policy 預覽改成大小寫敏感（與實際規則一致）、TFVC check-in policy 新格式與 NuGet 套件更新、Repo 資訊 API 增加建立時間欄位、PR 查詢 API 可選擇回傳標籤（labels）等。</li>
-</ul>
-<h3 id="Pipelines">Pipelines</h3>
-<ul>
-<li><strong>TFX 與 Task Node runtime 健康檢查</strong><br>
-用 TFX 發佈 extension 時，現在會檢查 Task 是否還在使用已 EOL 的 Node.js 版本（例如 Node.js 10/12/16 等），並給出警告訊息，提醒作者儘早升級。</li>
-<li><strong>Pipeline 執行時也會對老舊 Node.js runner 發警示</strong><br>
-如果某個 Task 仍依賴已不再維護的 Node.js 版本，執行時會在 log 裡出現警告，並提供官方升級指引連結；若暫時無法調整，也可以透過環境變數關閉這個檢查（不過長期來看還是建議盡快升級）。</li>
-<li><strong>DockerCompose@0 改用 Compose v2 相容模式</strong><br>
-Hosted Agent 即將移除 Docker Compose v1，因此 DockerCompose@0 Task 會在沒有 v1 時自動改用 v2 的相容模式；若專案還沒做好 v2 相容性，官方也提供範例腳本，教大家在 Pipeline 裡自行下載 v1 執行檔暫時過渡。</li>
-<li><strong>使用 Microsoft Entra ID 存取 Azure Service Bus</strong><br>
-新版 PublishToAzureServiceBus@2 Task 可以用 Azure Service Connection 搭配 Entra ID（原 Azure AD）存取 Service Bus，支援透過 RBAC 控制權限，比直接塞連線字串安全許多，自訂 server task 也能改用 service connection。</li>
-</ul>
-<h3 id="Test-Plans">Test Plans</h3>
-<ul>
-<li><strong>Test &amp; Feedback 擴充功能升級到 Manifest V3</strong><br>
-Chrome/Edge 上的 Test &amp; Feedback 延伸模組已改用 Manifest V3，跟上瀏覽器的安全性與效能要求，功能維持不變。</li>
-<li><strong>Azure Test Runner 與 Chrome 相容性修正</strong><br>
-針對最近 Chrome 在 URL 處理上的變更，更新後的 Azure Test Runner 版本已修正啟動失敗的問題。</li>
-<li><strong>Test Plans 與 Build Pipeline 整合更順</strong><br>
-在 Test Plan 裡設定好的 Build 定義與 ID 會自動帶到 Web Runner，不需要每次手動重設，減少測試流程中的行政作業。</li>
-<li><strong>支援透過 REST API 還原刪除的 Test Plan / Suite</strong><br>
-不小心刪錯 Test Plan 或 Suite 時，現在可以用 API 查詢並還原（包含子階層），不用再倚賴客服協助，不過既有的執行結果等 artifact 並不會一併回復。</li>
-<li><strong>匯出 Test Case 到 XLSX 支援自訂欄位</strong><br>
-匯出測試案例時可以帶出自訂欄位，做報表或離線分析比較方便。</li>
-<li><strong>測試執行體驗優化</strong><br>
-包含 Test Plans 目錄支援欄位排序、Web/Desktop Runner 提供「Undo」回復步驟狀態、Publish code coverage v2 Task 支援更多格式與 PR 差異覆蓋率（diff coverage）等。</li>
-<li><strong>Test Plans 支援 YAML Pipelines</strong><br>
-除了 Classic pipeline，現在也可以選擇 YAML pipeline 來執行自動化測試，對已全面轉向 YAML 的團隊非常關鍵。</li>
-</ul>
-<h3 id="Reporting-Wiki">Reporting &amp; Wiki</h3>
-<ul>
-<li><strong>Backlog Rollup 資料顯示更清楚</strong><br>
-Rollup 欄位會顯示最近一次成功計算的資料與時間戳記，即使 Analytics 略有延遲，也比較不會誤以為是資料遺失。</li>
-<li><strong>Wiki 貼上 HTML 內容自動轉 Markdown</strong><br>
-從瀏覽器、Office、Teams 等地方複製的 HTML 內容（像是清單、表格、圖片、連結等）貼到 Wiki 時，會自動轉成對應的 Markdown 語法，編輯起來順手很多。</li>
-</ul>
-<br>
-<h2 id="什麼時候該考慮升級？">什麼時候該考慮升級？</h2>
-<p>微軟於 2025/12/9 將 Azure DevOps Server 正式宣布為 GA，代表地端版本已足夠穩定可在企業生產環境部署，並帶來多項來自 RC 階段的修正與功能強化（例如更好的 GitHub 整合、Repos 健康檢查、sparse checkout、YAML 與 Test Plans 的整合等），對準備升級到 SQL Server 2025 或仍使用舊版 TFS 的團隊來說是很好的升級時機，但在規劃導入時記得也要留意安裝的最低需求 — Windows Server 2022 與 SQL Server 2022，詳細說明可以參考文末的連結。</p>
-<p>綜合來看，這次 Azure DevOps Server GA 有幾個關鍵訊號：</p>
-<ul>
-<li>若後端環境有計畫升級到 <strong>SQL Server 2025</strong>，這是官方明確對應的 Azure DevOps Server 版本。</li>
-<li>若還在 <strong>TFS 2015 或更舊版本</strong>，這次 GA 搭配延伸支援結束，是很適合規劃「一次到位」升級的時點。</li>
-<li>如果團隊已大量使用 <strong>Git + YAML Pipelines + GitHub 整合</strong>，這一波新功能會讓追蹤性與操作體驗更接近雲端版 Azure DevOps Services。</li>
-</ul>
-<p>在官方的 Release Notes 頁面中有相關功能的截圖，有需要可以再參考下列參考連結。 😎</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://devblogs.microsoft.com/devops/announcing-azure-devops-server-general-availability"  target="_blank">⁍ Announcing Azure DevOps Server General Availability<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/en-us/azure/devops/server/release-notes/azuredevopsserver?view=azure-devops-server"  target="_blank">⁍ Azure DevOps Server Release Notes <i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/en-us/azure/devops/server/requirements?view=azure-devops-server&branch=releasenotes%2FAzureDevOpsServer2020"  target="_blank">⁍ Requirements for Azure DevOps on-premises <i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>
-]]></content>
-      <tags>
-        <tag>Azure DevOps</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>.NET Conf 2025 - 碼農出擊 ! GitHub Copilot 帶你飛</title>
-    <url>/post/2025/12/dotnet-conf-2025/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/12/dotnet-conf-2025/dotNet-conf-2025.jpg"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>很開心受邀在 <strong>.NET Conf 2025 Taiwan</strong> 擔任講者，這場活動由 STUDY4 社群主辦，是全球 .NET Conf 的台灣在地場，今年主軸放在 <strong>.NET 10</strong> 與 <strong>AI 驅動的應用開發</strong>。我的議程主要聚焦在：當企業想要導入 GitHub Copilot，不只是單純「幫工程師補程式碼」，而是思考如何有計畫地將 GitHub Copilot 融入 SDLC 既有流程之中。<br></p>
-<span id="more"></span>
-<br>
-<br>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/12/dotnet-conf-2025/presentation.jpg"
-                        class=""
-                 >
-<br>
-<h2 id="從-DevDays-Asia-2025-延伸而來">從 DevDays Asia 2025 延伸而來</h2>
-<p>9月我在 <strong>DevDays Asia 2025</strong> 分享的是「Azure DevOps 與 GitHub Copilot：AI 驅動的團隊協作新時代」，比較像是從高空俯瞰：</p>
-<ul>
-<li>怎麼用 Azure DevOps + GitHub Copilot 重新包裝 SDLC</li>
-<li>就算還在 On-Premises 或混合環境，也一樣可以享受 AI 輔助開發</li>
-<li>讓 LLM 透過 Tools / MCP 介接既有系統，把「會聊天」變成「會做事」</li>
-</ul>
-<p>這次在 .NET Conf 2025，則是把鏡頭拉近到 <strong>「GitHub Copilot 本身該怎麼在企業裡落地」</strong>，特別是：</p>
-<ol>
-<li>從哪幾個層次開始導入比較務實？</li>
-<li>怎麼跟 SDLC 的每一個階段對得上？</li>
-<li>除了 IDE 內的 Chat / Completions 之外，團隊層級還能玩到多深？</li>
-</ol>
-<br>
-<h2 id="四層次的-GitHub-Copilot-客製化思維">四層次的 GitHub Copilot 客製化思維</h2>
-<p>簡報裡我用了一個「<strong>AI 客製化四層次架構</strong>」來整理 Copilot 在企業導入時可以怎麼分階段思考：</p>
-<br>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/12/dotnet-conf-2025/levels.jpg"
-                        class=""
-                 >
-<br>
-<ol>
-<li>
-<p><strong>模型與提示詞（Models &amp; Prompting）</strong><br>
-先搞清楚目前 Copilot 內建提供哪些模型、哪些是 0x 乘數（不額外計費）、哪些是進階付費模型，依照團隊的情境選擇適合的組合，再搭配基本的 Prompt 寫法，讓開發者在 Chat / Inline Chat 裡可以比較穩定地拿到想要的答案。</p>
-</li>
-<li>
-<p><strong>自訂指令與提示詞（Custom Instructions &amp; Prompts）</strong><br>
-把「每次都會重複說的那些話」抽出來，例如：命名規則、例外處理策略、錯誤訊息語氣、專案的架構慣例等，寫進：</p>
-<ul>
-<li><strong><code>/.github/copilot-instructions.md</code></strong>（工作區全域規則）</li>
-<li><strong><code>/.github/instructions/*.instructions.md</code></strong>（依語言 / 任務做條件式套用）<br>
-讓 Copilot 自動帶著這些背景知識工作，而不是每次對話都從零開始重新交代。</li>
-<li><strong><code>/.github/prompts/*.prompt.md</code></strong> (會重複使用的 prompt)</li>
-</ul>
-</li>
-<li>
-<p><strong>自訂代理人（Custom Agents）</strong><br>
-把「角色」概念正式化，為不同開發階段建立專屬 Agent，例如：</p>
-<ul>
-<li>專門負責需求拆解與規劃的 PLANNER</li>
-<li>專心寫程式碼與重構的 IMPLEMENTER</li>
-<li>聚焦測試與驗證的 TESTER</li>
-<li>做 Code Review 與安全檢查的 REVIEWER<br>
-然後用 <strong><code>/agents/*.agent.md</code></strong> 定義好他們各自的行為模式與可用工具，讓團隊在 Copilot Chat 或 Copilot CLI 裡可以一鍵切換角色工作。</li>
-</ul>
-</li>
-<li>
-<p><strong>整合應用（Integration）</strong><br>
-最後一層就是把 Copilot 拉進既有的工具鏈：</p>
-<ul>
-<li>在 CI/CD Pipeline 裡呼叫 Copilot CLI 做自動化 Code Review 或文件生成</li>
-<li>搭配 Pull Request Flow，讓 Copilot 先幫忙整理變更摘要、找出可疑區塊</li>
-<li>用 Prompt Files 把常用工作（例如：「幫我重寫這份 README」）標準化，讓團隊成員都能重複使用同一套流程</li>
-</ul>
-</li>
-</ol>
-<p>這四個層次並不是一次到位，而是可以循序漸進、視團隊成熟度慢慢往上疊。</p>
-<br>
-<h2 id="GitHub-Copilot-與-SDLC-的結合">GitHub Copilot 與 SDLC 的結合</h2>
-<p>在 SDLC 的觀點，我會把 Copilot 放進這樣一個簡化版流程裡看（更多的應用可以參考前幾天提到的 <a class="link"   href="https://sdlc.timlai.dev" >https://sdlc.timlai.dev<i class="fas fa-external-link-alt"></i></a>）：</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">Plan (規劃)</span><br><span class="line">  ↓</span><br><span class="line">  └─ Copilot Chat：輔助需求釐清、工作拆解、規格草稿</span><br><span class="line"></span><br><span class="line">Code (程式編寫)</span><br><span class="line">  ↓</span><br><span class="line">  ├─ Code Completions：自動補全樣板程式碼與重複片段</span><br><span class="line">  └─ Copilot Chat：在 IDE 裡協助除錯、重構、產生單元測試</span><br><span class="line"></span><br><span class="line">Review (程式碼審查)</span><br><span class="line">  ↓</span><br><span class="line">  └─ Copilot CLI / Agents：自動化 Code Review、風險掃描與文件補強</span><br><span class="line"></span><br><span class="line">Deploy (部署)</span><br><span class="line">  ↓</span><br><span class="line">  └─ Coding Agent / Pipeline 整合：協助修改設定、產生部署腳本、建立 PR</span><br></pre></td></tr></table></figure>
-<p>對企業來說，重點不是「多一個會寫程式的 AI」，而是：</p>
-<ul>
-<li>在每一個階段都有明確、可度量的應用場景</li>
-<li>知道哪些事情適合交給 Copilot，哪些仍然要由人類工程師把關</li>
-<li>把規則寫進 Custom Instructions、流程寫進 Prompt Files 或 Agents，讓團隊可以<strong>穩定地複製成功經驗</strong></li>
-</ul>
-<br>
-<h2 id="從個人到團隊的導入建議">從個人到團隊的導入建議</h2>
-<p>簡報裡我也分享了一個比較務實的導入路線，給正在觀望是否要導入 Copilot 的團隊參考：</p>
-<ol>
-<li>
-<p><strong>先從開發者個人開始體驗</strong><br>
-讓團隊成員先在 VS Code / Visual Studio 裡熟悉 Chat、Completions、Inline Chat 等基本能力，累積最直覺的「效率感」。</p>
-</li>
-<li>
-<p><strong>很快地補上團隊層級的規範</strong><br>
-不要讓每個人用 Copilot 的方式完全長得不一樣，建議盡早建立：</p>
-<ul>
-<li>共同的 <strong><code>copilot-instructions.md</code></strong></li>
-<li>基本的安全與隱私原則（哪些程式碼 / 資料不能貼上雲端）</li>
-<li>簡單的「好 Prompt 範例庫」</li>
-</ul>
-</li>
-<li>
-<p><strong>針對關鍵流程做深度整合</strong><br>
-找出團隊最痛的幾個流程（例如：Code Review 太花時間、文件總是寫不完、重複的樣板專案很難維護），優先用 Copilot CLI、Custom Agents 或 CI/CD 整合來做自動化，讓大家看到「不只是省幾行程式碼」的價值。</p>
-</li>
-<li>
-<p><strong>持續迭代與量化成果</strong><br>
-導入一段時間後，回頭檢視：</p>
-<ul>
-<li>PR 週期、缺陷率、上線前修正量是否有改善？</li>
-<li>開發者的主觀感受是「變快」還是「變亂」？</li>
-<li>有沒有新的反模式需要在指令或流程上修正？</li>
-</ul>
-</li>
-</ol>
-<p>這次的簡報放在下方參考連結，也非常歡迎有參加活動、或正在思考 <strong>GitHub Copilot 如何在自己團隊落地</strong> 的朋友留言交流，一起把 AI 真正變成開發流程的一部分，而不是只停留在「玩玩看」的階段。</p>
-<div class="tips">
-<font color="black">
-<a href="/post/2025/12/dotnet-conf-2025/碼農出擊 ! GitHub Copilot 帶你飛_20251129.pdf" target="_blank">⁍ 簡報下載 - 碼農出擊 ! GitHub Copilot 帶你飛</a><br>
-<a class="link"   href="https://dotnetconf.study4.tw"  target="_blank">⁍ .NET Conf 2025 Taiwan 官方網站<i class="fas fa-external-link-alt"></i></a>
-</font>
-</div>]]></content>
-      <tags>
-        <tag>.NET Conf 2025</tag>
-        <tag>GitHub Copilot</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>整理 Context 的利器 — MarkItDown 與 Docling</title>
-    <url>/post/2025/10/docling-to-markdown/</url>
-    <content><![CDATA[<img    
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/docling-to-markdown/logo.png"
-                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
-                 > 
-<p>在 Agentic AI 的各式應用場景中，提供正確且良好品質的上下文來源是至關重要的環結，實務上我們可能透過 RAG 從外部檢索資料，或是從手邊的各種檔案格式轉換成 markdown 來提供 LLM 作為上下文參考資料以便展開執行後續的任務，若以輕量、快速上手為考量，可以試試 MarkItDown，但若只能在純地端環境執行，或是對於文件內容(例如：表格、版面)有更高的解析需求不妨試試 Docling，本文以實務角度比較兩者設計取向、支援格式與優缺點，以及提供不同應用場景的建議。</p>
-<span id="more"></span>
-<p>在建立知識庫、資料前處理或把企業文件提供給 LLM 時，原始文件往往可能是 PDF、各種 Office 文件格式、圖片或音訊，而真正要給 LLM 使用時，需要：</p>
-<ul>
-<li>保留語意與結構（標題、段落、表格…等）。</li>
-<li>去除雜訊並以 token 使用效率高的格式呈現（例如：Markdown）。</li>
-<li>在有需要時，保留更結構化的表示（例如：JSON）以便後續自動化處理。</li>
-</ul>
-<p>MarkItDown 與 Docling 都致力於把各種來源轉成容易被 LLM 或檢索系統消化的輸出，但設計側重與功能集合有明顯差異，下面我們直接比較。</p>
-<h2 id="MarkItDown">MarkItDown</h2>
-<ul>
-<li>出處：由 Microsoft AutoGen 團隊維護（Python）。</li>
-<li>設計取向：把各式檔案轉成「結構化 Markdown」；以 LLM 與文本分析為取向。</li>
-<li>優勢：
-<ul>
-<li>直接產生適合 LLM 的 Markdown（標題、列表、表格、內嵌程式碼等）。</li>
-<li>支援多媒體（圖片 OCR、音訊轉錄、YouTube 字幕抓取）。</li>
-<li>可用作 MCP 伺服器，利於 AI Agent／LLM 整合。</li>
-</ul>
-</li>
-<li>限制：
-<ul>
-<li>對於複雜的 PDF 版面（精細表格、多欄佈局、複雜閱讀順序），解析深度稍嫌不足。</li>
-<li>若要取得更高階 PDF 能力，可能會依賴 Azure Document Intelligence（雲端）。</li>
-</ul>
-</li>
-</ul>
-<p>若要使用 MarkItDown MCP 現在可以在 GitHub MCP Registry(https://github.com/mcp) 列表找到，也可以 docker 方式或 clone 整個專案在本地端以 STDIO 的方式執行，參考微軟官方 GitHub 說明。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://github.com/mcp"  target="_blank">⁍ GitHub MCP Registry<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://github.com/microsoft/markitdown?tab=readme-ov-file"  target="_blank">⁍ GitHub | MarkItDown<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://github.com/microsoft/markitdown/tree/main/packages/markitdown-mcp"  target="_blank">⁍ GitHub | MarkItDown MCP<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
-<h2 id="Docling">Docling</h2>
-<ul>
-<li>出處：由 Docling Project（原起始於 IBM Research Zurich，目前管於 LF AI &amp; Data）維護。</li>
-<li>設計取向：專注於文件理解，特別是進階 PDF 解析（版面、閱讀順序、表格結構、公式、程式碼、影像分類），並提供統一的 DoclingDocument 表示與多種匯出選項。</li>
-<li>優勢：
-<ul>
-<li>在複雜 PDF（掃描文件、排版、多欄表格）與表格重構上表現優異，使用自家模型（DocLayNet、TableFormer）提升解析品質。</li>
-<li>支援本地執行（適合敏感資料或隔離環境），也有 VLM / ASR 整合能力。</li>
-<li>輸出豐富：Markdown / HTML / JSON / DocTags 等，便於後續分析或顯示詳細資訊。</li>
-<li>與 LangChain、LlamaIndex、Haystack 等生態系可以直接整合，便於搭建 RAG pipeline。</li>
-</ul>
-</li>
-<li>限制：
-<ul>
-<li>因為功能較廣、選項較多，學習曲線會比 MarkItDown 高。</li>
-<li>Docling 會完全在本地環境執行，需要考量相關系統資源 (是優點也是缺點)。</li>
-</ul>
-</li>
-</ul>
-<p>如何取得並建置 Docling 環境可以參考 GitHub 專案，它一樣有支援 MCP 但要在它的官網才找得到說明，如同前面說的，它是完全在本地端執行，所以 MCP 是由 uvx 來執行啟動。</p>
-<div class="tips">
-<font color="black">
-<a class="link"   href="https://github.com/docling-project/docling"  target="_blank">⁍ GitHub | Docling <i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://docling-project.github.io/docling/"  target="_blank">⁍ Docling<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://docling-project.github.io/docling/usage/mcp/"  target="_blank">⁍ Docling MCP<i class="fas fa-external-link-alt"></i></a><br>
-</font>
-</div>
-<p>如果想要手動在 mcp.json 加入這兩個 MCP 工具，可以直接參考：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	<span class="attr">&quot;servers&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		<span class="attr">&quot;microsoft/markitdown&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">			<span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;stdio&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;uvx&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">				<span class="string">&quot;markitdown-mcp==0.0.1a4&quot;</span></span><br><span class="line">			<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;gallery&quot;</span><span class="punctuation">:</span> <span class="string">&quot;https://api.mcp.github.com&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1.0.0&quot;</span></span><br><span class="line">		<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">		 <span class="attr">&quot;docling&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		 <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;uvx&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">				<span class="string">&quot;--from=docling-mcp&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="string">&quot;docling-mcp-server&quot;</span></span><br><span class="line">			<span class="punctuation">]</span></span><br><span class="line">		<span class="punctuation">&#125;</span></span><br><span class="line">	<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;inputs&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-<h2 id="支援格式與各面向比較">支援格式與各面向比較</h2>
-<table>
-<thead>
-<tr>
-<th>格式</th>
-<th>MarkItDown</th>
-<th>Docling</th>
-<th>備註</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>PDF</td>
-<td>良好</td>
-<td>優秀（尤其是複雜/掃描文件）</td>
-<td>MarkItDown 對一般 PDF 處理良好；若需高保真解析或掃描 OCR 建議用 Docling</td>
-</tr>
-<tr>
-<td>DOCX / PPTX / XLSX</td>
-<td>支援</td>
-<td>支援</td>
-<td>兩者皆可處理 Office 文件</td>
-</tr>
-<tr>
-<td>Images</td>
-<td>OCR、EXIF 支援</td>
-<td>OCR + VLM（視覺語言模型）分類支援</td>
-<td>Docling 在影像分類與 VLM 整合上較強</td>
-</tr>
-<tr>
-<td>Audio (WAV / MP3)</td>
-<td>支援音訊轉錄</td>
-<td>ASR 支援</td>
-<td>兩者皆支援轉錄；可串接不同模型以改善品質</td>
-</tr>
-<tr>
-<td>HTML</td>
-<td>支援</td>
-<td>支援</td>
-<td>皆可匯入網頁內容</td>
-</tr>
-<tr>
-<td>Markdown</td>
-<td>原生支援</td>
-<td>支援匯入/匯出</td>
-<td></td>
-</tr>
-<tr>
-<td>CSV / JSON / XML</td>
-<td>文字格式支援</td>
-<td>支援</td>
-<td>適合結構化文字資料</td>
-</tr>
-<tr>
-<td>YouTube</td>
-<td>可抓取與轉錄</td>
-<td>可處理 WebVTT / 影片字幕</td>
-<td>MarkItDown 偏向抓取與轉錄；Docling 處理字幕檔更完整</td>
-</tr>
-<tr>
-<td>EPUB / ZIP</td>
-<td>支援</td>
-<td>支援</td>
-<td>支援程度依內容與封裝方式而異</td>
-</tr>
-<tr>
-<td>VTT / WebVTT</td>
-<td>支援</td>
-<td>支援</td>
-<td>若以字幕為主，Docling 支援度較好</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>
-<p>設計目標：</p>
-<ul>
-<li>MarkItDown：以「快速把各類來源轉成 LLM-friendly Markdown」為核心，偏重 token 效率與多媒體前處理。</li>
-<li>Docling：以「高保真文件理解」為核心，強調版面/表格/閱讀順序的精確還原與 lossless 結構化。</li>
-</ul>
-</li>
-<li>
-<p>解析深度與還原度：</p>
-<ul>
-<li>MarkItDown：輸出以可讀且可索引的 Markdown 為主，對一般文件足夠；遇到跨欄或複雜表格時可能會犧牲部分細節。</li>
-<li>Docling：使用版面模型與表格重建，保留更多區塊座標與結構資訊，適合需精準抽取或重現原始排版的情境。</li>
-</ul>
-</li>
-<li>
-<p>多媒體支援：</p>
-<ul>
-<li>MarkItDown：支援音訊轉錄、YouTube 字幕抓取、圖片 OCR 等，偏向 LLM 前處理工作流。</li>
-<li>Docling：也支援 OCR/ASR/VLM，但更強調影像分類、表格語意重構與公式/程式碼片段的解析。</li>
-</ul>
-</li>
-<li>
-<p>本地化 vs 雲端依賴：</p>
-<ul>
-<li>MarkItDown：可本地執行，但在某些高階 PDF 能力上會建議採用雲端 Azure Document Intelligence 作為選項。</li>
-<li>Docling：設計上強調本地端運行，適合敏感資料或離線環境。</li>
-</ul>
-</li>
-<li>
-<p>效能與資源需求：</p>
-<ul>
-<li>MarkItDown：輕量、上手快，適合大量快速預處理。</li>
-<li>Docling：依賴模型與較高運算資源，單檔處理時間較長但輸出更精確。</li>
-</ul>
-</li>
-<li>
-<p>整合生態與可擴充性：</p>
-<ul>
-<li>MarkItDown：以 plugin 與 MCP 為導向，容易接入 AI Agent / LLM pipeline。</li>
-<li>Docling：提供豐富的 JSON / Markdown / HTML 匯出，與 LangChain、LlamaIndex 等檢索生態整合良好，利於深度資料工程。</li>
-</ul>
-</li>
-<li>
-<p>可驗證性與審核：</p>
-<ul>
-<li>MarkItDown：輸出簡潔，人工檢視方便，但在表格或版面細節需抽樣驗證。</li>
-<li>Docling：提供中間結構（座標、區塊、表格邊界），便於自動化驗證與回溯修正。</li>
-</ul>
-</li>
-<li>
-<p>學習曲線與運維成本：</p>
-<ul>
-<li>MarkItDown：學習低、文件少、運維簡單。</li>
-<li>Docling：功能與選項多，需時間調校模型與處理參數，運維成本較高。</li>
-</ul>
-</li>
-</ul>
-<h2 id="總結">總結</h2>
-<p>MarkItDown 與 Docling 均可將各類原始文件轉為 LLM 友好的結構化格式，但設計取向與適用場景不同：MarkItDown 輕量且易上手，輸出以節省 token 的 Markdown 為主，適合大量快速預處理與整合至 AI Agent / LLM pipeline；Docling 則強調高保真文件理解與版面還原，擅長複雜 PDF、表格重建及本地化運行，適用於需精準解析或資安敏感的情境。實務上如果是遇到比較複雜的文件內容，例如像論文有分左右兩欄、各式表格，或是有圖片需要 OCR 辨識、流程圖想要轉換成 Mermaid，使用 Docling 產出的結果都蠻不錯的，強力推薦給大家!</p>
-  <!-- 實務上建議依文件類型、解析精度、處理量與可用資源做選擇，並透過抽樣驗證或混合流程（以 MarkItDown 做批次預處理、以 Docling 處理關鍵或需人工驗證的檔案）來兼顧效率與精確性。 -->
-<p>.xls -&gt; .md</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/docling-to-markdown/docling-excel.jpg"
-                        class=""
-                 >
-<p>.pptx -&gt; .md</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/docling-to-markdown/docling-pptx.jpg"
-                        class=""
-                 >
-<p>使用本地端資源運行 Docling</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/10/docling-to-markdown/docling-performance.jpg"
-                        class=""
-                 >
-]]></content>
-      <tags>
-        <tag>Docling</tag>
-        <tag>MarkItDown</tag>
-        <tag>文件處理</tag>
-        <tag>RAG</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>使用 Playwright 測試框架 - 環境準備 (.NET)</title>
     <url>/post/2025/05/how-to-use-playwright-1/</url>
     <content><![CDATA[<img    
@@ -2600,28 +2364,279 @@ Rollup 欄位會顯示最近一次成功計算的資料與時間戳記，即使 
       </tags>
   </entry>
   <entry>
-    <title>Devdays Asia 2025 簡報下載</title>
-    <url>/post/2025/10/devdays-asia-2025/</url>
+    <title>使用 Playwright 測試框架 - 執行階段 (.NET)</title>
+    <url>/post/2025/05/how-to-use-playwright-2/</url>
     <content><![CDATA[<img    
                        lazyload
                        alt="image"
-                       data-src="/post/2025/10/devdays-asia-2025/DevdaysAsia2025.jpg"
+                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
                          align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
                  > 
-<p>今年是微軟 50 週年、DevDays 10 週年，話題大多圍繞在 Agentic AI，考量多數企業還是有 On-Premises 需求，所以這次我將主題訂在如何使用 Azure DevOps + GitHub Copilot 重新打造 SDLC，讓大家瞭解不是雲原生環境還可以有哪些應用，以及賦與 LLM 更多 Tools 後，可以讓我們的軟體開發過程產生多大的助益和改變，雖然主題是 Azure DevOps 與 GitHub Copilot，但基本上套在任何軟體開發流程概念都是一樣的，提供給大家參考，有任何想討論交流也歡迎大家留言或直接與我聯繫。</p>
+<p><a href="/post/2024/11/how-to-use-playwright-1">上一篇文章</a>提到了如何使用 Playwright 的測試產生器(codegen) 錄製腳本，除了可以運用在自動化測試之外，舉凡想要透過程式來自動執行的一連串行為，都可以透過 Playwright 來完成，本篇文章使用 Windows Sandbox 全新環境來執行由 .NET 8 撰寫的 Console 程式，讓大家知道建置產生執行檔後，還需要哪些必要的環境設定才可以正常讓程式運作。<br>
+<br></p>
 <span id="more"></span>
+<br>
+<h2 id="安裝-NET-Runtime">安裝 .NET Runtime</h2>
+<p>不論是以前的 .NET Framework 或是現在的 .NET Core，在執行時都需要安裝 .NET Runtime 才能順利運行開發好的程式，以下圖 Console 專案建置後的執行檔為例，畫面還會很貼心的指引我們目前的需求版本和下載路徑，完成安裝後便可順利執行 Console 程式。</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/dotnet8.png"
+                        class=""
+                 >
 <br>
 <div class="tips">
 <font color="black">
-<a href="/post/2025/10/devdays-asia-2025/0925_Track A 1330-1400_DevDaysAsia_20250925_精誠軟體.pdf" target="_blank">⁍ Azure DevOps 與 GitHub Copilot：AI 驅動的團隊協作新時代</a><br>
-<a class="link"   href="https://www.digitimes.com.tw/Seminar/DevDaysAsia2025/index.html"  target="_blank">⁍ DevDays Asia 2025 亞太技術年會 | 議程介紹<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://onedrive.live.com/?redeem=aHR0cHM6Ly8xZHJ2Lm1zL2YvYy85NmJjZGNhMWVkYWIwZmMyL0VvUncyR1ZIaVRaUG1NNW1Ib0hPeWxFQlpvSW5aOU55ckY1QVJsOU5wbGpYWXc_ZT01VlhkMXQ&id=96BCDCA1EDAB0FC2%21s65d8708489474f3698ce661e81ceca51&cid=96BCDCA1EDAB0FC2"  target="_blank">⁍ DevDays Asia 2025 亞太技術年會 | 所有簡報下載 (OneDrive)<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://dotnet.microsoft.com/download"  target="_blank">⁍ 下載 .NET<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h2 id="安裝-PowerShell">安裝 PowerShell</h2>
+<p>如果是全新的環境，安裝完 .NET Runtime 後應該還會出現如下圖的錯誤，主要原因是：</p>
+<ul>
+<li>pwsh 找不到路徑 (或是沒有安裝 PowerShell)</li>
+<li>缺少 WebDriver (Edge/Chrome/Firefox)</li>
+</ul>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/pwsh.png"
+                        class=""
+                 >
+<br>
+若要安裝 PowerShell 可以依據自己的作業系統參考下列連結：
+<div class="tips">
+<font color="black">
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5"  target="_blank">⁍ 在 Windows 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-linux?view=powershell-7.5"  target="_blank">⁍ 在 Linux 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-macos?view=powershell-7.5"  target="_blank">⁍ 在 macOS 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a>
+</font>
+</div>
+<h2 id="安裝-WebDriver">安裝 WebDriver</h2>
+<p>在上圖的錯誤訊息中有提到如下指令，路徑中的 <strong><mark>netX</mark></strong> 要替換為自己使用的版本路徑，而其中的 playwright.ps1 會存在於 .NET 程式建置後的 bin 目錄中，這個 .ps1 的主要用途是在 Windows 環境下執行 Playwright 測試，讓它可以正確找到 Playwright 主程式和相關驅動程式，確認 pwsh 指令可以運作後，就可以接著安裝 WebDriver 了。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pwsh bin/Debug/netX/playwright.ps1 install</span><br></pre></td></tr></table></figure>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/playwright.png"
+                        class=""
+                 >
+<br>
+若在 install 之後沒有加上任何參數，則會安裝下列預設項目：
+<ul>
+<li>Chromium</li>
+<li>Chromium Headless Shell</li>
+<li>Firefox</li>
+<li>Webkit</li>
+<li>FFMPEG</li>
+</ul>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/install.png"
+                        class=""
+                 >
+<br>
+也可以依自己的需求安裝指定項目，可使用 install -h 查看相關資訊：
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/05/how-to-use-playwright-2/custom.png"
+                        class=""
+                 >
+<h2 id="總結">總結</h2>
+<p>本文介紹了在全新環境下，如何讓 .NET 8 撰寫的 Playwright 測試程式順利執行，包含安裝 .NET Runtime、PowerShell 及 WebDriver 等必要步驟。只要依照上述流程完成環境設定，就能避免常見的錯誤訊息，順利執行自動化測試。希望這些說明能幫助你在不同平台上快速部署與運行 Playwright 測試專案。</p>
+]]></content>
+      <tags>
+        <tag>Playwright</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>建立可重用的 GitHub Copilot Skills</title>
+    <url>/post/2025/12/github-copilot-skills/</url>
+    <content><![CDATA[<img    
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/12/github-copilot-skills/agent-skills.jpg"
+                         align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
+                 > 
+<p>在 GitHub Copilot 的世界裡，我們常常用「一句話」啟動任務，但真正讓 Agent 能穩定把事情做完的，通常不是那一句話，而是背後那套可重複、可維護、可分享的流程知識。<strong>Agent Skills</strong> 就是在這個背景下出現：它把我們原本散落在 prompt、Wiki、筆記、SOP 的內容，封裝成「模型需要時才載入」的技能模組，讓 Copilot 更像一個真的會做事的隊友，而不是只會回答問題的聊天機器人。本文介紹 Agent Skills 在 VS Code 中的使用方式，以及在 token 與可維護性上的優勢，並對比 Custom Instructions 與 MCP 的差異。</p>
+<span id="more"></span>
+<br>
+<br>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/12/github-copilot-skills/skills.jpg"
+                        class=""
+                 >
+<br>
+<h2 id="Agent-Skills-源起">Agent Skills 源起</h2>
+<p>在 Agent 模式逐漸普及後，大家會遇到一個很現實的問題：<br>
+同一個「專案流程」我們可能會一直重複類似的描述，例如：怎麼跑測試、怎麼看 log、怎麼開 PR、怎麼寫 release note、怎麼處理 build failure。</p>
+<p>如果每次都靠貼上 prompt 或是把規則塞進 instructions 可能會：</p>
+<ul>
+<li>容易漏掉關鍵步驟（尤其在多人協作的情況下）。</li>
+<li>規則越長，越容易干擾模型在其他任務的判斷。</li>
+<li>每個 chat session 固定把一大段規則塞進上下文，token 成本很高。</li>
+</ul>
+<p>Agent Skills 的設計就是為了解決這些痛點：把「可重用的專業流程」抽成一個資料夾（包含：說明、腳本、範例、資源），並用 <strong>Progressive Disclosure（逐步載入）</strong> 讓 Copilot 只在需要時把內容帶進上下文。</p>
+<br>
+<h2 id="為什麼-Agent-Skills-重要">為什麼 Agent Skills 重要</h2>
+<p>我們可以把 Skills 想成「讓 Copilot 具備可被治理的能力」：</p>
+<ul>
+<li><strong>可重複</strong>：同一套流程在不同對話、不同任務中被一致地使用。</li>
+<li><strong>可維護</strong>：流程更新時只要改一個地方（Skill 目錄），不需要到處改 prompt。</li>
+<li><strong>可分享</strong>：技能可以跟著 repo 走，也可以複製到其他 repo 或分享給團隊。</li>
+<li><strong>可組合</strong>：多個技能可被同一個任務同時載入，形成更完整的工作流。</li>
+</ul>
+<p>更重要的是：Skills 不是只教「要做什麼」，而是能把「怎麼做」與「需要的資源」放在一起（scripts、templates、examples），讓 Agent 不只會說，也更容易真的執行。</p>
+<br>
+<h2 id="Skills-的優勢：不只是方便，而是更可靠">Skills 的優勢：不只是方便，而是更可靠</h2>
+<p>Skills 有幾個具有價值的要點：</p>
+<ol>
+<li><strong>降低人工成本</strong>：不用每次都手動複製貼上流程，LLM 也不需要每次重新學一遍。</li>
+<li><strong>把流程從「口耳相傳」變成「可 review 的文件」</strong>：Skills 是 repo 裡的檔案，可以送出 PR、也能被 code review。</li>
+<li><strong>更貼近 Agent 的工作方式</strong>：Agent 做事需要流程、需要資源、需要可執行的工具，而不是一段漂亮的提示詞。</li>
+</ol>
+<br>
+<h2 id="Skill-會比較節省-token-嗎？">Skill 會比較節省 token 嗎？</h2>
+<p>如果我們原本會把大量規則長期塞在 instructions 或每次對話都貼一大段 SOP，那 Skills 通常會更省 token，原因在於 VS Code / Copilot 對 Skills 的載入採用三層式的逐步揭露：</p>
+<ul>
+<li><strong>Level 1：Skill discovery</strong>：只讀每個 Skill 的 <mark>name</mark> 與 <mark>description</mark>（前置 YAML frontmatter）。</li>
+<li><strong>Level 2：Instructions loading</strong>：只有在模型判斷「這個任務跟某個 Skill 的描述相符」時，才載入 <strong><code>SKILL.md</code></strong> 的內容。</li>
+<li><strong>Level 3：Resource access</strong>：技能資料夾裡的 scripts / examples / docs 只有在真的需要時才讀取。</li>
+</ul>
+<p>換句話說：我們可以安裝很多 Skills，但每次任務只會載入少數相關內容，但 Skills 也不是零成本：</p>
+<ul>
+<li>一旦被載入後，<strong><code>SKILL.md</code></strong> 的內容同樣會佔上下文。</li>
+<li>如果規則本來就很短（例如 1~2 句 prompt 內容），拆成 Skill 不見得比較划算。</li>
+</ul>
+<br>
+<h2 id="GitHub-Copilot-的-Skills-核心概念">GitHub Copilot 的 Skills 核心概念</h2>
+<div class="warning">
+<font color="black">
+把特定領域／流程變成「可重用、可按需載入」的能力模組，讓 GitHub Copilot 在需要時自動套用。
+</font>
+</div>
+<p>對使用者來說：</p>
+<ul>
+<li>只要描述目標（例如：幫我找出為什麼 CI 失敗），GitHub Copilot 會自己決定要載入哪個 skill。</li>
+<li>不需要每次都手動指定「用哪個 SOP」。</li>
+</ul>
+<p>對團隊來說：</p>
+<ul>
+<li>同一個 repo 裡，大家對「怎麼 debug build」「怎麼寫 release note」「怎麼跑測試」會更一致。</li>
+</ul>
+<br>
+<h2 id="GitHub-Copilot-的-Agent-Skills-定義與規範">GitHub Copilot 的 Agent Skills 定義與規範</h2>
+<p>Skills 的組成是：<strong>一個資料夾 + 一個 SKILL.md</strong>。</p>
+<p>目錄位置：</p>
+<ul>
+<li><mark>.github/skills/</mark>（GitHub Copilot 的 shared location）</li>
+<li><mark>.claude/skills/</mark>（Legacy location）</li>
+</ul>
+<p><strong><code>SKILL.md</code></strong> 需要 YAML frontmatter，至少包含：</p>
+<ul>
+<li><strong>name</strong>（必填）：小寫，如果有空白就要以 <code>-</code> 分隔（例如：dotnet-ci-failure-debugging），通常也會跟資料夾名稱一致，<mark>最多 64 個字元</mark>。</li>
+<li><strong>description</strong>（必填）：清楚描述「能做什麼」以及「什麼時候用」，這會直接影響模型是否會選中並載入，<mark>最多 1024 個字元</mark>。</li>
+</ul>
+<p>Skill 內容建議包含：</p>
+<ul>
+<li>這個 Skill 在幫我們完成什麼。</li>
+<li>什麼情境要使用。</li>
+<li>分步驟流程（step-by-step）。</li>
+<li>提供輸入 / 輸出範例。</li>
+<li>說明如何使用技能資料夾內的 scripts / resources。</li>
+</ul>
+<p><mark>description 寫得越精準，LLM 在解析判斷才會越準；建議可在 description 裡直接放「Use this when…」之類的觸發語句，或明確表示在什麼情境就要使用目前這個 skill。</mark></p>
+<br>
+<h2 id="在-VS-Code-中如何使用-Agent-Skills">在 VS Code 中如何使用 Agent Skills</h2>
+<p>目前 Agent Skills 在 VS Code 屬於 experimental，在 <strong>VS Code Insiders</strong> 才有提供，而且預設是 disabled 記得把設定打開：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/12/github-copilot-skills/settings-skills.jpg"
+                        class=""
+                 >
+<p>基本使用流程：</p>
+<ol>
+<li>在 repo 建立 <strong>.github/skills/</strong></li>
+<li>每個 skill 建立一個子資料夾，例如：<strong>.github/skills/dotnet-ci-failure-debugging/</strong></li>
+<li>在子資料夾放入 <strong><code>SKILL.md</code></strong>（包含 YAML frontmatter 與內容）。</li>
+<li>在 VS Code 啟用相關設定（上面截圖的兩個選項）。</li>
+<li>在 Copilot Chat / Agent Mode 提需求，Copilot 會自動判斷並載入相關 skills。</li>
+</ol>
+<p><mark>實際使用我們不需要手動「選擇 skill」，只要目前 prompt 的需求跟 <strong>description</strong> 對得上，就會在背後注入技能內容。</mark></p>
+<p>範例參考：</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">name: dotnet-ci-failure-debugging</span><br><span class="line"><span class="section">description: 協助診斷與修復 .NET 專案在 CI 中的失敗（restore/build/test/pack/publish），輸出根因 + 證據 + 修復方案 + 驗證步驟與 PR 摘要。</span></span><br><span class="line"><span class="section">---</span></span><br><span class="line"></span><br><span class="line"><span class="section"># .NET CI 失敗偵錯 Copilot Skill</span></span><br><span class="line"></span><br><span class="line"><span class="section">## Skill 目標</span></span><br><span class="line"></span><br><span class="line">這個 skill 用來協助 GitHub Copilot / agent 在 .NET 儲存庫中偵錯 CI 失敗，並產出可直接用於 PR 的說明。使用時請依照下列流程：</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 找到第一個真正的錯誤（不是連鎖錯誤）</span><br><span class="line"><span class="bullet">-</span> 將失敗分類（restore / build / test / pack / publish / 環境）</span><br><span class="line"><span class="bullet">-</span> 儘可能在本機重現問題（或說明為何無法重現）</span><br><span class="line"><span class="bullet">-</span> 提出最小且可被審查的修正方案</span><br><span class="line"><span class="bullet">-</span> 產出「根因 + 證據 + 修復方案 + 驗證步驟」的 PR 摘要</span><br><span class="line"></span><br><span class="line"><span class="section">## 何時應使用這個 skill</span></span><br><span class="line"></span><br><span class="line">當使用者有以下需求時，請啟用這個 skill：</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 請你偵錯 GitHub Actions 或 Azure Pipelines 的 .NET CI 失敗</span><br><span class="line"><span class="bullet">-</span> 請你調查 <span class="code">`dotnet restore`</span> / <span class="code">`dotnet build`</span> / <span class="code">`dotnet test`</span> / <span class="code">`dotnet pack`</span> / <span class="code">`dotnet publish`</span> 在 CI 中失敗的原因</span><br><span class="line"><span class="bullet">-</span> 請你撰寫一段可直接貼到 Pull Request 的精簡評論，說明失敗原因與修復方式</span><br><span class="line"></span><br><span class="line">可觸發的提示語範例（僅示意）：</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 「GitHub Actions 的 <span class="code">`dotnet test`</span> 失敗，請幫我找出根因並給我一段可貼到 PR 的摘要。」</span><br><span class="line"><span class="bullet">-</span> 「Azure Pipelines 在 <span class="code">`dotnet restore`</span> 失敗，請判斷是 feed/auth 問題還是 .NET SDK 不相容。」</span><br><span class="line"><span class="bullet">-</span> 「CI 的 <span class="code">`dotnet build`</span> 爆錯，幫我分類失敗類型、說明原因，並建議最小修正。」</span><br><span class="line"></span><br><span class="line"><span class="section">## 安全與限制規則</span></span><br><span class="line"></span><br><span class="line">使用這個 skill 時，必須遵守下列約束：</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 不要輸出任何 secrets、token、連線字串或完整的環境變數傾印。</span><br><span class="line"><span class="bullet">-</span> 未經使用者明確要求，不要直接修改 pipeline YAML 或專案檔（例如 <span class="code">`.csproj`</span>、<span class="code">`NuGet.config`</span>）；請先以文字說明建議。</span><br><span class="line"><span class="bullet">-</span> 優先提出「最小、針對性」的修改；偵錯時避免大規模重構或程式風格調整。</span><br><span class="line"></span><br><span class="line"><span class="section">## 偵錯流程（Step-by-step）</span></span><br><span class="line"></span><br><span class="line"><span class="section">### 1) 收集情境背景（MUST）</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">1.</span> 向使用者要求，或從提供資訊中找出：</span><br><span class="line"><span class="bullet">   -</span> 失敗的 CI 執行連結（run URL）</span><br><span class="line"><span class="bullet">   -</span> 分支名稱</span><br><span class="line"><span class="bullet">   -</span> Commit SHA</span><br><span class="line"><span class="bullet">2.</span> 確認是哪一個 job / step 失敗，並擷取：</span><br><span class="line"><span class="bullet">   -</span> 第一個真正的錯誤訊息</span><br><span class="line"><span class="bullet">   -</span> 其前後約 20–40 行的日誌內容</span><br><span class="line"><span class="bullet">   -</span> 失敗的確切命令（例如 <span class="code">`dotnet test ...`</span>）</span><br><span class="line"><span class="bullet">3.</span> 確認執行時的關鍵假設：</span><br><span class="line"><span class="bullet">   -</span> 作業系統：Windows / Linux / macOS</span><br><span class="line"><span class="bullet">   -</span> .NET SDK 版本：從日誌、<span class="code">`global.json`</span> 或 pipeline 設定步驟中取得</span><br><span class="line"><span class="bullet">   -</span> 建置組態：Debug 或 Release</span><br><span class="line"></span><br><span class="line"><span class="section">### 2) 將失敗分類</span></span><br><span class="line"></span><br><span class="line">請從以下分類中精確選擇一個主要類別（必要）：</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> Restore（NuGet 還原）失敗</span><br><span class="line"><span class="bullet">-</span> Build / 編譯失敗</span><br><span class="line"><span class="bullet">-</span> Test（單元 / 整合測試）失敗</span><br><span class="line"><span class="bullet">-</span> Pack / Publish（打包 / 發佈）失敗</span><br><span class="line"><span class="bullet">-</span> 工具 / 環境失敗（.NET SDK 不相容、缺少 workload、Path/大小寫問題、缺少工具等）</span><br><span class="line"></span><br><span class="line">在回覆中清楚標示你選擇的類別，並簡短說明理由。</span><br><span class="line"></span><br><span class="line"><span class="section">### 3) 嘗試在本機重現</span></span><br><span class="line"></span><br><span class="line">如果使用者允許或提供足夠資訊，請建議他們在專案根目錄執行以下指令，並回傳結果供你判讀：</span><br><span class="line"></span><br><span class="line"><span class="bullet">1.</span> <span class="code">`dotnet --info`</span></span><br><span class="line"><span class="bullet">2.</span> <span class="code">`dotnet restore`</span></span><br><span class="line"><span class="bullet">3.</span> <span class="code">`dotnet build -c Release`</span></span><br><span class="line"><span class="bullet">4.</span> <span class="code">`dotnet test -c Release --logger &quot;trx;LogFileName=test-results.trx&quot;`</span></span><br><span class="line"></span><br><span class="line">補充規則：</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 若儲存庫有 solution 檔（<span class="code">`*.sln`</span>），建議指令以該 solution 為目標，例如：</span><br><span class="line"><span class="bullet">  -</span> <span class="code">`dotnet restore MySolution.sln`</span></span><br><span class="line"><span class="bullet">  -</span> <span class="code">`dotnet build MySolution.sln -c Release`</span></span><br><span class="line"><span class="bullet">  -</span> <span class="code">`dotnet test MySolution.sln -c Release --logger &quot;trx;LogFileName=test-results.trx&quot;`</span></span><br><span class="line"><span class="bullet">-</span> 若使用者無法在本機重現（例如缺少 secrets、依賴外部服務、問題只在 Linux CI 上出現或測試 flakiness），請在說明中清楚標示原因，並改以「日誌分析」為主進行診斷。</span><br><span class="line"></span><br><span class="line"><span class="section">### 4) 依類型進行診斷與建議修復</span></span><br><span class="line"></span><br><span class="line"><span class="section">#### A) Restore 失敗（NuGet）</span></span><br><span class="line"></span><br><span class="line">診斷檢查重點：</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 儲存庫是否有 <span class="code">`NuGet.config`</span>，且裡面設定了私有 feed？</span><br><span class="line"><span class="bullet">-</span> CI 是否需要 <span class="code">`NUGET_AUTH_TOKEN`</span> 或其他認證機制（例如 GitHub Packages、Azure Artifacts）？</span><br><span class="line"><span class="bullet">-</span> 是否有使用 <span class="code">`Directory.Packages.props`</span> 或中央套件管理，且版本 / 來源設定有不一致問題？</span><br><span class="line"><span class="bullet">-</span> 日誌中是否出現暫時性網路錯誤（例如超時、DNS 失敗），推測重試可能即可？</span><br><span class="line"></span><br><span class="line">常見修復建議：</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 若不同 .NET SDK 導致 restore 行為差異，建議在 repo 中加入或更新 <span class="code">`global.json`</span> 以鎖定 SDK 版本，並在 PR 中說明。</span><br><span class="line"><span class="bullet">-</span> 檢查並修正 CI 中的套件來源設定（例如 pipeline 變數、環境變數或 secret 設定），但不要要求將 secrets 寫進 repo。</span><br><span class="line"><span class="bullet">-</span> 當明顯是暫時性網路錯誤時，可建議加入重試機制或暫時重新執行 CI。</span><br><span class="line"></span><br><span class="line"><span class="section">#### B) Build / 編譯失敗</span></span><br><span class="line"></span><br><span class="line">診斷檢查重點：</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 找出日誌中的第一個編譯器錯誤（CSxxxx）或類似錯誤碼，定位到具體檔案與專案。</span><br><span class="line"><span class="bullet">-</span> 檢查是否與 <span class="code">`LangVersion`</span>、analyzers、nullable reference types 或特定警告 / 規則有關。</span><br><span class="line"><span class="bullet">-</span> 比較 Debug / Release 或本機 / CI 的差異（條件編譯、符號定義、平台目標等）。</span><br><span class="line"></span><br><span class="line">常見修復建議：</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 提出「最小必要」的程式碼修改以解除編譯錯誤，避免同時修改風格或格式。</span><br><span class="line"><span class="bullet">-</span> 若錯誤源於分析器或規則變更，建議：</span><br><span class="line"><span class="bullet">  -</span> 在 PR 中說明原因</span><br><span class="line"><span class="bullet">  -</span> 與團隊約定是否調整分析器版本、規則集或抑制策略</span><br><span class="line"><span class="bullet">-</span> 如果是因 CI 使用不同 SDK / TFM 造成（例如 API 可用性差異），建議：</span><br><span class="line"><span class="bullet">  -</span> 對應調整 <span class="code">`TargetFramework`</span> 或多目標設定</span><br><span class="line"><span class="bullet">  -</span> 或在 CI 與本機統一 SDK 版本</span><br><span class="line"></span><br><span class="line"><span class="section">#### C) Test 失敗</span></span><br><span class="line"></span><br><span class="line">診斷檢查重點：</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 測試是否「穩定重現」還是「偶發 / flaky」？（可請使用者提供多次執行紀錄）</span><br><span class="line"><span class="bullet">-</span> 是否與環境有關，例如：</span><br><span class="line"><span class="bullet">  -</span> 時區 / 文化設定（CultureInfo）</span><br><span class="line"><span class="bullet">  -</span> 檔案系統大小寫敏感度（Windows vs Linux）</span><br><span class="line"><span class="bullet">  -</span> 路徑分隔符號</span><br><span class="line"><span class="bullet">  -</span> 時間相關測試（日期邏輯、延遲、非決定性隨機數）</span><br><span class="line"><span class="bullet">-</span> 是否與平行化（test parallelization）或共享資源有關？</span><br><span class="line"></span><br><span class="line">常見修復建議：</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 使測試變成「決定性」：避免依賴現在時間、隨機數、外部服務等未被明確控制的因素。</span><br><span class="line"><span class="bullet">-</span> 對環境敏感的測試，建議：</span><br><span class="line"><span class="bullet">  -</span> 顯式設定文化 / 時區或使用不依賴環境的比較方式</span><br><span class="line"><span class="bullet">  -</span> 在檔案路徑操作上處理大小寫與分隔符差異</span><br><span class="line"><span class="bullet">-</span> 若確認為 flaky 且短期內無法修復，可建議：</span><br><span class="line"><span class="bullet">  -</span> 以明確的標記（例如 <span class="code">`Skip`</span> / <span class="code">`Trait`</span> / <span class="code">`Category`</span>）隔離該測試</span><br><span class="line"><span class="bullet">  -</span> 在 PR 說明中連結追蹤 issue</span><br><span class="line"><span class="bullet">  -</span> 明確註記這是暫時性措施，而非默默忽略</span><br><span class="line"></span><br><span class="line"><span class="section">#### D) Pack / Publish 失敗</span></span><br><span class="line"></span><br><span class="line">診斷檢查重點：</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="code">`.csproj`</span> 中是否有設定版本資訊（例如 <span class="code">`Version`</span>, <span class="code">`VersionPrefix`</span>, <span class="code">`VersionSuffix`</span>）？</span><br><span class="line"><span class="bullet">-</span> 打包所需的檔案（README、icon、license 等）是否存在且路徑正確？</span><br><span class="line"><span class="bullet">-</span> 是否出現重複的 <span class="code">`PackageId`</span> 或版本衝突（例如同一版本已存在於 feed）？</span><br><span class="line"><span class="bullet">-</span> 是否有 CI 特有的路徑、output folder 或權限問題？</span><br><span class="line"></span><br><span class="line">常見修復建議：</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 明確設定 / 修正專案的封裝中繼資料（如 <span class="code">`PackageId`</span>、<span class="code">`Version*`</span>、<span class="code">`Authors`</span>、<span class="code">`Description`</span> 等）。</span><br><span class="line"><span class="bullet">-</span> 確認並修正 <span class="code">`.csproj`</span> 中 <span class="code">`PackageIcon`</span>, <span class="code">`PackageLicenseFile`</span>, <span class="code">`PackageReadmeFile`</span> 等檔案路徑。</span><br><span class="line"><span class="bullet">-</span> 若是已存在版本問題，建議調整版本策略（例如使用 CI build number 或 Git tag 驅動版本）。</span><br><span class="line"></span><br><span class="line"><span class="section">#### E) 工具 / 環境失敗</span></span><br><span class="line"></span><br><span class="line">診斷檢查重點：</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> .NET SDK 版本是否與 repo 預期不符（<span class="code">`global.json`</span> vs 安裝版本）？</span><br><span class="line"><span class="bullet">-</span> 是否缺少必要 workload（例如 MAUI、WebAssembly、Mono）或工具（例如 <span class="code">`dotnet-ef`</span>）？</span><br><span class="line"><span class="bullet">-</span> 是否因路徑、大小寫、權限或 CI 環境變數造成（例如 <span class="code">`PATH`</span>、<span class="code">`DOTNET_ROOT`</span>）？</span><br><span class="line"></span><br><span class="line">常見修復建議：</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 建議在 CI 中顯式安裝或指定所需的 SDK / workload。</span><br><span class="line"><span class="bullet">-</span> 若有 <span class="code">`global.json`</span>，建議使 CI 與本機一致；若沒有，可建議新增。</span><br><span class="line"><span class="bullet">-</span> 修正 CI 腳本中的 Path / 大小寫 / 權限設定。</span><br><span class="line"></span><br><span class="line"><span class="section">### 5) 產出結果給使用者（回覆格式）</span></span><br><span class="line"></span><br><span class="line">當你完成診斷時，請在回覆中包含以下三個部分：</span><br><span class="line"></span><br><span class="line"><span class="section">#### A) 根本原因 + 修復方案說明</span></span><br><span class="line"></span><br><span class="line">使用簡短文字說明：</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 根本原因：1–2 句話，描述問題為何發生</span><br><span class="line"><span class="bullet">-</span> 證據：引用關鍵日誌片段（避免包含敏感資訊）</span><br><span class="line"><span class="bullet">-</span> 修復方案：說明要修改的檔案與內容（可搭配建議的程式碼片段）</span><br><span class="line"></span><br><span class="line"><span class="section">#### B) 驗證步驟（本機與 CI）</span></span><br><span class="line"></span><br><span class="line">提供使用者可以在本機與 CI 中執行的驗證指令，例如：</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="code">`dotnet restore`</span></span><br><span class="line"><span class="bullet">-</span> <span class="code">`dotnet build -c Release`</span></span><br><span class="line"><span class="bullet">-</span> <span class="code">`dotnet test -c Release`</span></span><br><span class="line"></span><br><span class="line">若有 solution 或特定專案，請改成對應的命令，例如：</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="code">`dotnet restore MySolution.sln`</span></span><br><span class="line"><span class="bullet">-</span> <span class="code">`dotnet build MySolution.sln -c Release`</span></span><br><span class="line"><span class="bullet">-</span> <span class="code">`dotnet test MySolution.sln -c Release`</span></span><br><span class="line"></span><br><span class="line"><span class="section">#### C) PR 評論樣板</span></span><br><span class="line"></span><br><span class="line">請依下列 Markdown 模板產出一份已填寫的 PR 評論摘要，並在回覆中提供使用者可以直接複製：</span><br><span class="line"></span><br><span class="line"><span class="section">### CI failure summary (.NET)</span></span><br><span class="line"></span><br><span class="line"><span class="strong">**Root cause**</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 在這裡用 1–2 句話描述根本原因，例如：「<span class="code">`dotnet test`</span> 在 Linux 上失敗，原因是檔案路徑大小寫不同導致測試找不到檔案。」</span><br><span class="line"></span><br><span class="line"><span class="strong">**Evidence**</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 引用關鍵日誌或錯誤碼（避免包含 secrets）</span><br><span class="line"><span class="bullet">-</span> 例如：<span class="code">`error CS8632: The annotation for nullable reference types should only be used...`</span></span><br><span class="line"></span><br><span class="line"><span class="strong">**Fix**</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 說明修改了哪些檔案與內容，以及理由</span><br><span class="line"><span class="bullet">-</span> 例如：<span class="code">`MyProject.Tests/FileTests.cs`</span> 中改用不區分大小寫的比對，避免在 Linux 上失敗。</span><br><span class="line"></span><br><span class="line"><span class="strong">**Verification**</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="code">`dotnet restore`</span></span><br><span class="line"><span class="bullet">-</span> <span class="code">`dotnet build -c Release`</span></span><br><span class="line"><span class="bullet">-</span> <span class="code">`dotnet test -c Release`</span></span><br><span class="line"></span><br><span class="line">在實際回覆時，請將上述各段填入具體內容，而不是留空。</span><br><span class="line"></span><br><span class="line"><span class="section">## 使用建議</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 優先請使用者提供：</span><br><span class="line"><span class="bullet">  -</span> CI 執行連結</span><br><span class="line"><span class="bullet">  -</span> 失敗 job/step 名稱</span><br><span class="line"><span class="bullet">  -</span> 相關日誌內容</span><br><span class="line"><span class="bullet">-</span> 若資訊不足，請先詢問再下結論。</span><br><span class="line"><span class="bullet">-</span> 回覆時要清楚標示：</span><br><span class="line"><span class="bullet">  -</span> 「判斷結果」與「不確定或需要更多資訊」的部分</span><br><span class="line"><span class="bullet">  -</span> 避免誤導使用者認為尚未驗證的推測已是事實</span><br></pre></td></tr></table></figure>
+<br>
+<h2 id="Instructions-和-Skills-的差異：什麼時候適合用-Skills">Instructions 和 Skills 的差異：什麼時候適合用 Skills</h2>
+<p>這兩者都能「教 Copilot」，但設計目的不同：</p>
+<ul>
+<li><strong>Custom instructions</strong>：偏向「全域規範」。例如：程式撰寫規範、命名規則、資料夾結構、commit 訊息格式。</li>
+<li><strong>Agent Skills</strong>：偏向「任務導向流程」與「可重用的能力」。例如：Debug CI、執行測試矩陣、部署步驟、產生特定格式報告。</li>
+</ul>
+<p>什麼時候用 Skills 比較適合：</p>
+<ul>
+<li>發現某個流程一直被重複使用（或一直重複的貼某一段相同的 SOP）。</li>
+<li>流程裡包含「可執行」的內容（scripts、commands、templates）。</li>
+<li>希望能跨環境重複使用（VS Code、GitHub Copilot CLI、Coding Agent…等）。</li>
+<li>希望它能被版本控管與 review（就像管理程式碼一樣）。</li>
+</ul>
+<br>
+<h2 id="MCP-和-Skills-的差異">MCP 和 Skills 的差異</h2>
+<p>以比較簡單的方式來區分：</p>
+<ul>
+<li><strong>Skills</strong>：教 Agent「怎麼做」（流程、規範、範例、資源），並在需要時把這些指引載入上下文。</li>
+<li><strong>MCP</strong>：讓 Agent「能做」更多事（透過標準化協定連外部工具/系統），把行動能力變成可呼叫的工具。</li>
+</ul>
+<p>它們不是互斥，而是互補：</p>
+<ul>
+<li>我們可以用 Skill 定義一個 SOP，例如：「如何 debug pipeline failure」。</li>
+<li>處理流程裡可以指示 GitHub Copilot 用 MCP 工具去查 log、列出 workflow runs、抓取建置輸出。</li>
+</ul>
+<p>也因此在企業流程常見的組合是：<mark>Skills 提供流程與判斷準則；MCP 提供跨系統的可執行能力。</mark></p>
+<br>
+<h2 id="SDLC-場景：CI-失敗的-Debug-Playbook">SDLC 場景：CI 失敗的 Debug Playbook</h2>
+<p>假設團隊常見痛點是：PR 數量一多的時候，CI 失敗的原因常常要人工查找 log、比對環境再回頭修改。</p>
+<p>我們就可以建一個 Skill：<strong>.github/skills/ci-failure-debugging/</strong> 內容包含：</p>
+<ul>
+<li>先分類失敗類型（例如：程式碼分析/StyleCop 或 Roslyn warnings、單元/整合測試（xUnit/NUnit）失敗、MSBuild/SDK 編譯錯誤或目標框架不符、NuGet 打包/相依性衝突、部署到 Azure App Service/AKS/IIS 等環境問題）。</li>
+<li>針對不同類型指定查核順序</li>
+<li>指定輸出格式（例如：「根因、證據、修復建議、是否可重現」）</li>
+</ul>
+<p>Skill 流程可以如下列示意：</p>
+<ol>
+<li>先找出失敗的 job 與第一個 error</li>
+<li>如果是測試失敗：<br>
+2.1. 找出最早的 failing test case<br>
+2.2. 嘗試本機重跑（或用既有指令重跑）</li>
+<li>如果是 build 失敗：<br>
+3.1. 先確認 SDK 版本是否一致<br>
+3.2. 檢查最近的檔案變更</li>
+<li>產出一段固定格式的摘要（可貼到 PR comment）</li>
+</ol>
+<p>如果目前環境有 MCP Server 可以使用（例如：GitHub MCP Server / Azure DevOps MCP Server），Skill 裡就能直接指定要呼叫哪些 tools、用什麼順序拿資料。這樣一來，GitHub Copilot 就不只是「猜原因」，而是「照著我們的 Playbook」把證據收集完整，並用一致格式輸出，大幅提升在 SDLC 裡的工作流程效率。</p>
+<br>
+<h2 id="總結">總結</h2>
+<p>Agent Skills 的價值不在於「又多了一個客製化機制」，而在於它把 AI 協作從「一次性的 prompt」推進到「可重用、可治理、可分享的能力模組」。</p>
+<ul>
+<li>想要省 token：把冗長的 SOP 從常駐在 Instructions 移到依需求載入的 Skills。</li>
+<li>想要更可靠：用 Skills 把流程固定下來，讓 GitHub Copilot 依 SOP 做事。</li>
+<li>想要更能做事：用 MCP 擴充工具能力，再用 Skills 把工具串成工作流。</li>
+</ul>
+<p>如果大家已經有一套在團隊內反覆被使用的 SOP（測試、除錯、部署、風險檢查），就可以這些開始著手第一個 Skill：小規模、可驗證，且能帶來立即收益的嘗試；如果還不知道怎麼開始起手式也沒關係，就到下方參考連結 Anthropics 的 Skills repo 直接找範例體會看看，相信一定可以很快上手的！</p>
+<div class="tips">
+<font color="black">
+官方文件：<br>
+<a class="link"   href="https://code.visualstudio.com/docs/copilot/customization/agent-skills"  target="_blank">⁍ VS Code | Use Agent Skills in VS Code<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://docs.github.com/en/copilot/concepts/agents/about-agent-skills"  target="_blank">⁍ GitHub Docs | About Agent Skills<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://github.com/anthropics/skills"  target="_blank">⁍ GitHub | Public repository for Agent Skills<i class="fas fa-external-link-alt"></i></a>
 </font>
 </div>]]></content>
       <tags>
-        <tag>Azure DevOps</tag>
         <tag>GitHub Copilot</tag>
-        <tag>Devdays Asia 2025</tag>
+        <tag>Agent Skills</tag>
       </tags>
   </entry>
   <entry>
@@ -2727,190 +2742,28 @@ Rollup 欄位會顯示最近一次成功計算的資料與時間戳記，即使 
       </tags>
   </entry>
   <entry>
-    <title>建立可重用的 GitHub Copilot Skills</title>
-    <url>/post/2025/12/github-copilot-skills/</url>
+    <title>Devdays Asia 2025 簡報下載</title>
+    <url>/post/2025/10/devdays-asia-2025/</url>
     <content><![CDATA[<img    
                        lazyload
                        alt="image"
-                       data-src="/post/2025/12/github-copilot-skills/agent-skills.jpg"
+                       data-src="/post/2025/10/devdays-asia-2025/DevdaysAsia2025.jpg"
                          align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
                  > 
-<p>在 GitHub Copilot 的世界裡，我們常常用「一句話」啟動任務，但真正讓 Agent 能穩定把事情做完的，通常不是那一句話，而是背後那套可重複、可維護、可分享的流程知識。<strong>Agent Skills</strong> 就是在這個背景下出現：它把我們原本散落在 prompt、Wiki、筆記、SOP 的內容，封裝成「模型需要時才載入」的技能模組，讓 Copilot 更像一個真的會做事的隊友，而不是只會回答問題的聊天機器人。本文介紹 Agent Skills 在 VS Code 中的使用方式，以及在 token 與可維護性上的優勢，並對比 Custom Instructions 與 MCP 的差異。</p>
+<p>今年是微軟 50 週年、DevDays 10 週年，話題大多圍繞在 Agentic AI，考量多數企業還是有 On-Premises 需求，所以這次我將主題訂在如何使用 Azure DevOps + GitHub Copilot 重新打造 SDLC，讓大家瞭解不是雲原生環境還可以有哪些應用，以及賦與 LLM 更多 Tools 後，可以讓我們的軟體開發過程產生多大的助益和改變，雖然主題是 Azure DevOps 與 GitHub Copilot，但基本上套在任何軟體開發流程概念都是一樣的，提供給大家參考，有任何想討論交流也歡迎大家留言或直接與我聯繫。</p>
 <span id="more"></span>
 <br>
-<br>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/12/github-copilot-skills/skills.jpg"
-                        class=""
-                 >
-<br>
-<h2 id="Agent-Skills-源起">Agent Skills 源起</h2>
-<p>在 Agent 模式逐漸普及後，大家會遇到一個很現實的問題：<br>
-同一個「專案流程」我們可能會一直重複類似的描述，例如：怎麼跑測試、怎麼看 log、怎麼開 PR、怎麼寫 release note、怎麼處理 build failure。</p>
-<p>如果每次都靠貼上 prompt 或是把規則塞進 instructions 可能會：</p>
-<ul>
-<li>容易漏掉關鍵步驟（尤其在多人協作的情況下）。</li>
-<li>規則越長，越容易干擾模型在其他任務的判斷。</li>
-<li>每個 chat session 固定把一大段規則塞進上下文，token 成本很高。</li>
-</ul>
-<p>Agent Skills 的設計就是為了解決這些痛點：把「可重用的專業流程」抽成一個資料夾（包含：說明、腳本、範例、資源），並用 <strong>Progressive Disclosure（逐步載入）</strong> 讓 Copilot 只在需要時把內容帶進上下文。</p>
-<br>
-<h2 id="為什麼-Agent-Skills-重要">為什麼 Agent Skills 重要</h2>
-<p>我們可以把 Skills 想成「讓 Copilot 具備可被治理的能力」：</p>
-<ul>
-<li><strong>可重複</strong>：同一套流程在不同對話、不同任務中被一致地使用。</li>
-<li><strong>可維護</strong>：流程更新時只要改一個地方（Skill 目錄），不需要到處改 prompt。</li>
-<li><strong>可分享</strong>：技能可以跟著 repo 走，也可以複製到其他 repo 或分享給團隊。</li>
-<li><strong>可組合</strong>：多個技能可被同一個任務同時載入，形成更完整的工作流。</li>
-</ul>
-<p>更重要的是：Skills 不是只教「要做什麼」，而是能把「怎麼做」與「需要的資源」放在一起（scripts、templates、examples），讓 Agent 不只會說，也更容易真的執行。</p>
-<br>
-<h2 id="Skills-的優勢：不只是方便，而是更可靠">Skills 的優勢：不只是方便，而是更可靠</h2>
-<p>Skills 有幾個具有價值的要點：</p>
-<ol>
-<li><strong>降低人工成本</strong>：不用每次都手動貼流程，模型也不需要每次重新學一遍。</li>
-<li><strong>把流程從「口耳相傳」變成「可 review 的文件」</strong>：Skills 是 repo 裡的檔案，可以送出 PR、也能被 code review。</li>
-<li><strong>更貼近 Agent 的工作方式</strong>：Agent 做事需要流程、需要資源、需要可執行的工具，而不是一段漂亮的提示詞。</li>
-</ol>
-<br>
-<h2 id="Skill-會比較節省-token-嗎？">Skill 會比較節省 token 嗎？</h2>
-<p>如果我們原本會把大量規則長期塞在 instructions 或每次對話都貼一大段 SOP，那 Skills 通常會更省 token，原因在於 VS Code / Copilot 對 Skills 的載入採用三層式的逐步揭露：</p>
-<ul>
-<li><strong>Level 1：Skill discovery</strong>：只讀每個 Skill 的 <mark>name</mark> 與 <mark>description</mark>（前置 YAML frontmatter）。</li>
-<li><strong>Level 2：Instructions loading</strong>：只有在模型判斷「這個任務跟某個 Skill 的描述相符」時，才載入 <strong><code>SKILL.md</code></strong> 的內容。</li>
-<li><strong>Level 3：Resource access</strong>：技能資料夾裡的 scripts / examples / docs 只有在真的需要時才讀取。</li>
-</ul>
-<p>換句話說：我們可以安裝很多 Skills，但每次任務只會載入少數相關內容，但 Skills 也不是零成本：</p>
-<ul>
-<li>一旦被載入後，<strong><code>SKILL.md</code></strong> 的內容同樣會佔 context。</li>
-<li>如果規則本來就很短（例如 1~2 句 prompt 內容），拆成 Skill 不一定更划算。</li>
-</ul>
-<br>
-<h2 id="GitHub-Copilot-的-Skills-核心概念">GitHub Copilot 的 Skills 核心概念</h2>
-<div class="warning">
-<font color="black">
-把特定領域／流程變成「可重用、可按需載入」的能力模組，讓 GitHub Copilot 在需要時自動套用。
-</font>
-</div>
-<p>對使用者來說：</p>
-<ul>
-<li>只要描述目標（例如：幫我找出為什麼 CI 失敗），GitHub Copilot 會自己決定要載入哪個 skill。</li>
-<li>不需要每次都手動指定「用哪個 SOP」。</li>
-</ul>
-<p>對團隊來說：</p>
-<ul>
-<li>同一個 repo 裡，大家對「怎麼 debug build」「怎麼寫 release note」「怎麼跑測試」會更一致。</li>
-</ul>
-<br>
-<h2 id="GitHub-Copilot-的-Agent-Skills-定義與規範">GitHub Copilot 的 Agent Skills 定義與規範</h2>
-<p>Skills 的組成是：一個資料夾 + 一個 SKILL.md。</p>
-<p>目錄位置：</p>
-<ul>
-<li><mark>.github/skills/</mark>（GitHub Copilot 的 shared location）</li>
-<li><mark>.claude/skills/</mark>（Legacy location）</li>
-</ul>
-<p><strong><code>SKILL.md</code></strong> 需要 YAML frontmatter，至少包含：</p>
-<ul>
-<li><strong>name</strong>（必填）：小寫，如果有空白就要以 <code>-</code> 分隔（例如：pipeline-debug），通常也會跟資料夾名稱一致，<mark>最多 64 個字元</mark>。</li>
-<li><strong>description</strong>（必填）：清楚描述「能做什麼」以及「什麼時候用」，這會直接影響模型是否會選中並載入，<mark>最多 1024 個字元</mark>。</li>
-</ul>
-<p>Skill 內容建議包含：</p>
-<ul>
-<li>這個 Skill 在幫我們完成什麼</li>
-<li>什麼情境要用</li>
-<li>分步驟流程（step-by-step）</li>
-<li>範例輸入 / 輸出</li>
-<li>如何使用技能資料夾內的 scripts / resources</li>
-</ul>
-<p><mark>description 寫得越精準，LLM 在解析判斷才會越準；建議可在 description 裡直接放「Use this when…」之類的觸發語句，或明確表示在什麼情境就要使用目前這個 skill。</mark></p>
-<br>
-<h2 id="在-VS-Code-中如何使用-Agent-Skills">在 VS Code 中如何使用 Agent Skills</h2>
-<p>目前 Agent Skills 在 VS Code 屬於 experimental，在 <strong>VS Code Insiders</strong> 才有提供，而且預設是 disabled 記得把設定打開：</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/12/github-copilot-skills/settings-skills.jpg"
-                        class=""
-                 >
-<p>基本使用流程：</p>
-<ol>
-<li>在 repo 建立 <strong>.github/skills/</strong>。</li>
-<li>每個 skill 建立一個子資料夾，例如：<strong>.github/skills/pipeline-debug/</strong>。</li>
-<li>在子資料夾放入 <strong><code>SKILL.md</code></strong>（包含 YAML frontmatter 與內容）。</li>
-<li>在 VS Code 啟用相關設定（上面截圖的兩個選項）。</li>
-<li>在 Copilot Chat / Agent Mode 提需求，Copilot 會自動判斷並載入相關 skills。</li>
-</ol>
-<p><mark>實際使用我們不需要手動「選擇 skill」，只要目前 prompt 的需求跟 <strong>description</strong> 對得上，就會在背後注入技能內容。</mark></p>
-<br>
-<h2 id="Instructions-和-Skills-的差異：什麼時候適合用-Skills">Instructions 和 Skills 的差異：什麼時候適合用 Skills</h2>
-<p>這兩者都能「教 Copilot」，但設計目的不同：</p>
-<ul>
-<li><strong>Custom instructions</strong>：偏向「全域規範」。例如：程式撰寫規範、命名規則、資料夾結構、commit 訊息格式。</li>
-<li><strong>Agent Skills</strong>：偏向「任務導向流程」與「可重用的能力」。例如：Debug CI、執行測試矩陣、部署步驟、產生特定格式報告。</li>
-</ul>
-<p>什麼時候用 Skills 比較適合：</p>
-<ul>
-<li>發現某個流程一直被重複使用（或一直重複的貼某一段相同的 SOP）。</li>
-<li>流程裡包含「可執行」的內容（scripts、commands、templates）。</li>
-<li>希望能跨環境重複使用（VS Code、GitHub Copilot CLI、Coding Agent…等）。</li>
-<li>希望它能被版本控管與 review（就像管理程式碼一樣）。</li>
-</ul>
-<br>
-<h2 id="MCP-和-Skills-的差異">MCP 和 Skills 的差異</h2>
-<p>以比較簡單的方式來區分：</p>
-<ul>
-<li><strong>Skills</strong>：教 Agent「怎麼做」（流程、規範、範例、資源），並在需要時把這些指引載入上下文。</li>
-<li><strong>MCP</strong>：讓 Agent「能做」更多事（透過標準化協定連外部工具/系統），把行動能力變成可呼叫的工具。</li>
-</ul>
-<p>它們不是互斥，而是互補：</p>
-<ul>
-<li>我們可以用 Skill 定義一個 SOP，例如：「如何 debug pipeline failure」。</li>
-<li>處理流程裡可以指示 GitHub Copilot 用 MCP 工具去查 log、列出 workflow runs、抓取建置輸出。</li>
-</ul>
-<p>也因此在企業流程常見的組合是：<mark>Skills 提供流程與判斷準則；MCP 提供跨系統的可執行能力。</mark></p>
-<br>
-<h2 id="SDLC-場景：CI-失敗的-Debug-Playbook">SDLC 場景：CI 失敗的 Debug Playbook</h2>
-<p>假設團隊常見痛點是：PR 數量一多的時候，CI 失敗的原因常常要人工查找 log、比對環境再回頭修改。</p>
-<p>我們就可以建一個 Skill：<strong>.github/skills/ci-failure-debugging/</strong> 內容包含：</p>
-<ul>
-<li>先分類失敗類型（例如：程式碼分析/StyleCop 或 Roslyn warnings、單元/整合測試（xUnit/NUnit）失敗、MSBuild/SDK 編譯錯誤或目標框架不符、NuGet 打包/相依性衝突、部署到 Azure App Service/AKS/IIS 等環境問題）。</li>
-<li>針對不同類型指定查核順序</li>
-<li>指定輸出格式（例如：「根因、證據、修復建議、是否可重現」）</li>
-</ul>
-<p>Skill 流程可以如下列示意：</p>
-<ol>
-<li>先找出失敗的 job 與第一個 error</li>
-<li>如果是測試失敗：<br>
-2.1. 找出最早的 failing test case<br>
-2.2. 嘗試本機重跑（或用既有指令重跑）</li>
-<li>如果是 build 失敗：<br>
-3.1. 先確認 SDK 版本是否一致<br>
-3.2. 檢查最近的檔案變更</li>
-<li>產出一段固定格式的摘要（可貼到 PR comment）</li>
-</ol>
-<p>如果目前環境有 MCP Server 可以使用（例如：GitHub MCP Server / Azure DevOps MCP Server），Skill 裡就能直接指定要呼叫哪些 tools、用什麼順序拿資料。這樣一來，GitHub Copilot 就不只是「猜原因」，而是「照著我們的 Playbook」把證據收集完整，並用一致格式輸出，大幅提升在 SDLC 裡的工作流程效率。</p>
-<br>
-<h2 id="總結">總結</h2>
-<p>Agent Skills 的價值不在於「又多了一個客製化機制」，而在於它把 AI 協作從「一次性的 prompt」推進到「可重用、可治理、可分享的能力模組」。</p>
-<ul>
-<li>想要省 token：把冗長的 SOP 從常駐在 Instructions 移到依需求載入的 Skills。</li>
-<li>想要更可靠：用 Skills 把流程固定下來，讓 GitHub Copilot 依 SOP 做事。</li>
-<li>想要更能做事：用 MCP 擴充工具能力，再用 Skills 把工具串成工作流。</li>
-</ul>
-<p>如果大家已經有一套在團隊內反覆被使用的 SOP（測試、除錯、部署、風險檢查），就可以這些開始著手第一個 Skill：小規模、可驗證，且能帶來立即收益的嘗試；如果還不知道怎麼開始起手式也沒關係，就到下方參考連結 Anthropics 的 Skills repo 直接找範例體會看看，相信一定可以很快上手的！</p>
 <div class="tips">
 <font color="black">
-官方文件：<br>
-<a class="link"   href="https://code.visualstudio.com/docs/copilot/customization/agent-skills"  target="_blank">⁍ VS Code | Use Agent Skills in VS Code<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://docs.github.com/en/copilot/concepts/agents/about-agent-skills"  target="_blank">⁍ GitHub Docs | About Agent Skills<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://github.com/anthropics/skills"  target="_blank">⁍ GitHub | Public repository for Agent Skills<i class="fas fa-external-link-alt"></i></a>
+<a href="/post/2025/10/devdays-asia-2025/0925_Track A 1330-1400_DevDaysAsia_20250925_精誠軟體.pdf" target="_blank">⁍ Azure DevOps 與 GitHub Copilot：AI 驅動的團隊協作新時代</a><br>
+<a class="link"   href="https://www.digitimes.com.tw/Seminar/DevDaysAsia2025/index.html"  target="_blank">⁍ DevDays Asia 2025 亞太技術年會 | 議程介紹<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://onedrive.live.com/?redeem=aHR0cHM6Ly8xZHJ2Lm1zL2YvYy85NmJjZGNhMWVkYWIwZmMyL0VvUncyR1ZIaVRaUG1NNW1Ib0hPeWxFQlpvSW5aOU55ckY1QVJsOU5wbGpYWXc_ZT01VlhkMXQ&id=96BCDCA1EDAB0FC2%21s65d8708489474f3698ce661e81ceca51&cid=96BCDCA1EDAB0FC2"  target="_blank">⁍ DevDays Asia 2025 亞太技術年會 | 所有簡報下載 (OneDrive)<i class="fas fa-external-link-alt"></i></a><br>
 </font>
 </div>]]></content>
       <tags>
+        <tag>Azure DevOps</tag>
         <tag>GitHub Copilot</tag>
-        <tag>Agent Skills</tag>
+        <tag>Devdays Asia 2025</tag>
       </tags>
   </entry>
   <entry>
@@ -3214,90 +3067,239 @@ Rollup 欄位會顯示最近一次成功計算的資料與時間戳記，即使 
       </tags>
   </entry>
   <entry>
-    <title>使用 Playwright 測試框架 - 執行階段 (.NET)</title>
-    <url>/post/2025/05/how-to-use-playwright-2/</url>
+    <title>整理 Context 的利器 — MarkItDown 與 Docling</title>
+    <url>/post/2025/10/docling-to-markdown/</url>
     <content><![CDATA[<img    
                        lazyload
                        alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-1/playwright.png"
+                       data-src="/post/2025/10/docling-to-markdown/logo.png"
                          align="left" style="margin-right: 10px; width: 125px; border: 1px solid gray;"
                  > 
-<p><a href="/post/2024/11/how-to-use-playwright-1">上一篇文章</a>提到了如何使用 Playwright 的測試產生器(codegen) 錄製腳本，除了可以運用在自動化測試之外，舉凡想要透過程式來自動執行的一連串行為，都可以透過 Playwright 來完成，本篇文章使用 Windows Sandbox 全新環境來執行由 .NET 8 撰寫的 Console 程式，讓大家知道建置產生執行檔後，還需要哪些必要的環境設定才可以正常讓程式運作。<br>
-<br></p>
+<p>在 Agentic AI 的各式應用場景中，提供正確且良好品質的上下文來源是至關重要的環結，實務上我們可能透過 RAG 從外部檢索資料，或是從手邊的各種檔案格式轉換成 markdown 來提供 LLM 作為上下文參考資料以便展開執行後續的任務，若以輕量、快速上手為考量，可以試試 MarkItDown，但若只能在純地端環境執行，或是對於文件內容(例如：表格、版面)有更高的解析需求不妨試試 Docling，本文以實務角度比較兩者設計取向、支援格式與優缺點，以及提供不同應用場景的建議。</p>
 <span id="more"></span>
-<br>
-<h2 id="安裝-NET-Runtime">安裝 .NET Runtime</h2>
-<p>不論是以前的 .NET Framework 或是現在的 .NET Core，在執行時都需要安裝 .NET Runtime 才能順利運行開發好的程式，以下圖 Console 專案建置後的執行檔為例，畫面還會很貼心的指引我們目前的需求版本和下載路徑，完成安裝後便可順利執行 Console 程式。</p>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/dotnet8.png"
-                        class=""
-                 >
-<br>
+<p>在建立知識庫、資料前處理或把企業文件提供給 LLM 時，原始文件往往可能是 PDF、各種 Office 文件格式、圖片或音訊，而真正要給 LLM 使用時，需要：</p>
+<ul>
+<li>保留語意與結構（標題、段落、表格…等）。</li>
+<li>去除雜訊並以 token 使用效率高的格式呈現（例如：Markdown）。</li>
+<li>在有需要時，保留更結構化的表示（例如：JSON）以便後續自動化處理。</li>
+</ul>
+<p>MarkItDown 與 Docling 都致力於把各種來源轉成容易被 LLM 或檢索系統消化的輸出，但設計側重與功能集合有明顯差異，下面我們直接比較。</p>
+<h2 id="MarkItDown">MarkItDown</h2>
+<ul>
+<li>出處：由 Microsoft AutoGen 團隊維護（Python）。</li>
+<li>設計取向：把各式檔案轉成「結構化 Markdown」；以 LLM 與文本分析為取向。</li>
+<li>優勢：
+<ul>
+<li>直接產生適合 LLM 的 Markdown（標題、列表、表格、內嵌程式碼等）。</li>
+<li>支援多媒體（圖片 OCR、音訊轉錄、YouTube 字幕抓取）。</li>
+<li>可用作 MCP 伺服器，利於 AI Agent／LLM 整合。</li>
+</ul>
+</li>
+<li>限制：
+<ul>
+<li>對於複雜的 PDF 版面（精細表格、多欄佈局、複雜閱讀順序），解析深度稍嫌不足。</li>
+<li>若要取得更高階 PDF 能力，可能會依賴 Azure Document Intelligence（雲端）。</li>
+</ul>
+</li>
+</ul>
+<p>若要使用 MarkItDown MCP 現在可以在 GitHub MCP Registry(https://github.com/mcp) 列表找到，也可以 docker 方式或 clone 整個專案在本地端以 STDIO 的方式執行，參考微軟官方 GitHub 說明。</p>
 <div class="tips">
 <font color="black">
-<a class="link"   href="https://dotnet.microsoft.com/download"  target="_blank">⁍ 下載 .NET<i class="fas fa-external-link-alt"></i></a>
+<a class="link"   href="https://github.com/mcp"  target="_blank">⁍ GitHub MCP Registry<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://github.com/microsoft/markitdown?tab=readme-ov-file"  target="_blank">⁍ GitHub | MarkItDown<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://github.com/microsoft/markitdown/tree/main/packages/markitdown-mcp"  target="_blank">⁍ GitHub | MarkItDown MCP<i class="fas fa-external-link-alt"></i></a><br>
 </font>
 </div>
-<h2 id="安裝-PowerShell">安裝 PowerShell</h2>
-<p>如果是全新的環境，安裝完 .NET Runtime 後應該還會出現如下圖的錯誤，主要原因是：</p>
+<h2 id="Docling">Docling</h2>
 <ul>
-<li>pwsh 找不到路徑 (或是沒有安裝 PowerShell)</li>
-<li>缺少 WebDriver (Edge/Chrome/Firefox)</li>
+<li>出處：由 Docling Project（原起始於 IBM Research Zurich，目前管於 LF AI &amp; Data）維護。</li>
+<li>設計取向：專注於文件理解，特別是進階 PDF 解析（版面、閱讀順序、表格結構、公式、程式碼、影像分類），並提供統一的 DoclingDocument 表示與多種匯出選項。</li>
+<li>優勢：
+<ul>
+<li>在複雜 PDF（掃描文件、排版、多欄表格）與表格重構上表現優異，使用自家模型（DocLayNet、TableFormer）提升解析品質。</li>
+<li>支援本地執行（適合敏感資料或隔離環境），也有 VLM / ASR 整合能力。</li>
+<li>輸出豐富：Markdown / HTML / JSON / DocTags 等，便於後續分析或顯示詳細資訊。</li>
+<li>與 LangChain、LlamaIndex、Haystack 等生態系可以直接整合，便於搭建 RAG pipeline。</li>
 </ul>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/pwsh.png"
-                        class=""
-                 >
-<br>
-若要安裝 PowerShell 可以依據自己的作業系統參考下列連結：
+</li>
+<li>限制：
+<ul>
+<li>因為功能較廣、選項較多，學習曲線會比 MarkItDown 高。</li>
+<li>Docling 會完全在本地環境執行，需要考量相關系統資源 (是優點也是缺點)。</li>
+</ul>
+</li>
+</ul>
+<p>如何取得並建置 Docling 環境可以參考 GitHub 專案，它一樣有支援 MCP 但要在它的官網才找得到說明，如同前面說的，它是完全在本地端執行，所以 MCP 是由 uvx 來執行啟動。</p>
 <div class="tips">
 <font color="black">
-<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5"  target="_blank">⁍ 在 Windows 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-linux?view=powershell-7.5"  target="_blank">⁍ 在 Linux 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a><br>
-<a class="link"   href="https://learn.microsoft.com/zh-tw/powershell/scripting/install/installing-powershell-on-macos?view=powershell-7.5"  target="_blank">⁍ 在 macOS 上安裝 PowerShell<i class="fas fa-external-link-alt"></i></a>
+<a class="link"   href="https://github.com/docling-project/docling"  target="_blank">⁍ GitHub | Docling <i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://docling-project.github.io/docling/"  target="_blank">⁍ Docling<i class="fas fa-external-link-alt"></i></a><br>
+<a class="link"   href="https://docling-project.github.io/docling/usage/mcp/"  target="_blank">⁍ Docling MCP<i class="fas fa-external-link-alt"></i></a><br>
 </font>
 </div>
-<h2 id="安裝-WebDriver">安裝 WebDriver</h2>
-<p>在上圖的錯誤訊息中有提到如下指令，路徑中的 <strong><mark>netX</mark></strong> 要替換為自己使用的版本路徑，而其中的 playwright.ps1 會存在於 .NET 程式建置後的 bin 目錄中，這個 .ps1 的主要用途是在 Windows 環境下執行 Playwright 測試，讓它可以正確找到 Playwright 主程式和相關驅動程式，確認 pwsh 指令可以運作後，就可以接著安裝 WebDriver 了。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pwsh bin/Debug/netX/playwright.ps1 install</span><br></pre></td></tr></table></figure>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/playwright.png"
-                        class=""
-                 >
-<br>
-若在 install 之後沒有加上任何參數，則會安裝下列預設項目：
+<p>如果想要手動在 mcp.json 加入這兩個 MCP 工具，可以直接參考：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	<span class="attr">&quot;servers&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		<span class="attr">&quot;microsoft/markitdown&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">			<span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;stdio&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;uvx&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">				<span class="string">&quot;markitdown-mcp==0.0.1a4&quot;</span></span><br><span class="line">			<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;gallery&quot;</span><span class="punctuation">:</span> <span class="string">&quot;https://api.mcp.github.com&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1.0.0&quot;</span></span><br><span class="line">		<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">		 <span class="attr">&quot;docling&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		 <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;uvx&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">				<span class="string">&quot;--from=docling-mcp&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="string">&quot;docling-mcp-server&quot;</span></span><br><span class="line">			<span class="punctuation">]</span></span><br><span class="line">		<span class="punctuation">&#125;</span></span><br><span class="line">	<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;inputs&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<h2 id="支援格式與各面向比較">支援格式與各面向比較</h2>
+<table>
+<thead>
+<tr>
+<th>格式</th>
+<th>MarkItDown</th>
+<th>Docling</th>
+<th>備註</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PDF</td>
+<td>良好</td>
+<td>優秀（尤其是複雜/掃描文件）</td>
+<td>MarkItDown 對一般 PDF 處理良好；若需高保真解析或掃描 OCR 建議用 Docling</td>
+</tr>
+<tr>
+<td>DOCX / PPTX / XLSX</td>
+<td>支援</td>
+<td>支援</td>
+<td>兩者皆可處理 Office 文件</td>
+</tr>
+<tr>
+<td>Images</td>
+<td>OCR、EXIF 支援</td>
+<td>OCR + VLM（視覺語言模型）分類支援</td>
+<td>Docling 在影像分類與 VLM 整合上較強</td>
+</tr>
+<tr>
+<td>Audio (WAV / MP3)</td>
+<td>支援音訊轉錄</td>
+<td>ASR 支援</td>
+<td>兩者皆支援轉錄；可串接不同模型以改善品質</td>
+</tr>
+<tr>
+<td>HTML</td>
+<td>支援</td>
+<td>支援</td>
+<td>皆可匯入網頁內容</td>
+</tr>
+<tr>
+<td>Markdown</td>
+<td>原生支援</td>
+<td>支援匯入/匯出</td>
+<td></td>
+</tr>
+<tr>
+<td>CSV / JSON / XML</td>
+<td>文字格式支援</td>
+<td>支援</td>
+<td>適合結構化文字資料</td>
+</tr>
+<tr>
+<td>YouTube</td>
+<td>可抓取與轉錄</td>
+<td>可處理 WebVTT / 影片字幕</td>
+<td>MarkItDown 偏向抓取與轉錄；Docling 處理字幕檔更完整</td>
+</tr>
+<tr>
+<td>EPUB / ZIP</td>
+<td>支援</td>
+<td>支援</td>
+<td>支援程度依內容與封裝方式而異</td>
+</tr>
+<tr>
+<td>VTT / WebVTT</td>
+<td>支援</td>
+<td>支援</td>
+<td>若以字幕為主，Docling 支援度較好</td>
+</tr>
+</tbody>
+</table>
 <ul>
-<li>Chromium</li>
-<li>Chromium Headless Shell</li>
-<li>Firefox</li>
-<li>Webkit</li>
-<li>FFMPEG</li>
+<li>
+<p>設計目標：</p>
+<ul>
+<li>MarkItDown：以「快速把各類來源轉成 LLM-friendly Markdown」為核心，偏重 token 效率與多媒體前處理。</li>
+<li>Docling：以「高保真文件理解」為核心，強調版面/表格/閱讀順序的精確還原與 lossless 結構化。</li>
 </ul>
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/install.png"
-                        class=""
-                 >
-<br>
-也可以依自己的需求安裝指定項目，可使用 install -h 查看相關資訊：
-<img  
-                       lazyload
-                       alt="image"
-                       data-src="/post/2025/05/how-to-use-playwright-2/custom.png"
-                        class=""
-                 >
+</li>
+<li>
+<p>解析深度與還原度：</p>
+<ul>
+<li>MarkItDown：輸出以可讀且可索引的 Markdown 為主，對一般文件足夠；遇到跨欄或複雜表格時可能會犧牲部分細節。</li>
+<li>Docling：使用版面模型與表格重建，保留更多區塊座標與結構資訊，適合需精準抽取或重現原始排版的情境。</li>
+</ul>
+</li>
+<li>
+<p>多媒體支援：</p>
+<ul>
+<li>MarkItDown：支援音訊轉錄、YouTube 字幕抓取、圖片 OCR 等，偏向 LLM 前處理工作流。</li>
+<li>Docling：也支援 OCR/ASR/VLM，但更強調影像分類、表格語意重構與公式/程式碼片段的解析。</li>
+</ul>
+</li>
+<li>
+<p>本地化 vs 雲端依賴：</p>
+<ul>
+<li>MarkItDown：可本地執行，但在某些高階 PDF 能力上會建議採用雲端 Azure Document Intelligence 作為選項。</li>
+<li>Docling：設計上強調本地端運行，適合敏感資料或離線環境。</li>
+</ul>
+</li>
+<li>
+<p>效能與資源需求：</p>
+<ul>
+<li>MarkItDown：輕量、上手快，適合大量快速預處理。</li>
+<li>Docling：依賴模型與較高運算資源，單檔處理時間較長但輸出更精確。</li>
+</ul>
+</li>
+<li>
+<p>整合生態與可擴充性：</p>
+<ul>
+<li>MarkItDown：以 plugin 與 MCP 為導向，容易接入 AI Agent / LLM pipeline。</li>
+<li>Docling：提供豐富的 JSON / Markdown / HTML 匯出，與 LangChain、LlamaIndex 等檢索生態整合良好，利於深度資料工程。</li>
+</ul>
+</li>
+<li>
+<p>可驗證性與審核：</p>
+<ul>
+<li>MarkItDown：輸出簡潔，人工檢視方便，但在表格或版面細節需抽樣驗證。</li>
+<li>Docling：提供中間結構（座標、區塊、表格邊界），便於自動化驗證與回溯修正。</li>
+</ul>
+</li>
+<li>
+<p>學習曲線與運維成本：</p>
+<ul>
+<li>MarkItDown：學習低、文件少、運維簡單。</li>
+<li>Docling：功能與選項多，需時間調校模型與處理參數，運維成本較高。</li>
+</ul>
+</li>
+</ul>
 <h2 id="總結">總結</h2>
-<p>本文介紹了在全新環境下，如何讓 .NET 8 撰寫的 Playwright 測試程式順利執行，包含安裝 .NET Runtime、PowerShell 及 WebDriver 等必要步驟。只要依照上述流程完成環境設定，就能避免常見的錯誤訊息，順利執行自動化測試。希望這些說明能幫助你在不同平台上快速部署與運行 Playwright 測試專案。</p>
+<p>MarkItDown 與 Docling 均可將各類原始文件轉為 LLM 友好的結構化格式，但設計取向與適用場景不同：MarkItDown 輕量且易上手，輸出以節省 token 的 Markdown 為主，適合大量快速預處理與整合至 AI Agent / LLM pipeline；Docling 則強調高保真文件理解與版面還原，擅長複雜 PDF、表格重建及本地化運行，適用於需精準解析或資安敏感的情境。實務上如果是遇到比較複雜的文件內容，例如像論文有分左右兩欄、各式表格，或是有圖片需要 OCR 辨識、流程圖想要轉換成 Mermaid，使用 Docling 產出的結果都蠻不錯的，強力推薦給大家!</p>
+  <!-- 實務上建議依文件類型、解析精度、處理量與可用資源做選擇，並透過抽樣驗證或混合流程（以 MarkItDown 做批次預處理、以 Docling 處理關鍵或需人工驗證的檔案）來兼顧效率與精確性。 -->
+<p>.xls -&gt; .md</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/docling-to-markdown/docling-excel.jpg"
+                        class=""
+                 >
+<p>.pptx -&gt; .md</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/docling-to-markdown/docling-pptx.jpg"
+                        class=""
+                 >
+<p>使用本地端資源運行 Docling</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/post/2025/10/docling-to-markdown/docling-performance.jpg"
+                        class=""
+                 >
 ]]></content>
       <tags>
-        <tag>Playwright</tag>
+        <tag>Docling</tag>
+        <tag>MarkItDown</tag>
+        <tag>文件處理</tag>
+        <tag>RAG</tag>
       </tags>
   </entry>
   <entry>
