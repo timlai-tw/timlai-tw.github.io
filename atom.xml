@@ -93,9 +93,9 @@
     
     
     
-    <category term=".NET Conf 2025" scheme="https://timlai.dev/tags/NET-Conf-2025/"/>
-    
     <category term="GitHub Copilot" scheme="https://timlai.dev/tags/GitHub-Copilot/"/>
+    
+    <category term=".NET Conf 2025" scheme="https://timlai.dev/tags/NET-Conf-2025/"/>
     
   </entry>
   
@@ -258,9 +258,9 @@
     
     <category term="Azure DevOps" scheme="https://timlai.dev/tags/Azure-DevOps/"/>
     
-    <category term="GitHub Copilot" scheme="https://timlai.dev/tags/GitHub-Copilot/"/>
-    
     <category term="Devdays Asia 2025" scheme="https://timlai.dev/tags/Devdays-Asia-2025/"/>
+    
+    <category term="GitHub Copilot" scheme="https://timlai.dev/tags/GitHub-Copilot/"/>
     
   </entry>
   
@@ -450,9 +450,9 @@
     
     
     
-    <category term="Playwright" scheme="https://timlai.dev/tags/Playwright/"/>
-    
     <category term="Unit Test" scheme="https://timlai.dev/tags/Unit-Test/"/>
+    
+    <category term="Playwright" scheme="https://timlai.dev/tags/Playwright/"/>
     
   </entry>
   
