@@ -1,0 +1,22 @@
+<!-- <div class="photo-album-box border-box">
+    <% for (const img of theme.source_data?.photos) { %>
+        <img class="photo border-box" src="<%- url_for(img?.url) %>"
+             title="<%= img.name %>"
+             onerror="this.style.display='none'"
+        >
+    <% } %>
+</div> -->
+
+
+    <% for (const group of theme.source_data?.photos) { %>
+        <h2><%= group.group %></h2> <!-- 组的标题 -->
+        <div class="photo-album-box border-box">
+            <% for (const img of group.photos) { %>
+                <img class="photo border-box" src="<%- url_for(img?.src) %>"
+                    title="<%= img.caption %>"
+                    onerror="this.style.display='none'"
+                >
+            <% } %>
+        </div>
+    <% } %>
+
